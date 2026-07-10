@@ -1,216 +1,289 @@
-# 3 Boxes Jobs — Technical Documentation
+# 3 Boxes Jobs - Technical Documentation
 
 ## 1. System Architecture
 
-### 1.1 Technology Stack
-| Layer | Technology | Version | Purpose |
-|-------|-----------|---------|---------|
-| Frontend | Next.js 16 | 16.1.1 | React framework with App Router |
-| Language | TypeScript | 5.x | Type-safe development |
-| Styling | Tailwind CSS | 4.x | Utility-first CSS |
-| UI Library | shadcn/ui | Latest | Accessible component library |
-| State | Zustand | 5.x | Client-side state management |
-| Database | SQLite via Prisma | 6.x | ORM and data layer |
-| Charts | Recharts | 2.15 | Data visualization |
-| Animation | Framer Motion | 12.x | UI animations |
-| Auth | Custom (SHA-256) | — | Session-based authentication |
+### High-Level Architecture
 
-### 1.2 Application Flow
+3 Boxes Jobs is built as a monolithic Next.js application with embedded API routes. The architecture follows the **Server-Side Rendering + Client-Side Hydration** pattern:
+
 ```
-User → Landing Page → Auth Dialog → Role-Based Dashboard
-  ├── Job Seeker → Dashboard → Jobs/Applications/Resume/Interview/Training/Analytics
-  ├── Corporate → Dashboard → Post Job/My Jobs/Applications/Profile/Analytics
-  └── Recruiter → Dashboard → Search/Pipeline/Interviews/Analytics/Profile
+┌─────────────────────────────────────────────────────────────┐
+│                        Vercel Edge                           │
+│  ┌────────────────────────────────────────────────────────┐  │
+│  │                   Next.js Application                  │  │
+│  │                                                        │  │
+│  │  ┌──────────────┐    ┌──────────────────────────────┐  │  │
+│  │  │  SSR/RSC     │    │     Client-Side SPA          │  │  │
+│  │  │  (Layout,    │    │  (Dashboards, Forms,         │  │  │
+│  │  │   Metadata)  │    │   Charts, Interactions)      │  │  │
+│  │  └──────────────┘    └──────────────────────────────┘  │  │
+│  │           │                       │                     │  │
+│  │           └───────────┬───────────┘                     │  │
+│  │                       │                                 │  │
+│  │  ┌────────────────────▼────────────────────────────┐   │  │
+│  │  │              API Route Layer                     │   │  │
+│  │  │  ┌─────────┐ ┌─────────┐ ┌──────────┐          │   │  │
+│  │  │  │  Auth   │ │  Jobs   │ │ Training │          │   │  │
+│  │  │  └─────────┘ └─────────┘ └──────────┘          │   │  │
+│  │  │  ┌─────────┐ ┌─────────┐ ┌──────────┐          │   │  │
+│  │  │  │ Resume  │ │ AI Intv │ │Analytics │          │   │  │
+│  │  │  └─────────┘ └─────────┘ └──────────┘          │   │  │
+│  │  └────────────────────┬────────────────────────────┘   │  │
+│  │                       │                                 │  │
+│  │  ┌────────────────────▼────────────────────────────┐   │  │
+│  │  │           Prisma ORM Layer                       │   │  │
+│  │  │           (Query Builder + Client)               │   │  │
+│  │  └────────────────────┬────────────────────────────┘   │  │
+│  └────────────────────────┼────────────────────────────────┘  │
+│                           │                                    │
+│  ┌────────────────────────▼────────────────────────────────┐  │
+│  │                SQLite Database                           │  │
+│  │  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐        │  │
+│  │  │User  │ │ Job  │ │Resume│ │Train │ │Applic│        │  │
+│  │  └──────┘ └──────┘ └──────┘ └──────┘ └──────┘        │  │
+│  └─────────────────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-### 1.3 API Architecture
-All API routes follow REST conventions:
-- **POST** for creation
-- **GET** for retrieval with query parameters
-- **PUT** for updates
-- **DELETE** for removal
+### Data Flow
 
-All responses return JSON with consistent structure:
+#### Authentication Flow
+```
+Client → POST /api/auth/login { email, password }
+       → API: Verify password (SHA-256 hash comparison)
+       → API: Generate token (randomBytes)
+       → API: Return { user, token }
+       → Client: Zustand store persists { user, token, isAuthenticated }
+       → Client: Render role-specific dashboard
+```
+
+#### AI Skill Auto-Update Flow
+```
+Client → PUT /api/training { enrollmentId, progress: 100, status: "completed", skillsAcquired }
+       → API: Update TrainingEnrollment (status=completed, score, skillsAcquired)
+       → API: For each acquired skill:
+              → Upsert SkillAssessment (source="training")
+       → API: Update JobSeekerProfile.skills (append new skills)
+       → API: Update all active Resumes (lastAiUpdate=now, refresh skills JSON)
+       → API: Recalculate aiSkillScore
+       → API: Create Notification ("Skills updated!")
+       → Client: Toast notification + refresh data
+```
+
+#### AI Mock Interview Flow
+```
+Client → POST /api/ai-interview { userId, jobRole, industry, difficulty }
+       → API: Generate questions based on role/industry/difficulty
+       → API: Create AiInterviewSession
+       → API: Return { session, questions }
+       → Client: Display timed question interface
+       → Client: Collect responses → PUT /api/ai-interview { sessionId, responses }
+       → API: Score each response (communication, technical, confidence)
+       → API: Calculate overall and category scores
+       → API: Generate AI feedback
+       → API: Update session with scores and feedback
+       → Client: Display results with score breakdown
+```
+
+## 2. Security Architecture
+
+### Current Security Measures
+
+1. **Password Hashing**: SHA-256 with crypto module (should be upgraded to bcrypt/argon2 for production)
+2. **Token-Based Auth**: Random 32-byte hex tokens (should be upgraded to JWT with expiry)
+3. **Input Validation**: Basic validation in API routes (should add Zod schemas)
+4. **SQL Injection**: Protected by Prisma ORM parameterized queries
+5. **XSS Protection**: React's built-in JSX escaping + Next.js CSP headers
+
+### Production Security Recommendations
+
+1. **Upgrade Password Hashing**: Replace SHA-256 with bcrypt (cost factor 12+) or argon2id
+2. **Implement JWT**: Use HTTP-only cookies with proper JWT tokens including expiry and refresh
+3. **Add CSRF Protection**: Implement CSRF tokens for state-changing operations
+4. **Rate Limiting**: Add rate limiting to auth endpoints (5 attempts/minute)
+5. **Content Security Policy**: Configure strict CSP headers
+6. **HTTPS Only**: Enforce HTTPS in production via Vercel
+7. **Environment Secrets**: Move all secrets to Vercel environment variables
+8. **Input Sanitization**: Add Zod validation schemas to all API routes
+
+### Data Privacy (India DPDP Act Compliance)
+
+1. **User Consent**: Implement consent tracking for data collection and processing
+2. **Data Minimization**: Only collect data necessary for platform functionality
+3. **Right to Deletion**: Implement user data deletion endpoints
+4. **Data Portability**: Allow users to export their data
+5. **Encryption**: Encrypt sensitive fields (phone, email) at rest in production
+
+## 3. Performance Optimization
+
+### Frontend Optimizations
+
+1. **Code Splitting**: Next.js automatic route-based code splitting
+2. **Lazy Loading**: Components loaded on demand via dynamic imports
+3. **Image Optimization**: Next.js Image component with automatic optimization
+4. **Bundle Size**: Tree-shaking via ES modules, only import needed icons from lucide-react
+5. **Caching**: TanStack Query for server state caching and background refetching
+
+### Backend Optimizations
+
+1. **Database Indexing**: Add indexes on frequently queried fields:
+   - `User.email` (unique, already indexed)
+   - `Job.status` (for active job queries)
+   - `Application.userId` (for user's applications)
+   - `TrainingEnrollment.userId` (for user's enrollments)
+
+2. **Query Optimization**: Use `select` and `include` wisely to avoid over-fetching
+3. **Connection Pooling**: Prisma handles connection pooling for SQLite
+
+### Recommended Production Optimizations
+
+1. **Redis Caching**: Cache frequently accessed data (job listings, analytics)
+2. **CDN**: Serve static assets via Vercel CDN
+3. **Database Migration**: Switch to PostgreSQL for concurrent access support
+4. **Pagination**: All list endpoints support cursor-based pagination
+5. **Compression**: Enable gzip/brotli compression (handled by Vercel)
+
+## 4. Deployment Architecture
+
+### Current: Vercel Deployment
+
+```
+GitHub Repository (pmkshar/3boxesjobportal)
+         │
+         │ Push to main branch
+         ▼
+    Vercel Build
+         │
+         ├── Next.js Build (static + serverless)
+         ├── API Routes → Serverless Functions
+         └── Static Assets → Edge CDN
+         │
+         ▼
+    Vercel Edge Network
+         │
+         ├── / → Landing Page (SSR)
+         ├── /api/* → Serverless Functions
+         └── /_next/static/* → CDN Cache
+```
+
+### Production Architecture (Recommended)
+
+```
+┌───────────────┐     ┌──────────────┐     ┌──────────────┐
+│   Vercel      │────▶│  PostgreSQL  │────▶│    Redis     │
+│   (Frontend + │     │  (Primary DB)│     │   (Cache)    │
+│    API)       │     └──────────────┘     └──────────────┘
+└───────┬───────┘              │
+        │                      │
+        ▼                      ▼
+┌───────────────┐     ┌──────────────┐
+│  S3/Cloud     │     │  Email       │
+│  Storage      │     │  Service     │
+│  (Files/PDFs) │     │  (SES/SG)    │
+└───────────────┘     └──────────────┘
+```
+
+## 5. Technology Decision Rationale
+
+### Why Next.js 16?
+- Full-stack framework with SSR and API routes
+- Vercel-optimized for instant deployments
+- App Router for modern React patterns
+- Built-in TypeScript support
+
+### Why Prisma + SQLite?
+- Type-safe database queries with auto-generated types
+- Schema-first development with migration support
+- SQLite for zero-configuration development
+- Easy migration to PostgreSQL for production
+
+### Why Zustand over Redux?
+- Simpler API with less boilerplate
+- Built-in persistence middleware
+- TypeScript-first design
+- Sufficient for this application's state complexity
+
+### Why shadcn/ui?
+- Unstyled, accessible components
+- Full ownership of component code
+- Consistent with Tailwind CSS design system
+- Customizable without fighting framework defaults
+
+## 6. Scalability Considerations
+
+### Horizontal Scaling
+1. **Stateless API**: All API routes are stateless (session stored client-side)
+2. **Database**: PostgreSQL supports connection pooling and read replicas
+3. **File Storage**: Offload to S3/Cloud Storage
+4. **Background Jobs**: Use Vercel Cron or external queue (BullMQ) for:
+   - Resume PDF generation
+   - Email notifications
+   - AI skill recalculation
+   - Analytics aggregation
+
+### Vertical Scaling
+1. **Serverless Functions**: Auto-scale with Vercel
+2. **Database**: PostgreSQL with appropriate instance sizing
+3. **Caching**: Redis for hot data paths
+
+### Monitoring
+1. **Application**: Vercel Analytics + custom AnalyticsEvent tracking
+2. **Errors**: Implement Sentry for error tracking
+3. **Performance**: Vercel Speed Insights
+4. **Uptime**: Uptime Robot or similar monitoring service
+
+## 7. AI Integration Architecture
+
+### Current: Mock AI Implementation
+The current AI features use algorithmic logic to simulate AI responses:
+- Interview questions are generated from predefined templates based on role/difficulty
+- Skill scoring uses weighted algorithms
+- Resume AI enhancement uses template-based suggestions
+
+### Future: Real AI Integration (z-ai-web-dev-sdk)
+The platform is designed to integrate with the z-ai-web-dev-sdk for:
+1. **Real Interview Questions**: AI-generated questions based on job requirements
+2. **Response Scoring**: NLP-based analysis of interview responses
+3. **Resume Enhancement**: AI-powered resume content generation
+4. **Job Matching**: ML-based candidate-job matching
+5. **Skill Recommendations**: AI-driven course recommendations
+
+### Integration Points
+```typescript
+// AI Interview - Backend only (z-ai-web-dev-sdk MUST be server-side)
+import { zai } from 'z-ai-web-dev-sdk'
+
+async function generateInterviewQuestions(role: string, difficulty: string) {
+  const response = await zai.chat.completions.create({
+    model: 'default',
+    messages: [
+      { role: 'system', content: 'Generate 5 interview questions...' },
+      { role: 'user', content: `Role: ${role}, Difficulty: ${difficulty}` }
+    ]
+  })
+  return response.choices[0].message.content
+}
+```
+
+## 8. Error Handling Strategy
+
+### Client-Side
+- Toast notifications for user-facing errors (sonner)
+- Error boundaries for React component failures
+- Loading states with skeleton components
+- Retry mechanisms for failed API calls
+
+### Server-Side
+- Try-catch blocks in all API routes
+- Structured error responses with HTTP status codes
+- Console.error logging for debugging
+- Graceful degradation when AI services are unavailable
+
+### Error Response Format
 ```json
 {
-  "data": {},
-  "error": null,
-  "message": "Success message"
+  "error": "Human-readable error message",
+  "details": "Technical details (dev mode only)",
+  "code": "ERROR_CODE"
 }
 ```
-
-## 2. Database Design
-
-### 2.1 Entity Relationship Diagram
-```
-User (1) ──→ (0..1) JobSeekerProfile
-User (1) ──→ (0..1) CorporateProfile
-User (1) ──→ (0..1) RecruiterProfile
-User (1) ──→ (0..n) Resume
-User (1) ──→ (0..n) Application
-User (1) ──→ (0..n) Interview
-User (1) ──→ (0..n) AiInterviewSession
-User (1) ──→ (0..n) TrainingEnrollment
-User (1) ──→ (0..n) SkillAssessment
-User (1) ──→ (0..n) AnalyticsEvent
-User (1) ──→ (0..n) Notification
-User (1) ──→ (0..n) SavedJob
-
-CorporateProfile (1) ──→ (0..n) Job
-Job (1) ──→ (0..n) Application
-Job (1) ──→ (0..n) SavedJob
-Resume (0..1) ←── Application
-TrainingCourse (1) ──→ (0..n) TrainingEnrollment
-```
-
-### 2.2 Key Enums
-- **UserRole**: JOB_SEEKER, CORPORATE, RECRUITER, ADMIN
-- **JobStatus**: DRAFT, ACTIVE, PAUSED, CLOSED, ARCHIVED
-- **ApplicationStatus**: APPLIED, SCREENING, SHORTLISTED, INTERVIEW_SCHEDULED, INTERVIEWED, OFFERED, HIRED, REJECTED, WITHDRAWN
-- **InterviewType**: PHONE, VIDEO, IN_PERSON, AI_MOCK, TECHNICAL, HR
-
-### 2.3 JSON Storage Fields
-Several fields store complex data as JSON strings:
-- Resume: experience, education, skills, certifications, projects, languages, achievements
-- TrainingEnrollment: skillsAcquired
-- SkillAssessment: evidence
-- AnalyticsEvent: metadata
-- AiInterviewSession: questions, responses, scores
-
-## 3. Authentication System
-
-### 3.1 Password Security
-- Hashing: SHA-256 with server-side hashing
-- Passwords are never stored in plaintext
-- Verification: Constant-time comparison via hash matching
-
-### 3.2 Session Management
-- Token-based: Random 32-byte hex tokens generated on login
-- Client-side: Zustand store with localStorage persistence
-- Token passed via Authorization header for protected routes
-
-### 3.3 Role-Based Access Control
-```typescript
-// Route-level access control
-const roleAccess = {
-  '/api/resumes': ['JOB_SEEKER', 'ADMIN'],
-  '/api/jobs POST': ['CORPORATE', 'ADMIN'],
-  '/api/applications GET': ['JOB_SEEKER', 'CORPORATE', 'RECRUITER', 'ADMIN'],
-}
-```
-
-## 4. AI Features Implementation
-
-### 4.1 AI Job Matching Algorithm
-```
-1. Extract required skills from job posting
-2. Extract candidate skills from profile
-3. Calculate skill overlap ratio: matchCount / totalRequired
-4. Factor in experience years proximity
-5. Generate AI match score (0-100)
-6. Provide feedback based on score ranges
-```
-
-### 4.2 AI Mock Interview System
-```
-1. Generate questions based on job role (8-10 questions per session)
-2. Questions categorized as: role_specific, general, behavioral
-3. Timer-based responses (90-120 seconds per question)
-4. Scoring algorithm:
-   - Communication: Response length + structure analysis
-   - Technical: Keyword matching against technical terms
-   - Confidence: Assertive language detection
-   - Overall: Weighted average (30% comm + 40% tech + 30% confidence)
-5. Generate detailed feedback based on score ranges
-```
-
-### 4.3 Skill Auto-Update Flow
-```
-1. User completes training course → status = 'completed'
-2. Skills from course extracted (skillsAcquired field)
-3. Job Seeker Profile skills updated (appended with new skills)
-4. Default Resume skills section updated automatically
-5. SkillAssessment records created for each new skill
-6. AnalyticsEvent recorded (training_completed)
-7. Notification sent to user about auto-update
-8. AI Skill Score incremented
-```
-
-### 4.4 AI Resume Enhancement
-- Summary enhancement with professional language patterns
-- Skill suggestions based on market analysis
-- Template-based content generation for bullet points
-- Real-time preview with professional formatting
-
-## 5. API Reference
-
-### 5.1 Authentication
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /api/auth/register | Create new user account |
-| POST | /api/auth/login | Login and get session token |
-| GET | /api/auth/me | Get current user profile |
-
-### 5.2 Jobs
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/jobs | Search/filter jobs |
-| POST | /api/jobs | Create new job posting |
-| GET | /api/jobs/[id] | Get job details |
-| PUT | /api/jobs/[id] | Update job |
-| DELETE | /api/jobs/[id] | Delete job |
-
-### 5.3 Applications
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/applications | Get applications (by user or job) |
-| POST | /api/applications | Apply to job (with AI match scoring) |
-| PUT | /api/applications | Update application status |
-
-### 5.4 Resumes
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/resumes | Get user resumes |
-| POST | /api/resumes | Create resume |
-| PUT | /api/resumes | Update resume |
-
-### 5.5 AI Interview
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /api/ai-interview | Start new interview session |
-| PUT | /api/ai-interview | Submit responses and get scores |
-| GET | /api/ai-interview | Get interview history |
-
-### 5.6 Training
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/training | Get courses (with enrollment status) |
-| POST | /api/training | Enroll in course |
-| PUT | /api/training | Update enrollment progress/status |
-
-### 5.7 Analytics & Notifications
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/analytics | Get dashboard analytics data |
-| GET | /api/notifications | Get user notifications |
-| PUT | /api/notifications | Mark notifications as read |
-| GET | /api/skills | Get skill assessments |
-| POST | /api/skills | Add new skill |
-
-## 6. Security Considerations
-
-- All passwords hashed with SHA-256 (upgrade to bcrypt recommended for production)
-- Input validation on all API endpoints
-- SQL injection protection via Prisma ORM parameterized queries
-- CORS configured via Next.js
-- XSS protection via React's built-in escaping
-- Rate limiting recommended for production (not implemented in demo)
-
-## 7. Performance Optimization
-
-- Client-side state management with Zustand (minimal re-renders)
-- Database queries optimized with Prisma includes
-- Lazy loading of dashboard components
-- Image optimization with Next.js Image component
-- Chart rendering with Recharts virtual DOM
-- SQLite for fast local reads (migrate to PostgreSQL for production)
