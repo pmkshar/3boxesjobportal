@@ -560,12 +560,19 @@ seedMemoryData()
 // ─── Memory Store API ──────────────────────────────────────────
 
 export const memoryStore = {
-  // Check if Prisma DB is available
+  // Check if Prisma DB is available (with timeout to prevent hanging on Vercel)
   async isDbAvailable(): Promise<boolean> {
     if (_dbAvailable) return true
     try {
-      const { db } = await import('./db')
-      await db.user.count()
+      const dbModule = await Promise.race([
+        import('./db'),
+        new Promise<null>((_, reject) => setTimeout(() => reject(new Error('DB import timeout')), 3000))
+      ]) as any
+      if (!dbModule?.db) { _dbAvailable = false; return false }
+      await Promise.race([
+        dbModule.db.user.count(),
+        new Promise<null>((_, reject) => setTimeout(() => reject(new Error('DB query timeout')), 3000))
+      ])
       _dbAvailable = true
       return true
     } catch {

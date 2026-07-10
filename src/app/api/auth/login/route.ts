@@ -3,12 +3,15 @@ import { memoryStore } from '@/lib/memory-store'
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json()
+    const body = await request.json()
+    const { email, password } = body
 
     if (!email || !password) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 })
     }
 
+    // Use memory store directly — it handles DB fallback internally
+    // and always has demo data seeded, even on Vercel cold starts
     const result = await memoryStore.login(email, password)
 
     if (result.error) {
@@ -18,13 +21,27 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result)
   } catch (error) {
     console.error('Login error:', error)
-    // Never return a generic 500 — always give the user actionable info
-    return NextResponse.json(
-      {
-        error: 'Unable to process login. Please check your credentials and try again.',
-        details: process.env.NODE_ENV === 'development' ? String(error) : undefined,
-      },
-      { status: 500 }
-    )
+    // Last-resort fallback: try direct memory login
+    try {
+      const { hashPassword, verifyPassword, generateToken } = await import('@/lib/auth')
+      const body = await request.clone().json()
+      const { email, password } = body
+      if (!email || !password) {
+        return NextResponse.json({ error: 'Email and password are required' }, { status: 400 })
+      }
+      // Import fresh memory store to get demo users
+      const { memoryStore: ms } = await import('@/lib/memory-store')
+      const result = await ms.login(email, password)
+      if (result.error) {
+        return NextResponse.json({ error: result.error }, { status: result.status || 401 })
+      }
+      return NextResponse.json(result)
+    } catch (innerError) {
+      console.error('Login fallback also failed:', innerError)
+      return NextResponse.json(
+        { error: 'Login service temporarily unavailable. Please try again.' },
+        { status: 503 }
+      )
+    }
   }
 }
