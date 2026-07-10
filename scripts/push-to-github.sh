@@ -1,54 +1,47 @@
 #!/bin/bash
-# 3 Boxes Jobs - GitHub Push Script
-# Run this script from your local machine to push the code to GitHub
+# Push 3 Boxes Jobs code to GitHub and trigger Vercel deployment
+# Run this script from the project root directory
 
 set -e
 
-REPO_URL="https://github.com/pmkshar/3boxesjobportal.git"
-BRANCH="main"
-
-echo "============================================"
-echo "  3 Boxes Jobs - GitHub Push Script"
-echo "============================================"
-echo ""
-
-# Check if git is installed
-if ! command -v git &> /dev/null; then
-    echo "Error: git is not installed"
-    exit 1
-fi
+echo "🚀 3 Boxes Jobs - Push to GitHub & Vercel"
+echo "=========================================="
 
 # Check if we're in the right directory
 if [ ! -f "package.json" ]; then
-    echo "Error: Run this script from the project root directory"
-    exit 1
+  echo "❌ Error: Please run this script from the project root directory"
+  exit 1
 fi
 
-# Check if remote is set up
-CURRENT_REMOTE=$(git remote get-url origin 2>/dev/null || echo "")
-if [ "$CURRENT_REMOTE" != "$REPO_URL" ]; then
-    echo "Setting up remote origin..."
-    git remote remove origin 2>/dev/null || true
-    git remote add origin "$REPO_URL"
-fi
+# Check git status
+echo ""
+echo "📋 Checking git status..."
+git status --short
 
-# Stage all changes
-echo "Staging changes..."
-git add -A
+# Add all relevant files
+echo ""
+echo "📦 Staging files..."
+git add docs/ src/ prisma/ public/ next.config.ts tailwind.config.ts tsconfig.json \
+  package.json bun.lock components.json postcss.config.mjs eslint.config.mjs \
+  Caddyfile vercel.json .gitignore .env.example
 
 # Commit
-echo "Creating commit..."
-git commit -m "feat: Complete 3 Boxes Jobs AI Job Portal with all features" || echo "No changes to commit"
-
-# Push
-echo "Pushing to GitHub..."
-echo "Note: You may be prompted for GitHub credentials."
-echo "Use Personal Access Token (PAT) as password if 2FA is enabled."
 echo ""
-git push -u origin "$BRANCH"
+echo "💾 Committing changes..."
+git commit -m "feat: Update 3 Boxes Jobs with comprehensive documentation and Vercel config" || echo "Nothing to commit"
+
+# Push to GitHub
+echo ""
+echo "🔗 Pushing to GitHub (https://github.com/pmkshar/3boxesjobportal)..."
+git push origin main
 
 echo ""
-echo "============================================"
-echo "  Push completed successfully!"
-echo "  Repository: $REPO_URL"
-echo "============================================"
+echo "✅ Push complete! Vercel will auto-deploy from the GitHub main branch."
+echo ""
+echo "🌐 Monitor deployment at: https://vercel.com/dashboard"
+echo "📚 Repository: https://github.com/pmkshar/3boxesjobportal"
+echo ""
+echo "Demo Accounts:"
+echo "  Job Seeker: seeker@3boxes.com / demo123"
+echo "  Corporate:  corp@3boxes.com / demo123"
+echo "  Recruiter:  recruiter@3boxes.com / demo123"
