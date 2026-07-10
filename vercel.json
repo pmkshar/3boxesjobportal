@@ -2,7 +2,5 @@
   "framework": "nextjs",
   "buildCommand": "npx prisma generate && next build",
   "installCommand": "bun install",
-  "env": {
-    "DATABASE_URL": "file:./db/custom.db"
-  }
+  "outputDirectory": ".next"
 }
