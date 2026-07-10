@@ -1,47 +1,58 @@
 #!/bin/bash
-# Push 3 Boxes Jobs code to GitHub and trigger Vercel deployment
-# Run this script from the project root directory
+# 3 Boxes Jobs - Push to GitHub Script
+# Run this from your LOCAL machine where you have GitHub access
+#
+# Prerequisites:
+#   - Git installed and authenticated with GitHub
+#   - This repository already exists at https://github.com/pmkshar/3boxesjobportal
+#
+# If you haven't authenticated Git with GitHub yet, run:
+#   gh auth login
+# OR set up SSH keys and use the SSH URL instead
 
 set -e
 
-echo "🚀 3 Boxes Jobs - Push to GitHub & Vercel"
-echo "=========================================="
+REPO_URL="https://github.com/pmkshar/3boxesjobportal.git"
+BRANCH="main"
 
-# Check if we're in the right directory
-if [ ! -f "package.json" ]; then
-  echo "❌ Error: Please run this script from the project root directory"
+echo "🚀 3 Boxes Jobs - Push to GitHub"
+echo "================================"
+echo ""
+
+# Check current directory
+if [ ! -f "package.json" ] || [ ! -f "prisma/schema.prisma" ]; then
+  echo "❌ Error: Run this script from the 3 Boxes Jobs project root"
   exit 1
 fi
 
-# Check git status
-echo ""
-echo "📋 Checking git status..."
-git status --short
+# Stage all changes
+echo "📦 Staging all changes..."
+git add -A
 
-# Add all relevant files
+# Show what's staged
 echo ""
-echo "📦 Staging files..."
-git add docs/ src/ prisma/ public/ next.config.ts tailwind.config.ts tsconfig.json \
-  package.json bun.lock components.json postcss.config.mjs eslint.config.mjs \
-  Caddyfile vercel.json .gitignore .env.example
+echo "📋 Changes to be committed:"
+git status --short
 
 # Commit
 echo ""
-echo "💾 Committing changes..."
-git commit -m "feat: Update 3 Boxes Jobs with comprehensive documentation and Vercel config" || echo "Nothing to commit"
+echo "💾 Committing..."
+git commit -m "feat: 3 Boxes Jobs - AI-Powered Job Portal with comprehensive documentation" 2>/dev/null || echo "Already committed"
 
-# Push to GitHub
+# Push
 echo ""
-echo "🔗 Pushing to GitHub (https://github.com/pmkshar/3boxesjobportal)..."
-git push origin main
+echo "🔗 Pushing to GitHub..."
+git push origin $BRANCH
 
 echo ""
-echo "✅ Push complete! Vercel will auto-deploy from the GitHub main branch."
+echo "✅ Successfully pushed to GitHub!"
 echo ""
-echo "🌐 Monitor deployment at: https://vercel.com/dashboard"
-echo "📚 Repository: https://github.com/pmkshar/3boxesjobportal"
+echo "🌐 Vercel will auto-deploy from the main branch."
+echo "   Monitor at: https://vercel.com/dashboard"
+echo "   Repo: https://github.com/pmkshar/3boxesjobportal"
 echo ""
-echo "Demo Accounts:"
-echo "  Job Seeker: seeker@3boxes.com / demo123"
-echo "  Corporate:  corp@3boxes.com / demo123"
-echo "  Recruiter:  recruiter@3boxes.com / demo123"
+echo "🔑 Demo Accounts (auto-seeded on first visit):"
+echo "   Job Seeker: seeker@3boxes.com / demo123"
+echo "   Corporate:  corp@3boxes.com / demo123"  
+echo "   Recruiter:  recruiter@3boxes.com / demo123"
+echo "   Admin:      admin@3boxes.com / demo123"
