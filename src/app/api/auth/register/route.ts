@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db, ensureSeedData } from '@/lib/db'
-import { hashPassword } from '@/lib/auth'
+import { memoryStore } from '@/lib/memory-store'
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,69 +9,35 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Email, password, name, and role are required' }, { status: 400 })
     }
 
-    // Ensure DB is initialized
-    await ensureSeedData()
-
-    const existingUser = await db.user.findUnique({ where: { email } })
-    if (existingUser) {
-      return NextResponse.json({ error: 'Email already registered' }, { status: 409 })
-    }
-
-    const hashedPassword = hashPassword(password)
-
-    const user = await db.user.create({
-      data: {
-        email,
-        name,
-        password: hashedPassword,
-        role,
-        phone: phone || null,
-        location: location || null,
-        ...(role === 'JOB_SEEKER' && {
-          jobSeekerProfile: {
-            create: {
-              headline: 'Looking for new opportunities',
-            },
-          },
-        }),
-        ...(role === 'CORPORATE' && {
-          corporateProfile: {
-            create: {
-              companyName: companyName || `${name}'s Company`,
-              industry: industry || null,
-              companySize: companySize || null,
-            },
-          },
-        }),
-        ...(role === 'RECRUITER' && {
-          recruiterProfile: {
-            create: {
-              specialization: specialization || null,
-            },
-          },
-        }),
-      },
-      include: {
-        jobSeekerProfile: true,
-        corporateProfile: true,
-        recruiterProfile: true,
-      },
+    const result = await memoryStore.register({
+      email,
+      password,
+      name,
+      role,
+      companyName,
+      industry,
+      companySize,
+      specialization,
+      phone,
+      location,
     })
 
-    return NextResponse.json({
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-        avatar: user.avatar,
-        phone: user.phone,
-        location: user.location,
-      },
-      message: 'Registration successful',
-    }, { status: 201 })
+    if (result.error) {
+      return NextResponse.json({ error: result.error }, { status: result.status || 400 })
+    }
+
+    return NextResponse.json(
+      { user: result.user, message: result.message },
+      { status: result.status || 201 }
+    )
   } catch (error) {
     console.error('Registration error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json(
+      {
+        error: 'Unable to process registration. Please try again.',
+        details: process.env.NODE_ENV === 'development' ? String(error) : undefined,
+      },
+      { status: 500 }
+    )
   }
 }

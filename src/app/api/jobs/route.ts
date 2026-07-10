@@ -1,111 +1,75 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db, ensureSeedData } from '@/lib/db'
+import { memoryStore } from '@/lib/memory-store'
 
 export async function GET(request: NextRequest) {
   try {
-    // Ensure demo data exists for Vercel deployments
-    await ensureSeedData()
-
     const searchParams = request.nextUrl.searchParams
-    const search = searchParams.get('search') || ''
-    const jobType = searchParams.get('jobType') || ''
-    const location = searchParams.get('location') || ''
-    const experienceMin = searchParams.get('experienceMin')
-    const isRemote = searchParams.get('isRemote')
-    const skills = searchParams.get('skills') || ''
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '10')
-
-    const where: any = { status: 'ACTIVE' }
-
-    if (search) {
-      where.OR = [
-        { title: { contains: search } },
-        { description: { contains: search } },
-        { skills: { contains: search } },
-        { location: { contains: search } },
-      ]
-    }
-
-    if (jobType && jobType !== 'all') where.jobType = jobType
-    if (location) where.location = { contains: location }
-    if (isRemote === 'true') where.isRemote = true
-    if (experienceMin) where.experienceMin = { lte: parseInt(experienceMin) }
-    if (skills) {
-      where.skills = { contains: skills }
-    }
-
-    const total = await db.job.count({ where })
-    const jobs = await db.job.findMany({
-      where,
-      include: {
-        corporate: {
-          select: {
-            id: true,
-            companyName: true,
-            companyLogo: true,
-            industry: true,
-            location: true,
-          },
-        },
-      },
-      orderBy: { postedDate: 'desc' },
-      skip: (page - 1) * limit,
-      take: limit,
+    const result = await memoryStore.getJobs({
+      search: searchParams.get('search') || '',
+      jobType: searchParams.get('jobType') || '',
+      location: searchParams.get('location') || '',
+      experienceMin: searchParams.get('experienceMin') || undefined,
+      isRemote: searchParams.get('isRemote') || '',
+      skills: searchParams.get('skills') || '',
+      page: parseInt(searchParams.get('page') || '1'),
+      limit: parseInt(searchParams.get('limit') || '10'),
     })
 
-    return NextResponse.json({
-      jobs,
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    })
+    if (result.error) {
+      return NextResponse.json({ error: result.error }, { status: result.status || 500 })
+    }
+
+    return NextResponse.json(result)
   } catch (error) {
     console.error('Jobs fetch error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to fetch jobs. Please try again.' }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    await ensureSeedData()
     const body = await request.json()
-    const {
-      corporateId, title, description, requirements, responsibilities,
-      salaryMin, salaryMax, jobType, experienceMin, experienceMax,
-      location, isRemote, skills, benefits, openings, closingDate,
-    } = body
+    const { corporateId, title, description } = body
 
     if (!corporateId || !title || !description) {
       return NextResponse.json({ error: 'Corporate ID, title, and description are required' }, { status: 400 })
     }
 
-    const job = await db.job.create({
-      data: {
-        corporateId,
-        title,
-        description,
-        requirements: requirements || null,
-        responsibilities: responsibilities || null,
-        salaryMin: salaryMin || null,
-        salaryMax: salaryMax || null,
-        jobType: jobType || 'full-time',
-        experienceMin: experienceMin || null,
-        experienceMax: experienceMax || null,
-        location: location || null,
-        isRemote: isRemote || false,
-        skills: skills || null,
-        benefits: benefits || null,
-        openings: openings || 1,
-        status: 'ACTIVE',
-        closingDate: closingDate ? new Date(closingDate) : null,
-      },
-    })
+    // Try Prisma first, fallback to memory
+    if (await memoryStore.isDbAvailable()) {
+      try {
+        const { db, ensureSeedData } = await import('@/lib/db')
+        await ensureSeedData()
+        const job = await db.job.create({
+          data: {
+            corporateId,
+            title,
+            description,
+            requirements: body.requirements || null,
+            responsibilities: body.responsibilities || null,
+            salaryMin: body.salaryMin || null,
+            salaryMax: body.salaryMax || null,
+            jobType: body.jobType || 'full-time',
+            experienceMin: body.experienceMin || null,
+            experienceMax: body.experienceMax || null,
+            location: body.location || null,
+            isRemote: body.isRemote || false,
+            skills: body.skills || null,
+            benefits: body.benefits || null,
+            openings: body.openings || 1,
+            status: 'ACTIVE',
+            closingDate: body.closingDate ? new Date(body.closingDate) : null,
+          },
+        })
+        return NextResponse.json({ job, message: 'Job posted successfully' }, { status: 201 })
+      } catch {
+        // Fall through to error
+      }
+    }
 
-    return NextResponse.json({ job, message: 'Job posted successfully' }, { status: 201 })
+    return NextResponse.json({ error: 'Job posting requires an active database connection' }, { status: 503 })
   } catch (error) {
     console.error('Job create error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to create job. Please try again.' }, { status: 500 })
   }
 }

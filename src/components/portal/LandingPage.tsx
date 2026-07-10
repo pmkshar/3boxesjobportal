@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { AuthDialog } from './AuthDialog'
+import { HeroIllustration, JobMatchIllustration, ResumeIllustration, InterviewIllustration, SkillsIllustration, GrowthIllustration, CollabIllustration } from './Illustrations'
 import { useAuthStore } from '@/lib/store'
 import { toast } from 'sonner'
 import {
@@ -118,19 +119,14 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
 
   // Handle search
   const handleSearch = async () => {
-    if (!searchSkill && !searchLocation) {
-      toast.info('Enter a skill or location to search')
-      return
-    }
     setSearching(true)
     setShowSearchResults(true)
     try {
-      const params = new URLSearchParams({
-        search: searchSkill,
-        location: searchLocation,
-        limit: '12',
-        ...(searchExp && { experienceMin: searchExp }),
-      })
+      const params = new URLSearchParams()
+      if (searchSkill) params.set('search', searchSkill)
+      if (searchLocation) params.set('location', searchLocation)
+      params.set('limit', '12')
+      if (searchExp) params.set('experienceMin', searchExp)
       const res = await fetch(`/api/jobs?${params}`)
       if (res.ok) {
         const data = await res.json()
@@ -138,6 +134,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
         if (data.jobs?.length === 0) {
           toast.info('No jobs found. Try different keywords.')
         }
+      } else {
+        toast.error('Search failed. Please try again.')
       }
     } catch {
       toast.error('Search failed. Please try again.')
@@ -312,7 +310,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
             <div className="mt-3 flex flex-wrap gap-2 justify-center">
               {['React', 'Python', 'AWS', 'Data Science', 'DevOps', 'Product Manager'].map(tag => (
                 <button key={tag} className="px-3 py-1 text-sm bg-white/15 text-white/90 rounded-full hover:bg-white/25 transition-colors"
-                  onClick={() => { setSearchSkill(tag); setShowSearchResults(false) }}>
+                  onClick={() => { setSearchSkill(tag); setTimeout(() => handleSearch(), 100) }}>
                   {tag}
                 </button>
               ))}
@@ -337,6 +335,11 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
               </div>
             ))}
           </motion.div>
+        </div>
+
+        {/* Hero Illustration - visible on large screens */}
+        <div className="hidden lg:block absolute right-8 top-1/2 -translate-y-1/2 w-72 opacity-20 pointer-events-none">
+          <HeroIllustration />
         </div>
 
         {/* Curved bottom */}
@@ -723,28 +726,26 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
 
       {/* ===== AI-POWERED FEATURES with infographic icons ===== */}
       <section id="ai-features" className="py-16 bg-white relative overflow-hidden">
-        {/* Background illustration */}
-        <div className="absolute right-0 top-0 w-64 opacity-10 pointer-events-none hidden lg:block">
-          <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="150" cy="150" r="120" stroke="#16a34a" strokeWidth="2" strokeDasharray="8 4" />
-            <circle cx="150" cy="150" r="80" stroke="#16a34a" strokeWidth="1.5" strokeDasharray="4 4" />
-            <path d="M150 30L150 70" stroke="#16a34a" strokeWidth="2" />
-            <path d="M150 230L150 270" stroke="#16a34a" strokeWidth="2" />
-            <path d="M30 150L70 150" stroke="#16a34a" strokeWidth="2" />
-            <path d="M230 150L270 150" stroke="#16a34a" strokeWidth="2" />
-            <circle cx="150" cy="30" r="8" fill="#16a34a" opacity="0.3" />
-            <circle cx="150" cy="270" r="8" fill="#16a34a" opacity="0.3" />
-            <circle cx="30" cy="150" r="8" fill="#16a34a" opacity="0.3" />
-            <circle cx="270" cy="150" r="8" fill="#16a34a" opacity="0.3" />
-            <text x="145" y="155" fontSize="20" fill="#16a34a" opacity="0.4" fontFamily="monospace">AI</text>
-          </svg>
-        </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <Badge className="bg-green-100 text-green-800 mb-3 text-sm px-4 py-1 border border-green-200">AI-Powered</Badge>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">What Makes 3 Boxes Jobs Different</h2>
             <p className="text-gray-500 mt-3 max-w-2xl mx-auto text-sm sm:text-base">Our AI doesn&apos;t just help you find jobs — it actively builds your career with smart skill updates, interview training, and personalized insights.</p>
           </div>
+
+          {/* Top row with illustrations */}
+          <div className="grid md:grid-cols-3 gap-8 mb-8 items-center">
+            <div className="hidden md:flex justify-center">
+              <ResumeIllustration className="w-48" />
+            </div>
+            <div className="hidden md:flex justify-center">
+              <JobMatchIllustration className="w-48" />
+            </div>
+            <div className="hidden md:flex justify-center">
+              <InterviewIllustration className="w-48" />
+            </div>
+          </div>
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {aiFeatures.map((feature, i) => (
               <motion.div
@@ -782,6 +783,14 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
           <div className="relative max-w-5xl mx-auto">
             {/* Central timeline line */}
             <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-green-200 via-green-400 to-green-600 rounded-full" />
+
+            {/* Illustrations on the side */}
+            <div className="hidden lg:flex absolute -left-48 top-10 opacity-40">
+              <SkillsIllustration className="w-40" />
+            </div>
+            <div className="hidden lg:flex absolute -right-48 bottom-10 opacity-40">
+              <GrowthIllustration className="w-40" />
+            </div>
 
             <div className="space-y-8 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-12 md:gap-y-8">
               {[
@@ -952,6 +961,9 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
           <div className="text-center mb-10">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">What Our Users Say</h2>
             <p className="text-gray-500 mt-2 text-sm">Trusted by 50,000+ professionals across India</p>
+          </div>
+          <div className="hidden md:flex justify-center mb-8">
+            <CollabIllustration className="w-64" />
           </div>
           <div className="grid md:grid-cols-3 gap-5">
             {testimonials.map((t, i) => (

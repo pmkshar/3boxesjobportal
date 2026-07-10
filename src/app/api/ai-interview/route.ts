@@ -1,89 +1,93 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db, ensureSeedData } from '@/lib/db'
 
 // AI Interview: Generate questions based on job role and difficulty
 export async function POST(request: NextRequest) {
   try {
-    await ensureSeedData()
     const { userId, jobRole, industry, difficulty } = await request.json()
+    if (!userId || !jobRole) return NextResponse.json({ error: 'User ID and job role are required' }, { status: 400 })
 
-    if (!userId || !jobRole) {
-      return NextResponse.json({ error: 'User ID and job role are required' }, { status: 400 })
-    }
-
-    // Generate AI interview questions based on role
     const questions = generateInterviewQuestions(jobRole, industry, difficulty || 'intermediate')
 
-    const session = await db.aiInterviewSession.create({
-      data: {
-        userId,
-        jobRole,
-        industry: industry || null,
-        difficulty: difficulty || 'intermediate',
-        questions: JSON.stringify(questions),
-        responses: JSON.stringify([]),
-        scores: JSON.stringify({}),
-      },
-    })
+    // Try Prisma first if available
+    try {
+      const { memoryStore } = await import('@/lib/memory-store')
+      if (await memoryStore.isDbAvailable()) {
+        const { db, ensureSeedData } = await import('@/lib/db')
+        await ensureSeedData()
+        const session = await db.aiInterviewSession.create({
+          data: {
+            userId, jobRole,
+            industry: industry || null,
+            difficulty: difficulty || 'intermediate',
+            questions: JSON.stringify(questions),
+            responses: JSON.stringify([]),
+            scores: JSON.stringify({}),
+          },
+        })
+        return NextResponse.json({ session, questions }, { status: 201 })
+      }
+    } catch {
+      // Fall through
+    }
 
-    return NextResponse.json({ session, questions }, { status: 201 })
+    // Demo mode
+    return NextResponse.json({
+      session: { id: 'demo-session-001', userId, jobRole, difficulty: difficulty || 'intermediate', createdAt: new Date().toISOString() },
+      questions,
+    }, { status: 201 })
   } catch (error) {
     console.error('AI Interview create error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to create interview session. Please try again.' }, { status: 500 })
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
     const { sessionId, responses, overallScore, communicationScore, technicalScore, confidenceScore, aiFeedback, duration } = await request.json()
-
     if (!sessionId) return NextResponse.json({ error: 'Session ID required' }, { status: 400 })
 
-    // Calculate scores based on responses
     const calculatedScores = calculateInterviewScores(responses)
 
-    const session = await db.aiInterviewSession.update({
-      where: { id: sessionId },
-      data: {
-        responses: JSON.stringify(responses),
-        overallScore: overallScore || calculatedScores.overall,
-        communicationScore: communicationScore || calculatedScores.communication,
-        technicalScore: technicalScore || calculatedScores.technical,
-        confidenceScore: confidenceScore || calculatedScores.confidence,
-        aiFeedback: aiFeedback || calculatedScores.feedback,
-        duration: duration || null,
-        completedAt: new Date(),
-      },
-    })
-
-    // Update skill assessment based on interview
-    const userId = session.userId
-    if (session.overallScore && session.overallScore > 60) {
-      await db.skillAssessment.create({
-        data: {
-          userId,
-          skillName: session.jobRole,
-          level: session.overallScore,
-          source: 'ai_assessment',
-          evidence: JSON.stringify({ sessionId: session.id, scores: calculatedScores }),
-        },
-      })
+    // Try Prisma first if available
+    try {
+      const { memoryStore } = await import('@/lib/memory-store')
+      if (await memoryStore.isDbAvailable()) {
+        const { db } = await import('@/lib/db')
+        const session = await db.aiInterviewSession.update({
+          where: { id: sessionId },
+          data: {
+            responses: JSON.stringify(responses),
+            overallScore: overallScore || calculatedScores.overall,
+            communicationScore: communicationScore || calculatedScores.communication,
+            technicalScore: technicalScore || calculatedScores.technical,
+            confidenceScore: confidenceScore || calculatedScores.confidence,
+            aiFeedback: aiFeedback || calculatedScores.feedback,
+            duration: duration || null,
+            completedAt: new Date(),
+          },
+        })
+        // Update skill assessment (best effort)
+        try {
+          if (session.overallScore && session.overallScore > 60) {
+            await db.skillAssessment.create({ data: { userId: session.userId, skillName: session.jobRole, level: session.overallScore, source: 'ai_assessment', evidence: JSON.stringify({ sessionId, scores: calculatedScores }) } })
+          }
+          await db.analyticsEvent.create({ data: { userId: session.userId, eventType: 'interview_completed', category: 'ai_interview', metadata: JSON.stringify({ sessionId, overallScore: session.overallScore, jobRole: session.jobRole }) } })
+        } catch { /* non-critical */ }
+        return NextResponse.json({ session, scores: calculatedScores, message: 'Interview session completed' })
+      }
+    } catch {
+      // Fall through
     }
 
-    // Track analytics
-    await db.analyticsEvent.create({
-      data: {
-        userId,
-        eventType: 'interview_completed',
-        category: 'ai_interview',
-        metadata: JSON.stringify({ sessionId, overallScore: session.overallScore, jobRole: session.jobRole }),
-      },
+    // Demo mode
+    return NextResponse.json({
+      session: { id: sessionId, overallScore: calculatedScores.overall, communicationScore: calculatedScores.communication, technicalScore: calculatedScores.technical, confidenceScore: calculatedScores.confidence, completedAt: new Date().toISOString() },
+      scores: calculatedScores,
+      message: 'Interview session completed (demo mode)',
     })
-
-    return NextResponse.json({ session, scores: calculatedScores, message: 'Interview session completed' })
   } catch (error) {
     console.error('AI Interview update error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to update interview session. Please try again.' }, { status: 500 })
   }
 }
 
@@ -92,24 +96,34 @@ export async function GET(request: NextRequest) {
     const userId = request.nextUrl.searchParams.get('userId')
     const sessionId = request.nextUrl.searchParams.get('sessionId')
 
-    if (sessionId) {
-      const session = await db.aiInterviewSession.findUnique({ where: { id: sessionId } })
-      if (!session) return NextResponse.json({ error: 'Session not found' }, { status: 404 })
-      return NextResponse.json({ session })
+    // Try Prisma first if available
+    try {
+      const { memoryStore } = await import('@/lib/memory-store')
+      if (await memoryStore.isDbAvailable()) {
+        const { db, ensureSeedData } = await import('@/lib/db')
+        await ensureSeedData()
+
+        if (sessionId) {
+          const session = await db.aiInterviewSession.findUnique({ where: { id: sessionId } })
+          if (!session) return NextResponse.json({ error: 'Session not found' }, { status: 404 })
+          return NextResponse.json({ session })
+        }
+
+        if (!userId) return NextResponse.json({ error: 'User ID or Session ID required' }, { status: 400 })
+
+        const sessions = await db.aiInterviewSession.findMany({ where: { userId }, orderBy: { createdAt: 'desc' }, take: 20 })
+        return NextResponse.json({ sessions })
+      }
+    } catch {
+      // Fall through
     }
 
-    if (!userId) return NextResponse.json({ error: 'User ID or Session ID required' }, { status: 400 })
-
-    const sessions = await db.aiInterviewSession.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-      take: 20,
-    })
-
-    return NextResponse.json({ sessions })
+    // Demo mode
+    if (sessionId) return NextResponse.json({ error: 'Session not found' }, { status: 404 })
+    return NextResponse.json({ sessions: [] })
   } catch (error) {
     console.error('AI Interview fetch error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to fetch interview sessions. Please try again.' }, { status: 500 })
   }
 }
 
@@ -177,19 +191,11 @@ function generateInterviewQuestions(jobRole: string, industry?: string, difficul
   const count = difficulty === 'beginner' ? 5 : difficulty === 'advanced' ? 10 : 7
 
   const selected = roleSpecific.slice(0, count - 2).map((q, i) => ({
-    id: i + 1,
-    question: q,
-    type: 'role_specific',
-    category: 'technical',
-    timeLimit: 120,
+    id: i + 1, question: q, type: 'role_specific', category: 'technical', timeLimit: 120,
   }))
 
   const general = generalQuestions.slice(0, 2).map((q, i) => ({
-    id: count - 1 + i,
-    question: q,
-    type: 'general',
-    category: 'behavioral',
-    timeLimit: 90,
+    id: count - 1 + i, question: q, type: 'general', category: 'behavioral', timeLimit: 90,
   }))
 
   return [...selected, ...general]
@@ -200,7 +206,6 @@ function calculateInterviewScores(responses: any[]) {
     return { overall: 0, communication: 0, technical: 0, confidence: 0, feedback: 'No responses recorded.' }
   }
 
-  // Simulate AI scoring based on response length and content keywords
   let communicationTotal = 0
   let technicalTotal = 0
   let confidenceTotal = 0
@@ -208,18 +213,12 @@ function calculateInterviewScores(responses: any[]) {
   responses.forEach((response) => {
     const text = response.text || ''
     const wordCount = text.split(/\s+/).length
-
-    // Communication score: based on response length and structure
     const commScore = Math.min(100, Math.max(20, wordCount > 30 ? 70 + (wordCount / 10) : wordCount * 2))
     communicationTotal += commScore
-
-    // Technical score: check for technical keywords
     const techKeywords = ['algorithm', 'system', 'design', 'architecture', 'database', 'api', 'framework', 'testing', 'deploy', 'optimize', 'scalable', 'performance', 'security', 'data', 'model']
     const techMatches = techKeywords.filter(k => text.toLowerCase().includes(k)).length
     const techScore = Math.min(100, Math.max(25, 40 + techMatches * 12))
     technicalTotal += techScore
-
-    // Confidence score: based on assertive language
     const confidentWords = ['achieved', 'led', 'implemented', 'delivered', 'improved', 'designed', 'built', 'managed', 'created', 'solved']
     const confidentMatches = confidentWords.filter(w => text.toLowerCase().includes(w)).length
     const confScore = Math.min(100, Math.max(25, 40 + confidentMatches * 10))
@@ -233,10 +232,10 @@ function calculateInterviewScores(responses: any[]) {
   const overall = Math.round((communication * 0.3 + technical * 0.4 + confidence * 0.3))
 
   let feedback = ''
-  if (overall >= 80) feedback = 'Excellent performance! You demonstrated strong technical knowledge and communication skills. Continue honing your expertise in your areas of strength.'
-  else if (overall >= 60) feedback = 'Good performance with room for improvement. Focus on adding more specific examples and technical depth to your responses. Practice structured storytelling using the STAR method.'
-  else if (overall >= 40) feedback = 'Fair performance. Work on providing more detailed responses with concrete examples. Consider practicing common interview questions and developing structured answers.'
-  else feedback = 'Needs significant improvement. Practice articulating your thoughts more clearly. Prepare specific examples from your experience and focus on structured communication.'
+  if (overall >= 80) feedback = 'Excellent performance! You demonstrated strong technical knowledge and communication skills.'
+  else if (overall >= 60) feedback = 'Good performance with room for improvement. Focus on adding more specific examples and technical depth.'
+  else if (overall >= 40) feedback = 'Fair performance. Work on providing more detailed responses with concrete examples.'
+  else feedback = 'Needs significant improvement. Practice articulating your thoughts more clearly and prepare specific examples.'
 
   return { overall, communication, technical, confidence, feedback }
 }
