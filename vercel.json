@@ -1,0 +1,9 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "bun run build",
+  "installCommand": "bun install",
+  "devCommand": "bun run dev",
+  "env": {
+    "DATABASE_URL": "file:./db/custom.db"
+  }
+}
