@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { db, ensureSeedData } from '@/lib/db'
 
 export async function GET(request: NextRequest) {
   try {
+    // Ensure demo data exists for Vercel deployments
+    await ensureSeedData()
+
     const searchParams = request.nextUrl.searchParams
     const search = searchParams.get('search') || ''
     const jobType = searchParams.get('jobType') || ''
@@ -24,7 +27,7 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    if (jobType) where.jobType = jobType
+    if (jobType && jobType !== 'all') where.jobType = jobType
     if (location) where.location = { contains: location }
     if (isRemote === 'true') where.isRemote = true
     if (experienceMin) where.experienceMin = { lte: parseInt(experienceMin) }
@@ -66,6 +69,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    await ensureSeedData()
     const body = await request.json()
     const {
       corporateId, title, description, requirements, responsibilities,

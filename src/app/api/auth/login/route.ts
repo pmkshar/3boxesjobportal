@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { db, ensureSeedData } from '@/lib/db'
 import { hashPassword, verifyPassword, generateToken } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
@@ -9,6 +9,9 @@ export async function POST(request: NextRequest) {
     if (!email || !password) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 })
     }
+
+    // Ensure demo data exists (critical for Vercel where DB is ephemeral)
+    await ensureSeedData()
 
     const user = await db.user.findUnique({ where: { email } })
 
@@ -39,19 +42,23 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Login error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error', details: process.env.NODE_ENV === 'development' ? String(error) : undefined }, { status: 500 })
   }
 }
 
 async function getProfileByRole(user: any) {
-  switch (user.role) {
-    case 'JOB_SEEKER':
-      return await db.jobSeekerProfile.findUnique({ where: { userId: user.id } })
-    case 'CORPORATE':
-      return await db.corporateProfile.findUnique({ where: { userId: user.id } })
-    case 'RECRUITER':
-      return await db.recruiterProfile.findUnique({ where: { userId: user.id } })
-    default:
-      return null
+  try {
+    switch (user.role) {
+      case 'JOB_SEEKER':
+        return await db.jobSeekerProfile.findUnique({ where: { userId: user.id } })
+      case 'CORPORATE':
+        return await db.corporateProfile.findUnique({ where: { userId: user.id } })
+      case 'RECRUITER':
+        return await db.recruiterProfile.findUnique({ where: { userId: user.id } })
+      default:
+        return null
+    }
+  } catch {
+    return null
   }
 }

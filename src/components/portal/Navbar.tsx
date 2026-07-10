@@ -34,7 +34,7 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-[#4A90D9] shadow-md">
+      <nav className="sticky top-0 z-50 bg-[#166534] shadow-md">
         <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ThreeBoxesLogo size={28} />
@@ -50,7 +50,7 @@ export function Navbar() {
               <Button variant="ghost" size="icon" className="relative text-white hover:bg-white/10" onClick={() => {}}>
                 <Bell className="h-4 w-4" />
                 {notifCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#FF8C00] text-white text-[10px] flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#FF8C00] text-white text-[10px] flex items-center justify-center">
                     {notifCount}
                   </span>
                 )}

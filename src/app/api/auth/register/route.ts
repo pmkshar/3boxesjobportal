@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { db, ensureSeedData } from '@/lib/db'
 import { hashPassword } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
@@ -9,6 +9,9 @@ export async function POST(request: NextRequest) {
     if (!email || !password || !name || !role) {
       return NextResponse.json({ error: 'Email, password, name, and role are required' }, { status: 400 })
     }
+
+    // Ensure DB is initialized
+    await ensureSeedData()
 
     const existingUser = await db.user.findUnique({ where: { email } })
     if (existingUser) {

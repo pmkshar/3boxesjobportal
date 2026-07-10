@@ -133,8 +133,8 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
       <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
-            <div className="w-8 h-8 rounded-lg bg-[#4A90D9]/10 flex items-center justify-center">
-              <Briefcase className="h-4 w-4 text-[#4A90D9]" />
+            <div className="w-8 h-8 rounded-lg bg-[#16a34a]/10 flex items-center justify-center">
+              <Briefcase className="h-4 w-4 text-[#16a34a]" />
             </div>
             3 Boxes Jobs
           </DialogTitle>
@@ -167,24 +167,24 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
               </div>
             </div>
 
-            <Button className="w-full bg-[#4A90D9] hover:bg-[#3A7BC8]" onClick={handleLogin} disabled={loading}>
+            <Button className="w-full bg-[#16a34a] hover:bg-[#15803d]" onClick={handleLogin} disabled={loading}>
               {loading ? 'Signing in...' : 'Sign In'} <ChevronRight className="ml-1 h-4 w-4" />
             </Button>
 
-            <div className="bg-[#4A90D9]/5 rounded-lg p-3 text-sm">
-              <p className="font-medium text-[#4A90D9] mb-2">Quick Demo Access:</p>
+            <div className="bg-[#16a34a]/5 rounded-lg p-3 text-sm">
+              <p className="font-medium text-[#16a34a] mb-2">Quick Demo Access:</p>
               <div className="space-y-1.5">
-                <button onClick={() => fillDemo('JOB_SEEKER')} className="flex items-center gap-2 text-[#4A90D9] hover:text-[#2C6AB5] w-full text-left">
+                <button onClick={() => fillDemo('JOB_SEEKER')} className="flex items-center gap-2 text-[#16a34a] hover:text-[#15803d] w-full text-left">
                   <Users className="h-3.5 w-3.5" /> Job Seeker: seeker@3boxes.com
                 </button>
-                <button onClick={() => fillDemo('CORPORATE')} className="flex items-center gap-2 text-[#4A90D9] hover:text-[#2C6AB5] w-full text-left">
+                <button onClick={() => fillDemo('CORPORATE')} className="flex items-center gap-2 text-[#16a34a] hover:text-[#15803d] w-full text-left">
                   <Building2 className="h-3.5 w-3.5" /> Corporate: corp@3boxes.com
                 </button>
-                <button onClick={() => fillDemo('RECRUITER')} className="flex items-center gap-2 text-[#4A90D9] hover:text-[#2C6AB5] w-full text-left">
+                <button onClick={() => fillDemo('RECRUITER')} className="flex items-center gap-2 text-[#16a34a] hover:text-[#15803d] w-full text-left">
                   <UserCheck className="h-3.5 w-3.5" /> Recruiter: recruiter@3boxes.com
                 </button>
               </div>
-              <p className="text-[#4A90D9]/70 mt-1">Password: demo123</p>
+              <p className="text-[#16a34a]/70 mt-1">Password: demo123</p>
             </div>
           </TabsContent>
 
@@ -194,11 +194,11 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
               <div className="grid grid-cols-3 gap-2">
                 {roles.map((role) => (
                   <Card key={role.value}
-                    className={`cursor-pointer transition-all ${selectedRole === role.value ? `border-[#4A90D9] bg-[#4A90D9]/5 ring-1 ring-[#4A90D9]` : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`cursor-pointer transition-all ${selectedRole === role.value ? `border-[#16a34a] bg-[#16a34a]/5 ring-1 ring-[#16a34a]` : 'border-gray-200 hover:border-gray-300'}`}
                     onClick={() => setSelectedRole(role.value)}>
                     <CardContent className="p-3 text-center">
-                      <role.icon className={`h-6 w-6 mx-auto mb-1 ${selectedRole === role.value ? 'text-[#4A90D9]' : 'text-gray-400'}`} />
-                      <div className={`text-xs font-medium ${selectedRole === role.value ? 'text-[#4A90D9]' : 'text-gray-600'}`}>
+                      <role.icon className={`h-6 w-6 mx-auto mb-1 ${selectedRole === role.value ? 'text-[#16a34a]' : 'text-gray-400'}`} />
+                      <div className={`text-xs font-medium ${selectedRole === role.value ? 'text-[#16a34a]' : 'text-gray-600'}`}>
                         {role.label}
                       </div>
                     </CardContent>
@@ -292,7 +292,7 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
               )}
             </div>
 
-            <Button className="w-full bg-[#4A90D9] hover:bg-[#3A7BC8]" onClick={handleRegister} disabled={loading}>
+            <Button className="w-full bg-[#16a34a] hover:bg-[#15803d]" onClick={handleRegister} disabled={loading}>
               {loading ? 'Creating account...' : 'Create Account'} <ChevronRight className="ml-1 h-4 w-4" />
             </Button>
           </TabsContent>

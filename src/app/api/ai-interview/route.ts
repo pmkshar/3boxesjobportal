@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { db, ensureSeedData } from '@/lib/db'
 
 // AI Interview: Generate questions based on job role and difficulty
 export async function POST(request: NextRequest) {
   try {
+    await ensureSeedData()
     const { userId, jobRole, industry, difficulty } = await request.json()
 
     if (!userId || !jobRole) {

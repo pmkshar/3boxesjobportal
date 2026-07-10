@@ -1,19 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Separator } from '@/components/ui/separator'
 import { AuthDialog } from './AuthDialog'
+import { useAuthStore } from '@/lib/store'
+import { toast } from 'sonner'
 import {
   Briefcase, Brain, FileText, Users, BarChart3, GraduationCap,
   ArrowRight, Star, ChevronRight, Sparkles, Zap, Target, Award,
   CheckCircle2, MapPin, Search, Building2, TrendingUp, Laptop,
   Heart, Shield, Clock, BookOpen, Code, PieChart, UserCheck,
   IndianRupee, Globe, ChevronDown, Layers, Box, Trophy, Rocket,
-  PenTool, MessageSquare, Cpu, Lightbulb, Handshake
+  PenTool, MessageSquare, Cpu, Lightbulb, Handshake, Wifi, X
 } from 'lucide-react'
 
 // Company Green Color Palette
@@ -31,15 +35,15 @@ const CG = {
   dark: '#0d3320',
 }
 
-const jobCategories = [
-  { icon: Code, label: 'IT & Software', count: '5,200+', color: 'bg-green-50 text-green-700 border-green-200' },
-  { icon: Briefcase, label: 'Banking & Finance', count: '3,100+', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  { icon: Heart, label: 'Healthcare', count: '2,400+', color: 'bg-teal-50 text-teal-700 border-teal-200' },
-  { icon: GraduationCap, label: 'Education', count: '1,800+', color: 'bg-lime-50 text-lime-700 border-lime-200' },
-  { icon: Laptop, label: 'Marketing', count: '1,500+', color: 'bg-green-50 text-green-700 border-green-200' },
-  { icon: Building2, label: 'Manufacturing', count: '1,200+', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-  { icon: Globe, label: 'BPO & Call Centre', count: '900+', color: 'bg-teal-50 text-teal-700 border-teal-200' },
-  { icon: TrendingUp, label: 'Sales', count: '2,700+', color: 'bg-lime-50 text-lime-700 border-lime-200' },
+const jobCategoriesConfig = [
+  { icon: Code, label: 'IT & Software', keywords: ['React', 'Node', 'Python', 'TypeScript', 'AWS', 'Docker', 'Software', 'Developer', 'Engineer'], color: 'bg-green-50 text-green-700 border-green-200' },
+  { icon: Briefcase, label: 'Banking & Finance', keywords: ['Finance', 'Banking', 'Account'], color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  { icon: Heart, label: 'Healthcare', keywords: ['Health', 'Medical', 'Pharma'], color: 'bg-teal-50 text-teal-700 border-teal-200' },
+  { icon: GraduationCap, label: 'Education', keywords: ['Education', 'Teaching', 'Training'], color: 'bg-lime-50 text-lime-700 border-lime-200' },
+  { icon: Laptop, label: 'Marketing', keywords: ['Marketing', 'SEO', 'Content', 'Digital'], color: 'bg-green-50 text-green-700 border-green-200' },
+  { icon: Building2, label: 'Manufacturing', keywords: ['Manufacturing', 'Production', 'Supply'], color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  { icon: Globe, label: 'BPO & Call Centre', keywords: ['BPO', 'Call Centre', 'Support'], color: 'bg-teal-50 text-teal-700 border-teal-200' },
+  { icon: TrendingUp, label: 'Sales', keywords: ['Sales', 'Business Development'], color: 'bg-lime-50 text-lime-700 border-lime-200' },
 ]
 
 const topCompanies = [
@@ -55,12 +59,7 @@ const topCompanies = [
   { name: 'HDFC Bank', logo: 'HDF' },
 ]
 
-const featuredJobs = [
-  { title: 'Senior React Developer', company: 'Priya Technologies', location: 'Bangalore', salary: '12-20 LPA', tags: ['React', 'TypeScript', 'Remote'], posted: '2 hours ago' },
-  { title: 'Data Scientist - AI/ML', company: 'TechCorp India', location: 'Hyderabad', salary: '15-25 LPA', tags: ['Python', 'TensorFlow', 'NLP'], posted: '5 hours ago' },
-  { title: 'DevOps Engineer', company: 'CloudScale Inc', location: 'Pune', salary: '10-18 LPA', tags: ['AWS', 'Docker', 'Kubernetes'], posted: '1 day ago' },
-  { title: 'Product Manager - SaaS', company: 'InnoSoft Solutions', location: 'Mumbai', salary: '18-30 LPA', tags: ['Product Strategy', 'Agile', 'SaaS'], posted: '1 day ago' },
-]
+const featuredJobs: any[] = [] // Will be populated from API
 
 const aiFeatures = [
   { icon: FileText, title: 'AI Resume Builder', desc: 'Auto-generate and enhance your resume with AI. Skills auto-update when you complete training courses.' },
@@ -83,9 +82,86 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
   const [searchSkill, setSearchSkill] = useState('')
   const [searchLocation, setSearchLocation] = useState('')
   const [searchExp, setSearchExp] = useState('')
+  const [jobs, setJobs] = useState<any[]>([])
+  const [searchResults, setSearchResults] = useState<any[]>([])
+  const [showSearchResults, setShowSearchResults] = useState(false)
+  const [searching, setSearching] = useState(false)
+  const [selectedJob, setSelectedJob] = useState<any>(null)
+  const [courses, setCourses] = useState<any[]>([])
+  const { user, isAuthenticated } = useAuthStore()
 
   const openRegister = () => { setAuthTab('register'); setAuthOpen(true) }
   const openLogin = () => { setAuthTab('login'); setAuthOpen(true) }
+
+  // Fetch featured jobs and courses on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [jobsRes, coursesRes] = await Promise.all([
+          fetch('/api/jobs?limit=8'),
+          fetch('/api/training?limit=4'),
+        ])
+        if (jobsRes.ok) {
+          const data = await jobsRes.json()
+          setJobs(data.jobs || [])
+        }
+        if (coursesRes.ok) {
+          const data = await coursesRes.json()
+          setCourses(data.courses || [])
+        }
+      } catch (e) {
+        console.error('Fetch error:', e)
+      }
+    }
+    fetchData()
+  }, [])
+
+  // Handle search
+  const handleSearch = async () => {
+    if (!searchSkill && !searchLocation) {
+      toast.info('Enter a skill or location to search')
+      return
+    }
+    setSearching(true)
+    setShowSearchResults(true)
+    try {
+      const params = new URLSearchParams({
+        search: searchSkill,
+        location: searchLocation,
+        limit: '12',
+        ...(searchExp && { experienceMin: searchExp }),
+      })
+      const res = await fetch(`/api/jobs?${params}`)
+      if (res.ok) {
+        const data = await res.json()
+        setSearchResults(data.jobs || [])
+        if (data.jobs?.length === 0) {
+          toast.info('No jobs found. Try different keywords.')
+        }
+      }
+    } catch {
+      toast.error('Search failed. Please try again.')
+    } finally {
+      setSearching(false)
+    }
+  }
+
+  const formatSalary = (min?: number, max?: number) => {
+    if (!min && !max) return 'Not disclosed'
+    const fmt = (n: number) => n >= 100000 ? `${(n / 100000).toFixed(0)}L` : `${(n / 1000).toFixed(0)}K`
+    if (min && max) return `₹${fmt(min)} - ₹${fmt(max)} PA`
+    return min ? `₹${fmt(min)}+ PA` : `Up to ₹${fmt(max!)} PA`
+  }
+
+  const timeAgo = (dateStr: string) => {
+    const diff = Date.now() - new Date(dateStr).getTime()
+    const hours = Math.floor(diff / 3600000)
+    if (hours < 1) return 'Just now'
+    if (hours < 24) return `${hours}h ago`
+    const days = Math.floor(hours / 24)
+    if (days < 7) return `${days}d ago`
+    return new Date(dateStr).toLocaleDateString()
+  }
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
@@ -137,6 +213,32 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
         </div>
 
+        {/* Hero illustration - person working on laptop */}
+        <div className="absolute right-0 bottom-0 w-80 lg:w-[420px] opacity-20 lg:opacity-30 pointer-events-none hidden md:block">
+          <svg viewBox="0 0 420 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="300" cy="120" r="60" stroke="white" strokeWidth="2" opacity="0.3" />
+            <circle cx="300" cy="120" r="30" fill="white" opacity="0.1" />
+            <rect x="180" y="200" width="160" height="100" rx="10" stroke="white" strokeWidth="2" opacity="0.3" />
+            <rect x="200" y="220" width="120" height="10" rx="5" fill="white" opacity="0.15" />
+            <rect x="200" y="240" width="80" height="10" rx="5" fill="white" opacity="0.1" />
+            <rect x="200" y="260" width="100" height="10" rx="5" fill="white" opacity="0.1" />
+            <path d="M260 160C260 160 280 200 280 200L340 200C340 200 320 160 260 160Z" fill="white" opacity="0.15" />
+            <circle cx="100" cy="280" r="40" stroke="white" strokeWidth="1.5" opacity="0.2" />
+            <path d="M80 280L100 260L120 280" stroke="white" strokeWidth="1.5" opacity="0.2" />
+            <path d="M70 300L100 310L130 300" stroke="white" strokeWidth="1.5" opacity="0.15" />
+            <rect x="40" y="320" width="50" height="6" rx="3" fill="white" opacity="0.1" />
+            <rect x="110" y="320" width="50" height="6" rx="3" fill="white" opacity="0.1" />
+            {/* Floating documents */}
+            <rect x="50" y="100" width="60" height="80" rx="5" stroke="white" strokeWidth="1.5" opacity="0.2" transform="rotate(-10 80 140)" />
+            <line x1="60" y1="120" x2="100" y2="120" stroke="white" strokeWidth="1" opacity="0.15" />
+            <line x1="60" y1="135" x2="95" y2="135" stroke="white" strokeWidth="1" opacity="0.15" />
+            <line x1="60" y1="150" x2="90" y2="150" stroke="white" strokeWidth="1" opacity="0.15" />
+            {/* Checkmark */}
+            <circle cx="370" cy="250" r="20" stroke="white" strokeWidth="2" opacity="0.2" />
+            <path d="M362 250L368 256L378 244" stroke="white" strokeWidth="2" opacity="0.25" />
+          </svg>
+        </div>
+
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-14">
           <div className="text-center max-w-3xl mx-auto mb-8">
             <motion.div
@@ -178,6 +280,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                     placeholder="Skills, Designations, Companies"
                     value={searchSkill}
                     onChange={(e) => setSearchSkill(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                     className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
                   />
                 </div>
@@ -187,6 +290,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                     placeholder="Location (City, State)"
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                     className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
                   />
                 </div>
@@ -200,14 +304,15 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                   />
                 </div>
                 <Button className="h-12 px-8 bg-[#16a34a] hover:bg-[#15803d] text-white font-semibold text-base rounded-xl whitespace-nowrap shadow-md"
-                  onClick={openRegister}>
-                  <Search className="h-5 w-5 mr-2" /> Search
+                  onClick={handleSearch}>
+                  <Search className="h-5 w-5 mr-2" /> {searching ? 'Searching...' : 'Search'}
                 </Button>
               </div>
             </div>
             <div className="mt-3 flex flex-wrap gap-2 justify-center">
               {['React', 'Python', 'AWS', 'Data Science', 'DevOps', 'Product Manager'].map(tag => (
-                <button key={tag} className="px-3 py-1 text-sm bg-white/15 text-white/90 rounded-full hover:bg-white/25 transition-colors">
+                <button key={tag} className="px-3 py-1 text-sm bg-white/15 text-white/90 rounded-full hover:bg-white/25 transition-colors"
+                  onClick={() => { setSearchSkill(tag); setShowSearchResults(false) }}>
                   {tag}
                 </button>
               ))}
@@ -369,73 +474,225 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
             </Button>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {jobCategories.map((cat, i) => (
-              <motion.div
-                key={cat.label}
-                initial={{ y: 15, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: i * 0.05 }} viewport={{ once: true }}
-              >
-                <Card className={`cursor-pointer hover:shadow-md transition-all border ${cat.color} group`}>
-                  <CardContent className="p-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
-                      <cat.icon className="h-5 w-5 text-[#16a34a]" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="font-semibold text-sm text-gray-900 truncate">{cat.label}</p>
-                      <p className="text-xs text-gray-500">{cat.count} jobs</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            {jobCategoriesConfig.map((cat, i) => {
+              const count = jobs.filter(j => 
+                cat.keywords.some(k => 
+                  (j.title + ' ' + (j.skills || '')).toLowerCase().includes(k.toLowerCase())
+                )
+              ).length
+              return (
+                <motion.div
+                  key={cat.label}
+                  initial={{ y: 15, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ delay: i * 0.05 }} viewport={{ once: true }}
+                >
+                  <Card className={`cursor-pointer hover:shadow-md transition-all border ${cat.color} group`}
+                    onClick={() => { setSearchSkill(cat.keywords[0]); handleSearch() }}>
+                    <CardContent className="p-4 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                        <cat.icon className="h-5 w-5 text-[#16a34a]" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-semibold text-sm text-gray-900 truncate">{cat.label}</p>
+                        <p className="text-xs text-gray-500">{count > 0 ? count : 'Many'} jobs</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )
+            })}
           </div>
         </div>
       </section>
 
-      {/* ===== FEATURED JOBS ===== */}
-      <section className="py-12 bg-white">
+      {/* ===== SEARCH RESULTS (shown after search) ===== */}
+      {showSearchResults && (
+        <section className="py-12 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">
+                Search Results {searchResults.length > 0 && <span className="text-[#16a34a]">({searchResults.length})</span>}
+              </h2>
+              <Button variant="ghost" className="text-gray-500 text-sm" onClick={() => setShowSearchResults(false)}>
+                <X className="h-4 w-4 mr-1" /> Clear
+              </Button>
+            </div>
+            {searching ? (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <Card key={i} className="animate-pulse"><CardContent className="p-5"><div className="h-32 bg-gray-200 rounded" /></CardContent></Card>
+                ))}
+              </div>
+            ) : searchResults.length === 0 ? (
+              <div className="text-center py-16 text-gray-500">
+                <Briefcase className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+                <p className="text-lg font-medium">No jobs found</p>
+                <p className="text-sm">Try different keywords or location</p>
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {searchResults.map((job: any, i: number) => (
+                  <motion.div key={job.id} initial={{ y: 15, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: i * 0.05 }}>
+                    <Card className="hover:shadow-lg transition-all cursor-pointer border-gray-200 h-full group" onClick={() => setSelectedJob(job)}>
+                      <CardContent className="p-5">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-bold text-gray-900 text-base group-hover:text-[#16a34a] transition-colors">{job.title}</h3>
+                            <p className="text-sm text-gray-600 mt-0.5">{job.corporate?.companyName}</p>
+                            <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-500">
+                              <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.location || 'Remote'}</span>
+                              <span className="flex items-center gap-1"><IndianRupee className="h-3 w-3" /> {formatSalary(job.salaryMin, job.salaryMax)}</span>
+                              <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {timeAgo(job.postedDate)}</span>
+                            </div>
+                          </div>
+                          <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0 group-hover:bg-green-100 transition-colors">
+                            <Building2 className="h-6 w-6 text-[#16a34a]" />
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5 mt-3">
+                          {job.skills?.split(',').slice(0, 4).map((s: string) => (
+                            <Badge key={s.trim()} variant="secondary" className="text-xs bg-green-50 text-green-700 hover:bg-green-100 border border-green-100">{s.trim()}</Badge>
+                          ))}
+                          {job.skills?.split(',').length > 4 && (
+                            <Badge variant="secondary" className="text-xs bg-gray-50 text-gray-500">+{job.skills.split(',').length - 4}</Badge>
+                          )}
+                        </div>
+                        {job.isRemote && <Badge className="mt-2 bg-teal-50 text-teal-700 border-teal-100">Remote Friendly</Badge>}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* ===== FEATURED JOBS (dynamic from API) ===== */}
+      <section id="jobs" className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">Featured Jobs</h2>
-            <Button variant="ghost" className="text-[#16a34a] text-sm font-semibold">
+            <Button variant="ghost" className="text-[#16a34a] text-sm font-semibold" onClick={isAuthenticated ? undefined : openLogin}>
               View All <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {featuredJobs.map((job, i) => (
-              <motion.div
-                key={job.title}
-                initial={{ y: 15, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: i * 0.1 }} viewport={{ once: true }}
-              >
-                <Card className="hover:shadow-lg transition-all cursor-pointer border-gray-200 h-full group">
-                  <CardContent className="p-5">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-gray-900 text-base group-hover:text-[#16a34a] transition-colors">{job.title}</h3>
-                        <p className="text-sm text-gray-600 mt-0.5">{job.company}</p>
-                        <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-500">
-                          <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.location}</span>
-                          <span className="flex items-center gap-1"><IndianRupee className="h-3 w-3" /> {job.salary}</span>
-                          <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {job.posted}</span>
+          {jobs.length === 0 ? (
+            <div className="grid sm:grid-cols-2 gap-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Card key={i} className="animate-pulse"><CardContent className="p-5"><div className="h-32 bg-gray-200 rounded" /></CardContent></Card>
+              ))}
+            </div>
+          ) : (
+            <div className="grid sm:grid-cols-2 gap-4">
+              {jobs.slice(0, 8).map((job: any, i: number) => (
+                <motion.div
+                  key={job.id}
+                  initial={{ y: 15, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ delay: i * 0.1 }} viewport={{ once: true }}
+                >
+                  <Card className="hover:shadow-lg transition-all cursor-pointer border-gray-200 h-full group" onClick={() => setSelectedJob(job)}>
+                    <CardContent className="p-5">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-gray-900 text-base group-hover:text-[#16a34a] transition-colors">{job.title}</h3>
+                          <p className="text-sm text-gray-600 mt-0.5">{job.corporate?.companyName}</p>
+                          <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-500">
+                            <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.location || 'Remote'}</span>
+                            <span className="flex items-center gap-1"><IndianRupee className="h-3 w-3" /> {formatSalary(job.salaryMin, job.salaryMax)}</span>
+                            <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {timeAgo(job.postedDate)}</span>
+                          </div>
+                        </div>
+                        <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0 group-hover:bg-green-100 transition-colors">
+                          <Building2 className="h-6 w-6 text-[#16a34a]" />
                         </div>
                       </div>
-                      <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0 group-hover:bg-green-100 transition-colors">
-                        <Building2 className="h-6 w-6 text-[#16a34a]" />
+                      <div className="flex flex-wrap gap-1.5 mt-3">
+                        {job.skills?.split(',').slice(0, 4).map((s: string) => (
+                          <Badge key={s.trim()} variant="secondary" className="text-xs bg-green-50 text-green-700 hover:bg-green-100 border border-green-100">{s.trim()}</Badge>
+                        ))}
+                        {job.skills?.split(',').length > 4 && (
+                          <Badge variant="secondary" className="text-xs bg-gray-50 text-gray-500">+{job.skills.split(',').length - 4}</Badge>
+                        )}
                       </div>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5 mt-3">
-                      {job.tags.map(tag => (
-                        <Badge key={tag} variant="secondary" className="text-xs bg-green-50 text-green-700 hover:bg-green-100 border border-green-100">{tag}</Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+                      {job.isRemote && <Badge className="mt-2 bg-teal-50 text-teal-700 border-teal-100">Remote Friendly</Badge>}
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
+
+      {/* ===== JOB DETAIL DIALOG ===== */}
+      <Dialog open={!!selectedJob} onOpenChange={() => setSelectedJob(null)}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          {selectedJob && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-xl">{selectedJob.title}</DialogTitle>
+                <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
+                  <Building2 className="h-4 w-4" /> {selectedJob.corporate?.companyName}
+                  <span className="mx-1">•</span>
+                  <MapPin className="h-4 w-4" /> {selectedJob.location || 'Remote'}
+                </div>
+              </DialogHeader>
+              <div className="space-y-4 mt-2">
+                <div className="flex flex-wrap gap-2">
+                  <Badge className="bg-emerald-100 text-emerald-700">{selectedJob.jobType}</Badge>
+                  {selectedJob.isRemote && <Badge className="bg-teal-100 text-teal-700">Remote Friendly</Badge>}
+                  <Badge variant="outline">{formatSalary(selectedJob.salaryMin, selectedJob.salaryMax)}</Badge>
+                  {selectedJob.experienceMin && (
+                    <Badge variant="outline">{selectedJob.experienceMin}-{selectedJob.experienceMax} yrs exp</Badge>
+                  )}
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">Description</h4>
+                  <p className="text-sm text-gray-600 whitespace-pre-line">{selectedJob.description}</p>
+                </div>
+                {selectedJob.requirements && (
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1">Requirements</h4>
+                    <p className="text-sm text-gray-600 whitespace-pre-line">{selectedJob.requirements}</p>
+                  </div>
+                )}
+                {selectedJob.responsibilities && (
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1">Responsibilities</h4>
+                    <p className="text-sm text-gray-600 whitespace-pre-line">{selectedJob.responsibilities}</p>
+                  </div>
+                )}
+                {selectedJob.skills && (
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Required Skills</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedJob.skills.split(',').map((s: string) => (
+                        <Badge key={s.trim()} variant="secondary">{s.trim()}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {selectedJob.benefits && (
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-1">Benefits</h4>
+                    <p className="text-sm text-gray-600">{selectedJob.benefits}</p>
+                  </div>
+                )}
+                <Separator />
+                <div className="flex gap-3">
+                  <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700" onClick={() => {
+                    if (!isAuthenticated) { openLogin() } else { toast.success('Application feature available in dashboard') }
+                  }}>
+                    Apply Now
+                  </Button>
+                  <Button variant="outline">Save Job</Button>
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* ===== TOP COMPANIES HIRING ===== */}
       <section id="companies" className="py-12 bg-green-50/40">
@@ -465,7 +722,23 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       </section>
 
       {/* ===== AI-POWERED FEATURES with infographic icons ===== */}
-      <section id="ai-features" className="py-16 bg-white">
+      <section id="ai-features" className="py-16 bg-white relative overflow-hidden">
+        {/* Background illustration */}
+        <div className="absolute right-0 top-0 w-64 opacity-10 pointer-events-none hidden lg:block">
+          <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="150" cy="150" r="120" stroke="#16a34a" strokeWidth="2" strokeDasharray="8 4" />
+            <circle cx="150" cy="150" r="80" stroke="#16a34a" strokeWidth="1.5" strokeDasharray="4 4" />
+            <path d="M150 30L150 70" stroke="#16a34a" strokeWidth="2" />
+            <path d="M150 230L150 270" stroke="#16a34a" strokeWidth="2" />
+            <path d="M30 150L70 150" stroke="#16a34a" strokeWidth="2" />
+            <path d="M230 150L270 150" stroke="#16a34a" strokeWidth="2" />
+            <circle cx="150" cy="30" r="8" fill="#16a34a" opacity="0.3" />
+            <circle cx="150" cy="270" r="8" fill="#16a34a" opacity="0.3" />
+            <circle cx="30" cy="150" r="8" fill="#16a34a" opacity="0.3" />
+            <circle cx="270" cy="150" r="8" fill="#16a34a" opacity="0.3" />
+            <text x="145" y="155" fontSize="20" fill="#16a34a" opacity="0.4" fontFamily="monospace">AI</text>
+          </svg>
+        </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <Badge className="bg-green-100 text-green-800 mb-3 text-sm px-4 py-1 border border-green-200">AI-Powered</Badge>
@@ -636,24 +909,25 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
             </Button>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { title: 'React Advanced Patterns', level: 'Advanced', duration: '24 hrs', skills: 'React, TypeScript, Redux', rating: 4.9, enrolled: '2,500' },
-              { title: 'Machine Learning with Python', level: 'Intermediate', duration: '40 hrs', skills: 'Python, TensorFlow, NLP', rating: 4.8, enrolled: '3,200' },
-              { title: 'AWS Solutions Architect', level: 'Intermediate', duration: '36 hrs', skills: 'AWS, EC2, Lambda, S3', rating: 4.7, enrolled: '1,800' },
-              { title: 'System Design for Engineers', level: 'Advanced', duration: '20 hrs', skills: 'System Design, Scalability', rating: 4.9, enrolled: '2,100' },
-            ].map((course, i) => (
+            {(courses.length > 0 ? courses.slice(0, 4) : [
+              { title: 'React Advanced Patterns', level: 'advanced', duration: 24, skills: 'React, TypeScript, Redux', rating: 4.9, enrollCount: 2500 },
+              { title: 'Machine Learning with Python', level: 'intermediate', duration: 40, skills: 'Python, TensorFlow, NLP', rating: 4.8, enrollCount: 3200 },
+              { title: 'AWS Solutions Architect', level: 'intermediate', duration: 36, skills: 'AWS, EC2, Lambda, S3', rating: 4.7, enrollCount: 1800 },
+              { title: 'System Design for Engineers', level: 'advanced', duration: 20, skills: 'System Design, Scalability', rating: 4.9, enrollCount: 2100 },
+            ]).map((course: any, i: number) => (
               <motion.div
                 key={course.title}
                 initial={{ y: 15, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
                 transition={{ delay: i * 0.1 }} viewport={{ once: true }}
               >
-                <Card className="hover:shadow-lg transition-all cursor-pointer h-full border-green-100 group group-hover:-translate-y-1">
+                <Card className="hover:shadow-lg transition-all cursor-pointer h-full border-green-100 group group-hover:-translate-y-1"
+                  onClick={isAuthenticated ? undefined : openLogin}>
                   <CardContent className="p-4">
                     <div className="flex items-center gap-2 mb-2">
-                      <Badge className={`text-xs ${course.level === 'Advanced' ? 'bg-green-100 text-green-800' : 'bg-emerald-50 text-emerald-700'}`}>
+                      <Badge className={`text-xs ${course.level === 'advanced' ? 'bg-green-100 text-green-800' : 'bg-emerald-50 text-emerald-700'}`}>
                         {course.level}
                       </Badge>
-                      <span className="text-xs text-gray-400">{course.duration}</span>
+                      <span className="text-xs text-gray-400">{course.duration} hrs</span>
                     </div>
                     <h3 className="font-semibold text-gray-900 text-sm mb-1">{course.title}</h3>
                     <p className="text-xs text-gray-500 mb-2">{course.skills}</p>
@@ -662,7 +936,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                         <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
                         <span className="text-xs font-medium text-gray-700">{course.rating}</span>
                       </div>
-                      <span className="text-xs text-gray-400">{course.enrolled} enrolled</span>
+                      <span className="text-xs text-gray-400">{course.enrollCount?.toLocaleString() || course.enrolled} enrolled</span>
                     </div>
                   </CardContent>
                 </Card>
