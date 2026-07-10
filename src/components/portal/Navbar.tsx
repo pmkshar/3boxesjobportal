@@ -8,7 +8,6 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { AuthDialog } from './AuthDialog'
 import { ThreeBoxesLogo } from './LandingPage'
 import { Menu, Bell, LogOut, User, Settings, ChevronDown } from 'lucide-react'
@@ -18,7 +17,6 @@ export function Navbar() {
   const [authOpen, setAuthOpen] = useState(false)
   const [authTab, setAuthTab] = useState<'login' | 'register'>('login')
   const [notifCount, setNotifCount] = useState(0)
-  const [mobileOpen, setMobileOpen] = useState(false)
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -36,23 +34,23 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      <nav className="sticky top-0 z-50 bg-[#4A90D9] shadow-md">
         <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ThreeBoxesLogo size={28} />
-            <span className="text-lg font-bold text-gray-900">3 Boxes <span className="text-emerald-600">Jobs</span></span>
+            <span className="text-lg font-bold text-white">3 Boxes <span className="text-yellow-300">Jobs</span></span>
           </div>
 
           {isAuthenticated && user ? (
             <div className="flex items-center gap-3">
-              <Badge variant="outline" className="hidden sm:flex text-xs capitalize">
+              <Badge variant="outline" className="hidden sm:flex text-xs capitalize bg-white/20 text-white border-white/30">
                 {user.role.replace('_', ' ')}
               </Badge>
 
-              <Button variant="ghost" size="icon" className="relative" onClick={() => {}}>
+              <Button variant="ghost" size="icon" className="relative text-white hover:bg-white/10" onClick={() => {}}>
                 <Bell className="h-4 w-4" />
                 {notifCount > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#FF8C00] text-white text-[10px] flex items-center justify-center">
                     {notifCount}
                   </span>
                 )}
@@ -60,14 +58,14 @@ export function Navbar() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center gap-2 px-2">
+                  <Button variant="ghost" className="flex items-center gap-2 px-2 text-white hover:bg-white/10">
                     <Avatar className="h-7 w-7">
-                      <AvatarFallback className="bg-emerald-100 text-emerald-700 text-xs">
+                      <AvatarFallback className="bg-white/20 text-white text-xs">
                         {user.name.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
                     <span className="hidden sm:block text-sm font-medium">{user.name}</span>
-                    <ChevronDown className="h-3 w-3 text-gray-400" />
+                    <ChevronDown className="h-3 w-3 text-white/70" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
@@ -82,11 +80,13 @@ export function Navbar() {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" onClick={() => { setAuthTab('login'); setAuthOpen(true) }}>
+              <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10"
+                onClick={() => { setAuthTab('login'); setAuthOpen(true) }}>
                 Login
               </Button>
-              <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700" onClick={() => { setAuthTab('register'); setAuthOpen(true) }}>
-                Get Started
+              <Button size="sm" className="bg-[#FF8C00] hover:bg-[#E07B00] text-white font-semibold"
+                onClick={() => { setAuthTab('register'); setAuthOpen(true) }}>
+                Register
               </Button>
             </div>
           )}
