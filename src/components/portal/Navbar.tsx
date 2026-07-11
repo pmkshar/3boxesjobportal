@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { AuthDialog } from './AuthDialog'
 import { ThreeBoxesLogo } from './LandingPage'
-import { Menu, Bell, LogOut, User, Settings, ChevronDown, Search, X } from 'lucide-react'
+import { Menu, Bell, LogOut, User, Settings, ChevronDown, Search, X, Briefcase, Plus } from 'lucide-react'
 
 export function Navbar() {
   const { user, isAuthenticated, logout } = useAuthStore()
@@ -19,7 +19,6 @@ export function Navbar() {
   const [authTab, setAuthTab] = useState<'login' | 'register'>('login')
   const [notifCount, setNotifCount] = useState(0)
   const [searchOpen, setSearchOpen] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -36,80 +35,93 @@ export function Navbar() {
   }
 
   const roleLabel = user?.role === 'JOB_SEEKER' ? 'Job Seeker' : user?.role === 'CORPORATE' ? 'Employer' : user?.role === 'RECRUITER' ? 'Recruiter' : 'Admin'
+  const roleColor = user?.role === 'JOB_SEEKER' ? '#3B82F6' : user?.role === 'CORPORATE' ? '#10B981' : user?.role === 'RECRUITER' ? '#06B6D4' : '#8B5CF6'
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-        <div className="max-w-[1400px] mx-auto px-4 lg:px-6 h-16 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-white border-b border-[#E4E8EC] shadow-sm">
+        <div className="max-w-[1600px] mx-auto px-4 lg:px-6 h-16 flex items-center justify-between">
           {/* Left: Logo + Role badge */}
           <div className="flex items-center gap-3">
-            <button className="lg:hidden p-1.5 rounded-lg hover:bg-gray-100" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              <Menu className="h-5 w-5 text-gray-600" />
-            </button>
             <div className="flex items-center gap-2">
               <ThreeBoxesLogo size={32} />
               <span className="text-lg font-bold text-[#05264E]">3 Boxes <span className="text-[#3B82F6]">Jobs</span></span>
             </div>
             {isAuthenticated && user && (
-              <Badge className="hidden sm:inline-flex text-xs font-medium bg-[#E7F0FA] text-[#3B82F6] border-0 rounded-full px-3 py-0.5">
+              <Badge className="hidden sm:inline-flex text-[10px] font-semibold border-0 rounded-full px-3 py-0.5" style={{ backgroundColor: `${roleColor}15`, color: roleColor }}>
                 {roleLabel} Area
               </Badge>
             )}
           </div>
 
-          {/* Center: Search (desktop) */}
+          {/* Center: Search (desktop) - JobBox style */}
           {isAuthenticated && (
-            <div className="hidden lg:flex flex-1 max-w-md mx-8">
+            <div className="hidden lg:flex flex-1 max-w-lg mx-8">
               <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#66789C]" />
                 <Input
                   placeholder="Search jobs, candidates, companies..."
-                  className="pl-9 h-9 bg-[#F9FAFB] border-gray-200 rounded-lg text-sm focus:bg-white focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6]/20"
+                  className="pl-10 h-10 bg-[#F9FAFB] border-[#E4E8EC] rounded-xl text-sm focus:bg-white focus:border-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/10 transition-all"
                 />
               </div>
             </div>
           )}
 
-          {/* Right: Notifications + Profile */}
+          {/* Right: Actions */}
           {isAuthenticated && user ? (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              {/* Post Job button - for corporate */}
+              {user.role === 'CORPORATE' && (
+                <Button className="hidden md:inline-flex bg-[#10B981] hover:bg-[#059669] text-white text-xs font-semibold rounded-lg px-4 h-9">
+                  <Plus className="h-3.5 w-3.5 mr-1" /> Post Job
+                </Button>
+              )}
+
               {/* Mobile search toggle */}
-              <Button variant="ghost" size="icon" className="lg:hidden h-9 w-9 text-gray-500 hover:text-[#3B82F6]"
+              <Button variant="ghost" size="icon" className="lg:hidden h-9 w-9 text-[#66789C] hover:text-[#3B82F6] hover:bg-[#EFF6FF]"
                 onClick={() => setSearchOpen(!searchOpen)}>
                 {searchOpen ? <X className="h-4 w-4" /> : <Search className="h-4 w-4" />}
               </Button>
 
               {/* Notifications */}
-              <Button variant="ghost" size="icon" className="relative h-9 w-9 text-gray-500 hover:text-[#3B82F6] hover:bg-[#E7F0FA]" onClick={() => {}}>
-                <Bell className="h-4 w-4" />
+              <Button variant="ghost" size="icon" className="relative h-9 w-9 text-[#66789C] hover:text-[#3B82F6] hover:bg-[#EFF6FF]" onClick={() => {}}>
+                <Bell className="h-[18px] w-[18px]" />
                 {notifCount > 0 && (
                   <span className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-[#EF4444] text-white text-[10px] font-medium flex items-center justify-center">
-                    {notifCount}
+                    {notifCount > 9 ? '9+' : notifCount}
                   </span>
                 )}
               </Button>
 
-              {/* Profile dropdown */}
+              {/* Profile dropdown - JobBox style */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-[#F9FAFB] transition-colors">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-[#3B82F6] text-white text-xs font-medium">
+                  <button className="flex items-center gap-2.5 pl-2 pr-2 py-1 rounded-xl hover:bg-[#F9FAFB] transition-colors ml-1">
+                    <Avatar className="h-9 w-9 border-2 border-[#E4E8EC]">
+                      <AvatarFallback className="text-xs font-semibold" style={{ backgroundColor: `${roleColor}15`, color: roleColor }}>
                         {user.name.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
                     <div className="hidden sm:block text-left">
                       <p className="text-sm font-semibold text-[#05264E] leading-tight">{user.name}</p>
-                      <p className="text-xs text-[#66789C] leading-tight">{roleLabel}</p>
+                      <p className="text-[10px] text-[#66789C] leading-tight">{roleLabel}</p>
                     </div>
                     <ChevronDown className="h-3 w-3 text-[#66789C] hidden sm:block" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48 mt-1">
-                  <DropdownMenuItem><User className="mr-2 h-4 w-4" /> Profile</DropdownMenuItem>
-                  <DropdownMenuItem><Settings className="mr-2 h-4 w-4" /> Settings</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                <DropdownMenuContent align="end" className="w-52 mt-1 border-[#E4E8EC] shadow-lg rounded-xl">
+                  <div className="px-3 py-2 border-b border-[#F0F2F5]">
+                    <p className="text-sm font-semibold text-[#05264E]">{user.name}</p>
+                    <p className="text-xs text-[#66789C]">{user.email}</p>
+                  </div>
+                  <DropdownMenuItem className="text-sm text-[#05264E] focus:bg-[#F9FAFB] focus:text-[#05264E]">
+                    <User className="mr-2 h-4 w-4 text-[#66789C]" /> Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="text-sm text-[#05264E] focus:bg-[#F9FAFB] focus:text-[#05264E]">
+                    <Settings className="mr-2 h-4 w-4 text-[#66789C]" /> Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-[#F0F2F5]" />
+                  <DropdownMenuItem onClick={handleLogout} className="text-sm text-[#EF4444] focus:bg-[#FEF2F2] focus:text-[#EF4444]">
                     <LogOut className="mr-2 h-4 w-4" /> Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -117,11 +129,11 @@ export function Navbar() {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" className="text-[#05264E] hover:text-[#3B82F6] hover:bg-[#E7F0FA] font-medium"
+              <Button variant="ghost" size="sm" className="text-[#05264E] hover:text-[#3B82F6] hover:bg-[#EFF6FF] font-medium text-sm"
                 onClick={() => { setAuthTab('login'); setAuthOpen(true) }}>
                 Login
               </Button>
-              <Button size="sm" className="bg-[#3B82F6] hover:bg-[#2563EB] text-white font-semibold rounded-lg px-5"
+              <Button size="sm" className="bg-[#3B82F6] hover:bg-[#2563EB] text-white font-semibold rounded-lg px-5 text-sm"
                 onClick={() => { setAuthTab('register'); setAuthOpen(true) }}>
                 Register
               </Button>
@@ -131,10 +143,10 @@ export function Navbar() {
 
         {/* Mobile search bar */}
         {searchOpen && isAuthenticated && (
-          <div className="lg:hidden px-4 pb-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input placeholder="Search..." className="pl-9 h-9 bg-[#F9FAFB] border-gray-200 text-sm" />
+          <div className="lg:hidden px-4 pb-3 border-t border-[#F0F2F5]">
+            <div className="relative mt-2">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#66789C]" />
+              <Input placeholder="Search jobs, candidates..." className="pl-10 h-9 bg-[#F9FAFB] border-[#E4E8EC] text-sm rounded-lg" />
             </div>
           </div>
         )}
