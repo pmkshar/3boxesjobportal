@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuthStore } from '@/lib/store'
+import { IntegratedLoginPage } from '@/components/portal/IntegratedLoginPage'
 import { LandingPage } from '@/components/portal/LandingPage'
 import { JobSeekerDashboard } from '@/components/portal/JobSeekerDashboard'
 import { CorporateDashboard } from '@/components/portal/CorporateDashboard'
@@ -10,14 +11,12 @@ import { AdminDashboard } from '@/components/portal/AdminDashboard'
 export default function Home() {
   const { user, isAuthenticated } = useAuthStore()
 
-  // Auto-seeding is now handled by ensureSeedData() in db.ts
-  // No need for client-side seeding
-
-  // Render based on auth state and role
+  // Not authenticated: show integrated login page (no popup)
   if (!isAuthenticated || !user) {
-    return <LandingPage onNavigate={() => {}} />
+    return <IntegratedLoginPage />
   }
 
+  // Authenticated: show role-specific dashboard
   switch (user.role) {
     case 'JOB_SEEKER':
       return <JobSeekerDashboard />
@@ -34,6 +33,6 @@ export default function Home() {
     case 'INTERVIEWER':
       return <AdminDashboard />
     default:
-      return <LandingPage onNavigate={() => {}} />
+      return <IntegratedLoginPage />
   }
 }
