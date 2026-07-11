@@ -1,7 +1,6 @@
 'use client'
 
 import { useAuthStore } from '@/lib/store'
-import { IntegratedLoginPage } from '@/components/portal/IntegratedLoginPage'
 import { LandingPage } from '@/components/portal/LandingPage'
 import { JobSeekerDashboard } from '@/components/portal/JobSeekerDashboard'
 import { CorporateDashboard } from '@/components/portal/CorporateDashboard'
@@ -11,9 +10,9 @@ import { AdminDashboard } from '@/components/portal/AdminDashboard'
 export default function Home() {
   const { user, isAuthenticated } = useAuthStore()
 
-  // Not authenticated: show integrated login page (no popup)
+  // Not authenticated: show landing portal page (login/register shown inline when clicked)
   if (!isAuthenticated || !user) {
-    return <IntegratedLoginPage />
+    return <LandingPage onNavigate={() => {}} />
   }
 
   // Authenticated: show role-specific dashboard
@@ -33,6 +32,6 @@ export default function Home() {
     case 'INTERVIEWER':
       return <AdminDashboard />
     default:
-      return <IntegratedLoginPage />
+      return <LandingPage onNavigate={() => {}} />
   }
 }

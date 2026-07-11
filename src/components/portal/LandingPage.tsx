@@ -1,14 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-import { AuthDialog } from './AuthDialog'
 import { HeroIllustration, JobMatchIllustration, ResumeIllustration, InterviewIllustration, SkillsIllustration, GrowthIllustration, CollabIllustration } from './Illustrations'
 import { useAuthStore } from '@/lib/store'
 import { toast } from 'sonner'
@@ -18,7 +17,8 @@ import {
   CheckCircle2, MapPin, Search, Building2, TrendingUp, Laptop,
   Heart, Shield, Clock, BookOpen, Code, PieChart, UserCheck,
   IndianRupee, Globe, ChevronDown, Layers, Box, Trophy, Rocket,
-  PenTool, MessageSquare, Cpu, Lightbulb, Handshake, Wifi, X
+  PenTool, MessageSquare, Cpu, Lightbulb, Handshake, Wifi, X,
+  Mail, Lock, User,
 } from 'lucide-react'
 
 // Company Green Color Palette
@@ -78,8 +78,7 @@ const testimonials = [
 ]
 
 export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void }) {
-  const [authOpen, setAuthOpen] = useState(false)
-  const [authTab, setAuthTab] = useState<'login' | 'register'>('register')
+  const [authView, setAuthView] = useState<'none' | 'login' | 'register'>('none')
   const [searchSkill, setSearchSkill] = useState('')
   const [searchLocation, setSearchLocation] = useState('')
   const [searchExp, setSearchExp] = useState('')
@@ -89,10 +88,27 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
   const [searching, setSearching] = useState(false)
   const [selectedJob, setSelectedJob] = useState<any>(null)
   const [courses, setCourses] = useState<any[]>([])
-  const { user, isAuthenticated } = useAuthStore()
+  const { user, isAuthenticated, login: authLogin } = useAuthStore()
 
-  const openRegister = () => { setAuthTab('register'); setAuthOpen(true) }
-  const openLogin = () => { setAuthTab('login'); setAuthOpen(true) }
+  // Login form state
+  const [loginEmail, setLoginEmail] = useState('')
+  const [loginPassword, setLoginPassword] = useState('')
+  const [loginLoading, setLoginLoading] = useState(false)
+
+  // Register form state
+  const [regName, setRegName] = useState('')
+  const [regEmail, setRegEmail] = useState('')
+  const [regPassword, setRegPassword] = useState('')
+  const [regCompany, setRegCompany] = useState('')
+  const [regIndustry, setRegIndustry] = useState('')
+  const [regCompanySize, setRegCompanySize] = useState('')
+  const [regSpecialization, setRegSpecialization] = useState('')
+  const [regRole, setRegRole] = useState('JOB_SEEKER')
+  const [regLoading, setRegLoading] = useState(false)
+
+  const openRegister = () => setAuthView('register')
+  const openLogin = () => setAuthView('login')
+  const closeAuth = () => setAuthView('none')
 
   // Fetch featured jobs and courses on mount
   useEffect(() => {
@@ -161,6 +177,91 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
     return new Date(dateStr).toLocaleDateString()
   }
 
+  // Handle login
+  const handleLogin = async () => {
+    if (!loginEmail || !loginPassword) {
+      toast.error('Please fill in all fields')
+      return
+    }
+    setLoginLoading(true)
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        authLogin(data.user, data.token)
+        toast.success(`Welcome back, ${data.user.name}!`)
+        setAuthView('none')
+      } else {
+        toast.error(data.error || 'Login failed')
+      }
+    } catch {
+      toast.error('Network error. Please try again.')
+    } finally {
+      setLoginLoading(false)
+    }
+  }
+
+  // Handle register
+  const handleRegister = async () => {
+    if (!regName || !regEmail || !regPassword) {
+      toast.error('Please fill in all required fields')
+      return
+    }
+    if (regRole === 'CORPORATE' && !regCompany) {
+      toast.error('Company name is required for corporate accounts')
+      return
+    }
+    setRegLoading(true)
+    try {
+      const body: any = {
+        name: regName, email: regEmail, password: regPassword, role: regRole,
+        companyName: regCompany, industry: regIndustry, companySize: regCompanySize,
+        specialization: regSpecialization,
+      }
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        toast.success('Registration successful! Please login.')
+        setAuthView('login')
+        setLoginEmail(regEmail)
+        setLoginPassword(regPassword)
+      } else {
+        toast.error(data.error || 'Registration failed')
+      }
+    } catch {
+      toast.error('Network error. Please try again.')
+    } finally {
+      setRegLoading(false)
+    }
+  }
+
+  // Fill demo credentials
+  const fillDemo = (role: string) => {
+    const demoAccounts: Record<string, { email: string; password: string }> = {
+      JOB_SEEKER: { email: 'seeker@3boxes.com', password: 'demo123' },
+      CORPORATE: { email: 'corp@3boxes.com', password: 'demo123' },
+      RECRUITER: { email: 'recruiter@3boxes.com', password: 'demo123' },
+      SUPER_ADMIN: { email: 'superadmin@3boxes.com', password: 'demo123' },
+      ADMIN: { email: 'admin@3boxes.com', password: 'demo123' },
+      HR_MANAGER: { email: 'hr@3boxes.com', password: 'demo123' },
+      INTERVIEWER: { email: 'interviewer@3boxes.com', password: 'demo123' },
+    }
+    const demo = demoAccounts[role]
+    if (demo) {
+      setLoginEmail(demo.email)
+      setLoginPassword(demo.password)
+      toast.info(`Demo credentials filled for ${role.replace('_', ' ')}`)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
       {/* ===== NAVBAR ===== */}
@@ -195,7 +296,252 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
         </div>
       </nav>
 
-      <AuthDialog open={authOpen} onClose={() => setAuthOpen(false)} defaultTab={authTab} onSuccess={() => setAuthOpen(false)} />
+      {/* ===== INLINE AUTH PANEL (slides in from right) ===== */}
+      <AnimatePresence>
+        {authView !== 'none' && (
+          <motion.div
+            initial={{ x: '100%', opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: '100%', opacity: 0 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-[60] flex"
+          >
+            {/* Overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex-1 bg-black/30 backdrop-blur-sm"
+              onClick={closeAuth}
+            />
+            {/* Auth Panel */}
+            <div className="w-full max-w-md bg-white shadow-2xl overflow-y-auto flex flex-col">
+              {/* Panel Header */}
+              <div className="sticky top-0 bg-white z-10 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-[#16a34a]/10 flex items-center justify-center">
+                    <Briefcase className="h-4 w-4 text-[#16a34a]" />
+                  </div>
+                  <span className="font-bold text-gray-900">
+                    {authView === 'login' ? 'Sign In' : 'Create Account'}
+                  </span>
+                </div>
+                <button onClick={closeAuth} className="h-8 w-8 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors">
+                  <X className="h-5 w-5 text-gray-400" />
+                </button>
+              </div>
+
+              {/* Panel Content */}
+              <div className="flex-1 px-6 py-6">
+                {authView === 'login' ? (
+                  /* ===== LOGIN FORM ===== */
+                  <div className="space-y-5">
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900">Welcome Back!</h2>
+                      <p className="text-sm text-gray-500 mt-1">Sign in to access your AI-powered career dashboard</p>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700">Email Address</Label>
+                      <div className="relative mt-1.5">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <Input type="email" placeholder="you@example.com" value={loginEmail}
+                          onChange={(e) => setLoginEmail(e.target.value)} className="pl-10 h-11 border-gray-200 rounded-xl text-sm" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <Label className="text-sm font-medium text-gray-700">Password</Label>
+                        <button className="text-xs font-medium text-[#16a34a] hover:underline">Forgot password?</button>
+                      </div>
+                      <div className="relative mt-1.5">
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <Input type="password" placeholder="Enter your password" value={loginPassword}
+                          onChange={(e) => setLoginPassword(e.target.value)} className="pl-10 h-11 border-gray-200 rounded-xl text-sm"
+                          onKeyDown={(e) => e.key === 'Enter' && handleLogin()} />
+                      </div>
+                    </div>
+
+                    <Button className="w-full h-11 bg-[#16a34a] hover:bg-[#15803d] text-white font-semibold rounded-xl text-sm"
+                      onClick={handleLogin} disabled={loginLoading}>
+                      {loginLoading ? (
+                        <span className="flex items-center gap-2">
+                          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                          Signing in...
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-2">Sign In <ArrowRight className="h-4 w-4" /></span>
+                      )}
+                    </Button>
+
+                    {/* Divider */}
+                    <div className="relative my-4">
+                      <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
+                      <div className="relative flex justify-center text-xs"><span className="bg-white px-3 text-gray-400">Quick Demo Access</span></div>
+                    </div>
+
+                    {/* Demo accounts */}
+                    <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-4 space-y-2">
+                      <p className="text-xs font-semibold text-gray-600 mb-3 flex items-center gap-1.5">
+                        <Sparkles className="h-3.5 w-3.5 text-[#16a34a]" /> Try any role instantly:
+                      </p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {[
+                          { role: 'JOB_SEEKER', label: 'Job Seeker', icon: Users },
+                          { role: 'CORPORATE', label: 'Corporate', icon: Building2 },
+                          { role: 'RECRUITER', label: 'Recruiter', icon: UserCheck },
+                          { role: 'SUPER_ADMIN', label: 'Super Admin', icon: Shield },
+                          { role: 'HR_MANAGER', label: 'HR Manager', icon: Users },
+                          { role: 'INTERVIEWER', label: 'Interviewer', icon: UserCheck },
+                        ].map((demo) => (
+                          <button key={demo.role} onClick={() => fillDemo(demo.role)}
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-all hover:shadow-sm border border-transparent hover:border-gray-200 bg-white">
+                            <demo.icon className="h-3.5 w-3.5 shrink-0 text-[#16a34a]" />
+                            <span className="text-xs font-medium text-gray-700 truncate">{demo.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-[10px] text-gray-400 mt-1 flex items-center gap-1"><Lock className="h-3 w-3" /> Password: demo123</p>
+                    </div>
+
+                    <div className="text-center text-sm text-gray-500 mt-4">
+                      Don&apos;t have an account?{' '}
+                      <button onClick={() => setAuthView('register')} className="font-semibold text-[#16a34a] hover:underline">Sign up free</button>
+                    </div>
+                  </div>
+                ) : (
+                  /* ===== REGISTER FORM ===== */
+                  <div className="space-y-5">
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900">Get Started</h2>
+                      <p className="text-sm text-gray-500 mt-1">Create your account and unlock AI-powered career tools</p>
+                    </div>
+
+                    {/* Role selection */}
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700 mb-3 block">I am a...</Label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {[
+                          { value: 'JOB_SEEKER', label: 'Job Seeker', icon: Users },
+                          { value: 'CORPORATE', label: 'Corporate', icon: Building2 },
+                          { value: 'RECRUITER', label: 'Recruiter', icon: UserCheck },
+                          { value: 'HR_MANAGER', label: 'HR Manager', icon: Users },
+                          { value: 'INTERVIEWER', label: 'Interviewer', icon: UserCheck },
+                        ].map((role) => (
+                          <Card key={role.value}
+                            className={`cursor-pointer transition-all ${regRole === role.value ? 'border-2 bg-green-50/50 shadow-sm' : 'border-gray-200 hover:border-gray-300'}`}
+                            style={{ borderColor: regRole === role.value ? '#22c55e' : undefined }}
+                            onClick={() => setRegRole(role.value)}>
+                            <CardContent className="p-3 text-center">
+                              <role.icon className={`h-5 w-5 mx-auto mb-1 ${regRole === role.value ? 'text-[#16a34a]' : 'text-gray-400'}`} />
+                              <div className={`text-xs font-medium ${regRole === role.value ? 'text-[#16a34a]' : 'text-gray-600'}`}>{role.label}</div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700">Full Name *</Label>
+                      <div className="relative mt-1.5">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <Input placeholder="Your full name" value={regName} onChange={(e) => setRegName(e.target.value)} className="pl-10 h-11 border-gray-200 rounded-xl text-sm" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700">Email *</Label>
+                      <div className="relative mt-1.5">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <Input type="email" placeholder="you@example.com" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} className="pl-10 h-11 border-gray-200 rounded-xl text-sm" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-sm font-medium text-gray-700">Password *</Label>
+                      <div className="relative mt-1.5">
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <Input type="password" placeholder="Min 6 characters" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} className="pl-10 h-11 border-gray-200 rounded-xl text-sm" />
+                      </div>
+                    </div>
+
+                    {regRole === 'CORPORATE' && (
+                      <div className="space-y-4">
+                        <div>
+                          <Label className="text-sm font-medium text-gray-700">Company Name *</Label>
+                          <Input placeholder="Your company name" value={regCompany} onChange={(e) => setRegCompany(e.target.value)} className="mt-1.5 h-11 border-gray-200 rounded-xl text-sm" />
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700">Industry</Label>
+                            <select className="mt-1.5 w-full h-11 border border-gray-200 rounded-xl px-3 text-sm bg-white" value={regIndustry} onChange={(e) => setRegIndustry(e.target.value)}>
+                              <option value="">Select</option>
+                              <option value="IT">Information Technology</option>
+                              <option value="Finance">Finance & Banking</option>
+                              <option value="Healthcare">Healthcare</option>
+                              <option value="Education">Education</option>
+                              <option value="Manufacturing">Manufacturing</option>
+                              <option value="Retail">Retail & E-commerce</option>
+                            </select>
+                          </div>
+                          <div>
+                            <Label className="text-sm font-medium text-gray-700">Company Size</Label>
+                            <select className="mt-1.5 w-full h-11 border border-gray-200 rounded-xl px-3 text-sm bg-white" value={regCompanySize} onChange={(e) => setRegCompanySize(e.target.value)}>
+                              <option value="">Select</option>
+                              <option value="1-10">1-10</option>
+                              <option value="11-50">11-50</option>
+                              <option value="51-200">51-200</option>
+                              <option value="201-500">201-500</option>
+                              <option value="501-1000">501-1000</option>
+                              <option value="1000+">1000+</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {regRole === 'RECRUITER' && (
+                      <div>
+                        <Label className="text-sm font-medium text-gray-700">Specialization</Label>
+                        <select className="mt-1.5 w-full h-11 border border-gray-200 rounded-xl px-3 text-sm bg-white" value={regSpecialization} onChange={(e) => setRegSpecialization(e.target.value)}>
+                          <option value="">Select</option>
+                          <option value="IT">IT & Software</option>
+                          <option value="Finance">Finance & Banking</option>
+                          <option value="Healthcare">Healthcare</option>
+                          <option value="Marketing">Marketing</option>
+                          <option value="General">General</option>
+                        </select>
+                      </div>
+                    )}
+
+                    <Button className="w-full h-11 bg-[#16a34a] hover:bg-[#15803d] text-white font-semibold rounded-xl text-sm"
+                      onClick={handleRegister} disabled={regLoading}>
+                      {regLoading ? (
+                        <span className="flex items-center gap-2">
+                          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                          Creating account...
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-2">Create Account <Rocket className="h-4 w-4" /></span>
+                      )}
+                    </Button>
+
+                    <p className="text-[11px] text-gray-400 text-center leading-relaxed">
+                      By creating an account, you agree to our <button className="underline hover:text-gray-600">Terms of Service</button> and <button className="underline hover:text-gray-600">Privacy Policy</button>
+                    </p>
+
+                    <div className="text-center text-sm text-gray-500">
+                      Already have an account?{' '}
+                      <button onClick={() => setAuthView('login')} className="font-semibold text-[#16a34a] hover:underline">Sign in</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ===== HERO SECTION ===== */}
       <section className="relative bg-gradient-to-br from-[#166534] via-[#15803d] to-[#22c55e] pb-36 pt-10 overflow-hidden">
@@ -516,14 +862,14 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
               <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">
                 Search Results {searchResults.length > 0 && <span className="text-[#16a34a]">({searchResults.length})</span>}
               </h2>
-              <Button variant="ghost" className="text-gray-500 text-sm" onClick={() => setShowSearchResults(false)}>
+              <Button variant="ghost" className="text-gray-500 text-sm" onClick={() => { setShowSearchResults(false); setSelectedJob(null) }}>
                 <X className="h-4 w-4 mr-1" /> Clear
               </Button>
             </div>
             {searching ? (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <Card key={i} className="animate-pulse"><CardContent className="p-5"><div className="h-32 bg-gray-200 rounded" /></CardContent></Card>
+              <div className="space-y-3">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Card key={i} className="animate-pulse"><CardContent className="p-5"><div className="h-20 bg-gray-200 rounded" /></CardContent></Card>
                 ))}
               </div>
             ) : searchResults.length === 0 ? (
@@ -533,34 +879,36 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                 <p className="text-sm">Try different keywords or location</p>
               </div>
             ) : (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="space-y-3">
                 {searchResults.map((job: any, i: number) => (
-                  <motion.div key={job.id} initial={{ y: 15, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: i * 0.05 }}>
-                    <Card className="hover:shadow-lg transition-all cursor-pointer border-gray-200 h-full group" onClick={() => setSelectedJob(job)}>
-                      <CardContent className="p-5">
-                        <div className="flex items-start justify-between gap-3">
+                  <motion.div key={job.id} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: i * 0.04 }}>
+                    <Card className={`hover:shadow-md transition-all cursor-pointer border-gray-200 group ${selectedJob?.id === job.id ? 'ring-2 ring-[#16a34a] border-[#16a34a]' : ''}`}
+                      onClick={() => setSelectedJob(selectedJob?.id === job.id ? null : job)}>
+                      <CardContent className="p-4 sm:p-5">
+                        <div className="flex items-center gap-4">
+                          <div className="w-11 h-11 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0 group-hover:bg-green-100 transition-colors">
+                            <Building2 className="h-5 w-5 text-[#16a34a]" />
+                          </div>
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-bold text-gray-900 text-base group-hover:text-[#16a34a] transition-colors">{job.title}</h3>
-                            <p className="text-sm text-gray-600 mt-0.5">{job.corporate?.companyName}</p>
-                            <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-500">
-                              <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.location || 'Remote'}</span>
-                              <span className="flex items-center gap-1"><IndianRupee className="h-3 w-3" /> {formatSalary(job.salaryMin, job.salaryMax)}</span>
-                              <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {timeAgo(job.postedDate)}</span>
-                            </div>
+                            <h3 className="font-bold text-gray-900 text-sm sm:text-base group-hover:text-[#16a34a] transition-colors">{job.title}</h3>
+                            <p className="text-xs sm:text-sm text-gray-500">{job.corporate?.companyName}</p>
                           </div>
-                          <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0 group-hover:bg-green-100 transition-colors">
-                            <Building2 className="h-6 w-6 text-[#16a34a]" />
+                          <div className="hidden sm:flex items-center gap-4 text-xs text-gray-500 flex-shrink-0">
+                            <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.location || 'Remote'}</span>
+                            <span className="flex items-center gap-1"><IndianRupee className="h-3 w-3" /> {formatSalary(job.salaryMin, job.salaryMax)}</span>
+                            <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {timeAgo(job.postedDate)}</span>
                           </div>
+                          <ChevronRight className={`h-4 w-4 text-gray-300 group-hover:text-[#16a34a] transition-all flex-shrink-0 ${selectedJob?.id === job.id ? 'rotate-90' : ''}`} />
                         </div>
-                        <div className="flex flex-wrap gap-1.5 mt-3">
+                        <div className="flex flex-wrap gap-1.5 mt-2 ml-15">
                           {job.skills?.split(',').slice(0, 4).map((s: string) => (
-                            <Badge key={s.trim()} variant="secondary" className="text-xs bg-green-50 text-green-700 hover:bg-green-100 border border-green-100">{s.trim()}</Badge>
+                            <Badge key={s.trim()} variant="secondary" className="text-xs bg-green-50 text-green-700 border-green-100">{s.trim()}</Badge>
                           ))}
                           {job.skills?.split(',').length > 4 && (
                             <Badge variant="secondary" className="text-xs bg-gray-50 text-gray-500">+{job.skills.split(',').length - 4}</Badge>
                           )}
+                          {job.isRemote && <Badge className="text-xs bg-teal-50 text-teal-700 border-teal-100">Remote</Badge>}
                         </div>
-                        {job.isRemote && <Badge className="mt-2 bg-teal-50 text-teal-700 border-teal-100">Remote Friendly</Badge>}
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -571,7 +919,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
         </section>
       )}
 
-      {/* ===== FEATURED JOBS (dynamic from API) ===== */}
+      {/* ===== FEATURED JOBS (dynamic from API) - LIST VIEW ===== */}
       <section id="jobs" className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-6">
@@ -581,44 +929,48 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
             </Button>
           </div>
           {jobs.length === 0 ? (
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-3">
               {Array.from({ length: 4 }).map((_, i) => (
-                <Card key={i} className="animate-pulse"><CardContent className="p-5"><div className="h-32 bg-gray-200 rounded" /></CardContent></Card>
+                <Card key={i} className="animate-pulse"><CardContent className="p-5"><div className="h-20 bg-gray-200 rounded" /></CardContent></Card>
               ))}
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-3">
               {jobs.slice(0, 8).map((job: any, i: number) => (
                 <motion.div
                   key={job.id}
-                  initial={{ y: 15, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: i * 0.1 }} viewport={{ once: true }}
+                  initial={{ y: 10, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ delay: i * 0.05 }}
+                  viewport={{ once: true }}
                 >
-                  <Card className="hover:shadow-lg transition-all cursor-pointer border-gray-200 h-full group" onClick={() => setSelectedJob(job)}>
-                    <CardContent className="p-5">
-                      <div className="flex items-start justify-between gap-3">
+                  <Card className={`hover:shadow-md transition-all cursor-pointer border-gray-200 group ${selectedJob?.id === job.id ? 'ring-2 ring-[#16a34a] border-[#16a34a]' : ''}`}
+                    onClick={() => setSelectedJob(selectedJob?.id === job.id ? null : job)}>
+                    <CardContent className="p-4 sm:p-5">
+                      <div className="flex items-center gap-4">
+                        <div className="w-11 h-11 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0 group-hover:bg-green-100 transition-colors">
+                          <Building2 className="h-5 w-5 text-[#16a34a]" />
+                        </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-gray-900 text-base group-hover:text-[#16a34a] transition-colors">{job.title}</h3>
-                          <p className="text-sm text-gray-600 mt-0.5">{job.corporate?.companyName}</p>
-                          <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-500">
-                            <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.location || 'Remote'}</span>
-                            <span className="flex items-center gap-1"><IndianRupee className="h-3 w-3" /> {formatSalary(job.salaryMin, job.salaryMax)}</span>
-                            <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {timeAgo(job.postedDate)}</span>
-                          </div>
+                          <h3 className="font-bold text-gray-900 text-sm sm:text-base group-hover:text-[#16a34a] transition-colors">{job.title}</h3>
+                          <p className="text-xs sm:text-sm text-gray-500">{job.corporate?.companyName}</p>
                         </div>
-                        <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0 group-hover:bg-green-100 transition-colors">
-                          <Building2 className="h-6 w-6 text-[#16a34a]" />
+                        <div className="hidden sm:flex items-center gap-4 text-xs text-gray-500 flex-shrink-0">
+                          <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.location || 'Remote'}</span>
+                          <span className="flex items-center gap-1"><IndianRupee className="h-3 w-3" /> {formatSalary(job.salaryMin, job.salaryMax)}</span>
+                          <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {timeAgo(job.postedDate)}</span>
                         </div>
+                        <ChevronRight className={`h-4 w-4 text-gray-300 group-hover:text-[#16a34a] transition-all flex-shrink-0 ${selectedJob?.id === job.id ? 'rotate-90' : ''}`} />
                       </div>
-                      <div className="flex flex-wrap gap-1.5 mt-3">
+                      <div className="flex flex-wrap gap-1.5 mt-2 ml-15">
                         {job.skills?.split(',').slice(0, 4).map((s: string) => (
-                          <Badge key={s.trim()} variant="secondary" className="text-xs bg-green-50 text-green-700 hover:bg-green-100 border border-green-100">{s.trim()}</Badge>
+                          <Badge key={s.trim()} variant="secondary" className="text-xs bg-green-50 text-green-700 border-green-100">{s.trim()}</Badge>
                         ))}
                         {job.skills?.split(',').length > 4 && (
                           <Badge variant="secondary" className="text-xs bg-gray-50 text-gray-500">+{job.skills.split(',').length - 4}</Badge>
                         )}
+                        {job.isRemote && <Badge className="text-xs bg-teal-50 text-teal-700 border-teal-100">Remote</Badge>}
                       </div>
-                      {job.isRemote && <Badge className="mt-2 bg-teal-50 text-teal-700 border-teal-100">Remote Friendly</Badge>}
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -628,20 +980,28 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
         </div>
       </section>
 
-      {/* ===== JOB DETAIL DIALOG ===== */}
-      <Dialog open={!!selectedJob} onOpenChange={() => setSelectedJob(null)}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-          {selectedJob && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="text-xl">{selectedJob.title}</DialogTitle>
-                <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
-                  <Building2 className="h-4 w-4" /> {selectedJob.corporate?.companyName}
-                  <span className="mx-1">•</span>
-                  <MapPin className="h-4 w-4" /> {selectedJob.location || 'Remote'}
+      {/* ===== INLINE JOB DETAIL (replaces popup) ===== */}
+      {selectedJob && (
+        <section className="py-10 bg-white border-t border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <button onClick={() => setSelectedJob(null)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mb-6 transition-colors">
+              <ArrowRight className="h-4 w-4 rotate-180" /> Back to job listings
+            </button>
+            <div className="grid lg:grid-cols-3 gap-8">
+              {/* Left - Job Details */}
+              <div className="lg:col-span-2 space-y-6">
+                <div>
+                  <h2 className="text-2xl font-extrabold text-gray-900">{selectedJob.title}</h2>
+                  <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500 mt-2">
+                    <span className="flex items-center gap-1"><Building2 className="h-4 w-4" /> {selectedJob.corporate?.companyName}</span>
+                    <span className="mx-1">•</span>
+                    <span className="flex items-center gap-1"><MapPin className="h-4 w-4" /> {selectedJob.location || 'Remote'}</span>
+                    {selectedJob.postedDate && (
+                      <><span className="mx-1">•</span><span className="flex items-center gap-1"><Clock className="h-4 w-4" /> {timeAgo(selectedJob.postedDate)}</span></>
+                    )}
+                  </div>
                 </div>
-              </DialogHeader>
-              <div className="space-y-4 mt-2">
+
                 <div className="flex flex-wrap gap-2">
                   <Badge className="bg-emerald-100 text-emerald-700">{selectedJob.jobType}</Badge>
                   {selectedJob.isRemote && <Badge className="bg-teal-100 text-teal-700">Remote Friendly</Badge>}
@@ -650,52 +1010,68 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                     <Badge variant="outline">{selectedJob.experienceMin}-{selectedJob.experienceMax} yrs exp</Badge>
                   )}
                 </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-1">Description</h4>
-                  <p className="text-sm text-gray-600 whitespace-pre-line">{selectedJob.description}</p>
-                </div>
+
+                {selectedJob.description && (
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2 text-lg">Description</h4>
+                    <p className="text-sm text-gray-600 whitespace-pre-line leading-relaxed">{selectedJob.description}</p>
+                  </div>
+                )}
                 {selectedJob.requirements && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Requirements</h4>
-                    <p className="text-sm text-gray-600 whitespace-pre-line">{selectedJob.requirements}</p>
+                    <h4 className="font-semibold text-gray-900 mb-2 text-lg">Requirements</h4>
+                    <p className="text-sm text-gray-600 whitespace-pre-line leading-relaxed">{selectedJob.requirements}</p>
                   </div>
                 )}
                 {selectedJob.responsibilities && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Responsibilities</h4>
-                    <p className="text-sm text-gray-600 whitespace-pre-line">{selectedJob.responsibilities}</p>
-                  </div>
-                )}
-                {selectedJob.skills && (
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Required Skills</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedJob.skills.split(',').map((s: string) => (
-                        <Badge key={s.trim()} variant="secondary">{s.trim()}</Badge>
-                      ))}
-                    </div>
+                    <h4 className="font-semibold text-gray-900 mb-2 text-lg">Responsibilities</h4>
+                    <p className="text-sm text-gray-600 whitespace-pre-line leading-relaxed">{selectedJob.responsibilities}</p>
                   </div>
                 )}
                 {selectedJob.benefits && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Benefits</h4>
-                    <p className="text-sm text-gray-600">{selectedJob.benefits}</p>
+                    <h4 className="font-semibold text-gray-900 mb-2 text-lg">Benefits</h4>
+                    <p className="text-sm text-gray-600 leading-relaxed">{selectedJob.benefits}</p>
                   </div>
                 )}
-                <Separator />
-                <div className="flex gap-3">
-                  <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700" onClick={() => {
-                    if (!isAuthenticated) { openLogin() } else { toast.success('Application feature available in dashboard') }
-                  }}>
-                    Apply Now
-                  </Button>
-                  <Button variant="outline">Save Job</Button>
-                </div>
               </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+
+              {/* Right - Skills & Apply */}
+              <div className="space-y-6">
+                {selectedJob.skills && (
+                  <Card className="border-green-100">
+                    <CardContent className="p-5">
+                      <h4 className="font-semibold text-gray-900 mb-3">Required Skills</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedJob.skills.split(',').map((s: string) => (
+                          <Badge key={s.trim()} variant="secondary" className="bg-green-50 text-green-700">{s.trim()}</Badge>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                <Card className="border-green-100">
+                  <CardContent className="p-5 space-y-4">
+                    <div className="text-center">
+                      <p className="text-sm text-gray-500">Salary Range</p>
+                      <p className="text-xl font-bold text-[#16a34a]">{formatSalary(selectedJob.salaryMin, selectedJob.salaryMax)}</p>
+                    </div>
+                    <Separator />
+                    <Button className="w-full bg-[#16a34a] hover:bg-[#15803d] text-white font-semibold h-11" onClick={() => {
+                      if (!isAuthenticated) { openLogin() } else { toast.success('Application feature available in dashboard') }
+                    }}>
+                      Apply Now
+                    </Button>
+                    <Button variant="outline" className="w-full h-11">Save Job</Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ===== TOP COMPANIES HIRING ===== */}
       <section id="companies" className="py-12 bg-green-50/40">
