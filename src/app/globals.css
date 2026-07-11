@@ -68,14 +68,27 @@
   --chart-3: oklch(0.65 0.12 150);
   --chart-4: oklch(0.70 0.18 80);
   --chart-5: oklch(0.75 0.15 50);
-  --sidebar: oklch(0.16 0.03 260);
-  --sidebar-foreground: oklch(0.85 0.01 260);
-  --sidebar-primary: oklch(0.55 0.18 260);
+
+  /* ===== Theme Custom Properties (Green default) ===== */
+  --theme-primary: #059669;
+  --theme-primary-hover: #047857;
+  --theme-primary-light: #ECFDF5;
+  --theme-primary-medium: #D1FAE5;
+  --theme-primary-ring: #10B981;
+  --theme-sidebar: #064E3B;
+  --theme-sidebar-hover: #065F46;
+  --theme-sidebar-active: #10B981;
+  --theme-gradient: linear-gradient(135deg, #059669 0%, #10B981 100%);
+
+  /* Sidebar overrides to use theme */
+  --sidebar: var(--theme-sidebar);
+  --sidebar-foreground: oklch(0.85 0.01 160);
+  --sidebar-primary: var(--theme-primary);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.22 0.04 260);
-  --sidebar-accent-foreground: oklch(0.85 0.01 260);
-  --sidebar-border: oklch(0.25 0.04 260);
-  --sidebar-ring: oklch(0.55 0.15 260);
+  --sidebar-accent: var(--theme-sidebar-hover);
+  --sidebar-accent-foreground: oklch(0.9 0.01 160);
+  --sidebar-border: oklch(0.25 0.04 160);
+  --sidebar-ring: var(--theme-primary-ring);
 }
 
 .dark {
@@ -102,14 +115,14 @@
   --chart-3: oklch(0.65 0.12 150);
   --chart-4: oklch(0.70 0.18 80);
   --chart-5: oklch(0.75 0.15 50);
-  --sidebar: oklch(0.12 0.02 260);
-  --sidebar-foreground: oklch(0.85 0.01 260);
-  --sidebar-primary: oklch(0.55 0.18 260);
+  --sidebar: var(--theme-sidebar);
+  --sidebar-foreground: oklch(0.85 0.01 160);
+  --sidebar-primary: var(--theme-primary);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.22 0.03 260);
-  --sidebar-accent-foreground: oklch(0.85 0.01 260);
+  --sidebar-accent: var(--theme-sidebar-hover);
+  --sidebar-accent-foreground: oklch(0.9 0.01 160);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.55 0.15 260);
+  --sidebar-ring: var(--theme-primary-ring);
 }
 
 @layer base {
@@ -139,17 +152,17 @@
   background: #9CA3AF;
 }
 
-/* Stat card hover effect - JobBox style */
+/* Stat card hover effect - uses theme color */
 .stat-card-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .stat-card-hover:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 24px -8px rgba(5, 38, 78, 0.12);
-  border-color: #3B82F6;
+  box-shadow: 0 12px 24px -8px rgba(5, 150, 105, 0.12);
+  border-color: var(--theme-primary);
 }
 
-/* Sidebar nav item active indicator - JobBox style */
+/* Sidebar nav item active indicator - uses theme color */
 .sidebar-nav-item {
   position: relative;
   transition: all 0.2s ease;
@@ -162,7 +175,7 @@
   bottom: 4px;
   width: 3px;
   border-radius: 0 2px 2px 0;
-  background: #3B82F6;
+  background: var(--theme-sidebar-active);
 }
 .sidebar-nav-item:hover::before {
   content: '';
@@ -172,7 +185,8 @@
   bottom: 4px;
   width: 3px;
   border-radius: 0 2px 2px 0;
-  background: rgba(59, 130, 246, 0.3);
+  background: var(--theme-sidebar-active);
+  opacity: 0.4;
 }
 
 /* Panel styling - JobBox white cards */
@@ -225,7 +239,7 @@ input:focus, select:focus, textarea:focus {
   outline: none;
 }
 
-/* Card gradient borders */
+/* Card gradient borders - uses theme gradient */
 .gradient-border {
   position: relative;
 }
@@ -235,9 +249,31 @@ input:focus, select:focus, textarea:focus {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+  background: var(--theme-gradient);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+}
+
+/* Theme-aware button styles */
+.btn-theme {
+  background-color: var(--theme-primary);
+  color: white;
+  transition: all 0.2s ease;
+}
+.btn-theme:hover {
+  background-color: var(--theme-primary-hover);
+}
+
+/* Theme-aware focus ring */
+.focus-theme:focus {
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px var(--theme-primary-ring) / 10%;
+}
+
+/* Theme sidebar active state */
+.sidebar-active-item {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
 }

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/lib/store'
+import { useTheme } from '@/lib/theme'
+import { ThemeSwitcher } from '@/components/portal/ThemeSwitcher'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -32,6 +34,7 @@ const navItems: { id: View; label: string; icon: any }[] = [
 
 export function RecruiterDashboard() {
   const { user } = useAuthStore()
+  const { theme } = useTheme()
   const [activeView, setActiveView] = useState<View>('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -54,7 +57,7 @@ export function RecruiterDashboard() {
       <Navbar />
       <div className="flex">
         {/* Sidebar - JobBox style */}
-        <aside className={`${sidebarOpen ? 'w-[260px]' : 'w-[72px]'} hidden lg:flex flex-col bg-[#05264E] min-h-[calc(100vh-4rem)] transition-all duration-300 relative`}>
+        <aside className={`${sidebarOpen ? 'w-[260px]' : 'w-[72px]'} hidden lg:flex flex-col bg-[var(--theme-sidebar)] min-h-[calc(100vh-4rem)] transition-all duration-300 relative`}>
           <button onClick={() => setSidebarOpen(!sidebarOpen)}
             className="absolute -right-3 top-6 z-10 w-6 h-6 bg-white border border-gray-200 rounded-full flex items-center justify-center shadow-sm hover:shadow-md transition-shadow">
             <ChevronRight className={`h-3 w-3 text-gray-600 transition-transform ${sidebarOpen ? 'rotate-180' : ''}`} />
@@ -65,8 +68,8 @@ export function RecruiterDashboard() {
               <button key={item.id} onClick={() => setActiveView(item.id)}
                 className={`sidebar-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
                   activeView === item.id
-                    ? 'active bg-[#0A3575] text-white font-medium'
-                    : 'text-[#A3B8D0] hover:bg-[#0A3575]/50 hover:text-white'
+                    ? 'active bg-[var(--theme-sidebar-hover)] text-white font-medium'
+                    : 'text-[#A3B8D0] hover:bg-[var(--theme-sidebar-hover)] hover:text-white'
                 }`}>
                 <item.icon className="h-[18px] w-[18px] flex-shrink-0" />
                 {sidebarOpen && <span className="truncate">{item.label}</span>}
@@ -76,12 +79,12 @@ export function RecruiterDashboard() {
 
           {sidebarOpen && (
             <div className="px-6 pb-4">
-              <div className="border-t border-[#1A3A6B] pt-5">
+              <div className="border-t border-[var(--theme-sidebar-hover)] pt-5">
                 <div className="text-center mb-3">
                   <div className="relative w-20 h-20 mx-auto mb-3">
                     <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-                      <circle cx="40" cy="40" r="34" fill="none" stroke="#1A3A6B" strokeWidth="6" />
-                      <circle cx="40" cy="40" r="34" fill="none" stroke="#06B6D4" strokeWidth="6"
+                      <circle cx="40" cy="40" r="34" fill="none" stroke={theme.sidebarHover} strokeWidth="6" />
+                      <circle cx="40" cy="40" r="34" fill="none" stroke={theme.primaryRing} strokeWidth="6"
                         strokeDasharray={`${profileComplete * 2.14} 214`} strokeLinecap="round" />
                     </svg>
                     <span className="absolute inset-0 flex items-center justify-center text-white text-sm font-bold">{profileComplete}%</span>
@@ -89,7 +92,7 @@ export function RecruiterDashboard() {
                   <p className="text-xs text-[#A3B8D0] font-medium">Profile Completed</p>
                   <p className="text-[10px] text-[#6B8AB8] mt-1 leading-tight">Complete your recruiter profile to build trust</p>
                 </div>
-                <Button size="sm" className="w-full bg-[#06B6D4] hover:bg-[#0891B2] text-white text-xs rounded-lg h-8"
+                <Button size="sm" className="w-full bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white text-xs rounded-lg h-8"
                   onClick={() => setActiveView('profile')}>
                   Complete Profile
                 </Button>
@@ -99,11 +102,12 @@ export function RecruiterDashboard() {
 
           {sidebarOpen && (
             <div className="px-4 pb-4">
-              <div className="bg-gradient-to-br from-[#0A3575] to-[#0F4491] rounded-xl p-4 text-center">
+              <div className="bg-gradient-to-br from-[var(--theme-sidebar-hover)] to-[var(--theme-sidebar)] rounded-xl p-4 text-center">
                 <span className="text-[#A3B8D0] text-[10px] uppercase tracking-wider font-semibold">Top</span>
                 <span className="block text-xl font-bold text-white -mt-1">RECRUITER</span>
                 <p className="text-[9px] text-[#8BA6C4] mt-1 leading-tight">Access premium sourcing tools and analytics</p>
-                <Button size="sm" variant="outline" className="w-full mt-3 text-xs h-7 border-[#06B6D4] text-[#22D3EE] hover:bg-[#06B6D4]/10"
+                <Button size="sm" variant="outline" className="w-full mt-3 text-xs h-7 border-[var(--theme-primary)] text-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/10"
+                  style={{ color: theme.primary, borderColor: theme.primary }}
                   onClick={() => setActiveView('search')}>
                   Find Candidates
                 </Button>
@@ -114,11 +118,12 @@ export function RecruiterDashboard() {
           <div className="px-3 pb-4 space-y-1">
             {sidebarOpen && (
               <>
-                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#A3B8D0] hover:bg-[#0A3575]/50 hover:text-white transition-colors"
+                <ThemeSwitcher />
+                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#A3B8D0] hover:bg-[var(--theme-sidebar-hover)] hover:text-white transition-colors"
                   onClick={() => setActiveView('profile')}>
                   <Settings className="h-[18px] w-[18px]" /><span>Settings</span>
                 </button>
-                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#A3B8D0] hover:bg-[#0A3575]/50 hover:text-red-400 transition-colors"
+                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#A3B8D0] hover:bg-[var(--theme-sidebar-hover)] hover:text-red-400 transition-colors"
                   onClick={() => { useAuthStore.getState().logout(); window.location.reload() }}>
                   <LogOut className="h-[18px] w-[18px]" /><span>Logout</span>
                 </button>
@@ -131,8 +136,8 @@ export function RecruiterDashboard() {
         {mobileMenuOpen && (
           <div className="lg:hidden fixed inset-0 z-50">
             <div className="absolute inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
-            <div className="absolute left-0 top-0 bottom-0 w-[260px] bg-[#05264E] flex flex-col overflow-y-auto">
-              <div className="flex items-center justify-between px-4 h-16 border-b border-[#1A3A6B]">
+            <div className="absolute left-0 top-0 bottom-0 w-[260px] bg-[var(--theme-sidebar)] flex flex-col overflow-y-auto">
+              <div className="flex items-center justify-between px-4 h-16 border-b border-[var(--theme-sidebar-hover)]">
                 <span className="text-white font-bold">3 Boxes Jobs</span>
                 <button onClick={() => setMobileMenuOpen(false)} className="text-[#A3B8D0]"><X className="h-5 w-5" /></button>
               </div>
@@ -140,7 +145,7 @@ export function RecruiterDashboard() {
                 {navItems.map((item) => (
                   <button key={item.id} onClick={() => { setActiveView(item.id); setMobileMenuOpen(false) }}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
-                      activeView === item.id ? 'bg-[#0A3575] text-white font-medium' : 'text-[#A3B8D0] hover:bg-[#0A3575]/50 hover:text-white'
+                      activeView === item.id ? 'bg-[var(--theme-sidebar-hover)] text-white font-medium' : 'text-[#A3B8D0] hover:bg-[var(--theme-sidebar-hover)] hover:text-white'
                     }`}>
                     <item.icon className="h-[18px] w-[18px]" /><span>{item.label}</span>
                   </button>
@@ -156,7 +161,7 @@ export function RecruiterDashboard() {
             {navItems.slice(0, 4).map((item) => (
               <button key={item.id} onClick={() => setActiveView(item.id)}
                 className={`flex flex-col items-center py-1 px-2 text-xs rounded-lg transition-colors ${
-                  activeView === item.id ? 'text-[#06B6D4] font-medium' : 'text-[#66789C]'
+                  activeView === item.id ? 'text-[var(--theme-primary)] font-medium' : 'text-[#66789C]'
                 }`}>
                 <item.icon className="h-5 w-5 mb-0.5" />
                 <span className="truncate max-w-[56px] text-[10px]">{item.label}</span>
@@ -174,7 +179,7 @@ export function RecruiterDashboard() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs text-[#66789C]">
                 <Home className="h-3.5 w-3.5" />
-                <span className="hover:text-[#3B82F6] cursor-pointer">Home</span>
+                <span className="hover:text-[var(--theme-primary)] cursor-pointer">Home</span>
                 <ChevronRight className="h-3 w-3" />
                 <span className="text-[#05264E] font-medium capitalize">{activeView === 'search' ? 'Find Candidates' : activeView}</span>
               </div>
@@ -189,6 +194,7 @@ export function RecruiterDashboard() {
 
 function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void }) {
   const { user } = useAuthStore()
+  const { theme } = useTheme()
 
   const statCards = [
     { label: 'Placements', value: '12', change: '+18%', up: true, icon: Target, color: '#06B6D4', bg: '#ECFEFF' },
@@ -221,23 +227,24 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-[#05264E] to-[#0A3575] rounded-xl p-6 lg:p-8 text-white relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[var(--theme-sidebar)] to-[var(--theme-sidebar-hover)] rounded-xl p-6 lg:p-8 text-white relative overflow-hidden">
         <div className="relative z-10">
           <h1 className="text-2xl lg:text-3xl font-bold">Welcome, {user?.name}!</h1>
           <p className="text-[#A3B8D0] mt-2 text-sm lg:text-base">Source and manage top talent efficiently with AI-powered tools.</p>
           <div className="flex flex-wrap gap-3 mt-4">
-            <Button size="sm" className="bg-[#06B6D4] hover:bg-[#0891B2] text-white font-semibold text-xs rounded-lg px-4 h-9"
+            <Button size="sm" className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white font-semibold text-xs rounded-lg px-4 h-9"
               onClick={() => onNavigate('search')}>
               <Search className="h-3.5 w-3.5 mr-1.5" /> Find Candidates
             </Button>
-            <Button size="sm" variant="outline" className="border-[#3B82F6] text-[#60A5FA] hover:bg-[#3B82F6]/10 font-semibold text-xs rounded-lg px-4 h-9"
+            <Button size="sm" variant="outline" className="border-[var(--theme-primary)] text-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/10 font-semibold text-xs rounded-lg px-4 h-9"
+              style={{ color: theme.primary, borderColor: theme.primary }}
               onClick={() => onNavigate('pipeline')}>
               <Target className="h-3.5 w-3.5 mr-1.5" /> View Pipeline
             </Button>
           </div>
         </div>
-        <div className="absolute right-0 top-0 w-64 h-64 bg-[#06B6D4]/10 rounded-full -mr-20 -mt-20" />
-        <div className="absolute right-20 bottom-0 w-32 h-32 bg-[#06B6D4]/5 rounded-full -mb-10" />
+        <div className="absolute right-0 top-0 w-64 h-64 rounded-full -mr-20 -mt-20" style={{ backgroundColor: `${theme.primary}15` }} />
+        <div className="absolute right-20 bottom-0 w-32 h-32 rounded-full -mb-10" style={{ backgroundColor: `${theme.primary}0D` }} />
       </div>
 
       {/* Stat cards */}
@@ -290,7 +297,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
                   <div key={i} className="flex flex-col items-center flex-1 h-full justify-end group">
                     <div className="relative w-full max-w-[32px]">
                       <div className="w-full rounded-t-md transition-all duration-500 hover:opacity-80 cursor-pointer"
-                        style={{ height: `${(v / maxVal) * 100}%`, background: 'linear-gradient(180deg, #06B6D4 0%, #22D3EE 100%)' }} />
+                        style={{ height: `${(v / maxVal) * 100}%`, background: `linear-gradient(180deg, ${theme.primary} 0%, ${theme.primaryRing} 100%)` }} />
                       <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#05264E] text-white text-[9px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                         {v} placed
                       </div>
@@ -308,7 +315,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base font-semibold text-[#05264E]">Recent Candidates</h3>
-              <Button variant="ghost" size="sm" className="text-[#06B6D4] text-xs font-medium hover:bg-[#ECFEFF]"
+              <Button variant="ghost" size="sm" className="text-[var(--theme-primary)] text-xs font-medium hover:bg-[var(--theme-primary-light)]"
                 onClick={() => onNavigate('search')}>
                 Find More <ChevronRight className="h-3 w-3 ml-1" />
               </Button>
@@ -318,7 +325,8 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
                 <div key={c.name} className={`flex items-center justify-between py-3.5 ${idx < recentCandidates.length - 1 ? 'border-b border-[#F0F2F5]' : ''} group hover:bg-[#F9FAFB] -mx-2 px-2 rounded-lg transition-colors cursor-pointer`}>
                   <div className="flex items-center gap-3 min-w-0 flex-1">
                     <div className="relative">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#06B6D4] to-[#22D3EE] flex items-center justify-center text-white text-xs font-semibold">
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-semibold"
+                        style={{ background: `linear-gradient(to bottom right, ${theme.primary}, ${theme.primaryRing})` }}>
                         {c.avatar}
                       </div>
                       {c.available && <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white" />}
@@ -334,9 +342,9 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
                   <div className="flex flex-col items-end gap-0.5 ml-3">
                     <div className="flex items-center gap-1">
                       <div className="w-8 h-1.5 bg-[#F0F2F5] rounded-full overflow-hidden">
-                        <div className="h-full bg-[#06B6D4] rounded-full" style={{ width: `${c.match}%` }} />
+                        <div className="h-full rounded-full" style={{ width: `${c.match}%`, backgroundColor: theme.primary }} />
                       </div>
-                      <span className="text-[9px] font-medium text-[#06B6D4]">{c.match}%</span>
+                      <span className="text-[9px] font-medium text-[var(--theme-primary)]">{c.match}%</span>
                     </div>
                     <span className="text-[9px] text-[#66789C]">match</span>
                   </div>
@@ -352,7 +360,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base font-semibold text-[#05264E]">Pipeline Overview</h3>
-              <Button variant="ghost" size="sm" className="text-[#06B6D4] text-xs"
+              <Button variant="ghost" size="sm" className="text-[var(--theme-primary)] text-xs"
                 onClick={() => onNavigate('pipeline')}>View</Button>
             </div>
             <div className="space-y-3">
@@ -361,7 +369,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: stage.color }} />
-                      <span className="text-xs font-medium text-[#05264E] group-hover:text-[#06B6D4] transition-colors">{stage.name}</span>
+                      <span className="text-xs font-medium text-[#05264E] group-hover:text-[var(--theme-primary)] transition-colors">{stage.name}</span>
                     </div>
                     <span className="text-xs font-semibold text-[#05264E]">{stage.count}</span>
                   </div>
@@ -381,7 +389,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
           <div className="panel p-5">
             <h3 className="text-base font-semibold text-[#05264E] mb-4">Quick Actions</h3>
             <div className="space-y-2">
-              <Button className="w-full justify-start bg-[#06B6D4] hover:bg-[#0891B2] text-white text-xs h-9 rounded-lg"
+              <Button className="w-full justify-start bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white text-xs h-9 rounded-lg"
                 onClick={() => onNavigate('search')}>
                 <Search className="h-3.5 w-3.5 mr-2" /> Find Candidates
               </Button>
@@ -397,11 +405,11 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
           </div>
 
           {/* AI sourcing card */}
-          <div className="bg-gradient-to-br from-[#05264E] to-[#0A3575] rounded-xl p-5 text-white relative overflow-hidden">
-            <div className="absolute right-0 bottom-0 w-24 h-24 bg-[#06B6D4]/10 rounded-full -mr-8 -mb-8" />
+          <div className="bg-gradient-to-br from-[var(--theme-sidebar)] to-[var(--theme-sidebar-hover)] rounded-xl p-5 text-white relative overflow-hidden">
+            <div className="absolute right-0 bottom-0 w-24 h-24 rounded-full -mr-8 -mb-8" style={{ backgroundColor: `${theme.primary}1A` }} />
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-3">
-                <Brain className="h-5 w-5 text-[#22D3EE]" />
+                <Brain className="h-5 w-5" style={{ color: theme.primaryRing }} />
                 <h3 className="text-sm font-semibold">AI Smart Sourcing</h3>
               </div>
               <ul className="space-y-2 text-xs text-[#A3B8D0] leading-relaxed">
@@ -427,6 +435,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
 }
 
 function CandidateSearch() {
+  const { theme } = useTheme()
   const [searchTerm, setSearchTerm] = useState('')
   const [expFilter, setExpFilter] = useState('')
   const [locFilter, setLocFilter] = useState('')
@@ -471,22 +480,22 @@ function CandidateSearch() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#66789C]" />
               <Input placeholder="React, Python, Data Science..." value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 border-[#E4E8EC] focus:border-[#06B6D4] focus:ring-[#06B6D4]/20"
+                className="pl-9 border-[#E4E8EC] focus:border-[var(--theme-primary)] focus:ring-[var(--theme-primary-ring)]/20"
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()} />
             </div>
           </div>
           <div>
             <Label className="text-xs text-[#66789C] font-medium">Experience</Label>
             <Input placeholder="3+ years" value={expFilter} onChange={(e) => setExpFilter(e.target.value)}
-              className="mt-1 border-[#E4E8EC] focus:border-[#06B6D4]" />
+              className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" />
           </div>
           <div>
             <Label className="text-xs text-[#66789C] font-medium">Location</Label>
             <Input placeholder="Bangalore, Mumbai..." value={locFilter} onChange={(e) => setLocFilter(e.target.value)}
-              className="mt-1 border-[#E4E8EC] focus:border-[#06B6D4]" />
+              className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" />
           </div>
         </div>
-        <Button className="mt-4 bg-[#06B6D4] hover:bg-[#0891B2] text-white font-semibold text-sm rounded-lg px-6 h-10"
+        <Button className="mt-4 bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white font-semibold text-sm rounded-lg px-6 h-10"
           onClick={handleSearch} disabled={searching}>
           {searching ? 'Searching...' : <><Search className="h-4 w-4 mr-2" /> Search Candidates</>}
         </Button>
@@ -499,12 +508,13 @@ function CandidateSearch() {
             <div key={cand.id} className="stat-card-hover bg-white rounded-xl p-4 border border-[#E4E8EC]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#06B6D4] to-[#22D3EE] flex items-center justify-center text-white text-xs font-semibold">
+                  <div className="w-11 h-11 rounded-full flex items-center justify-center text-white text-xs font-semibold"
+                    style={{ background: `linear-gradient(to bottom right, ${theme.primary}, ${theme.primaryRing})` }}>
                     {(cand.name || 'C').split(' ').map((n: string) => n[0]).join('')}
                   </div>
                   <div>
                     <h3 className="font-semibold text-[#05264E]">{cand.name}</h3>
-                    <p className="text-xs text-[#66789C]">{cand.role} • {cand.exp || 'N/A'}</p>
+                    <p className="text-xs text-[#66789C]">{cand.role} &bull; {cand.exp || 'N/A'}</p>
                     <div className="flex items-center gap-1 mt-1">
                       <MapPin className="h-3 w-3 text-[#66789C]" />
                       <span className="text-[10px] text-[#66789C]">{cand.location || 'Remote'}</span>
@@ -518,10 +528,11 @@ function CandidateSearch() {
                     ))}
                   </div>
                   <div className="flex flex-col items-end">
-                    <span className="text-sm font-bold text-[#06B6D4]">{cand.match}%</span>
+                    <span className="text-sm font-bold text-[var(--theme-primary)]">{cand.match}%</span>
                     <span className="text-[9px] text-[#66789C]">match</span>
                   </div>
-                  <Button size="sm" variant="outline" className="text-[10px] h-7 border-[#06B6D4] text-[#06B6D4] hover:bg-[#ECFEFF]">
+                  <Button size="sm" variant="outline" className="text-[10px] h-7 border-[var(--theme-primary)] text-[var(--theme-primary)] hover:bg-[var(--theme-primary-light)]"
+                    style={{ color: theme.primary, borderColor: theme.primary }}>
                     View
                   </Button>
                 </div>
@@ -540,8 +551,9 @@ function CandidateSearch() {
 }
 
 function PipelineView() {
+  const { theme } = useTheme()
   const stages = [
-    { name: 'Sourced', count: 45, color: '#3B82F6', bg: '#EFF6FF', candidates: ['Rahul S.', 'Priya M.', 'Karthik I.'] },
+    { name: 'Sourced', count: 45, color: theme.primary, bg: theme.primaryLight, candidates: ['Rahul S.', 'Priya M.', 'Karthik I.'] },
     { name: 'Screening', count: 32, color: '#06B6D4', bg: '#ECFEFF', candidates: ['Sneha R.', 'Arun K.'] },
     { name: 'Shortlisted', count: 18, color: '#10B981', bg: '#ECFDF5', candidates: ['Deepa N.', 'Vijay S.'] },
     { name: 'Interview', count: 12, color: '#F59E0B', bg: '#FFFBEB', candidates: ['Meera K.'] },
@@ -581,6 +593,7 @@ function PipelineView() {
 }
 
 function InterviewsView() {
+  const { theme } = useTheme()
   const interviews = [
     { candidate: 'Sanjay Patel', role: 'Senior Developer', company: 'TechCorp', date: 'Today, 2:00 PM', type: 'Technical', status: 'upcoming' },
     { candidate: 'Meera Krishnan', role: 'Data Scientist', company: 'DataFlow Inc', date: 'Tomorrow, 10:00 AM', type: 'HR Round', status: 'upcoming' },
@@ -591,7 +604,7 @@ function InterviewsView() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-[#05264E]">Interviews</h2>
-        <Button size="sm" className="bg-[#06B6D4] hover:bg-[#0891B2] text-white text-xs rounded-lg">
+        <Button size="sm" className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white text-xs rounded-lg">
           <Plus className="h-3.5 w-3.5 mr-1" /> Schedule Interview
         </Button>
       </div>
@@ -607,18 +620,22 @@ function InterviewsView() {
             <div key={idx} className="stat-card-hover bg-white rounded-xl p-4 border border-[#E4E8EC]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#06B6D4]/10 to-[#22D3EE]/10 flex items-center justify-center border border-[#E4E8EC]">
-                    <Calendar className="h-5 w-5 text-[#06B6D4]" />
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center border border-[#E4E8EC]"
+                    style={{ background: `linear-gradient(to bottom right, ${theme.primary}1A, ${theme.primaryRing}1A)` }}>
+                    <Calendar className="h-5 w-5 text-[var(--theme-primary)]" style={{ color: theme.primary }} />
                   </div>
                   <div>
                     <h3 className="font-semibold text-[#05264E]">{intv.candidate}</h3>
-                    <p className="text-[10px] text-[#66789C]">{intv.role} • {intv.company}</p>
+                    <p className="text-[10px] text-[#66789C]">{intv.role} &bull; {intv.company}</p>
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-1">
                   <Badge variant="outline" className={`text-[10px] h-5 px-2 border-0 font-medium ${
-                    intv.status === 'upcoming' ? 'bg-[#EFF6FF] text-[#3B82F6]' : 'bg-[#ECFEFF] text-[#06B6D4]'
-                  }`}>{intv.type}</Badge>
+                    intv.status === 'upcoming' ? 'bg-[var(--theme-primary-light)] text-[var(--theme-primary)]' : 'bg-[#ECFEFF] text-[#06B6D4]'
+                  }`}
+                    style={intv.status === 'upcoming' ? { backgroundColor: theme.primaryLight, color: theme.primary } : undefined}>
+                    {intv.type}
+                  </Badge>
                   <span className="text-[10px] text-[#66789C] flex items-center gap-1"><Clock className="h-2.5 w-2.5" />{intv.date}</span>
                 </div>
               </div>
@@ -659,6 +676,7 @@ function RecruiterAnalytics() {
 
 function RecruiterProfile() {
   const { user } = useAuthStore()
+  const { theme } = useTheme()
   const [profile, setProfile] = useState<any>({})
 
   useEffect(() => {
@@ -670,12 +688,13 @@ function RecruiterProfile() {
       <h2 className="text-xl font-bold text-[#05264E]">My Profile</h2>
       <Card className="border-[#E4E8EC]"><CardContent className="p-5 space-y-4">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#06B6D4] to-[#22D3EE] flex items-center justify-center text-white text-2xl font-bold">
+          <div className="w-16 h-16 rounded-xl flex items-center justify-center text-white text-2xl font-bold"
+            style={{ background: `linear-gradient(to bottom right, ${theme.primary}, ${theme.primaryRing})` }}>
             {user?.name?.split(' ').map(n => n[0]).join('') || 'R'}
           </div>
           <div>
             <h3 className="text-lg font-bold text-[#05264E]">{user?.name}</h3>
-            <p className="text-sm text-[#66789C]">Recruiter • {profile.specialization || 'IT & Software'}</p>
+            <p className="text-sm text-[#66789C]">Recruiter &bull; {profile.specialization || 'IT & Software'}</p>
           </div>
         </div>
         <Separator className="bg-[#F0F2F5]" />
@@ -690,11 +709,11 @@ function RecruiterProfile() {
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <div><Label className="text-[#05264E] font-medium">Specialization</Label><Input value={profile.specialization || ''} className="mt-1 border-[#E4E8EC] focus:border-[#06B6D4]" onChange={(e) => setProfile({...profile, specialization: e.target.value})} /></div>
-          <div><Label className="text-[#05264E] font-medium">Years Experience</Label><Input value={profile.yearsExperience || ''} className="mt-1 border-[#E4E8EC] focus:border-[#06B6D4]" onChange={(e) => setProfile({...profile, yearsExperience: e.target.value})} /></div>
+          <div><Label className="text-[#05264E] font-medium">Specialization</Label><Input value={profile.specialization || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, specialization: e.target.value})} /></div>
+          <div><Label className="text-[#05264E] font-medium">Years Experience</Label><Input value={profile.yearsExperience || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, yearsExperience: e.target.value})} /></div>
         </div>
-        <div><Label className="text-[#05264E] font-medium">Certifications</Label><Input value={profile.certifications || ''} className="mt-1 border-[#E4E8EC] focus:border-[#06B6D4]" /></div>
-        <Button className="bg-[#06B6D4] hover:bg-[#0891B2] text-white font-semibold rounded-lg h-10">Save Profile</Button>
+        <div><Label className="text-[#05264E] font-medium">Certifications</Label><Input value={profile.certifications || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" /></div>
+        <Button className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white font-semibold rounded-lg h-10">Save Profile</Button>
       </CardContent></Card>
     </div>
   )

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/lib/store'
+import { useTheme } from '@/lib/theme'
 import { JobSearchView } from './JobSearchView'
 import { ApplicationsView } from './ApplicationsView'
 import { ResumeBuilder } from './ResumeBuilder'
@@ -10,6 +11,7 @@ import { TrainingView } from './TrainingView'
 import { AnalyticsView } from './AnalyticsView'
 import { ProfileView } from './ProfileView'
 import { Navbar } from './Navbar'
+import { ThemeSwitcher } from '@/components/portal/ThemeSwitcher'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -37,6 +39,7 @@ const navItems: { id: View; label: string; icon: any }[] = [
 
 export function JobSeekerDashboard() {
   const { user } = useAuthStore()
+  const { theme } = useTheme()
   const [activeView, setActiveView] = useState<View>('dashboard')
   const [stats, setStats] = useState<any>(null)
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -86,7 +89,7 @@ export function JobSeekerDashboard() {
       <Navbar />
       <div className="flex">
         {/* Sidebar - JobBox style dark navy */}
-        <aside className={`${sidebarOpen ? 'w-[260px]' : 'w-[72px]'} hidden lg:flex flex-col bg-[#05264E] min-h-[calc(100vh-4rem)] transition-all duration-300 relative border-r-0`}>
+        <aside className={`${sidebarOpen ? 'w-[260px]' : 'w-[72px]'} hidden lg:flex flex-col bg-[var(--theme-sidebar)] min-h-[calc(100vh-4rem)] transition-all duration-300 relative border-r-0`}>
           {/* Collapse toggle */}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -102,8 +105,8 @@ export function JobSeekerDashboard() {
                 onClick={() => setActiveView(item.id)}
                 className={`sidebar-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
                   activeView === item.id
-                    ? 'active bg-[#0A3575] text-white font-medium'
-                    : 'text-[#A3B8D0] hover:bg-[#0A3575]/50 hover:text-white'
+                    ? 'active bg-[var(--theme-sidebar-hover)] text-white font-medium'
+                    : 'text-[#A3B8D0] hover:bg-[var(--theme-sidebar-hover)] hover:text-white'
                 }`}>
                 <item.icon className="h-[18px] w-[18px] flex-shrink-0" />
                 {sidebarOpen && <span className="truncate">{item.label}</span>}
@@ -114,12 +117,12 @@ export function JobSeekerDashboard() {
           {/* Profile completion ring - only when sidebar open */}
           {sidebarOpen && (
             <div className="px-6 pb-4">
-              <div className="border-t border-[#1A3A6B] pt-5">
+              <div className="border-t border-[var(--theme-sidebar-hover)] pt-5">
                 <div className="text-center mb-3">
                   <div className="relative w-20 h-20 mx-auto mb-3">
                     <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-                      <circle cx="40" cy="40" r="34" fill="none" stroke="#1A3A6B" strokeWidth="6" />
-                      <circle cx="40" cy="40" r="34" fill="none" stroke="#3B82F6" strokeWidth="6"
+                      <circle cx="40" cy="40" r="34" fill="none" style={{ stroke: 'var(--theme-sidebar-hover)' }} strokeWidth="6" />
+                      <circle cx="40" cy="40" r="34" fill="none" style={{ stroke: 'var(--theme-sidebar-active)' }} strokeWidth="6"
                         strokeDasharray={`${profileComplete * 2.14} 214`}
                         strokeLinecap="round" />
                     </svg>
@@ -130,7 +133,7 @@ export function JobSeekerDashboard() {
                   <p className="text-xs text-[#A3B8D0] font-medium">Profile Completed</p>
                   <p className="text-[10px] text-[#6B8AB8] mt-1 leading-tight">Add details to boost your career visibility</p>
                 </div>
-                <Button size="sm" className="w-full bg-[#3B82F6] hover:bg-[#2563EB] text-white text-xs rounded-lg h-8"
+                <Button size="sm" className="w-full bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white text-xs rounded-lg h-8"
                   onClick={() => setActiveView('profile')}>
                   Complete Profile
                 </Button>
@@ -141,11 +144,11 @@ export function JobSeekerDashboard() {
           {/* Sidebar hiring banner */}
           {sidebarOpen && (
             <div className="px-4 pb-4">
-              <div className="bg-gradient-to-br from-[#0A3575] to-[#0F4491] rounded-xl p-4 text-center">
+              <div className="bg-gradient-to-br from-[var(--theme-sidebar)] to-[var(--theme-sidebar-hover)] rounded-xl p-4 text-center">
                 <span className="text-[#A3B8D0] text-[10px] uppercase tracking-wider font-semibold">We Are</span>
                 <span className="block text-xl font-bold text-white -mt-1">HIRING</span>
                 <p className="text-[9px] text-[#8BA6C4] mt-1 leading-tight">Explore thousands of job opportunities</p>
-                <Button size="sm" variant="outline" className="w-full mt-3 text-xs h-7 border-[#3B82F6] text-[#60A5FA] hover:bg-[#3B82F6]/10"
+                <Button size="sm" variant="outline" className="w-full mt-3 text-xs h-7 border-[var(--theme-primary)] text-[var(--theme-sidebar-active)] hover:bg-white/10"
                   onClick={() => setActiveView('jobs')}>
                   Know More
                 </Button>
@@ -153,16 +156,17 @@ export function JobSeekerDashboard() {
             </div>
           )}
 
-          {/* Bottom: Settings & Logout */}
+          {/* Bottom: ThemeSwitcher, Settings & Logout */}
           <div className="px-3 pb-4 space-y-1">
             {sidebarOpen && (
               <>
-                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#A3B8D0] hover:bg-[#0A3575]/50 hover:text-white transition-colors"
+                <ThemeSwitcher />
+                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#A3B8D0] hover:bg-[var(--theme-sidebar-hover)] hover:text-white transition-colors"
                   onClick={() => setActiveView('profile')}>
                   <Settings className="h-[18px] w-[18px]" />
                   <span>Settings</span>
                 </button>
-                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#A3B8D0] hover:bg-[#0A3575]/50 hover:text-red-400 transition-colors"
+                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#A3B8D0] hover:bg-[var(--theme-sidebar-hover)] hover:text-red-400 transition-colors"
                   onClick={() => { useAuthStore.getState().logout(); window.location.reload() }}>
                   <LogOut className="h-[18px] w-[18px]" />
                   <span>Logout</span>
@@ -176,8 +180,8 @@ export function JobSeekerDashboard() {
         {mobileMenuOpen && (
           <div className="lg:hidden fixed inset-0 z-50">
             <div className="absolute inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
-            <div className="absolute left-0 top-0 bottom-0 w-[260px] bg-[#05264E] flex flex-col overflow-y-auto">
-              <div className="flex items-center justify-between px-4 h-16 border-b border-[#1A3A6B]">
+            <div className="absolute left-0 top-0 bottom-0 w-[260px] bg-[var(--theme-sidebar)] flex flex-col overflow-y-auto">
+              <div className="flex items-center justify-between px-4 h-16 border-b border-[var(--theme-sidebar-hover)]">
                 <span className="text-white font-bold">3 Boxes Jobs</span>
                 <button onClick={() => setMobileMenuOpen(false)} className="text-[#A3B8D0]"><X className="h-5 w-5" /></button>
               </div>
@@ -186,14 +190,15 @@ export function JobSeekerDashboard() {
                   <button key={item.id}
                     onClick={() => { setActiveView(item.id); setMobileMenuOpen(false) }}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
-                      activeView === item.id ? 'bg-[#0A3575] text-white font-medium' : 'text-[#A3B8D0] hover:bg-[#0A3575]/50 hover:text-white'
+                      activeView === item.id ? 'bg-[var(--theme-sidebar-hover)] text-white font-medium' : 'text-[#A3B8D0] hover:bg-[var(--theme-sidebar-hover)] hover:text-white'
                     }`}>
                     <item.icon className="h-[18px] w-[18px]" />
                     <span>{item.label}</span>
                   </button>
                 ))}
               </nav>
-              <div className="px-4 pb-4">
+              <div className="px-3 pb-4 space-y-1">
+                <ThemeSwitcher />
                 <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[#A3B8D0] hover:text-red-400"
                   onClick={() => { useAuthStore.getState().logout(); window.location.reload() }}>
                   <LogOut className="h-[18px] w-[18px]" /><span>Logout</span>
@@ -209,7 +214,7 @@ export function JobSeekerDashboard() {
             {navItems.slice(0, 5).map((item) => (
               <button key={item.id} onClick={() => setActiveView(item.id)}
                 className={`flex flex-col items-center py-1 px-2 text-xs rounded-lg transition-colors ${
-                  activeView === item.id ? 'text-[#3B82F6] font-medium' : 'text-[#66789C]'
+                  activeView === item.id ? 'text-[var(--theme-primary)] font-medium' : 'text-[#66789C]'
                 }`}>
                 <item.icon className="h-5 w-5 mb-0.5" />
                 <span className="truncate max-w-[56px] text-[10px]">{item.label}</span>
@@ -229,7 +234,7 @@ export function JobSeekerDashboard() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs text-[#66789C]">
                 <Home className="h-3.5 w-3.5" />
-                <span className="hover:text-[#3B82F6] cursor-pointer">Home</span>
+                <span className="hover:text-[var(--theme-primary)] cursor-pointer">Home</span>
                 <ChevronRight className="h-3 w-3" />
                 <span className="text-[#05264E] font-medium capitalize">{activeView === 'jobs' ? 'Find Jobs' : activeView === 'resume' ? 'CV Manager' : activeView === 'interview' ? 'AI Interview' : activeView}</span>
               </div>
@@ -252,10 +257,10 @@ export function JobSeekerDashboard() {
 function ComputerIcon() {
   return (
     <svg width="40" height="40" viewBox="0 0 40 40" fill="none" className="flex-shrink-0">
-      <rect x="4" y="6" width="32" height="22" rx="3" stroke="#3B82F6" strokeWidth="2" fill="#EFF6FF"/>
-      <rect x="8" y="10" width="24" height="14" rx="1" fill="#DBEAFE"/>
-      <line x1="16" y1="28" x2="24" y2="28" stroke="#3B82F6" strokeWidth="2"/>
-      <line x1="12" y1="32" x2="28" y2="32" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round"/>
+      <rect x="4" y="6" width="32" height="22" rx="3" style={{ stroke: 'var(--theme-primary)', fill: 'var(--theme-primary-light)' }} strokeWidth="2"/>
+      <rect x="8" y="10" width="24" height="14" rx="1" style={{ fill: 'var(--theme-primary-medium)' }}/>
+      <line x1="16" y1="28" x2="24" y2="28" style={{ stroke: 'var(--theme-primary)' }} strokeWidth="2"/>
+      <line x1="12" y1="32" x2="28" y2="32" style={{ stroke: 'var(--theme-primary)' }} strokeWidth="2" strokeLinecap="round"/>
     </svg>
   )
 }
@@ -315,9 +320,9 @@ function DocIcon() {
 function ManIcon() {
   return (
     <svg width="40" height="40" viewBox="0 0 40 40" fill="none" className="flex-shrink-0">
-      <rect x="4" y="4" width="32" height="32" rx="8" fill="#EFF6FF"/>
-      <circle cx="20" cy="14" r="4" stroke="#3B82F6" strokeWidth="2" fill="#DBEAFE"/>
-      <path d="M12 30c0-5 4-8 8-8s8 3 8 8" stroke="#3B82F6" strokeWidth="2" fill="none"/>
+      <rect x="4" y="4" width="32" height="32" rx="8" style={{ fill: 'var(--theme-primary-light)' }}/>
+      <circle cx="20" cy="14" r="4" style={{ stroke: 'var(--theme-primary)', fill: 'var(--theme-primary-medium)' }} strokeWidth="2"/>
+      <path d="M12 30c0-5 4-8 8-8s8 3 8 8" style={{ stroke: 'var(--theme-primary)' }} strokeWidth="2" fill="none"/>
     </svg>
   )
 }
@@ -327,14 +332,14 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
   const { user } = useAuthStore()
 
   const statCards = [
-    { label: 'Interview Schedules', value: stats?.interviewsCompleted || 0, change: '+25%', up: true, icon: ComputerIcon, color: '#3B82F6', bg: '#EFF6FF' },
+    { label: 'Interview Schedules', value: stats?.interviewsCompleted || 0, change: '+25%', up: true, icon: ComputerIcon, color: 'var(--theme-primary)', bg: 'var(--theme-primary-light)' },
     { label: 'Applied Jobs', value: stats?.totalApplications || 0, change: '+5%', up: true, icon: BankIcon, color: '#10B981', bg: '#ECFDF5' },
     { label: 'Task Bids Won', value: stats?.trainingsCompleted || 0, change: '+12%', up: true, icon: LampIcon, color: '#F59E0B', bg: '#FFFBEB' },
     { label: 'Application Sent', value: stats?.totalApplications || 0, change: '+5%', up: true, icon: HeadphoneIcon, color: '#8B5CF6', bg: '#F5F3FF' },
     { label: 'Profile Viewed', value: 165, change: '+15%', up: true, icon: LookIcon, color: '#06B6D4', bg: '#ECFEFF' },
     { label: 'New Messages', value: 23, change: '-2%', up: false, icon: MessageSquare, color: '#EF4444', bg: '#FEF2F2' },
     { label: 'Articles Added', value: 8, change: '+2%', up: true, icon: DocIcon, color: '#F97316', bg: '#FFF7ED' },
-    { label: 'CV Added', value: 2, change: '+48%', up: true, icon: ManIcon, color: '#3B82F6', bg: '#EFF6FF' },
+    { label: 'CV Added', value: 2, change: '+48%', up: true, icon: ManIcon, color: 'var(--theme-primary)', bg: 'var(--theme-primary-light)' },
   ]
 
   const formatSalary = (min?: number, max?: number) => {
@@ -377,7 +382,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
   return (
     <div className="space-y-6">
       {/* Welcome Banner - JobBox style */}
-      <div className="bg-gradient-to-r from-[#05264E] to-[#0A3575] rounded-xl p-6 lg:p-8 text-white relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[var(--theme-sidebar)] to-[var(--theme-sidebar-hover)] rounded-xl p-6 lg:p-8 text-white relative overflow-hidden">
         <div className="relative z-10">
           <h1 className="text-2xl lg:text-3xl font-bold">Welcome back, {user?.name?.split(' ')[0]}! 👋</h1>
           <p className="text-[#A3B8D0] mt-2 text-sm lg:text-base">Here&apos;s what&apos;s happening with your job search today.</p>
@@ -386,15 +391,15 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
               onClick={() => onNavigate('jobs')}>
               <Search className="h-3.5 w-3.5 mr-1.5" /> Find Jobs
             </Button>
-            <Button size="sm" variant="outline" className="border-[#3B82F6] text-[#60A5FA] hover:bg-[#3B82F6]/10 font-semibold text-xs rounded-lg px-4 h-9"
+            <Button size="sm" variant="outline" className="border-[var(--theme-primary)] text-[var(--theme-sidebar-active)] hover:bg-white/10 font-semibold text-xs rounded-lg px-4 h-9"
               onClick={() => onNavigate('resume')}>
               <FileText className="h-3.5 w-3.5 mr-1.5" /> Build Resume
             </Button>
           </div>
         </div>
         {/* Decorative circles */}
-        <div className="absolute right-0 top-0 w-64 h-64 bg-[#3B82F6]/10 rounded-full -mr-20 -mt-20" />
-        <div className="absolute right-20 bottom-0 w-32 h-32 bg-[#3B82F6]/5 rounded-full -mb-10" />
+        <div className="absolute right-0 top-0 w-64 h-64 bg-[var(--theme-primary-light)] rounded-full -mr-20 -mt-20" />
+        <div className="absolute right-20 bottom-0 w-32 h-32 bg-[var(--theme-primary-light)] rounded-full -mb-10" />
       </div>
 
       {/* Stat cards - JobBox 4-col grid with 8 cards */}
@@ -465,7 +470,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
                     <div className="relative w-full max-w-[32px]">
                       <div
                         className="w-full rounded-t-md transition-all duration-500 hover:opacity-80 cursor-pointer"
-                        style={{ height: `${(v / maxVal) * 100}%`, background: 'linear-gradient(180deg, #3B82F6 0%, #60A5FA 100%)' }}
+                        style={{ height: `${(v / maxVal) * 100}%`, background: 'linear-gradient(180deg, var(--theme-primary) 0%, var(--theme-primary-ring) 100%)' }}
                       />
                       {/* Tooltip on hover */}
                       <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#05264E] text-white text-[9px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
@@ -485,11 +490,11 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
             {/* Legend */}
             <div className="flex items-center gap-4 mt-4 pt-3 border-t border-[#F0F2F5]">
               <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-sm bg-[#3B82F6]" />
+                <div className="w-2.5 h-2.5 rounded-sm bg-[var(--theme-primary)]" />
                 <span className="text-[10px] text-[#66789C]">Open Positions</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-sm bg-[#60A5FA]" />
+                <div className="w-2.5 h-2.5 rounded-sm bg-[var(--theme-primary-ring)]" />
                 <span className="text-[10px] text-[#66789C]">Filled Positions</span>
               </div>
             </div>
@@ -499,7 +504,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base font-semibold text-[#05264E]">Latest Jobs</h3>
-              <Button variant="ghost" size="sm" className="text-[#3B82F6] text-xs font-medium hover:bg-[#EFF6FF]"
+              <Button variant="ghost" size="sm" className="text-[var(--theme-primary)] text-xs font-medium hover:bg-[var(--theme-primary-light)]"
                 onClick={() => onNavigate('jobs')}>
                 View All <ChevronRight className="h-3 w-3 ml-1" />
               </Button>
@@ -514,13 +519,13 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
                 <div key={job.id} className={`flex items-center justify-between py-3.5 ${idx < recentJobs.length - 1 ? 'border-b border-[#F0F2F5]' : ''} group hover:bg-[#F9FAFB] -mx-2 px-2 rounded-lg transition-colors cursor-pointer`}>
                   <div className="flex items-center gap-3 min-w-0 flex-1">
                     {/* Company logo placeholder */}
-                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#3B82F6]/10 to-[#8B5CF6]/10 flex items-center justify-center flex-shrink-0 border border-[#E4E8EC]">
-                      <Briefcase className="h-5 w-5 text-[#3B82F6]" />
+                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[var(--theme-primary-light)] to-purple-50 flex items-center justify-center flex-shrink-0 border border-[#E4E8EC]">
+                      <Briefcase className="h-5 w-5 text-[var(--theme-primary)]" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-semibold text-[#05264E] truncate group-hover:text-[#3B82F6] transition-colors">{job.title}</h4>
+                      <h4 className="text-sm font-semibold text-[#05264E] truncate group-hover:text-[var(--theme-primary)] transition-colors">{job.title}</h4>
                       <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                        <Badge variant="secondary" className="text-[10px] h-4 px-1.5 bg-[#E7F0FA] text-[#3B82F6] border-0 font-medium">{job.jobType}</Badge>
+                        <Badge variant="secondary" className="text-[10px] h-4 px-1.5 bg-[var(--theme-primary-light)] text-[var(--theme-primary)] border-0 font-medium">{job.jobType}</Badge>
                         <span className="text-[10px] text-[#66789C] flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />Just now</span>
                         {job.location && <span className="text-[10px] text-[#66789C] flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{job.location}</span>}
                       </div>
@@ -548,13 +553,13 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base font-semibold text-[#05264E]">Top Candidates</h3>
-              <Button variant="ghost" size="sm" className="text-[#3B82F6] text-xs">View All</Button>
+              <Button variant="ghost" size="sm" className="text-[var(--theme-primary)] text-xs">View All</Button>
             </div>
             <div className="space-y-0">
               {topCandidates.map((c, idx) => (
                 <div key={c.name} className={`flex items-center gap-3 py-3 ${idx < topCandidates.length - 1 ? 'border-b border-[#F0F2F5]' : ''} hover:bg-[#F9FAFB] -mx-2 px-2 rounded-lg transition-colors cursor-pointer`}>
                   <div className="relative">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#3B82F6] to-[#8B5CF6] flex items-center justify-center text-white text-xs font-semibold">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-sidebar-active)] flex items-center justify-center text-white text-xs font-semibold">
                       {c.name.split(' ').map(n => n[0]).join('')}
                     </div>
                     {c.online && <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white" />}
@@ -589,11 +594,11 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
               {searchQueries.map((q) => (
                 <div key={q.term} className="group cursor-pointer">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-medium text-[#05264E] group-hover:text-[#3B82F6] transition-colors">{q.term}</span>
+                    <span className="text-xs font-medium text-[#05264E] group-hover:text-[var(--theme-primary)] transition-colors">{q.term}</span>
                     <span className="text-xs text-[#66789C]">{q.count.toLocaleString()}</span>
                   </div>
                   <div className="w-full bg-[#F0F2F5] rounded-full h-2">
-                    <div className="bg-gradient-to-r from-[#3B82F6] to-[#60A5FA] h-2 rounded-full transition-all duration-300" style={{ width: `${q.pct}%` }} />
+                    <div className="bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-primary-ring)] h-2 rounded-full transition-all duration-300" style={{ width: `${q.pct}%` }} />
                   </div>
                 </div>
               ))}
@@ -601,12 +606,12 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
           </div>
 
           {/* AI Career Insights - JobBox hiring-style card */}
-          <div className="bg-gradient-to-br from-[#05264E] to-[#0A3575] rounded-xl p-5 text-white relative overflow-hidden">
-            <div className="absolute right-0 bottom-0 w-24 h-24 bg-[#3B82F6]/10 rounded-full -mr-8 -mb-8" />
+          <div className="bg-gradient-to-br from-[var(--theme-sidebar)] to-[var(--theme-sidebar-hover)] rounded-xl p-5 text-white relative overflow-hidden">
+            <div className="absolute right-0 bottom-0 w-24 h-24 bg-[var(--theme-primary-light)] rounded-full -mr-8 -mb-8" />
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 rounded-lg bg-[#3B82F6]/20 flex items-center justify-center">
-                  <Brain className="h-4 w-4 text-[#60A5FA]" />
+                <div className="w-8 h-8 rounded-lg bg-[var(--theme-primary-medium)] flex items-center justify-center">
+                  <Brain className="h-4 w-4 text-[var(--theme-sidebar-active)]" />
                 </div>
                 <h3 className="text-sm font-semibold">AI Career Insights</h3>
               </div>
@@ -628,7 +633,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
                   <span>Add AWS skills — <strong className="text-white">65%</strong> of current postings require it</span>
                 </li>
               </ul>
-              <Button size="sm" className="w-full mt-4 bg-[#3B82F6] hover:bg-[#2563EB] text-white text-xs rounded-lg h-8"
+              <Button size="sm" className="w-full mt-4 bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white text-xs rounded-lg h-8"
                 onClick={() => onNavigate('interview')}>
                 Start AI Interview
               </Button>

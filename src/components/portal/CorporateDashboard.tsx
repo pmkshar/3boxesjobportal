@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/lib/store'
+import { useTheme } from '@/lib/theme'
+import { ThemeSwitcher } from '@/components/portal/ThemeSwitcher'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -35,6 +37,7 @@ const navItems: { id: View; label: string; icon: any }[] = [
 
 export function CorporateDashboard() {
   const { user } = useAuthStore()
+  const { theme } = useTheme()
   const [activeView, setActiveView] = useState<View>('dashboard')
   const [stats, setStats] = useState({ totalJobs: 0, activeJobs: 0, totalApplications: 0, shortlisted: 0 })
   const [jobs, setJobs] = useState<any[]>([])
@@ -105,7 +108,7 @@ export function CorporateDashboard() {
       <Navbar />
       <div className="flex">
         {/* Sidebar - JobBox style */}
-        <aside className={`${sidebarOpen ? 'w-[260px]' : 'w-[72px]'} hidden lg:flex flex-col bg-[#05264E] min-h-[calc(100vh-4rem)] transition-all duration-300 relative`}>
+        <aside className={`${sidebarOpen ? 'w-[260px]' : 'w-[72px]'} hidden lg:flex flex-col bg-[var(--theme-sidebar)] min-h-[calc(100vh-4rem)] transition-all duration-300 relative`}>
           <button onClick={() => setSidebarOpen(!sidebarOpen)}
             className="absolute -right-3 top-6 z-10 w-6 h-6 bg-white border border-gray-200 rounded-full flex items-center justify-center shadow-sm hover:shadow-md transition-shadow">
             <ChevronRight className={`h-3 w-3 text-gray-600 transition-transform ${sidebarOpen ? 'rotate-180' : ''}`} />
@@ -116,8 +119,8 @@ export function CorporateDashboard() {
               <button key={item.id} onClick={() => setActiveView(item.id)}
                 className={`sidebar-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
                   activeView === item.id
-                    ? 'active bg-[#0A3575] text-white font-medium'
-                    : 'text-[#A3B8D0] hover:bg-[#0A3575]/50 hover:text-white'
+                    ? 'active bg-[var(--theme-sidebar-hover)] text-white font-medium'
+                    : 'text-[#A3B8D0] hover:bg-[var(--theme-sidebar-hover)] hover:text-white'
                 }`}>
                 <item.icon className="h-[18px] w-[18px] flex-shrink-0" />
                 {sidebarOpen && <span className="truncate">{item.label}</span>}
@@ -127,20 +130,20 @@ export function CorporateDashboard() {
 
           {sidebarOpen && (
             <div className="px-6 pb-4">
-              <div className="border-t border-[#1A3A6B] pt-5">
+              <div className="border-t border-[var(--theme-sidebar-hover)] pt-5">
                 <div className="text-center mb-3">
                   <div className="relative w-20 h-20 mx-auto mb-3">
                     <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-                      <circle cx="40" cy="40" r="34" fill="none" stroke="#1A3A6B" strokeWidth="6" />
-                      <circle cx="40" cy="40" r="34" fill="none" stroke="#10B981" strokeWidth="6"
-                        strokeDasharray={`${profileComplete * 2.14} 214`} strokeLinecap="round" />
+                      <circle cx="40" cy="40" r="34" fill="none" strokeWidth="6" style={{ stroke: theme.sidebarHover }} />
+                      <circle cx="40" cy="40" r="34" fill="none" strokeWidth="6"
+                        strokeDasharray={`${profileComplete * 2.14} 214`} strokeLinecap="round" style={{ stroke: theme.sidebarActive }} />
                     </svg>
                     <span className="absolute inset-0 flex items-center justify-center text-white text-sm font-bold">{profileComplete}%</span>
                   </div>
                   <p className="text-xs text-[#A3B8D0] font-medium">Profile Completed</p>
                   <p className="text-[10px] text-[#6B8AB8] mt-1 leading-tight">Complete your company profile to attract top talent</p>
                 </div>
-                <Button size="sm" className="w-full bg-[#10B981] hover:bg-[#059669] text-white text-xs rounded-lg h-8"
+                <Button size="sm" className="w-full bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white text-xs rounded-lg h-8"
                   onClick={() => setActiveView('profile')}>
                   Complete Profile
                 </Button>
@@ -150,11 +153,11 @@ export function CorporateDashboard() {
 
           {sidebarOpen && (
             <div className="px-4 pb-4">
-              <div className="bg-gradient-to-br from-[#0A3575] to-[#0F4491] rounded-xl p-4 text-center">
+              <div className="bg-gradient-to-br from-[var(--theme-sidebar-hover)] to-[var(--theme-sidebar)] rounded-xl p-4 text-center">
                 <span className="text-[#A3B8D0] text-[10px] uppercase tracking-wider font-semibold">Need</span>
                 <span className="block text-xl font-bold text-white -mt-1">TALENT?</span>
                 <p className="text-[9px] text-[#8BA6C4] mt-1 leading-tight">Post your job and reach thousands of candidates</p>
-                <Button size="sm" variant="outline" className="w-full mt-3 text-xs h-7 border-[#10B981] text-[#34D399] hover:bg-[#10B981]/10"
+                <Button size="sm" variant="outline" className="w-full mt-3 text-xs h-7 border-[var(--theme-sidebar-active)] text-[var(--theme-sidebar-active)] hover:bg-[var(--theme-sidebar-active)]"
                   onClick={() => setActiveView('post-job')}>
                   Post Job Now
                 </Button>
@@ -165,11 +168,12 @@ export function CorporateDashboard() {
           <div className="px-3 pb-4 space-y-1">
             {sidebarOpen && (
               <>
-                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#A3B8D0] hover:bg-[#0A3575]/50 hover:text-white transition-colors"
+                <ThemeSwitcher />
+                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#A3B8D0] hover:bg-[var(--theme-sidebar-hover)] hover:text-white transition-colors"
                   onClick={() => setActiveView('profile')}>
                   <Settings className="h-[18px] w-[18px]" /><span>Settings</span>
                 </button>
-                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#A3B8D0] hover:bg-[#0A3575]/50 hover:text-red-400 transition-colors"
+                <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#A3B8D0] hover:bg-[var(--theme-sidebar-hover)] hover:text-red-400 transition-colors"
                   onClick={() => { useAuthStore.getState().logout(); window.location.reload() }}>
                   <LogOut className="h-[18px] w-[18px]" /><span>Logout</span>
                 </button>
@@ -182,8 +186,8 @@ export function CorporateDashboard() {
         {mobileMenuOpen && (
           <div className="lg:hidden fixed inset-0 z-50">
             <div className="absolute inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
-            <div className="absolute left-0 top-0 bottom-0 w-[260px] bg-[#05264E] flex flex-col overflow-y-auto">
-              <div className="flex items-center justify-between px-4 h-16 border-b border-[#1A3A6B]">
+            <div className="absolute left-0 top-0 bottom-0 w-[260px] bg-[var(--theme-sidebar)] flex flex-col overflow-y-auto">
+              <div className="flex items-center justify-between px-4 h-16 border-b border-[var(--theme-sidebar-hover)]">
                 <span className="text-white font-bold">3 Boxes Jobs</span>
                 <button onClick={() => setMobileMenuOpen(false)} className="text-[#A3B8D0]"><X className="h-5 w-5" /></button>
               </div>
@@ -191,7 +195,7 @@ export function CorporateDashboard() {
                 {navItems.map((item) => (
                   <button key={item.id} onClick={() => { setActiveView(item.id); setMobileMenuOpen(false) }}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
-                      activeView === item.id ? 'bg-[#0A3575] text-white font-medium' : 'text-[#A3B8D0] hover:bg-[#0A3575]/50 hover:text-white'
+                      activeView === item.id ? 'bg-[var(--theme-sidebar-hover)] text-white font-medium' : 'text-[#A3B8D0] hover:bg-[var(--theme-sidebar-hover)] hover:text-white'
                     }`}>
                     <item.icon className="h-[18px] w-[18px]" /><span>{item.label}</span>
                   </button>
@@ -207,7 +211,7 @@ export function CorporateDashboard() {
             {navItems.slice(0, 4).map((item) => (
               <button key={item.id} onClick={() => setActiveView(item.id)}
                 className={`flex flex-col items-center py-1 px-2 text-xs rounded-lg transition-colors ${
-                  activeView === item.id ? 'text-[#10B981] font-medium' : 'text-[#66789C]'
+                  activeView === item.id ? 'text-[var(--theme-primary)] font-medium' : 'text-[#66789C]'
                 }`}>
                 <item.icon className="h-5 w-5 mb-0.5" />
                 <span className="truncate max-w-[56px] text-[10px]">{item.label}</span>
@@ -225,7 +229,7 @@ export function CorporateDashboard() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs text-[#66789C]">
                 <Home className="h-3.5 w-3.5" />
-                <span className="hover:text-[#3B82F6] cursor-pointer">Home</span>
+                <span className="hover:text-[var(--theme-primary)] cursor-pointer">Home</span>
                 <ChevronRight className="h-3 w-3" />
                 <span className="text-[#05264E] font-medium capitalize">{activeView === 'post-job' ? 'Post Job' : activeView === 'my-jobs' ? 'My Jobs' : activeView}</span>
               </div>
@@ -240,6 +244,7 @@ export function CorporateDashboard() {
 
 function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[]; onNavigate: (v: View) => void }) {
   const { user } = useAuthStore()
+  const { theme } = useTheme()
 
   const statCards = [
     { label: 'Total Jobs', value: stats.totalJobs, change: '+12%', up: true, icon: Briefcase, color: '#3B82F6', bg: '#EFF6FF' },
@@ -263,23 +268,23 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-[#05264E] to-[#0A3575] rounded-xl p-6 lg:p-8 text-white relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[var(--theme-sidebar)] to-[var(--theme-sidebar-hover)] rounded-xl p-6 lg:p-8 text-white relative overflow-hidden">
         <div className="relative z-10">
           <h1 className="text-2xl lg:text-3xl font-bold">Welcome, {user?.name}!</h1>
           <p className="text-[#A3B8D0] mt-2 text-sm lg:text-base">Manage your job postings and find top talent for your team.</p>
           <div className="flex flex-wrap gap-3 mt-4">
-            <Button size="sm" className="bg-[#10B981] hover:bg-[#059669] text-white font-semibold text-xs rounded-lg px-4 h-9"
+            <Button size="sm" className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white font-semibold text-xs rounded-lg px-4 h-9"
               onClick={() => onNavigate('post-job')}>
               <Plus className="h-3.5 w-3.5 mr-1.5" /> Post New Job
             </Button>
-            <Button size="sm" variant="outline" className="border-[#3B82F6] text-[#60A5FA] hover:bg-[#3B82F6]/10 font-semibold text-xs rounded-lg px-4 h-9"
+            <Button size="sm" variant="outline" className="border-[var(--theme-primary)] text-[var(--theme-primary)] hover:bg-[var(--theme-primary-light)] font-semibold text-xs rounded-lg px-4 h-9"
               onClick={() => onNavigate('applications')}>
               <FileCheck className="h-3.5 w-3.5 mr-1.5" /> Review Applications
             </Button>
           </div>
         </div>
-        <div className="absolute right-0 top-0 w-64 h-64 bg-[#10B981]/10 rounded-full -mr-20 -mt-20" />
-        <div className="absolute right-20 bottom-0 w-32 h-32 bg-[#10B981]/5 rounded-full -mb-10" />
+        <div className="absolute right-0 top-0 w-64 h-64 rounded-full -mr-20 -mt-20" style={{ backgroundColor: theme.primary + '1A' }} />
+        <div className="absolute right-20 bottom-0 w-32 h-32 rounded-full -mb-10" style={{ backgroundColor: theme.primary + '0D' }} />
       </div>
 
       {/* Stat cards */}
@@ -330,7 +335,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
                   <div key={i} className="flex flex-col items-center flex-1 h-full justify-end group">
                     <div className="relative w-full max-w-[32px]">
                       <div className="w-full rounded-t-md transition-all duration-500 hover:opacity-80 cursor-pointer"
-                        style={{ height: `${(v / maxVal) * 100}%`, background: 'linear-gradient(180deg, #10B981 0%, #34D399 100%)' }} />
+                        style={{ height: `${(v / maxVal) * 100}%`, background: `linear-gradient(180deg, ${theme.primary} 0%, ${theme.primaryRing} 100%)` }} />
                       <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#05264E] text-white text-[9px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                         {v} apps
                       </div>
@@ -348,7 +353,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base font-semibold text-[#05264E]">My Jobs</h3>
-              <Button variant="ghost" size="sm" className="text-[#10B981] text-xs font-medium hover:bg-[#ECFDF5]"
+              <Button variant="ghost" size="sm" className="text-[var(--theme-primary)] text-xs font-medium hover:bg-[var(--theme-primary-light)]"
                 onClick={() => onNavigate('my-jobs')}>
                 View All <ChevronRight className="h-3 w-3 ml-1" />
               </Button>
@@ -357,7 +362,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
               <div className="text-center py-8 text-[#66789C]">
                 <Briefcase className="h-8 w-8 mx-auto mb-2 text-gray-300" />
                 <p className="text-sm">No jobs posted yet. Post your first job!</p>
-                <Button size="sm" className="mt-3 bg-[#10B981] hover:bg-[#059669] text-white text-xs rounded-lg"
+                <Button size="sm" className="mt-3 bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white text-xs rounded-lg"
                   onClick={() => onNavigate('post-job')}>
                   <Plus className="h-3.5 w-3.5 mr-1" /> Post Job
                 </Button>
@@ -367,8 +372,8 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
                 {jobs.slice(0, 5).map((job: any, idx: number) => (
                   <div key={job.id} className={`flex items-center justify-between py-3.5 ${idx < Math.min(jobs.length, 5) - 1 ? 'border-b border-[#F0F2F5]' : ''} group hover:bg-[#F9FAFB] -mx-2 px-2 rounded-lg transition-colors cursor-pointer`}>
                     <div className="flex items-center gap-3 min-w-0 flex-1">
-                      <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#10B981]/10 to-[#34D399]/10 flex items-center justify-center flex-shrink-0 border border-[#E4E8EC]">
-                        <Briefcase className="h-5 w-5 text-[#10B981]" />
+                      <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 border border-[#E4E8EC]" style={{ background: `linear-gradient(135deg, ${theme.primary}1A 0%, ${theme.primaryRing}1A 100%)` }}>
+                        <Briefcase className="h-5 w-5 text-[var(--theme-primary)]" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <h4 className="text-sm font-semibold text-[#05264E] truncate">{job.title}</h4>
@@ -380,7 +385,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
                       </div>
                     </div>
                     <Badge variant="outline" className={`text-[10px] h-5 px-2 border-0 font-medium ${
-                      job.status === 'ACTIVE' ? 'bg-[#ECFDF5] text-[#10B981]' : 'bg-[#F0F2F5] text-[#66789C]'
+                      job.status === 'ACTIVE' ? 'bg-[var(--theme-primary-light)] text-[var(--theme-primary)]' : 'bg-[#F0F2F5] text-[#66789C]'
                     }`}>{job.status}</Badge>
                   </div>
                 ))}
@@ -395,13 +400,13 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-base font-semibold text-[#05264E]">Recent Applicants</h3>
-              <Button variant="ghost" size="sm" className="text-[#10B981] text-xs"
+              <Button variant="ghost" size="sm" className="text-[var(--theme-primary)] text-xs"
                 onClick={() => onNavigate('applications')}>View All</Button>
             </div>
             <div className="space-y-0">
               {recentApplicants.map((a, idx) => (
                 <div key={a.name} className={`flex items-center gap-3 py-3 ${idx < recentApplicants.length - 1 ? 'border-b border-[#F0F2F5]' : ''}`}>
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#10B981] to-[#34D399] flex items-center justify-center text-white text-[10px] font-semibold">
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[10px] font-semibold" style={{ background: theme.gradient }}>
                     {a.avatar}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -410,7 +415,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
                   </div>
                   <div className="flex flex-col items-end gap-0.5">
                     <Badge variant="outline" className={`text-[9px] h-4 px-1.5 border-0 font-medium ${
-                      a.status === 'New' ? 'bg-[#EFF6FF] text-[#3B82F6]' :
+                      a.status === 'New' ? 'bg-[var(--theme-primary-light)] text-[var(--theme-primary)]' :
                       a.status === 'Shortlisted' ? 'bg-[#ECFDF5] text-[#10B981]' :
                       a.status === 'Interview' ? 'bg-[#FFFBEB] text-[#F59E0B]' :
                       'bg-[#F0F2F5] text-[#66789C]'
@@ -426,7 +431,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
           <div className="panel p-5">
             <h3 className="text-base font-semibold text-[#05264E] mb-4">Quick Actions</h3>
             <div className="space-y-2">
-              <Button className="w-full justify-start bg-[#10B981] hover:bg-[#059669] text-white text-xs h-9 rounded-lg"
+              <Button className="w-full justify-start bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white text-xs h-9 rounded-lg"
                 onClick={() => onNavigate('post-job')}>
                 <Plus className="h-3.5 w-3.5 mr-2" /> Post New Job
               </Button>
@@ -446,24 +451,24 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
           </div>
 
           {/* Hiring banner */}
-          <div className="bg-gradient-to-br from-[#05264E] to-[#0A3575] rounded-xl p-5 text-white relative overflow-hidden">
-            <div className="absolute right-0 bottom-0 w-24 h-24 bg-[#10B981]/10 rounded-full -mr-8 -mb-8" />
+          <div className="bg-gradient-to-br from-[var(--theme-sidebar)] to-[var(--theme-sidebar-hover)] rounded-xl p-5 text-white relative overflow-hidden">
+            <div className="absolute right-0 bottom-0 w-24 h-24 rounded-full -mr-8 -mb-8" style={{ backgroundColor: theme.primary + '1A' }} />
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-3">
-                <Zap className="h-5 w-5 text-[#34D399]" />
+                <Zap className="h-5 w-5 text-[var(--theme-sidebar-active)]" />
                 <h3 className="text-sm font-semibold">AI-Powered Hiring</h3>
               </div>
               <ul className="space-y-2 text-xs text-[#A3B8D0] leading-relaxed">
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-[#34D399] mt-0.5 flex-shrink-0" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-[var(--theme-sidebar-active)] mt-0.5 flex-shrink-0" />
                   <span>AI matches candidates to your job requirements automatically</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-[#34D399] mt-0.5 flex-shrink-0" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-[var(--theme-sidebar-active)] mt-0.5 flex-shrink-0" />
                   <span>Smart screening reduces hiring time by <strong className="text-white">60%</strong></span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-[#34D399] mt-0.5 flex-shrink-0" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-[var(--theme-sidebar-active)] mt-0.5 flex-shrink-0" />
                   <span>Get real-time analytics on applicant quality</span>
                 </li>
               </ul>
@@ -521,16 +526,16 @@ function PostJobForm({ onPosted }: { onPosted: () => void }) {
         <Badge variant="outline" className="text-[10px] border-[#E4E8EC] text-[#66789C]">Fill all required fields</Badge>
       </div>
       <Card className="border-[#E4E8EC]"><CardContent className="p-5 space-y-4">
-        <div><Label className="text-[#05264E] font-medium">Title *</Label><Input placeholder="e.g., Senior React Developer" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="mt-1 border-[#E4E8EC] focus:border-[#10B981] focus:ring-[#10B981]/20" /></div>
-        <div><Label className="text-[#05264E] font-medium">Description *</Label><Textarea placeholder="Describe the role..." value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={5} className="mt-1 border-[#E4E8EC] focus:border-[#10B981] focus:ring-[#10B981]/20" /></div>
-        <div><Label className="text-[#05264E] font-medium">Requirements</Label><Textarea placeholder="Required skills and qualifications..." value={form.requirements} onChange={(e) => setForm({ ...form, requirements: e.target.value })} rows={3} className="mt-1 border-[#E4E8EC] focus:border-[#10B981] focus:ring-[#10B981]/20" /></div>
+        <div><Label className="text-[#05264E] font-medium">Title *</Label><Input placeholder="e.g., Senior React Developer" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)] focus:ring-[var(--theme-primary-ring)]" /></div>
+        <div><Label className="text-[#05264E] font-medium">Description *</Label><Textarea placeholder="Describe the role..." value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={5} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)] focus:ring-[var(--theme-primary-ring)]" /></div>
+        <div><Label className="text-[#05264E] font-medium">Requirements</Label><Textarea placeholder="Required skills and qualifications..." value={form.requirements} onChange={(e) => setForm({ ...form, requirements: e.target.value })} rows={3} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)] focus:ring-[var(--theme-primary-ring)]" /></div>
         <div className="grid grid-cols-2 gap-3">
           <div><Label className="text-[#05264E] font-medium">Min Salary (LPA)</Label><Input placeholder="12" value={form.salaryMin} onChange={(e) => setForm({ ...form, salaryMin: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
           <div><Label className="text-[#05264E] font-medium">Max Salary (LPA)</Label><Input placeholder="20" value={form.salaryMax} onChange={(e) => setForm({ ...form, salaryMax: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
         </div>
         <div className="grid grid-cols-3 gap-3">
           <div><Label className="text-[#05264E] font-medium">Job Type</Label>
-            <select value={form.jobType} onChange={(e) => setForm({ ...form, jobType: e.target.value })} className="mt-1 w-full border border-[#E4E8EC] rounded-md px-2 py-1.5 text-sm focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981]/20">
+            <select value={form.jobType} onChange={(e) => setForm({ ...form, jobType: e.target.value })} className="mt-1 w-full border border-[#E4E8EC] rounded-md px-2 py-1.5 text-sm focus:border-[var(--theme-primary)] focus:ring-1 focus:ring-[var(--theme-primary-ring)]">
               <option value="full-time">Full Time</option><option value="part-time">Part Time</option><option value="contract">Contract</option><option value="remote">Remote</option>
             </select>
           </div>
@@ -541,10 +546,10 @@ function PostJobForm({ onPosted }: { onPosted: () => void }) {
         <div><Label className="text-[#05264E] font-medium">Required Skills (comma-separated)</Label><Input placeholder="React, TypeScript, Node.js" value={form.skills} onChange={(e) => setForm({ ...form, skills: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
         <div><Label className="text-[#05264E] font-medium">Benefits</Label><Input placeholder="Health insurance, Stock options, Remote work" value={form.benefits} onChange={(e) => setForm({ ...form, benefits: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
         <div className="flex items-center gap-2">
-          <input type="checkbox" checked={form.isRemote} onChange={(e) => setForm({ ...form, isRemote: e.target.checked })} className="rounded border-[#E4E8EC] accent-[#10B981]" />
+          <input type="checkbox" checked={form.isRemote} onChange={(e) => setForm({ ...form, isRemote: e.target.checked })} className="rounded border-[#E4E8EC] accent-[var(--theme-primary)]" />
           <Label className="text-[#05264E]">Remote Friendly</Label>
         </div>
-        <Button className="w-full bg-[#10B981] hover:bg-[#059669] text-white font-semibold rounded-lg h-10" onClick={handleSubmit} disabled={loading}>
+        <Button className="w-full bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white font-semibold rounded-lg h-10" onClick={handleSubmit} disabled={loading}>
           {loading ? 'Posting...' : 'Post Job'} <ChevronRight className="ml-1 h-4 w-4" />
         </Button>
       </CardContent></Card>
@@ -553,11 +558,13 @@ function PostJobForm({ onPosted }: { onPosted: () => void }) {
 }
 
 function MyJobsList({ jobs, onRefresh }: { jobs: any[]; onRefresh: () => void }) {
+  const { theme } = useTheme()
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-[#05264E]">My Jobs ({jobs.length})</h2>
-        <Button size="sm" className="bg-[#10B981] hover:bg-[#059669] text-white text-xs rounded-lg" onClick={onRefresh}>
+        <Button size="sm" className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white text-xs rounded-lg" onClick={onRefresh}>
           Refresh
         </Button>
       </div>
@@ -572,8 +579,8 @@ function MyJobsList({ jobs, onRefresh }: { jobs: any[]; onRefresh: () => void })
             <div key={job.id} className="stat-card-hover bg-white rounded-xl p-4 border border-[#E4E8EC]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#10B981]/10 to-[#34D399]/10 flex items-center justify-center border border-[#E4E8EC]">
-                    <Briefcase className="h-5 w-5 text-[#10B981]" />
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center border border-[#E4E8EC]" style={{ background: `linear-gradient(135deg, ${theme.primary}1A 0%, ${theme.primaryRing}1A 100%)` }}>
+                    <Briefcase className="h-5 w-5 text-[var(--theme-primary)]" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-[#05264E]">{job.title}</h3>
@@ -585,7 +592,7 @@ function MyJobsList({ jobs, onRefresh }: { jobs: any[]; onRefresh: () => void })
                   </div>
                 </div>
                 <Badge variant="outline" className={`text-[10px] h-5 px-2 border-0 font-medium ${
-                  job.status === 'ACTIVE' ? 'bg-[#ECFDF5] text-[#10B981]' : 'bg-[#F0F2F5] text-[#66789C]'
+                  job.status === 'ACTIVE' ? 'bg-[var(--theme-primary-light)] text-[var(--theme-primary)]' : 'bg-[#F0F2F5] text-[#66789C]'
                 }`}>{job.status}</Badge>
               </div>
             </div>
@@ -597,6 +604,7 @@ function MyJobsList({ jobs, onRefresh }: { jobs: any[]; onRefresh: () => void })
 }
 
 function CorpApplications() {
+  const { theme } = useTheme()
   const [applications, setApplications] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -640,7 +648,7 @@ function CorpApplications() {
             <div key={app.id} className="stat-card-hover bg-white rounded-xl p-4 border border-[#E4E8EC]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#10B981] to-[#34D399] flex items-center justify-center text-white text-xs font-semibold">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-semibold" style={{ background: theme.gradient }}>
                     {(app.user?.name || 'C').split(' ').map((n: string) => n[0]).join('')}
                   </div>
                   <div>
@@ -650,7 +658,7 @@ function CorpApplications() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge variant="outline" className="text-[10px] h-5 border-[#E4E8EC] text-[#66789C]">{app.status?.replace(/_/g, ' ')}</Badge>
-                  <Button size="sm" variant="ghost" className="h-7 text-[#10B981] hover:bg-[#ECFDF5]" onClick={() => updateStatus(app.id, 'SHORTLISTED')}>
+                  <Button size="sm" variant="ghost" className="h-7 text-[var(--theme-primary)] hover:bg-[var(--theme-primary-light)]" onClick={() => updateStatus(app.id, 'SHORTLISTED')}>
                     <CheckCircle2 className="h-3.5 w-3.5" />
                   </Button>
                   <Button size="sm" variant="ghost" className="h-7 text-red-500 hover:bg-[#FEF2F2]" onClick={() => updateStatus(app.id, 'REJECTED')}>
@@ -668,6 +676,7 @@ function CorpApplications() {
 
 function CompanyProfile() {
   const { user } = useAuthStore()
+  const { theme } = useTheme()
   const [profile, setProfile] = useState<any>({})
 
   useEffect(() => {
@@ -681,7 +690,7 @@ function CompanyProfile() {
       <h2 className="text-xl font-bold text-[#05264E]">Company Profile</h2>
       <Card className="border-[#E4E8EC]"><CardContent className="p-5 space-y-4">
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-[#10B981] to-[#34D399] flex items-center justify-center text-white text-2xl font-bold">
+          <div className="w-16 h-16 rounded-xl flex items-center justify-center text-white text-2xl font-bold" style={{ background: theme.gradient }}>
             {(profile.companyName || 'C')[0]}
           </div>
           <div>
@@ -690,15 +699,15 @@ function CompanyProfile() {
           </div>
         </div>
         <Separator className="bg-[#F0F2F5]" />
-        <div><Label className="text-[#05264E] font-medium">Company Name</Label><Input value={profile.companyName || ''} className="mt-1 border-[#E4E8EC] focus:border-[#10B981]" onChange={(e) => setProfile({...profile, companyName: e.target.value})} /></div>
+        <div><Label className="text-[#05264E] font-medium">Company Name</Label><Input value={profile.companyName || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, companyName: e.target.value})} /></div>
         <div className="grid grid-cols-2 gap-3">
-          <div><Label className="text-[#05264E] font-medium">Industry</Label><Input value={profile.industry || ''} className="mt-1 border-[#E4E8EC] focus:border-[#10B981]" onChange={(e) => setProfile({...profile, industry: e.target.value})} /></div>
-          <div><Label className="text-[#05264E] font-medium">Company Size</Label><Input value={profile.companySize || ''} className="mt-1 border-[#E4E8EC] focus:border-[#10B981]" onChange={(e) => setProfile({...profile, companySize: e.target.value})} /></div>
+          <div><Label className="text-[#05264E] font-medium">Industry</Label><Input value={profile.industry || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, industry: e.target.value})} /></div>
+          <div><Label className="text-[#05264E] font-medium">Company Size</Label><Input value={profile.companySize || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, companySize: e.target.value})} /></div>
         </div>
-        <div><Label className="text-[#05264E] font-medium">Website</Label><Input value={profile.website || ''} className="mt-1 border-[#E4E8EC] focus:border-[#10B981]" /></div>
-        <div><Label className="text-[#05264E] font-medium">Description</Label><Textarea value={profile.description || ''} rows={4} className="mt-1 border-[#E4E8EC] focus:border-[#10B981]" onChange={(e) => setProfile({...profile, description: e.target.value})} /></div>
-        <div><Label className="text-[#05264E] font-medium">Location</Label><Input value={profile.location || ''} className="mt-1 border-[#E4E8EC] focus:border-[#10B981]" /></div>
-        <Button className="bg-[#10B981] hover:bg-[#059669] text-white font-semibold rounded-lg h-10">Save Profile</Button>
+        <div><Label className="text-[#05264E] font-medium">Website</Label><Input value={profile.website || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" /></div>
+        <div><Label className="text-[#05264E] font-medium">Description</Label><Textarea value={profile.description || ''} rows={4} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, description: e.target.value})} /></div>
+        <div><Label className="text-[#05264E] font-medium">Location</Label><Input value={profile.location || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" /></div>
+        <Button className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white font-semibold rounded-lg h-10">Save Profile</Button>
       </CardContent></Card>
     </div>
   )
@@ -734,12 +743,12 @@ function CorpAnalytics({ stats, jobs }: { stats: any; jobs: any[] }) {
             {jobs.map((job, idx) => (
               <div key={job.id} className={`flex items-center justify-between py-3 ${idx < jobs.length - 1 ? 'border-b border-[#F0F2F5]' : ''}`}>
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] flex items-center justify-center"><Briefcase className="h-4 w-4 text-[#3B82F6]" /></div>
+                  <div className="w-9 h-9 rounded-lg bg-[var(--theme-primary-light)] flex items-center justify-center"><Briefcase className="h-4 w-4 text-[var(--theme-primary)]" /></div>
                   <span className="text-sm font-medium text-[#05264E]">{job.title}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-xs text-[#66789C]">{job.applications?.length || 0} applications</span>
-                  <Badge variant="outline" className={`text-[10px] h-5 px-2 border-0 ${job.status === 'ACTIVE' ? 'bg-[#ECFDF5] text-[#10B981]' : 'bg-[#F0F2F5] text-[#66789C]'}`}>{job.status}</Badge>
+                  <Badge variant="outline" className={`text-[10px] h-5 px-2 border-0 ${job.status === 'ACTIVE' ? 'bg-[var(--theme-primary-light)] text-[var(--theme-primary)]' : 'bg-[#F0F2F5] text-[#66789C]'}`}>{job.status}</Badge>
                 </div>
               </div>
             ))}
