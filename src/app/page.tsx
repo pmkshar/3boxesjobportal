@@ -5,6 +5,7 @@ import { LandingPage } from '@/components/portal/LandingPage'
 import { JobSeekerDashboard } from '@/components/portal/JobSeekerDashboard'
 import { CorporateDashboard } from '@/components/portal/CorporateDashboard'
 import { RecruiterDashboard } from '@/components/portal/RecruiterDashboard'
+import { AdminDashboard } from '@/components/portal/AdminDashboard'
 
 export default function Home() {
   const { user, isAuthenticated } = useAuthStore()
@@ -25,7 +26,13 @@ export default function Home() {
     case 'RECRUITER':
       return <RecruiterDashboard />
     case 'ADMIN':
-      return <JobSeekerDashboard />
+      return <AdminDashboard />
+    case 'SUPER_ADMIN':
+      return <AdminDashboard />
+    case 'HR_MANAGER':
+      return <AdminDashboard />
+    case 'INTERVIEWER':
+      return <AdminDashboard />
     default:
       return <LandingPage onNavigate={() => {}} />
   }

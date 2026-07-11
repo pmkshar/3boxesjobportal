@@ -33,6 +33,9 @@ export async function POST(request: NextRequest) {
         { id: 'demo-corp-001', email: 'corp@3boxes.com', name: 'Priya Technologies', password: demoPassword, role: 'CORPORATE', phone: '+91-22-12345678', location: 'Bangalore, India' },
         { id: 'demo-recruiter-001', email: 'recruiter@3boxes.com', name: 'Amit Patel', password: demoPassword, role: 'RECRUITER', phone: '+91-9988776655', location: 'Delhi, India' },
         { id: 'demo-admin-001', email: 'admin@3boxes.com', name: '3 Boxes Admin', password: demoPassword, role: 'ADMIN', phone: '+91-9000000000', location: 'Chennai, India' },
+        { id: 'demo-superadmin-001', email: 'superadmin@3boxes.com', name: 'Super Admin', password: demoPassword, role: 'SUPER_ADMIN', phone: '+91-9111111111', location: 'Mumbai, India' },
+        { id: 'demo-hr-001', email: 'hr@3boxes.com', name: 'Sneha Reddy', password: demoPassword, role: 'HR_MANAGER', phone: '+91-9222222222', location: 'Hyderabad, India' },
+        { id: 'demo-interviewer-001', email: 'interviewer@3boxes.com', name: 'Vikram Singh', password: demoPassword, role: 'INTERVIEWER', phone: '+91-9333333333', location: 'Delhi, India' },
       ]
 
       const user = demoUsers.find(u => u.email === email)

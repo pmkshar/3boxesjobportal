@@ -253,8 +253,17 @@ model AiInterviewSession {
   communicationScore Float?
   technicalScore  Float?
   confidenceScore Float?
+  problemSolvingScore Float?
+  leadershipScore Float?
+  cultureFitScore Float?
+  transcript      String?  // JSON array of Q&A pairs
+  strengths       String?  // JSON array of strength strings
+  improvements    String?  // JSON array of improvement area strings
+  recommendation  String?  // Hire, No-Hire, Strong Hire
   aiFeedback      String?
   duration        Int?     // actual duration in seconds
+  status          String   @default("created") // created, in_progress, completed, abandoned
+  startedAt       DateTime?
   completedAt     DateTime?
   createdAt       DateTime @default(now())
 

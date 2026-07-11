@@ -23,6 +23,8 @@ const roles = [
   { value: 'JOB_SEEKER', label: 'Job Seeker', icon: Users, desc: 'Find your dream job with AI-powered tools', color: 'emerald' },
   { value: 'CORPORATE', label: 'Corporate', icon: Building2, desc: 'Post jobs and find top talent', color: 'teal' },
   { value: 'RECRUITER', label: 'Recruiter', icon: UserCheck, desc: 'Source and manage candidates', color: 'cyan' },
+  { value: 'HR_MANAGER', label: 'HR Manager', icon: Users, desc: 'Manage recruitment pipeline', color: 'purple' },
+  { value: 'INTERVIEWER', label: 'Interviewer', icon: UserCheck, desc: 'Conduct and review interviews', color: 'blue' },
 ] as const
 
 export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: AuthDialogProps) {
@@ -119,6 +121,10 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
       JOB_SEEKER: { email: 'seeker@3boxes.com', password: 'demo123' },
       CORPORATE: { email: 'corp@3boxes.com', password: 'demo123' },
       RECRUITER: { email: 'recruiter@3boxes.com', password: 'demo123' },
+      SUPER_ADMIN: { email: 'superadmin@3boxes.com', password: 'demo123' },
+      ADMIN: { email: 'admin@3boxes.com', password: 'demo123' },
+      HR_MANAGER: { email: 'hr@3boxes.com', password: 'demo123' },
+      INTERVIEWER: { email: 'interviewer@3boxes.com', password: 'demo123' },
     }
     const demo = demoAccounts[role]
     if (demo) {
@@ -183,6 +189,15 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
                 <button onClick={() => fillDemo('RECRUITER')} className="flex items-center gap-2 text-[#16a34a] hover:text-[#15803d] w-full text-left">
                   <UserCheck className="h-3.5 w-3.5" /> Recruiter: recruiter@3boxes.com
                 </button>
+                <button onClick={() => fillDemo('SUPER_ADMIN')} className="flex items-center gap-2 text-[#16a34a] hover:text-[#15803d] w-full text-left">
+                  <Briefcase className="h-3.5 w-3.5" /> Super Admin: superadmin@3boxes.com
+                </button>
+                <button onClick={() => fillDemo('HR_MANAGER')} className="flex items-center gap-2 text-[#16a34a] hover:text-[#15803d] w-full text-left">
+                  <Users className="h-3.5 w-3.5" /> HR Manager: hr@3boxes.com
+                </button>
+                <button onClick={() => fillDemo('INTERVIEWER')} className="flex items-center gap-2 text-[#16a34a] hover:text-[#15803d] w-full text-left">
+                  <UserCheck className="h-3.5 w-3.5" /> Interviewer: interviewer@3boxes.com
+                </button>
               </div>
               <p className="text-[#16a34a]/70 mt-1">Password: demo123</p>
             </div>
@@ -191,7 +206,7 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
           <TabsContent value="register" className="space-y-4 mt-4">
             <div>
               <Label className="text-sm font-medium mb-2 block">I am a...</Label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {roles.map((role) => (
                   <Card key={role.value}
                     className={`cursor-pointer transition-all ${selectedRole === role.value ? `border-[#16a34a] bg-[#16a34a]/5 ring-1 ring-[#16a34a]` : 'border-gray-200 hover:border-gray-300'}`}
