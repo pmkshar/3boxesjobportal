@@ -107,6 +107,9 @@ export function JobSearchView() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [sortBy, setSortBy] = useState('newest')
   const [showMobileFilter, setShowMobileFilter] = useState(false)
+  // Search tags
+  const [searchTags, setSearchTags] = useState<string[]>([])
+  const [tagInput, setTagInput] = useState('')
 
   useEffect(() => { loadJobs() }, [page, jobType])
 
@@ -161,10 +164,24 @@ export function JobSearchView() {
 
   const clearFilters = () => {
     setSearch(''); setLocation(''); setJobType(''); setExperience(''); setIsRemote(false)
-    setCategory(''); setSalaryRange(''); setJobLevel(''); setPage(1); loadJobs()
+    setCategory(''); setSalaryRange(''); setJobLevel(''); setSearchTags([]); setPage(1); loadJobs()
   }
 
-  const hasActiveFilters = search || location || (jobType && jobType !== 'all') || experience || isRemote || category || salaryRange || jobLevel
+  const hasActiveFilters = search || location || (jobType && jobType !== 'all') || experience || isRemote || category || salaryRange || jobLevel || searchTags.length > 0
+
+  // Add search tag
+  const addSearchTag = (tag: string) => {
+    const t = tag.trim()
+    if (t && !searchTags.includes(t)) {
+      setSearchTags(prev => [...prev, t])
+      setSearch(prev => prev ? `${prev} ${t}` : t)
+    }
+  }
+
+  const removeSearchTag = (tag: string) => {
+    setSearchTags(prev => prev.filter(t => t !== tag))
+    setSearch(prev => prev.replace(tag, '').replace(/\s+/g, ' ').trim())
+  }
 
   // Related jobs
   const relatedJobs = jobs.filter(j => j.id !== selectedJob?.id).slice(0, 4)
@@ -424,63 +441,66 @@ export function JobSearchView() {
   // ========== MAIN JOB GRID VIEW (JobHub-style) ==========
   return (
     <div className="min-h-screen bg-[#f5f7fc]">
-      {/* ===== TOP BANNER ===== */}
+      {/* ===== TOP BANNER (JobHub style) ===== */}
       <div className="bg-gradient-to-r from-[#16a34a] to-[#15803d] relative overflow-hidden">
         <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v22H20v-1.5zM0 22v2h20v-2H0zm0 4v2h20v-2H0zm0 4v2h20v-2H0zm0 4v2h20v-2H0z\' fill=\'%23ffffff\' fill-opacity=\'0.15\' fill-rule=\'evenodd\'/%3E%3C/svg%3E")'}} />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6">
+          {/* Heading */}
+          <h4 className="text-2xl sm:text-[28px] font-bold text-white leading-tight mb-1.5">
             There Are <span className="text-[#f9ab00]">{totalJobs}</span> Jobs<br className="sm:hidden" /> Here For You!
-          </h2>
-          <p className="text-white/70 text-sm sm:text-base mb-6 max-w-lg">Discover your next career move, freelance gig, or internship</p>
-
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-sm text-white/60 mb-6">
-            <Home className="h-3.5 w-3.5" />
-            <span>Home</span>
-            <ChevronRight className="h-3 w-3" />
-            <span className="text-white/90">Jobs listing</span>
+          </h4>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+            <p className="text-white/60 text-sm">Discover your next career move, freelance gig, or internship</p>
+            {/* Breadcrumb */}
+            <div className="flex items-center gap-2 text-sm text-white/50">
+              <Home className="h-3.5 w-3.5" />
+              <span>Home</span>
+              <ChevronRight className="h-3 w-3" />
+              <span className="text-white/80">Jobs listing</span>
+            </div>
           </div>
 
-          {/* ===== SEARCH BOX (embedded in banner) ===== */}
-          <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-5 -mb-16 relative z-10">
+          {/* ===== SEARCH BOX (embedded in banner, JobHub style) ===== */}
+          <div className="bg-white rounded-[15px] shadow-xl p-4 sm:p-5 -mb-20 relative z-10">
             <div className="flex flex-col lg:flex-row gap-3 items-end">
-              {/* Search Input */}
+              {/* Search Input + Tags */}
               <div className="flex-1 w-full lg:w-auto">
-                <label className="text-xs font-medium text-[#5f6368] mb-1.5 block">What are you looking for?</label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5f6368]" />
                   <Input
                     placeholder="Job title, keyword, or company"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="pl-9 h-11 bg-[#f5f7fc] border-[#ecedf2] focus:border-[#16a34a] focus:bg-white text-sm"
-                    onKeyDown={(e) => e.key === 'Enter' && loadJobs()}
+                    className="pl-9 h-11 bg-[#f5f7fc] border-[#ecedf2] focus:border-[#16a34a] focus:bg-white text-sm rounded-lg"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        if (search.trim()) addSearchTag(search.trim())
+                        loadJobs()
+                      }
+                    }}
                   />
                 </div>
+                {/* Search tags row */}
+                {searchTags.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                    {searchTags.map(tag => (
+                      <span key={tag} className="inline-flex items-center gap-1 bg-[#16a34a]/10 text-[#16a34a] text-xs font-medium px-2.5 py-1 rounded-md">
+                        {tag}
+                        <button onClick={() => removeSearchTag(tag)} className="hover:text-[#d93025] transition-colors">
+                          <X className="h-3 w-3" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {/* Location */}
-              <div className="flex-1 w-full lg:w-auto">
-                <label className="text-xs font-medium text-[#5f6368] mb-1.5 block">Where?</label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5f6368]" />
-                  <Input
-                    placeholder="City or location"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    className="pl-9 h-11 bg-[#f5f7fc] border-[#ecedf2] focus:border-[#16a34a] focus:bg-white text-sm"
-                    onKeyDown={(e) => e.key === 'Enter' && loadJobs()}
-                  />
-                </div>
-              </div>
-
-              {/* Job Type */}
+              {/* Job Type Dropdown */}
               <div className="w-full lg:w-[160px]">
-                <label className="text-xs font-medium text-[#5f6368] mb-1.5 block">Job Type</label>
                 <Select value={jobType} onValueChange={setJobType}>
-                  <SelectTrigger className="w-full h-11 bg-[#f5f7fc] border-[#ecedf2] text-sm">
+                  <SelectTrigger className="w-full h-11 bg-[#f5f7fc] border-[#ecedf2] text-sm rounded-lg">
                     <Briefcase className="h-4 w-4 mr-2 text-[#5f6368]" />
-                    <SelectValue placeholder="All Types" />
+                    <SelectValue placeholder="Full time" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Types</SelectItem>
@@ -492,13 +512,32 @@ export function JobSearchView() {
                 </Select>
               </div>
 
-              {/* Salary Range */}
+              {/* Location Dropdown */}
+              <div className="w-full lg:w-[180px]">
+                <Select value={location || 'all'} onValueChange={(v) => setLocation(v === 'all' ? '' : v)}>
+                  <SelectTrigger className="w-full h-11 bg-[#f5f7fc] border-[#ecedf2] text-sm rounded-lg">
+                    <MapPin className="h-4 w-4 mr-2 text-[#5f6368]" />
+                    <SelectValue placeholder="Location" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Locations</SelectItem>
+                    <SelectItem value="Bangalore">Bangalore</SelectItem>
+                    <SelectItem value="Mumbai">Mumbai</SelectItem>
+                    <SelectItem value="Delhi">Delhi</SelectItem>
+                    <SelectItem value="Hyderabad">Hyderabad</SelectItem>
+                    <SelectItem value="Chennai">Chennai</SelectItem>
+                    <SelectItem value="Pune">Pune</SelectItem>
+                    <SelectItem value="Remote">Remote</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Salary Range Dropdown */}
               <div className="w-full lg:w-[160px]">
-                <label className="text-xs font-medium text-[#5f6368] mb-1.5 block">Salary Range</label>
                 <Select value={salaryRange} onValueChange={setSalaryRange}>
-                  <SelectTrigger className="w-full h-11 bg-[#f5f7fc] border-[#ecedf2] text-sm">
+                  <SelectTrigger className="w-full h-11 bg-[#f5f7fc] border-[#ecedf2] text-sm rounded-lg">
                     <IndianRupee className="h-4 w-4 mr-2 text-[#5f6368]" />
-                    <SelectValue placeholder="Any" />
+                    <SelectValue placeholder="Salary Range" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="any">Any</SelectItem>
@@ -514,62 +553,34 @@ export function JobSearchView() {
 
               {/* Find Now Button */}
               <div className="w-full lg:w-auto">
-                <Button onClick={loadJobs} className="w-full lg:w-auto bg-[#16a34a] hover:bg-[#15803d] h-11 px-8 font-semibold shadow-md rounded-xl">
-                  <Search className="h-4 w-4 mr-2" /> Find Now
+                <Button onClick={() => { if (search.trim()) addSearchTag(search.trim()); loadJobs() }} className="w-full lg:w-auto bg-[#16a34a] hover:bg-[#15803d] h-11 px-8 font-semibold shadow-md rounded-lg">
+                  Find Now
                 </Button>
               </div>
-            </div>
-
-            {/* Quick filter tags row */}
-            <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-[#ecedf2]">
-              <Select value={experience} onValueChange={setExperience}>
-                <SelectTrigger className="w-[120px] h-8 text-xs bg-[#f5f7fc] border-[#ecedf2]">
-                  <SelectValue placeholder="Experience" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Exp.</SelectItem>
-                  <SelectItem value="0">Fresher</SelectItem>
-                  <SelectItem value="1">1 Year</SelectItem>
-                  <SelectItem value="2">2 Years</SelectItem>
-                  <SelectItem value="3">3 Years</SelectItem>
-                  <SelectItem value="5">5 Years</SelectItem>
-                  <SelectItem value="7">7 Years</SelectItem>
-                  <SelectItem value="10">10+ Years</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-[140px] h-8 text-xs bg-[#f5f7fc] border-[#ecedf2]">
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categoryOptions.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
-
-              <Button variant={isRemote ? 'default' : 'outline'} size="sm"
-                className={`h-8 text-xs ${isRemote ? 'bg-[#16a34a] hover:bg-[#15803d] text-white' : 'border-[#ecedf2] text-[#5f6368] hover:text-[#202124]'}`}
-                onClick={() => setIsRemote(!isRemote)}>
-                <Wifi className="h-3 w-3 mr-1" /> Remote
-              </Button>
-
-              {hasActiveFilters && (
-                <Button variant="ghost" size="sm" className="h-8 text-xs text-[#d93025] hover:text-[#d93025] hover:bg-red-50" onClick={clearFilters}>
-                  <X className="h-3 w-3 mr-1" /> Clear all
-                </Button>
-              )}
             </div>
           </div>
         </div>
       </div>
 
       {/* ===== MAIN CONTENT AREA ===== */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-12">
         <div className="flex flex-col lg:flex-row gap-8">
 
-          {/* ===== LEFT SIDEBAR (Filters) ===== */}
-          <aside className="w-full lg:w-[280px] flex-shrink-0">
-            <div className="space-y-6 lg:sticky lg:top-24">
+          {/* ===== LEFT SIDEBAR (Filters - JobHub style) ===== */}
+          <aside className="w-full lg:w-[280px] flex-shrink-0 order-2 lg:order-1">
+            {/* Mobile filter toggle */}
+            <button
+              onClick={() => setShowMobileFilter(!showMobileFilter)}
+              className="lg:hidden w-full flex items-center justify-between bg-white rounded-xl p-4 shadow-sm mb-4"
+            >
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className="h-4 w-4 text-[#16a34a]" />
+                <span className="font-medium text-sm text-[#202124]">Filters</span>
+              </div>
+              <ChevronDown className={`h-4 w-4 text-[#5f6368] transition-transform ${showMobileFilter ? 'rotate-180' : ''}`} />
+            </button>
+
+            <div className={`space-y-5 ${showMobileFilter ? 'block' : 'hidden'} lg:block lg:sticky lg:top-24`}>
 
               {/* Job Reminder Widget */}
               <Card className="border-0 shadow-sm bg-gradient-to-br from-[#16a34a] to-[#15803d]">
@@ -580,8 +591,8 @@ export function JobSearchView() {
                   </div>
                   <p className="text-white/70 text-xs mb-4">Enter your email and get notified when new jobs are posted.</p>
                   <div className="space-y-2">
-                    <Input placeholder="Enter email address" className="h-9 bg-white/10 border-white/20 text-white placeholder:text-white/50 text-sm focus:bg-white/20" />
-                    <Button className="w-full bg-[#f9ab00] hover:bg-[#e9a000] text-[#202124] font-semibold h-9 text-sm">
+                    <Input placeholder="Enter email address" className="h-9 bg-white/10 border-white/20 text-white placeholder:text-white/50 text-sm focus:bg-white/20 rounded-lg" />
+                    <Button className="w-full bg-[#f9ab00] hover:bg-[#e9a000] text-[#202124] font-semibold h-9 text-sm rounded-lg">
                       Subscribe
                     </Button>
                   </div>
@@ -598,7 +609,7 @@ export function JobSearchView() {
                       placeholder="City, state, or country"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      className="pl-9 h-9 bg-[#f5f7fc] border-[#ecedf2] text-sm focus:border-[#16a34a]"
+                      className="pl-9 h-9 bg-[#f5f7fc] border-[#ecedf2] text-sm focus:border-[#16a34a] rounded-lg"
                       onKeyDown={(e) => e.key === 'Enter' && loadJobs()}
                     />
                   </div>
@@ -610,7 +621,7 @@ export function JobSearchView() {
                 <CardContent className="p-5">
                   <h5 className="font-semibold text-[#202124] text-sm mb-3">Category</h5>
                   <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger className="w-full h-9 bg-[#f5f7fc] border-[#ecedf2] text-sm">
+                    <SelectTrigger className="w-full h-9 bg-[#f5f7fc] border-[#ecedf2] text-sm rounded-lg">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
@@ -625,7 +636,7 @@ export function JobSearchView() {
                 <CardContent className="p-5">
                   <h5 className="font-semibold text-[#202124] text-sm mb-3">Job Level</h5>
                   <Select value={jobLevel} onValueChange={setJobLevel}>
-                    <SelectTrigger className="w-full h-9 bg-[#f5f7fc] border-[#ecedf2] text-sm">
+                    <SelectTrigger className="w-full h-9 bg-[#f5f7fc] border-[#ecedf2] text-sm rounded-lg">
                       <SelectValue placeholder="Select level" />
                     </SelectTrigger>
                     <SelectContent>
@@ -635,7 +646,7 @@ export function JobSearchView() {
                 </CardContent>
               </Card>
 
-              {/* Job Type Filter */}
+              {/* Job Type Filter (Radio) */}
               <Card className="border-0 shadow-sm">
                 <CardContent className="p-5">
                   <h5 className="font-semibold text-[#202124] text-sm mb-3">Job Type</h5>
@@ -665,7 +676,7 @@ export function JobSearchView() {
                 </CardContent>
               </Card>
 
-              {/* Experience Filter */}
+              {/* Experience Filter (Radio) */}
               <Card className="border-0 shadow-sm">
                 <CardContent className="p-5">
                   <h5 className="font-semibold text-[#202124] text-sm mb-3">Experience</h5>
@@ -699,7 +710,8 @@ export function JobSearchView() {
                   <h5 className="font-semibold text-[#202124] text-sm mb-3">Popular Tags</h5>
                   <div className="flex flex-wrap gap-2">
                     {['React', 'Node.js', 'Python', 'AWS', 'Java', 'SQL', 'TypeScript', 'Docker', 'Kubernetes', 'ML', 'Data Science', 'DevOps'].map(tag => (
-                      <Badge key={tag} className="text-xs bg-[#f5f7fc] text-[#5f6368] border border-[#ecedf2] hover:bg-green-50 hover:text-[#16a34a] hover:border-[#16a34a]/30 rounded-lg px-2.5 py-1 cursor-pointer transition-all font-normal">
+                      <Badge key={tag} onClick={() => { addSearchTag(tag); setSearch(prev => prev ? `${prev} ${tag}` : tag) }}
+                        className="text-xs bg-[#f5f7fc] text-[#5f6368] border border-[#ecedf2] hover:bg-green-50 hover:text-[#16a34a] hover:border-[#16a34a]/30 rounded-lg px-2.5 py-1 cursor-pointer transition-all font-normal">
                         {tag}
                       </Badge>
                     ))}
@@ -711,9 +723,9 @@ export function JobSearchView() {
           </aside>
 
           {/* ===== RIGHT MAIN CONTENT ===== */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 order-1 lg:order-2">
 
-            {/* Results Header Bar - Sort + View Toggle */}
+            {/* Results Header Bar - Sort + View Toggle (JobHub style) */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5 bg-white rounded-xl p-3.5 shadow-sm">
               <div>
                 {loading ? (
@@ -728,7 +740,7 @@ export function JobSearchView() {
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-[#5f6368]">Sort by:</span>
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-[130px] h-8 text-xs bg-[#f5f7fc] border-[#ecedf2]">
+                    <SelectTrigger className="w-[130px] h-8 text-xs bg-[#f5f7fc] border-[#ecedf2] rounded-lg">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -739,6 +751,7 @@ export function JobSearchView() {
                     </SelectContent>
                   </Select>
                 </div>
+                {/* View Toggle (Grid / List) */}
                 <div className="flex items-center bg-[#f5f7fc] rounded-lg p-0.5">
                   <button onClick={() => setViewMode('grid')} className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-[#16a34a]' : 'text-[#5f6368] hover:text-[#202124]'}`}>
                     <LayoutGrid className="h-4 w-4" />
@@ -783,25 +796,27 @@ export function JobSearchView() {
                     className="hover:-translate-y-1 transition-all duration-300 cursor-pointer group border-0 shadow-sm hover:shadow-xl overflow-hidden"
                     onClick={() => setSelectedJob(job)}>
                     <CardContent className="p-0">
-                      {/* Card Top - Company Color Banner */}
+                      {/* Card Top - Company Color Banner (JobHub style) */}
                       <div className={`relative h-[140px] ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center overflow-hidden`}>
                         {/* Pattern overlay */}
                         <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
 
-                        {/* Company Initial large */}
+                        {/* Company Initial large background */}
                         <span className="text-5xl font-bold text-white/30 select-none">
                           {getCompanyInitial(job.corporate?.companyName)}
                         </span>
 
-                        {/* Urgent / Featured label */}
-                        {job.isRemote && (
-                          <label className="absolute top-3 left-3 bg-[#f9ab00] text-white text-[10px] font-semibold px-2.5 py-1 rounded-md uppercase tracking-wide shadow-sm">
-                            Remote
-                          </label>
-                        )}
-                        {i < 3 && !job.isRemote && (
+                        {/* Urgent label */}
+                        {i < 3 && (
                           <label className="absolute top-3 left-3 bg-[#d93025] text-white text-[10px] font-semibold px-2.5 py-1 rounded-md uppercase tracking-wide shadow-sm">
                             Urgent
+                          </label>
+                        )}
+
+                        {/* Remote label */}
+                        {job.isRemote && (
+                          <label className="absolute top-3 left-3 bg-[#f9ab00] text-white text-[10px] font-semibold px-2.5 py-1 rounded-md uppercase tracking-wide shadow-sm" style={i < 3 ? { left: '80px' } : {}}>
+                            Remote
                           </label>
                         )}
 
@@ -816,7 +831,7 @@ export function JobSearchView() {
 
                       {/* Card Body */}
                       <div className="p-5">
-                        {/* Company row */}
+                        {/* Company row with small logo + name + job type badge */}
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-2 min-w-0">
                             <div className={`w-9 h-9 rounded-lg ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-sm`}>
@@ -846,7 +861,7 @@ export function JobSearchView() {
                           </span>
                         </div>
 
-                        {/* Bottom: Salary + Actions */}
+                        {/* Bottom: Salary + Shield + Chevron (JobHub style) */}
                         <div className="flex items-center justify-between pt-3.5 border-t border-[#ecedf2]">
                           <span className="font-semibold text-[#16a34a] text-sm">
                             {formatSalary(job.salaryMin, job.salaryMax)}
@@ -876,8 +891,13 @@ export function JobSearchView() {
                           <span className="text-3xl font-bold text-white/30 select-none">
                             {getCompanyInitial(job.corporate?.companyName)}
                           </span>
+                          {i < 3 && (
+                            <label className="absolute top-2 left-2 bg-[#d93025] text-white text-[9px] font-semibold px-2 py-0.5 rounded-md uppercase tracking-wide">
+                              Urgent
+                            </label>
+                          )}
                           {job.isRemote && (
-                            <label className="absolute top-2 left-2 bg-[#f9ab00] text-white text-[9px] font-semibold px-2 py-0.5 rounded-md uppercase tracking-wide">
+                            <label className="absolute top-2 right-2 bg-[#f9ab00] text-white text-[9px] font-semibold px-2 py-0.5 rounded-md uppercase tracking-wide">
                               Remote
                             </label>
                           )}
@@ -917,14 +937,16 @@ export function JobSearchView() {
                                 )}
                               </div>
                               {/* Skills */}
-                              <div className="flex flex-wrap gap-1.5 mt-2.5">
-                                {job.skills?.split(',').slice(0, 4).map((s: string) => (
-                                  <Badge key={s.trim()} className="text-[10px] px-2 py-0.5 bg-[rgba(22,163,74,0.1)] text-[#16a34a] border-0 rounded-md font-normal">{s.trim()}</Badge>
-                                ))}
-                                {job.skills?.split(',').length > 4 && (
-                                  <Badge className="text-[10px] px-2 py-0.5 bg-[#f5f7fc] text-[#5f6368] border-0 rounded-md font-normal">+{job.skills.split(',').length - 4}</Badge>
-                                )}
-                              </div>
+                              {job.skills && (
+                                <div className="flex flex-wrap gap-1.5 mt-2.5">
+                                  {job.skills.split(',').slice(0, 4).map((s: string) => (
+                                    <Badge key={s.trim()} className="text-[10px] px-2 py-0.5 bg-[rgba(22,163,74,0.1)] text-[#16a34a] border-0 rounded-md font-normal">{s.trim()}</Badge>
+                                  ))}
+                                  {job.skills.split(',').length > 4 && (
+                                    <Badge className="text-[10px] px-2 py-0.5 bg-[#f5f7fc] text-[#5f6368] border-0 rounded-md font-normal">+{job.skills.split(',').length - 4}</Badge>
+                                  )}
+                                </div>
+                              )}
                             </div>
 
                             {/* Right side: Salary + actions */}
@@ -948,7 +970,7 @@ export function JobSearchView() {
               </div>
             )}
 
-            {/* ===== PAGINATION ===== */}
+            {/* ===== PAGINATION (JobHub style) ===== */}
             {totalPages > 1 && (
               <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-8 bg-white rounded-xl p-4 shadow-sm">
                 <p className="text-sm text-[#5f6368]">
@@ -956,21 +978,21 @@ export function JobSearchView() {
                 </p>
                 <div className="flex items-center gap-1.5">
                   <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)}
-                    className="border-[#ecedf2] text-[#5f6368] hover:text-[#202124] h-9 w-9 p-0">
+                    className="border-[#ecedf2] text-[#5f6368] hover:text-[#202124] h-9 w-9 p-0 rounded-lg">
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
                   {Array.from({ length: Math.min(totalPages, 5) }).map((_, i) => {
                     const pageNum = i + 1
                     return (
                       <Button key={pageNum} variant={page === pageNum ? 'default' : 'outline'} size="sm"
-                        className={`w-9 h-9 ${page === pageNum ? 'bg-[#16a34a] hover:bg-[#15803d] text-white' : 'border-[#ecedf2] text-[#5f6368] hover:text-[#202124]'}`}
+                        className={`w-9 h-9 rounded-lg ${page === pageNum ? 'bg-[#16a34a] hover:bg-[#15803d] text-white' : 'border-[#ecedf2] text-[#5f6368] hover:text-[#202124]'}`}
                         onClick={() => setPage(pageNum)}>
                         {pageNum}
                       </Button>
                     )
                   })}
                   <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => setPage(page + 1)}
-                    className="border-[#ecedf2] text-[#5f6368] hover:text-[#202124] h-9 w-9 p-0">
+                    className="border-[#ecedf2] text-[#5f6368] hover:text-[#202124] h-9 w-9 p-0 rounded-lg">
                     <ChevronRight className="h-4 w-4" />
                   </Button>
                 </div>
