@@ -365,3 +365,210 @@ model SavedJob {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
 }
+
+// ─── AI Agents ──────────────────────────────────────────────
+
+enum AgentType {
+  CANDIDATE_BUDDY
+  ADMIN_OUTREACH_COMPANY
+  ADMIN_OUTREACH_CANDIDATE
+  ADMIN_OUTREACH_HR
+}
+
+enum AgentStatus {
+  ACTIVE
+  PAUSED
+  STOPPED
+  ERROR
+}
+
+model AIAgent {
+  id          String      @id @default(cuid())
+  name        String
+  type        AgentType
+  status      AgentStatus @default(ACTIVE)
+  description String?
+  strategy    String?     // JSON: agent's strategy config (target criteria, email templates, schedule, etc.)
+  
+  // Configuration
+  dailyLimit     Int     @default(50)
+  dailySent      Int     @default(0)
+  dailyResetAt   DateTime @default(now())
+  
+  // Stats
+  totalTasks     Int     @default(0)
+  totalSuccess   Int     @default(0)
+  totalFailed    Int     @default(0)
+  totalEmailsSent Int    @default(0)
+  totalResponses Int     @default(0)
+  totalConversions Int   @default(0)  // onboarded / interview scheduled
+  avgResponseRate Float  @default(0)
+  
+  // Owner
+  createdBy   String   // admin user id
+  lastRunAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  tasks      AIAgentTask[]
+  emails     AIAgentEmail[]
+  stats      AIAgentDailyStat[]
+}
+
+enum TaskStatus {
+  PENDING
+  APPROVED
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+model AIAgentTask {
+  id        String     @id @default(cuid())
+  agentId   String
+  type      String     // scrape_company, send_email, search_jobs, apply_job, follow_up
+  status    TaskStatus @default(PENDING)
+  priority  Int        @default(5)  // 1-10
+  
+  // Target info
+  targetEmail   String?
+  targetName    String?
+  targetCompany String?
+  targetUrl     String?  // careers page URL, job listing URL, etc.
+  targetData    String?  // JSON: additional scraped data
+  
+  // Execution
+  scheduledAt DateTime?
+  startedAt   DateTime?
+  completedAt DateTime?
+  result      String?   // JSON: task result data
+  error       String?
+  retryCount  Int       @default(0)
+  maxRetries  Int       @default(3)
+  
+  // Admin approval
+  requiresApproval Boolean @default(false)
+  approvedBy       String?
+  approvedAt       DateTime?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  agent AIAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+}
+
+enum EmailStatus {
+  DRAFT
+  QUEUED
+  SENT
+  DELIVERED
+  OPENED
+  REPLIED
+  BOUNCED
+  FAILED
+}
+
+model AIAgentEmail {
+  id        String      @id @default(cuid())
+  agentId   String
+  taskId    String?
+  
+  // Recipient
+  toEmail   String
+  toName    String?
+  company   String?
+  
+  // Content
+  subject   String
+  body      String      // HTML email body
+  templateId String?    // reference to email template used
+  templateData String?  // JSON: variables used in template
+  
+  // Tracking
+  status    EmailStatus @default(DRAFT)
+  sentAt    DateTime?
+  deliveredAt DateTime?
+  openedAt  DateTime?
+  repliedAt DateTime?
+  openCount Int         @default(0)
+  replyCount Int        @default(0)
+  bouncedReason String?
+  
+  // Follow-up
+  followUpSequence Int   @default(0)  // 0=initial, 1=first follow-up, 2=second, etc.
+  nextFollowUpAt   DateTime?
+  parentEmailId    String?  // self-reference for follow-up chain
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  agent AIAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+}
+
+model AIAgentDailyStat {
+  id          String   @id @default(cuid())
+  agentId     String
+  date        DateTime // the day this stat covers
+  
+  // Activity
+  tasksCreated   Int   @default(0)
+  tasksCompleted Int   @default(0)
+  tasksFailed    Int   @default(0)
+  emailsSent     Int   @default(0)
+  emailsDelivered Int  @default(0)
+  emailsOpened   Int   @default(0)
+  emailsReplied  Int   @default(0)
+  emailsBounced  Int   @default(0)
+  
+  // Outcomes
+  companiesScraped Int  @default(0)
+  contactsFound    Int  @default(0)
+  jobsApplied      Int  @default(0)
+  interviewsScheduled Int @default(0)
+  onboardingsStarted Int @default(0)
+  onboardingsCompleted Int @default(0)
+  
+  // Derived metrics
+  deliveryRate   Float  @default(0)
+  openRate       Float  @default(0)
+  replyRate      Float  @default(0)
+  bounceRate     Float  @default(0)
+  conversionRate Float  @default(0)
+  
+  createdAt DateTime @default(now())
+  
+  agent AIAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  
+  @@unique([agentId, date])
+}
+
+model AIEmailTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  agentType   AgentType
+  subject     String
+  body        String   // HTML with {{variables}}
+  category    String?  // introduction, follow_up, reminder, etc.
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AICompanyScrape {
+  id            String   @id @default(cuid())
+  companyUrl    String
+  companyName   String?
+  careersPageUrl String?
+  contactEmail  String?
+  hrEmail       String?
+  linkedInUrl   String?
+  industry      String?
+  companySize   String?
+  location      String?
+  scrapeData    String?  // JSON: full scraped data
+  status        String   @default("pending") // pending, scraped, contacted, responded, onboarded
+  lastScrapedAt DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

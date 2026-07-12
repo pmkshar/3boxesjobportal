@@ -26,7 +26,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import {
-  LayoutDashboard, Users, Shield, Brain, Settings, FileText,
+  LayoutDashboard, Users, Shield, Brain, Settings, FileText, Bot,
   LogOut, ChevronRight, Home, Calendar, X, Menu, ChevronLeft,
   Plus, Search, Filter, Download, Edit, Trash2, Eye, CheckCircle2,
   XCircle, Activity, Server, Briefcase, ClipboardList, UserCheck,
@@ -36,10 +36,11 @@ import {
   Monitor, Database, GraduationCap,
 } from 'lucide-react'
 import type { UserRole } from '@/lib/store'
+import { AIAgentDashboard } from '@/components/portal/AIAgentDashboard'
 
 // ─── Types ──────────────────────────────────────────────────────────────
 
-type AdminView = 'dashboard' | 'users' | 'roles' | 'interview' | 'settings' | 'audit'
+type AdminView = 'dashboard' | 'users' | 'roles' | 'interview' | 'settings' | 'audit' | 'ai-agents'
 
 interface ManagedUser {
   id: string
@@ -210,6 +211,7 @@ const navItems: { id: AdminView; label: string; icon: any }[] = [
   { id: 'roles', label: 'Role & Access', icon: Shield },
   { id: 'interview', label: 'AI Interview Config', icon: Brain },
   { id: 'settings', label: 'System Settings', icon: Settings },
+  { id: 'ai-agents', label: 'AI Agents', icon: Bot },
   { id: 'audit', label: 'Audit Logs', icon: FileText },
 ]
 
@@ -531,6 +533,7 @@ export function AdminDashboard() {
     roles: 'Role & Access Management',
     interview: 'AI Interview Config',
     settings: 'System Settings',
+    'ai-agents': 'AI Agents',
     audit: 'Audit Logs',
   }
 
@@ -1692,6 +1695,7 @@ export function AdminDashboard() {
       case 'roles': return renderRoleAccess()
       case 'interview': return renderInterviewConfig()
       case 'settings': return renderSettings()
+      case 'ai-agents': return <AIAgentDashboard />
       case 'audit': return renderAuditLogs()
     }
   }
