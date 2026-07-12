@@ -7,7 +7,7 @@ export function PublicPageLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <PortalNavbar />
-      <main className="flex-1">
+      <main className="flex-1 pt-16">
         {children}
       </main>
       <PortalFooter />

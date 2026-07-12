@@ -6,9 +6,18 @@ const prisma = new PrismaClient()
 export const dynamic = 'force-dynamic'
 
 // GET /api/agents - List all agents with stats summary
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url)
+    const typeFilter = searchParams.get('type')
+
+    const where: any = {}
+    if (typeFilter) {
+      where.type = typeFilter
+    }
+
     const agents = await prisma.aIAgent.findMany({
+      where,
       orderBy: { createdAt: 'desc' },
       include: {
         _count: {

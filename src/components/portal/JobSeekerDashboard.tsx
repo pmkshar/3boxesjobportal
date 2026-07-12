@@ -13,6 +13,7 @@ import { ProfileView } from './ProfileView'
 import { SkillGapAnalysis } from './SkillGapAnalysis'
 import { JobFitEvaluation } from './JobFitEvaluation'
 import { ApplicationTracker } from './ApplicationTracker'
+import { CandidateBuddyView } from './CandidateBuddyView'
 import { Navbar } from './Navbar'
 import { ThemeSwitcher } from '@/components/portal/ThemeSwitcher'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -24,10 +25,10 @@ import {
   Users, Calendar, Clock, MapPin, DollarSign, Star, MessageSquare,
   Eye, CheckCircle2, ArrowUpRight, ArrowDownRight, LogOut, Settings,
   Monitor, Banknote, Lightbulb, Headphones, BookOpen, FilePlus2,
-  BarChart2, UserCheck, Home, X, Menu, ChevronLeft,
+  BarChart2, UserCheck, Home, X, Menu, ChevronLeft, Bot,
 } from 'lucide-react'
 
-type View = 'dashboard' | 'jobs' | 'applications' | 'resume' | 'interview' | 'training' | 'analytics' | 'profile' | 'skill-gap' | 'job-fit' | 'tracker'
+type View = 'dashboard' | 'jobs' | 'applications' | 'resume' | 'interview' | 'training' | 'analytics' | 'profile' | 'skill-gap' | 'job-fit' | 'tracker' | 'ai-buddy'
 
 const navItems: { id: View; label: string; icon: any }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -36,6 +37,7 @@ const navItems: { id: View; label: string; icon: any }[] = [
   { id: 'tracker', label: 'Tracker', icon: FileCheck },
   { id: 'resume', label: 'CV Manager', icon: FileText },
   { id: 'interview', label: 'AI Interview', icon: Brain },
+  { id: 'ai-buddy', label: 'AI Buddy', icon: Bot },
   { id: 'skill-gap', label: 'Skill Gap', icon: Target },
   { id: 'job-fit', label: 'Job Fit', icon: Target },
   { id: 'training', label: 'Training', icon: GraduationCap },
@@ -78,11 +80,12 @@ export function JobSeekerDashboard() {
   const renderContent = () => {
     switch (activeView) {
       case 'dashboard': return <DashboardHome stats={stats} recentJobs={recentJobs} onNavigate={setActiveView} />
-      case 'jobs': return <JobSearchView />
+      case 'jobs': return <JobSearchView embedded />
       case 'applications': return <ApplicationsView />
       case 'tracker': return <ApplicationTracker />
       case 'resume': return <ResumeBuilder />
       case 'interview': return <AiInterviewView />
+      case 'ai-buddy': return <CandidateBuddyView />
       case 'skill-gap': return <SkillGapAnalysis />
       case 'job-fit': return <JobFitEvaluation />
       case 'training': return <TrainingView />
@@ -245,7 +248,7 @@ export function JobSeekerDashboard() {
                 <Home className="h-3.5 w-3.5" />
                 <span className="hover:text-[var(--theme-primary)] cursor-pointer">Home</span>
                 <ChevronRight className="h-3 w-3" />
-                <span className="text-[#05264E] font-medium capitalize">{activeView === 'jobs' ? 'Find Jobs' : activeView === 'resume' ? 'CV Manager' : activeView === 'interview' ? 'AI Interview' : activeView === 'skill-gap' ? 'Skill Gap' : activeView === 'job-fit' ? 'Job Fit' : activeView === 'tracker' ? 'Tracker' : activeView}</span>
+                <span className="text-[#05264E] font-medium capitalize">{activeView === 'jobs' ? 'Find Jobs' : activeView === 'resume' ? 'CV Manager' : activeView === 'interview' ? 'AI Interview' : activeView === 'skill-gap' ? 'Skill Gap' : activeView === 'job-fit' ? 'Job Fit' : activeView === 'tracker' ? 'Tracker' : activeView === 'ai-buddy' ? 'AI Buddy' : activeView}</span>
               </div>
               <div className="hidden sm:flex items-center gap-2 text-xs text-[#66789C]">
                 <Calendar className="h-3.5 w-3.5" />
