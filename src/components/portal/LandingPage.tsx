@@ -836,23 +836,26 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
         </section>
       )}
 
-      {/* ===== FEATURED JOBS (dynamic from API) - TILE VIEW (Naukri Style) ===== */}
-      <section id="jobs" className="py-12 bg-white">
+      {/* ===== FEATURED JOBS (dynamic from API) - JobHub Card Style ===== */}
+      <section id="jobs" className="py-16 bg-[#f5f7fc]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">Featured Jobs</h2>
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">Featured Jobs</h2>
+              <p className="text-sm text-gray-500 mt-1">Hand-picked jobs for you</p>
+            </div>
             <Button variant="ghost" className="text-[#16a34a] text-sm font-semibold" onClick={isAuthenticated ? undefined : openLogin}>
               View All <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
           {jobs.length === 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {Array.from({ length: 8 }).map((_, i) => (
-                <Card key={i} className="animate-pulse"><CardContent className="p-5"><div className="h-32 bg-gray-200 rounded" /></CardContent></Card>
+                <Card key={i} className="animate-pulse border-0 shadow-sm"><CardContent className="p-0"><div className="h-[120px] bg-gray-200 rounded-t-xl" /><div className="p-5 space-y-3"><div className="h-4 bg-gray-200 rounded w-3/4" /><div className="h-3 bg-gray-100 rounded w-1/2" /></div></CardContent></Card>
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {jobs.slice(0, 8).map((job: any, i: number) => (
                 <motion.div
                   key={job.id}
@@ -861,52 +864,61 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                   transition={{ delay: i * 0.05 }}
                   viewport={{ once: true }}
                 >
-                  <Card className={`hover:shadow-lg transition-all cursor-pointer border-gray-100 group ${selectedJob?.id === job.id ? 'ring-[#16a34a] border-[#16a34a]' : 'hover:border-emerald-200'}`}
+                  <Card className="hover:-translate-y-1 transition-all duration-300 cursor-pointer group border-0 shadow-sm hover:shadow-xl overflow-hidden"
                     onClick={() => setSelectedJob(job)}>
-                    <CardContent className="p-4">
-                      <div className="flex items-start gap-3 mb-3">
-                        <div className={`w-11 h-11 rounded-xl ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center text-white font-bold text-base flex-shrink-0 group-hover:scale-105 transition-transform`}>
+                    <CardContent className="p-0">
+                      {/* Card Top - Company Color Banner */}
+                      <div className={`relative h-[120px] ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center overflow-hidden`}>
+                        <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
+                        <span className="text-5xl font-bold text-white/20 select-none">
                           {getCompanyInitial(job.corporate?.companyName)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-gray-900 text-sm leading-tight group-hover:text-[#16a34a] transition-colors line-clamp-2">{job.title}</h3>
-                          <p className="text-xs text-gray-500 mt-0.5 truncate">{job.corporate?.companyName}</p>
-                        </div>
-                      </div>
-                      <div className="space-y-1.5 mb-3">
-                        <div className="flex items-center gap-1.5 text-xs text-gray-600">
-                          <MapPin className="h-3 w-3 text-gray-400 flex-shrink-0" />
-                          <span className="truncate">{job.location || 'Remote'}</span>
-                          {job.isRemote && <Badge className="text-[10px] px-1 py-0 bg-teal-50 text-teal-700 border-teal-100">WFH</Badge>}
-                        </div>
-                        <div className="flex items-center gap-1.5 text-xs text-gray-600">
-                          <IndianRupee className="h-3 w-3 text-gray-400 flex-shrink-0" />
-                          <span className="font-medium text-[#16a34a]">{formatSalary(job.salaryMin, job.salaryMax)}</span>
-                        </div>
-                        {job.experienceMin && (
-                          <div className="flex items-center gap-1.5 text-xs text-gray-600">
-                            <Briefcase className="h-3 w-3 text-gray-400 flex-shrink-0" />
-                            <span>{job.experienceMin}-{job.experienceMax} Yrs</span>
-                          </div>
-                        )}
-                        <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                          <Clock className="h-3 w-3 flex-shrink-0" />
-                          <span>{job.postedDate ? timeAgo(job.postedDate) : 'Recently'}</span>
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        {job.skills?.split(',').slice(0, 3).map((s: string) => (
-                          <Badge key={s.trim()} variant="secondary" className="text-[10px] px-1.5 py-0 bg-emerald-50 text-emerald-700 border-emerald-100">{s.trim()}</Badge>
-                        ))}
-                        {job.skills?.split(',').length > 3 && (
-                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-gray-50 text-gray-500">+{job.skills.split(',').length - 3}</Badge>
-                        )}
-                      </div>
-                      <div className="flex items-center justify-between pt-2 border-t border-gray-50">
-                        <Badge variant="outline" className="text-[10px] text-gray-500 border-gray-200">{job.jobType || 'Full Time'}</Badge>
-                        <span className="text-xs font-medium text-[#16a34a] flex items-center gap-0.5 group-hover:text-emerald-700">
-                          View <ChevronRight className="h-3 w-3" />
                         </span>
+                        {job.isRemote && (
+                          <label className="absolute top-3 left-3 bg-[#f9ab00] text-white text-[9px] font-semibold px-2 py-0.5 rounded-md uppercase tracking-wide shadow-sm">
+                            Remote
+                          </label>
+                        )}
+                        {i < 3 && !job.isRemote && (
+                          <label className="absolute top-3 left-3 bg-[#d93025] text-white text-[9px] font-semibold px-2 py-0.5 rounded-md uppercase tracking-wide shadow-sm">
+                            Urgent
+                          </label>
+                        )}
+                        <button onClick={(e: React.MouseEvent) => { e.stopPropagation() }} className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/40 transition-colors">
+                          <Bookmark className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                      {/* Card Body */}
+                      <div className="p-4">
+                        <div className="flex items-center justify-between mb-2.5">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className={`w-8 h-8 rounded-lg ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-sm`}>
+                              {getCompanyInitial(job.corporate?.companyName)}
+                            </div>
+                            <span className="text-xs text-gray-500 truncate font-medium">{job.corporate?.companyName || 'Company'}</span>
+                          </div>
+                          <Badge className="bg-gray-50 text-gray-500 border-0 text-[10px] rounded-md px-2 py-0 font-medium capitalize flex-shrink-0">
+                            {job.jobType || 'Full Time'}
+                          </Badge>
+                        </div>
+                        <h5 className="font-semibold text-gray-900 text-sm leading-snug group-hover:text-[#16a34a] transition-colors line-clamp-2 mb-2">
+                          {job.title}
+                        </h5>
+                        <div className="flex items-center gap-3 text-[11px] text-gray-500 mb-3">
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-3 w-3 text-[#16a34a]" />
+                            {job.postedDate ? timeAgo(job.postedDate) : 'Recently'}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3 text-[#16a34a]" />
+                            {job.location || 'Remote'}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                          <span className="font-semibold text-[#16a34a] text-sm">
+                            {formatSalary(job.salaryMin, job.salaryMax)}
+                          </span>
+                          <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-[#16a34a] group-hover:translate-x-0.5 transition-all" />
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

@@ -14,7 +14,8 @@ import {
   Filter, ChevronLeft, Wifi, X, ArrowLeft, Bookmark, Share2,
   CalendarDays, Users, IndianRupee, Star, TrendingUp, Award,
   CheckCircle2, Globe, Phone, Mail, Linkedin, Facebook, Twitter,
-  LayoutGrid, List, MapPinned,
+  LayoutGrid, List, MapPinned, SlidersHorizontal, ChevronDown,
+  Home, ShieldCheck, Heart, Zap,
 } from 'lucide-react'
 
 // Green color palette (3 Boxes brand)
@@ -31,6 +32,60 @@ const S = {
   bgCard: '#ffffff',
 }
 
+// Company color palette for avatars
+const companyColors = [
+  'bg-[#16a34a]', 'bg-[#34a853]', 'bg-[#f9ab00]', 'bg-[#d93025]',
+  'bg-[#7c66ff]', 'bg-[#a55fff]', 'bg-[#00cc9a]', 'bg-[#2869fe]',
+]
+
+const getCompanyInitial = (name?: string) => name ? name.charAt(0).toUpperCase() : 'C'
+
+const getCompanyColor = (name?: string) => {
+  if (!name) return companyColors[0]
+  let hash = 0
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  return companyColors[Math.abs(hash) % companyColors.length]
+}
+
+const formatSalary = (min?: number, max?: number) => {
+  if (!min && !max) return 'Not disclosed'
+  const fmt = (n: number) => n >= 100000 ? `${(n / 100000).toFixed(0)}L` : `${(n / 1000).toFixed(0)}K`
+  if (min && max) return `₹${fmt(min)} - ₹${fmt(max)}/mo`
+  return min ? `₹${fmt(min)}+/mo` : `Up to ₹${fmt(max!)}/mo`
+}
+
+const timeAgo = (dateStr: string) => {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const hours = Math.floor(diff / 3600000)
+  if (hours < 1) return 'Just now'
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  if (days < 7) return `${days}d ago`
+  if (days < 30) return `${Math.floor(days / 7)}w ago`
+  return new Date(dateStr).toLocaleDateString()
+}
+
+// Category filter options
+const categoryOptions = [
+  { value: 'all', label: 'All Categories' },
+  { value: 'IT & Software', label: 'IT & Software' },
+  { value: 'Finance', label: 'Banking & Finance' },
+  { value: 'Healthcare', label: 'Healthcare' },
+  { value: 'Marketing', label: 'Marketing' },
+  { value: 'Education', label: 'Education' },
+  { value: 'Sales', label: 'Sales' },
+  { value: 'Engineering', label: 'Engineering' },
+]
+
+const jobLevelOptions = [
+  { value: 'all', label: 'All Levels' },
+  { value: 'entry', label: 'Entry Level' },
+  { value: 'mid', label: 'Mid Level' },
+  { value: 'senior', label: 'Senior Level' },
+  { value: 'lead', label: 'Team Lead' },
+  { value: 'manager', label: 'Manager' },
+]
+
 export function JobSearchView() {
   const { user } = useAuthStore()
   const [jobs, setJobs] = useState<any[]>([])
@@ -40,6 +95,9 @@ export function JobSearchView() {
   const [jobType, setJobType] = useState('')
   const [experience, setExperience] = useState('')
   const [isRemote, setIsRemote] = useState(false)
+  const [category, setCategory] = useState('')
+  const [salaryRange, setSalaryRange] = useState('')
+  const [jobLevel, setJobLevel] = useState('')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [totalJobs, setTotalJobs] = useState(0)
@@ -47,6 +105,8 @@ export function JobSearchView() {
   const [applying, setApplying] = useState(false)
   const [savedJobs, setSavedJobs] = useState<Set<string>>(new Set())
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [sortBy, setSortBy] = useState('newest')
+  const [showMobileFilter, setShowMobileFilter] = useState(false)
 
   useEffect(() => { loadJobs() }, [page, jobType])
 
@@ -54,7 +114,7 @@ export function JobSearchView() {
     setLoading(true)
     try {
       const params = new URLSearchParams({
-        search, page: String(page), limit: '12',
+        search, page: String(page), limit: '9',
         ...(jobType && jobType !== 'all' && { jobType }),
         ...(isRemote && { isRemote: 'true' }),
         ...(location && { location }),
@@ -99,39 +159,14 @@ export function JobSearchView() {
     })
   }
 
-  const formatSalary = (min?: number, max?: number) => {
-    if (!min && !max) return 'Not disclosed'
-    const fmt = (n: number) => n >= 100000 ? `${(n / 100000).toFixed(0)}L` : `${(n / 1000).toFixed(0)}K`
-    if (min && max) return `₹${fmt(min)} - ₹${fmt(max)} PA`
-    return min ? `₹${fmt(min)}+ PA` : `Up to ₹${fmt(max!)} PA`
+  const clearFilters = () => {
+    setSearch(''); setLocation(''); setJobType(''); setExperience(''); setIsRemote(false)
+    setCategory(''); setSalaryRange(''); setJobLevel(''); setPage(1); loadJobs()
   }
 
-  const timeAgo = (dateStr: string) => {
-    const diff = Date.now() - new Date(dateStr).getTime()
-    const hours = Math.floor(diff / 3600000)
-    if (hours < 1) return 'Just now'
-    if (hours < 24) return `${hours}h ago`
-    const days = Math.floor(hours / 24)
-    if (days < 7) return `${days}d ago`
-    if (days < 30) return `${Math.floor(days / 7)}w ago`
-    return new Date(dateStr).toLocaleDateString()
-  }
+  const hasActiveFilters = search || location || (jobType && jobType !== 'all') || experience || isRemote || category || salaryRange || jobLevel
 
-  const getCompanyInitial = (name?: string) => name ? name.charAt(0).toUpperCase() : 'C'
-
-  const companyColors = [
-    'bg-[#16a34a]', 'bg-[#34a853]', 'bg-[#f9ab00]', 'bg-[#d93025]',
-    'bg-[#7c66ff]', 'bg-[#a55fff]', 'bg-[#00cc9a]', 'bg-[#2869fe]',
-  ]
-
-  const getCompanyColor = (name?: string) => {
-    if (!name) return companyColors[0]
-    let hash = 0
-    for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash)
-    return companyColors[Math.abs(hash) % companyColors.length]
-  }
-
-  // Related jobs (filtered from current list)
+  // Related jobs
   const relatedJobs = jobs.filter(j => j.id !== selectedJob?.id).slice(0, 4)
 
   // ========== FULL-PAGE JOB DETAIL VIEW ==========
@@ -188,9 +223,8 @@ export function JobSearchView() {
         {/* Main Content - Two Column Layout */}
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* Left - Main Content (col-lg-8 equivalent) */}
+            {/* Left - Main Content */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Job Description */}
               {selectedJob.description && (
                 <Card className="border-[#ecedf2]">
                   <CardContent className="p-6">
@@ -200,7 +234,6 @@ export function JobSearchView() {
                 </Card>
               )}
 
-              {/* Key Responsibilities */}
               {selectedJob.responsibilities && (
                 <Card className="border-[#ecedf2]">
                   <CardContent className="p-6">
@@ -217,7 +250,6 @@ export function JobSearchView() {
                 </Card>
               )}
 
-              {/* Skills & Experience */}
               {selectedJob.requirements && (
                 <Card className="border-[#ecedf2]">
                   <CardContent className="p-6">
@@ -234,7 +266,6 @@ export function JobSearchView() {
                 </Card>
               )}
 
-              {/* Share This Job */}
               <Card className="border-[#ecedf2]">
                 <CardContent className="p-6">
                   <h3 className="font-semibold text-[#202124] text-lg mb-4">Share This Job</h3>
@@ -289,9 +320,8 @@ export function JobSearchView() {
               )}
             </div>
 
-            {/* Right Sidebar (col-lg-4 equivalent) */}
+            {/* Right Sidebar */}
             <div className="space-y-6">
-              {/* Widget: Job Overview */}
               <Card className="border-[#ecedf2]">
                 <CardContent className="p-5">
                   <h4 className="font-semibold text-[#202124] mb-4">Job Overview</h4>
@@ -319,7 +349,6 @@ export function JobSearchView() {
                 </CardContent>
               </Card>
 
-              {/* Widget: Job Skills */}
               {selectedJob.skills && (
                 <Card className="border-[#ecedf2]">
                   <CardContent className="p-5">
@@ -335,7 +364,6 @@ export function JobSearchView() {
                 </Card>
               )}
 
-              {/* Widget: Company Info */}
               <Card className="border-[#ecedf2]">
                 <CardContent className="p-5">
                   <h4 className="font-semibold text-[#202124] mb-4">Company Info</h4>
@@ -373,7 +401,6 @@ export function JobSearchView() {
                 </CardContent>
               </Card>
 
-              {/* Apply CTA Card */}
               <Card className="border-[#ecedf2] bg-gradient-to-br from-[#16a34a] to-[#15803d]">
                 <CardContent className="p-5 text-center">
                   <h4 className="font-semibold text-white mb-2">Interested in this job?</h4>
@@ -394,222 +421,564 @@ export function JobSearchView() {
     )
   }
 
-  // ========== MAIN SEARCH VIEW ==========
+  // ========== MAIN JOB GRID VIEW (JobHub-style) ==========
   return (
-    <div className="space-y-4">
-      {/* Search Bar */}
-      <Card className="border-[#ecedf2] bg-[#f5f7fc]">
-        <CardContent className="p-4 sm:p-5">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5f6368]" />
-              <Input placeholder="Job title, keyword, or company" value={search}
-                onChange={(e) => setSearch(e.target.value)} className="pl-9 h-11 bg-white border-[#ecedf2] focus:border-[#16a34a]"
-                onKeyDown={(e) => e.key === 'Enter' && loadJobs()} />
-            </div>
-            <div className="relative flex-1">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5f6368]" />
-              <Input placeholder="City or location" value={location}
-                onChange={(e) => setLocation(e.target.value)} className="pl-9 h-11 bg-white border-[#ecedf2] focus:border-[#16a34a]"
-                onKeyDown={(e) => e.key === 'Enter' && loadJobs()} />
-            </div>
-            <Select value={experience} onValueChange={setExperience}>
-              <SelectTrigger className="w-full sm:w-[150px] h-11 bg-white border-[#ecedf2]">
-                <SelectValue placeholder="Experience" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="0">Fresher</SelectItem>
-                <SelectItem value="1">1 Year</SelectItem>
-                <SelectItem value="2">2 Years</SelectItem>
-                <SelectItem value="3">3 Years</SelectItem>
-                <SelectItem value="5">5 Years</SelectItem>
-                <SelectItem value="7">7 Years</SelectItem>
-                <SelectItem value="10">10+ Years</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button onClick={loadJobs} className="bg-[#16a34a] hover:bg-[#15803d] h-11 px-6 font-semibold shadow-sm">
-              <Search className="h-4 w-4 mr-2" /> Find Jobs
-            </Button>
-          </div>
-          <div className="flex flex-wrap gap-2 mt-3">
-            <Select value={jobType} onValueChange={setJobType}>
-              <SelectTrigger className="w-[130px] h-8 text-xs bg-white border-[#ecedf2]">
-                <SelectValue placeholder="Job Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="full-time">Full Time</SelectItem>
-                <SelectItem value="part-time">Part Time</SelectItem>
-                <SelectItem value="contract">Contract</SelectItem>
-                <SelectItem value="remote">Remote</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant={isRemote ? 'default' : 'outline'} size="sm"
-              className={`h-8 text-xs ${isRemote ? 'bg-[#16a34a] hover:bg-[#15803d] text-white' : 'border-[#ecedf2] text-[#5f6368]'}`}
-              onClick={() => setIsRemote(!isRemote)}>
-              <Wifi className="h-3 w-3 mr-1" /> Remote
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="min-h-screen bg-[#f5f7fc]">
+      {/* ===== TOP BANNER ===== */}
+      <div className="bg-gradient-to-r from-[#16a34a] to-[#15803d] relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v22H20v-1.5zM0 22v2h20v-2H0zm0 4v2h20v-2H0zm0 4v2h20v-2H0zm0 4v2h20v-2H0z\' fill=\'%23ffffff\' fill-opacity=\'0.15\' fill-rule=\'evenodd\'/%3E%3C/svg%3E")'}} />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+            There Are <span className="text-[#f9ab00]">{totalJobs}</span> Jobs<br className="sm:hidden" /> Here For You!
+          </h2>
+          <p className="text-white/70 text-sm sm:text-base mb-6 max-w-lg">Discover your next career move, freelance gig, or internship</p>
 
-      {/* Results Header */}
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-[#5f6368]">
-          {loading ? 'Searching...' : <>Showing <span className="font-semibold text-[#202124]">{jobs.length}</span> of <span className="font-semibold text-[#202124]">{totalJobs}</span> jobs</>}
-        </p>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 bg-[#f5f7fc] rounded-lg p-0.5">
-            <button onClick={() => setViewMode('grid')} className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-[#16a34a]' : 'text-[#5f6368] hover:text-[#202124]'}`}>
-              <LayoutGrid className="h-4 w-4" />
-            </button>
-            <button onClick={() => setViewMode('list')} className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-[#16a34a]' : 'text-[#5f6368] hover:text-[#202124]'}`}>
-              <List className="h-4 w-4" />
-            </button>
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-sm text-white/60 mb-6">
+            <Home className="h-3.5 w-3.5" />
+            <span>Home</span>
+            <ChevronRight className="h-3 w-3" />
+            <span className="text-white/90">Jobs listing</span>
           </div>
-          <div className="flex items-center gap-2 text-xs text-[#5f6368]">
-            <Filter className="h-3 w-3" /> Sort by: <span className="font-medium text-[#202124]">Relevance</span>
+
+          {/* ===== SEARCH BOX (embedded in banner) ===== */}
+          <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-5 -mb-16 relative z-10">
+            <div className="flex flex-col lg:flex-row gap-3 items-end">
+              {/* Search Input */}
+              <div className="flex-1 w-full lg:w-auto">
+                <label className="text-xs font-medium text-[#5f6368] mb-1.5 block">What are you looking for?</label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5f6368]" />
+                  <Input
+                    placeholder="Job title, keyword, or company"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="pl-9 h-11 bg-[#f5f7fc] border-[#ecedf2] focus:border-[#16a34a] focus:bg-white text-sm"
+                    onKeyDown={(e) => e.key === 'Enter' && loadJobs()}
+                  />
+                </div>
+              </div>
+
+              {/* Location */}
+              <div className="flex-1 w-full lg:w-auto">
+                <label className="text-xs font-medium text-[#5f6368] mb-1.5 block">Where?</label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5f6368]" />
+                  <Input
+                    placeholder="City or location"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    className="pl-9 h-11 bg-[#f5f7fc] border-[#ecedf2] focus:border-[#16a34a] focus:bg-white text-sm"
+                    onKeyDown={(e) => e.key === 'Enter' && loadJobs()}
+                  />
+                </div>
+              </div>
+
+              {/* Job Type */}
+              <div className="w-full lg:w-[160px]">
+                <label className="text-xs font-medium text-[#5f6368] mb-1.5 block">Job Type</label>
+                <Select value={jobType} onValueChange={setJobType}>
+                  <SelectTrigger className="w-full h-11 bg-[#f5f7fc] border-[#ecedf2] text-sm">
+                    <Briefcase className="h-4 w-4 mr-2 text-[#5f6368]" />
+                    <SelectValue placeholder="All Types" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="full-time">Full Time</SelectItem>
+                    <SelectItem value="part-time">Part Time</SelectItem>
+                    <SelectItem value="contract">Contract</SelectItem>
+                    <SelectItem value="remote">Remote</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Salary Range */}
+              <div className="w-full lg:w-[160px]">
+                <label className="text-xs font-medium text-[#5f6368] mb-1.5 block">Salary Range</label>
+                <Select value={salaryRange} onValueChange={setSalaryRange}>
+                  <SelectTrigger className="w-full h-11 bg-[#f5f7fc] border-[#ecedf2] text-sm">
+                    <IndianRupee className="h-4 w-4 mr-2 text-[#5f6368]" />
+                    <SelectValue placeholder="Any" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="any">Any</SelectItem>
+                    <SelectItem value="0-3">₹0 - ₹3L PA</SelectItem>
+                    <SelectItem value="3-6">₹3L - ₹6L PA</SelectItem>
+                    <SelectItem value="6-10">₹6L - ₹10L PA</SelectItem>
+                    <SelectItem value="10-15">₹10L - ₹15L PA</SelectItem>
+                    <SelectItem value="15-25">₹15L - ₹25L PA</SelectItem>
+                    <SelectItem value="25+">₹25L+ PA</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Find Now Button */}
+              <div className="w-full lg:w-auto">
+                <Button onClick={loadJobs} className="w-full lg:w-auto bg-[#16a34a] hover:bg-[#15803d] h-11 px-8 font-semibold shadow-md rounded-xl">
+                  <Search className="h-4 w-4 mr-2" /> Find Now
+                </Button>
+              </div>
+            </div>
+
+            {/* Quick filter tags row */}
+            <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-[#ecedf2]">
+              <Select value={experience} onValueChange={setExperience}>
+                <SelectTrigger className="w-[120px] h-8 text-xs bg-[#f5f7fc] border-[#ecedf2]">
+                  <SelectValue placeholder="Experience" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Exp.</SelectItem>
+                  <SelectItem value="0">Fresher</SelectItem>
+                  <SelectItem value="1">1 Year</SelectItem>
+                  <SelectItem value="2">2 Years</SelectItem>
+                  <SelectItem value="3">3 Years</SelectItem>
+                  <SelectItem value="5">5 Years</SelectItem>
+                  <SelectItem value="7">7 Years</SelectItem>
+                  <SelectItem value="10">10+ Years</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger className="w-[140px] h-8 text-xs bg-[#f5f7fc] border-[#ecedf2]">
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categoryOptions.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+
+              <Button variant={isRemote ? 'default' : 'outline'} size="sm"
+                className={`h-8 text-xs ${isRemote ? 'bg-[#16a34a] hover:bg-[#15803d] text-white' : 'border-[#ecedf2] text-[#5f6368] hover:text-[#202124]'}`}
+                onClick={() => setIsRemote(!isRemote)}>
+                <Wifi className="h-3 w-3 mr-1" /> Remote
+              </Button>
+
+              {hasActiveFilters && (
+                <Button variant="ghost" size="sm" className="h-8 text-xs text-[#d93025] hover:text-[#d93025] hover:bg-red-50" onClick={clearFilters}>
+                  <X className="h-3 w-3 mr-1" /> Clear all
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Job Cards */}
-      {loading ? (
-        <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-3'}>
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Card key={i} className="animate-pulse border-[#ecedf2]"><CardContent className="p-5"><div className="h-24 bg-[#f5f7fc] rounded" /></CardContent></Card>
-          ))}
-        </div>
-      ) : jobs.length === 0 ? (
-        <div className="text-center py-20">
-          <Briefcase className="h-16 w-16 mx-auto mb-4 text-[#ecedf2]" />
-          <p className="text-xl font-semibold text-[#202124]">No jobs found</p>
-          <p className="text-sm text-[#5f6368] mt-1">Try adjusting your search criteria</p>
-          <Button variant="outline" className="mt-4 border-[#16a34a] text-[#16a34a]" onClick={() => { setSearch(''); setLocation(''); setJobType(''); setExperience(''); setIsRemote(false); loadJobs() }}>
-            Clear all filters
-          </Button>
-        </div>
-      ) : viewMode === 'grid' ? (
-        /* Grid View - Card Tiles */
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {jobs.map((job, i) => (
-            <Card key={job.id} className="hover:shadow-lg transition-all cursor-pointer group border-[#ecedf2] hover:border-[#16a34a]/30"
-              onClick={() => setSelectedJob(job)}>
-              <CardContent className="p-5">
-                <div className="flex items-start gap-3 mb-3">
-                  <div className={`w-12 h-12 rounded-xl ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center text-white font-bold text-lg flex-shrink-0 group-hover:scale-105 transition-transform shadow-sm`}>
-                    {getCompanyInitial(job.corporate?.companyName)}
+      {/* ===== MAIN CONTENT AREA ===== */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+        <div className="flex flex-col lg:flex-row gap-8">
+
+          {/* ===== LEFT SIDEBAR (Filters) ===== */}
+          <aside className="w-full lg:w-[280px] flex-shrink-0">
+            <div className="space-y-6 lg:sticky lg:top-24">
+
+              {/* Job Reminder Widget */}
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-[#16a34a] to-[#15803d]">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Zap className="h-5 w-5 text-[#f9ab00]" />
+                    <h5 className="font-semibold text-white">Set Job Reminder</h5>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-[#202124] text-sm leading-tight group-hover:text-[#16a34a] transition-colors line-clamp-2">{job.title}</h3>
-                    <p className="text-xs text-[#5f6368] mt-0.5 truncate">{job.corporate?.companyName}</p>
+                  <p className="text-white/70 text-xs mb-4">Enter your email and get notified when new jobs are posted.</p>
+                  <div className="space-y-2">
+                    <Input placeholder="Enter email address" className="h-9 bg-white/10 border-white/20 text-white placeholder:text-white/50 text-sm focus:bg-white/20" />
+                    <Button className="w-full bg-[#f9ab00] hover:bg-[#e9a000] text-[#202124] font-semibold h-9 text-sm">
+                      Subscribe
+                    </Button>
                   </div>
-                  <button onClick={(e) => toggleSave(job.id, e)} className="p-1.5 rounded-lg hover:bg-[#f5f7fc] transition-colors flex-shrink-0">
-                    <Bookmark className={`h-4 w-4 ${savedJobs.has(job.id) ? 'fill-[#16a34a] text-[#16a34a]' : 'text-[#ecedf2] hover:text-[#5f6368]'}`} />
+                </CardContent>
+              </Card>
+
+              {/* Location Filter */}
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-5">
+                  <h5 className="font-semibold text-[#202124] text-sm mb-3">Location</h5>
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5f6368]" />
+                    <Input
+                      placeholder="City, state, or country"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      className="pl-9 h-9 bg-[#f5f7fc] border-[#ecedf2] text-sm focus:border-[#16a34a]"
+                      onKeyDown={(e) => e.key === 'Enter' && loadJobs()}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Category Filter */}
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-5">
+                  <h5 className="font-semibold text-[#202124] text-sm mb-3">Category</h5>
+                  <Select value={category} onValueChange={setCategory}>
+                    <SelectTrigger className="w-full h-9 bg-[#f5f7fc] border-[#ecedf2] text-sm">
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categoryOptions.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </CardContent>
+              </Card>
+
+              {/* Job Level Filter */}
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-5">
+                  <h5 className="font-semibold text-[#202124] text-sm mb-3">Job Level</h5>
+                  <Select value={jobLevel} onValueChange={setJobLevel}>
+                    <SelectTrigger className="w-full h-9 bg-[#f5f7fc] border-[#ecedf2] text-sm">
+                      <SelectValue placeholder="Select level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {jobLevelOptions.map(l => <SelectItem key={l.value} value={l.value}>{l.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </CardContent>
+              </Card>
+
+              {/* Job Type Filter */}
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-5">
+                  <h5 className="font-semibold text-[#202124] text-sm mb-3">Job Type</h5>
+                  <div className="space-y-2.5">
+                    {[
+                      { value: 'all', label: 'All Types', count: totalJobs },
+                      { value: 'full-time', label: 'Full Time', count: Math.floor(totalJobs * 0.5) },
+                      { value: 'part-time', label: 'Part Time', count: Math.floor(totalJobs * 0.2) },
+                      { value: 'contract', label: 'Contract', count: Math.floor(totalJobs * 0.15) },
+                      { value: 'remote', label: 'Remote', count: Math.floor(totalJobs * 0.25) },
+                    ].map((type) => (
+                      <label key={type.value} className="flex items-center justify-between cursor-pointer group">
+                        <div className="flex items-center gap-2.5">
+                          <input
+                            type="radio"
+                            name="jobType"
+                            checked={jobType === type.value || (!jobType && type.value === 'all')}
+                            onChange={() => setJobType(type.value)}
+                            className="w-4 h-4 accent-[#16a34a]"
+                          />
+                          <span className="text-sm text-[#5f6368] group-hover:text-[#202124] transition-colors">{type.label}</span>
+                        </div>
+                        <Badge className="text-[10px] bg-[#f5f7fc] text-[#5f6368] border-0 rounded-full px-2">{type.count}</Badge>
+                      </label>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Experience Filter */}
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-5">
+                  <h5 className="font-semibold text-[#202124] text-sm mb-3">Experience</h5>
+                  <div className="space-y-2.5">
+                    {[
+                      { value: '', label: 'All Experience' },
+                      { value: '0', label: 'Fresher' },
+                      { value: '1', label: '1+ Years' },
+                      { value: '3', label: '3+ Years' },
+                      { value: '5', label: '5+ Years' },
+                      { value: '10', label: '10+ Years' },
+                    ].map((exp) => (
+                      <label key={exp.value} className="flex items-center gap-2.5 cursor-pointer group">
+                        <input
+                          type="radio"
+                          name="experience"
+                          checked={experience === exp.value}
+                          onChange={() => setExperience(exp.value)}
+                          className="w-4 h-4 accent-[#16a34a]"
+                        />
+                        <span className="text-sm text-[#5f6368] group-hover:text-[#202124] transition-colors">{exp.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Tags Cloud */}
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-5">
+                  <h5 className="font-semibold text-[#202124] text-sm mb-3">Popular Tags</h5>
+                  <div className="flex flex-wrap gap-2">
+                    {['React', 'Node.js', 'Python', 'AWS', 'Java', 'SQL', 'TypeScript', 'Docker', 'Kubernetes', 'ML', 'Data Science', 'DevOps'].map(tag => (
+                      <Badge key={tag} className="text-xs bg-[#f5f7fc] text-[#5f6368] border border-[#ecedf2] hover:bg-green-50 hover:text-[#16a34a] hover:border-[#16a34a]/30 rounded-lg px-2.5 py-1 cursor-pointer transition-all font-normal">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+            </div>
+          </aside>
+
+          {/* ===== RIGHT MAIN CONTENT ===== */}
+          <div className="flex-1 min-w-0">
+
+            {/* Results Header Bar - Sort + View Toggle */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5 bg-white rounded-xl p-3.5 shadow-sm">
+              <div>
+                {loading ? (
+                  <span className="text-sm text-[#5f6368]">Searching...</span>
+                ) : (
+                  <span className="text-sm text-[#5f6368]">
+                    Showing <strong className="text-[#202124]">{jobs.length}</strong> of <strong className="text-[#202124]">{totalJobs}</strong> jobs
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-[#5f6368]">Sort by:</span>
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="w-[130px] h-8 text-xs bg-[#f5f7fc] border-[#ecedf2]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="newest">Newest Post</SelectItem>
+                      <SelectItem value="oldest">Oldest Post</SelectItem>
+                      <SelectItem value="salary-high">Highest Salary</SelectItem>
+                      <SelectItem value="salary-low">Lowest Salary</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center bg-[#f5f7fc] rounded-lg p-0.5">
+                  <button onClick={() => setViewMode('grid')} className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-[#16a34a]' : 'text-[#5f6368] hover:text-[#202124]'}`}>
+                    <LayoutGrid className="h-4 w-4" />
+                  </button>
+                  <button onClick={() => setViewMode('list')} className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-[#16a34a]' : 'text-[#5f6368] hover:text-[#202124]'}`}>
+                    <List className="h-4 w-4" />
                   </button>
                 </div>
-                <div className="space-y-1.5 mb-3">
-                  <div className="flex items-center gap-2 text-xs text-[#5f6368]">
-                    <MapPin className="h-3 w-3 flex-shrink-0" /><span className="truncate">{job.location || 'Remote'}</span>
-                    {job.isRemote && <Badge className="text-[10px] px-1.5 py-0 bg-[rgba(22,163,74,0.15)] text-[#16a34a] border-0 rounded-full">WFH</Badge>}
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-[#5f6368]">
-                    <IndianRupee className="h-3 w-3 flex-shrink-0" /><span className="font-medium text-[#16a34a]">{formatSalary(job.salaryMin, job.salaryMax)}</span>
-                  </div>
-                  {job.experienceMin && (
-                    <div className="flex items-center gap-2 text-xs text-[#5f6368]">
-                      <Briefcase className="h-3 w-3 flex-shrink-0" /><span>{job.experienceMin}-{job.experienceMax} Yrs</span>
-                    </div>
-                  )}
-                  <div className="flex items-center gap-2 text-xs text-[#5f6368]">
-                    <Clock className="h-3 w-3 flex-shrink-0" /><span>{job.postedDate ? timeAgo(job.postedDate) : 'Recently'}</span>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-1.5 mb-3">
-                  {job.skills?.split(',').slice(0, 3).map((s: string) => (
-                    <Badge key={s.trim()} className="text-[10px] px-2 py-0.5 bg-[rgba(22,163,74,0.15)] text-[#16a34a] border-0 rounded-full">{s.trim()}</Badge>
-                  ))}
-                  {job.skills?.split(',').length > 3 && (
-                    <Badge className="text-[10px] px-2 py-0.5 bg-[#f5f7fc] text-[#5f6368] border-0 rounded-full">+{job.skills.split(',').length - 3}</Badge>
-                  )}
-                </div>
-                <div className="flex items-center justify-between pt-3 border-t border-[#ecedf2]">
-                  <Badge className="bg-[rgba(22,163,74,0.15)] text-[#16a34a] border-0 rounded-full text-[11px] px-3">{job.jobType || 'Full Time'}</Badge>
-                  <span className="text-xs font-medium text-[#16a34a] flex items-center gap-0.5 group-hover:gap-1.5 transition-all">
-                    View Details <ChevronRight className="h-3 w-3" />
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      ) : (
-        /* List View */
-        <div className="space-y-3">
-          {jobs.map((job, i) => (
-            <Card key={job.id} className="hover:shadow-md transition-all cursor-pointer group border-[#ecedf2] hover:border-[#16a34a]/30"
-              onClick={() => setSelectedJob(job)}>
-              <CardContent className="p-4 sm:p-5">
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-xl ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center text-white font-bold text-lg flex-shrink-0 shadow-sm`}>
-                    {getCompanyInitial(job.corporate?.companyName)}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-[#202124] text-sm sm:text-base group-hover:text-[#16a34a] transition-colors truncate">{job.title}</h3>
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#5f6368] mt-1">
-                      <span className="flex items-center gap-1"><Building2 className="h-3 w-3" /> {job.corporate?.companyName}</span>
-                      <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.location || 'Remote'}</span>
-                      <span className="flex items-center gap-1"><IndianRupee className="h-3 w-3" /> <span className="font-medium text-[#16a34a]">{formatSalary(job.salaryMin, job.salaryMax)}</span></span>
-                      <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {job.postedDate ? timeAgo(job.postedDate) : 'Recently'}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5 mt-2">
-                      {job.skills?.split(',').slice(0, 4).map((s: string) => (
-                        <Badge key={s.trim()} className="text-[10px] px-2 py-0.5 bg-[rgba(22,163,74,0.15)] text-[#16a34a] border-0 rounded-full">{s.trim()}</Badge>
-                      ))}
-                      {job.skills?.split(',').length > 4 && <Badge className="text-[10px] px-2 py-0.5 bg-[#f5f7fc] text-[#5f6368] border-0 rounded-full">+{job.skills.split(',').length - 4}</Badge>}
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                    <div className="flex gap-1.5">
-                      <Badge className="bg-[rgba(22,163,74,0.15)] text-[#16a34a] border-0 rounded-full text-[11px] px-3">{job.jobType || 'Full Time'}</Badge>
-                      {job.isRemote && <Badge className="bg-[rgba(52,168,83,0.15)] text-[#34a853] border-0 rounded-full text-[11px] px-3">Remote</Badge>}
-                    </div>
-                    <button onClick={(e) => toggleSave(job.id, e)} className="p-1.5 rounded-full hover:bg-[#f5f7fc] transition-colors">
-                      <Bookmark className={`h-4 w-4 ${savedJobs.has(job.id) ? 'fill-[#16a34a] text-[#16a34a]' : 'text-[#ecedf2]'}`} />
-                    </button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+              </div>
+            </div>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between pt-4 border-t border-[#ecedf2]">
-          <p className="text-sm text-[#5f6368]">Showing page {page} of {totalPages}</p>
-          <div className="flex items-center gap-1">
-            <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)} className="border-[#ecedf2] text-[#5f6368]">
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            {Array.from({ length: Math.min(totalPages, 5) }).map((_, i) => {
-              const pageNum = i + 1
-              return (
-                <Button key={pageNum} variant={page === pageNum ? 'default' : 'outline'} size="sm"
-                  className={`w-9 h-9 ${page === pageNum ? 'bg-[#16a34a] hover:bg-[#15803d]' : 'border-[#ecedf2] text-[#5f6368]'}`}
-                  onClick={() => setPage(pageNum)}>
-                  {pageNum}
+            {/* ===== JOB CARDS ===== */}
+            {loading ? (
+              <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5' : 'space-y-4'}>
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <Card key={i} className="animate-pulse border-0 shadow-sm">
+                    <CardContent className="p-0">
+                      <div className="h-[140px] bg-[#f5f7fc] rounded-t-xl" />
+                      <div className="p-5 space-y-3">
+                        <div className="h-4 bg-[#f5f7fc] rounded w-3/4" />
+                        <div className="h-3 bg-[#f5f7fc] rounded w-1/2" />
+                        <div className="h-3 bg-[#f5f7fc] rounded w-2/3" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : jobs.length === 0 ? (
+              <div className="text-center py-20 bg-white rounded-2xl shadow-sm">
+                <Briefcase className="h-16 w-16 mx-auto mb-4 text-[#ecedf2]" />
+                <p className="text-xl font-semibold text-[#202124]">No jobs found</p>
+                <p className="text-sm text-[#5f6368] mt-1">Try adjusting your search criteria</p>
+                <Button variant="outline" className="mt-4 border-[#16a34a] text-[#16a34a] hover:bg-green-50" onClick={clearFilters}>
+                  Clear all filters
                 </Button>
-              )
-            })}
-            <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => setPage(page + 1)} className="border-[#ecedf2] text-[#5f6368]">
-              <ChevronRight className="h-4 w-4" />
-            </Button>
+              </div>
+            ) : viewMode === 'grid' ? (
+              /* ===== GRID VIEW - JobHub Card Style ===== */
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {jobs.map((job, i) => (
+                  <Card key={job.id}
+                    className="hover:-translate-y-1 transition-all duration-300 cursor-pointer group border-0 shadow-sm hover:shadow-xl overflow-hidden"
+                    onClick={() => setSelectedJob(job)}>
+                    <CardContent className="p-0">
+                      {/* Card Top - Company Color Banner */}
+                      <div className={`relative h-[140px] ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center overflow-hidden`}>
+                        {/* Pattern overlay */}
+                        <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
+
+                        {/* Company Initial large */}
+                        <span className="text-5xl font-bold text-white/30 select-none">
+                          {getCompanyInitial(job.corporate?.companyName)}
+                        </span>
+
+                        {/* Urgent / Featured label */}
+                        {job.isRemote && (
+                          <label className="absolute top-3 left-3 bg-[#f9ab00] text-white text-[10px] font-semibold px-2.5 py-1 rounded-md uppercase tracking-wide shadow-sm">
+                            Remote
+                          </label>
+                        )}
+                        {i < 3 && !job.isRemote && (
+                          <label className="absolute top-3 left-3 bg-[#d93025] text-white text-[10px] font-semibold px-2.5 py-1 rounded-md uppercase tracking-wide shadow-sm">
+                            Urgent
+                          </label>
+                        )}
+
+                        {/* Bookmark button */}
+                        <button
+                          onClick={(e) => toggleSave(job.id, e)}
+                          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/40 transition-colors"
+                        >
+                          <Bookmark className={`h-4 w-4 ${savedJobs.has(job.id) ? 'fill-white' : ''}`} />
+                        </button>
+                      </div>
+
+                      {/* Card Body */}
+                      <div className="p-5">
+                        {/* Company row */}
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className={`w-9 h-9 rounded-lg ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-sm`}>
+                              {getCompanyInitial(job.corporate?.companyName)}
+                            </div>
+                            <span className="text-sm text-[#5f6368] truncate font-medium">{job.corporate?.companyName || 'Company'}</span>
+                          </div>
+                          <Badge className="bg-[#f5f7fc] text-[#5f6368] border-0 text-[11px] rounded-md px-2.5 py-0.5 font-medium capitalize flex-shrink-0">
+                            {job.jobType || 'Full Time'}
+                          </Badge>
+                        </div>
+
+                        {/* Job Title */}
+                        <h5 className="font-semibold text-[#202124] text-[15px] leading-snug group-hover:text-[#16a34a] transition-colors line-clamp-2 mb-2.5">
+                          {job.title}
+                        </h5>
+
+                        {/* Time + Location row */}
+                        <div className="flex items-center gap-3 text-xs text-[#5f6368] mb-4">
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-3.5 w-3.5 text-[#16a34a]" />
+                            {job.postedDate ? timeAgo(job.postedDate) : 'Recently'}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <MapPin className="h-3.5 w-3.5 text-[#16a34a]" />
+                            {job.location || 'Remote'}
+                          </span>
+                        </div>
+
+                        {/* Bottom: Salary + Actions */}
+                        <div className="flex items-center justify-between pt-3.5 border-t border-[#ecedf2]">
+                          <span className="font-semibold text-[#16a34a] text-sm">
+                            {formatSalary(job.salaryMin, job.salaryMax)}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <ShieldCheck className="h-4 w-4 text-[#16a34a]" />
+                            <ChevronRight className="h-4 w-4 text-[#5f6368] group-hover:text-[#16a34a] group-hover:translate-x-0.5 transition-all" />
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              /* ===== LIST VIEW ===== */
+              <div className="space-y-4">
+                {jobs.map((job, i) => (
+                  <Card key={job.id}
+                    className="hover:shadow-md transition-all cursor-pointer group border-0 shadow-sm overflow-hidden"
+                    onClick={() => setSelectedJob(job)}>
+                    <CardContent className="p-0">
+                      <div className="flex flex-col sm:flex-row">
+                        {/* Left color stripe */}
+                        <div className={`w-full sm:w-[140px] h-[100px] sm:h-auto ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center relative flex-shrink-0`}>
+                          <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
+                          <span className="text-3xl font-bold text-white/30 select-none">
+                            {getCompanyInitial(job.corporate?.companyName)}
+                          </span>
+                          {job.isRemote && (
+                            <label className="absolute top-2 left-2 bg-[#f9ab00] text-white text-[9px] font-semibold px-2 py-0.5 rounded-md uppercase tracking-wide">
+                              Remote
+                            </label>
+                          )}
+                        </div>
+
+                        {/* Main content */}
+                        <div className="flex-1 p-4 sm:p-5 min-w-0">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <Badge className="bg-[#f5f7fc] text-[#5f6368] border-0 text-[10px] rounded-md px-2 py-0 font-medium capitalize">
+                                  {job.jobType || 'Full Time'}
+                                </Badge>
+                                {job.isRemote && (
+                                  <Badge className="bg-[rgba(22,163,74,0.15)] text-[#16a34a] border-0 text-[10px] rounded-md px-2 py-0">
+                                    Remote
+                                  </Badge>
+                                )}
+                              </div>
+                              <h5 className="font-semibold text-[#202124] text-[15px] group-hover:text-[#16a34a] transition-colors truncate">
+                                {job.title}
+                              </h5>
+                              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#5f6368] mt-1.5">
+                                <span className="flex items-center gap-1">
+                                  <Building2 className="h-3 w-3" /> {job.corporate?.companyName}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <MapPin className="h-3 w-3" /> {job.location || 'Remote'}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Clock className="h-3 w-3" /> {job.postedDate ? timeAgo(job.postedDate) : 'Recently'}
+                                </span>
+                                {job.experienceMin && (
+                                  <span className="flex items-center gap-1">
+                                    <Briefcase className="h-3 w-3" /> {job.experienceMin}-{job.experienceMax} Yrs
+                                  </span>
+                                )}
+                              </div>
+                              {/* Skills */}
+                              <div className="flex flex-wrap gap-1.5 mt-2.5">
+                                {job.skills?.split(',').slice(0, 4).map((s: string) => (
+                                  <Badge key={s.trim()} className="text-[10px] px-2 py-0.5 bg-[rgba(22,163,74,0.1)] text-[#16a34a] border-0 rounded-md font-normal">{s.trim()}</Badge>
+                                ))}
+                                {job.skills?.split(',').length > 4 && (
+                                  <Badge className="text-[10px] px-2 py-0.5 bg-[#f5f7fc] text-[#5f6368] border-0 rounded-md font-normal">+{job.skills.split(',').length - 4}</Badge>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Right side: Salary + actions */}
+                            <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                              <span className="font-semibold text-[#16a34a] text-sm whitespace-nowrap">
+                                {formatSalary(job.salaryMin, job.salaryMax)}
+                              </span>
+                              <div className="flex items-center gap-1.5">
+                                <ShieldCheck className="h-4 w-4 text-[#16a34a]" />
+                                <button onClick={(e) => toggleSave(job.id, e)} className="p-1 rounded-md hover:bg-[#f5f7fc] transition-colors">
+                                  <Bookmark className={`h-4 w-4 ${savedJobs.has(job.id) ? 'fill-[#16a34a] text-[#16a34a]' : 'text-[#ecedf2]'}`} />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            {/* ===== PAGINATION ===== */}
+            {totalPages > 1 && (
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-8 bg-white rounded-xl p-4 shadow-sm">
+                <p className="text-sm text-[#5f6368]">
+                  Showing page <strong className="text-[#202124]">{page}</strong> of <strong className="text-[#202124]">{totalPages}</strong>
+                </p>
+                <div className="flex items-center gap-1.5">
+                  <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)}
+                    className="border-[#ecedf2] text-[#5f6368] hover:text-[#202124] h-9 w-9 p-0">
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  {Array.from({ length: Math.min(totalPages, 5) }).map((_, i) => {
+                    const pageNum = i + 1
+                    return (
+                      <Button key={pageNum} variant={page === pageNum ? 'default' : 'outline'} size="sm"
+                        className={`w-9 h-9 ${page === pageNum ? 'bg-[#16a34a] hover:bg-[#15803d] text-white' : 'border-[#ecedf2] text-[#5f6368] hover:text-[#202124]'}`}
+                        onClick={() => setPage(pageNum)}>
+                        {pageNum}
+                      </Button>
+                    )
+                  })}
+                  <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => setPage(page + 1)}
+                    className="border-[#ecedf2] text-[#5f6368] hover:text-[#202124] h-9 w-9 p-0">
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
     </div>
   )
 }
