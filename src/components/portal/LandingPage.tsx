@@ -18,7 +18,7 @@ import {
   Heart, Shield, Clock, BookOpen, Code, PieChart, UserCheck,
   IndianRupee, Globe, ChevronDown, Layers, Box, Trophy, Rocket,
   PenTool, MessageSquare, Cpu, Lightbulb, Handshake, Wifi, X,
-  Mail, Lock, User, Bookmark, ArrowLeft, CalendarDays,
+  Mail, Lock, User, Bookmark, ArrowLeft, CalendarDays, List, LayoutGrid, Facebook, Linkedin, Twitter, Smartphone, Download, Apple, Plus,
 } from 'lucide-react'
 
 // Company Green Color Palette
@@ -177,14 +177,11 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
     return new Date(dateStr).toLocaleDateString()
   }
 
-  const getCompanyInitial = (name?: string) => {
-    if (!name) return 'C'
-    return name.charAt(0).toUpperCase()
-  }
+  const getCompanyInitial = (name?: string) => name ? name.charAt(0).toUpperCase() : 'C'
 
   const companyColors = [
-    'bg-blue-500', 'bg-emerald-500', 'bg-purple-500', 'bg-orange-500',
-    'bg-cyan-500', 'bg-rose-500', 'bg-indigo-500', 'bg-amber-500',
+    'bg-[#1967d2]', 'bg-[#34a853]', 'bg-[#f9ab00]', 'bg-[#d93025]',
+    'bg-[#7c66ff]', 'bg-[#a55fff]', 'bg-[#00cc9a]', 'bg-[#2869fe]',
   ]
 
   const getCompanyColor = (name?: string) => {
@@ -899,7 +896,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {searchResults.map((job: any, i: number) => (
                   <motion.div key={job.id} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: i * 0.04 }}>
-                    <Card className={`hover:shadow-lg transition-all cursor-pointer border-gray-100 group ${selectedJob?.id === job.id ? 'ring-2 ring-[#16a34a] border-[#16a34a]' : 'hover:border-emerald-200'}`}
+                    <Card className={`hover:shadow-lg transition-all cursor-pointer border-gray-100 group ${selectedJob?.id === job.id ? 'ring-[#1967d2] border-[#1967d2]' : 'hover:border-emerald-200'}`}
                       onClick={() => setSelectedJob(job)}>
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3 mb-3">
@@ -981,7 +978,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                   transition={{ delay: i * 0.05 }}
                   viewport={{ once: true }}
                 >
-                  <Card className={`hover:shadow-lg transition-all cursor-pointer border-gray-100 group ${selectedJob?.id === job.id ? 'ring-2 ring-[#16a34a] border-[#16a34a]' : 'hover:border-emerald-200'}`}
+                  <Card className={`hover:shadow-lg transition-all cursor-pointer border-gray-100 group ${selectedJob?.id === job.id ? 'ring-[#1967d2] border-[#1967d2]' : 'hover:border-emerald-200'}`}
                     onClick={() => setSelectedJob(job)}>
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3 mb-3">
@@ -1037,160 +1034,209 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
         </div>
       </section>
 
-      {/* ===== INLINE JOB DETAIL (Naukri-style, replaces popup) ===== */}
+      {/* ===== INLINE JOB DETAIL (Superio-style, replaces popup) ===== */}
       {selectedJob && (
-        <section className="py-10 bg-gray-50 border-t border-gray-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <button onClick={() => setSelectedJob(null)} className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#16a34a] mb-6 transition-colors group">
-              <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back to job listings
-            </button>
-            <div className="grid lg:grid-cols-3 gap-6">
-              {/* Left - Main Job Detail */}
-              <div className="lg:col-span-2 space-y-5">
-                {/* Job Header Card */}
-                <Card className="border-emerald-100">
-                  <CardContent className="p-5 sm:p-6">
-                    <div className="flex items-start gap-4">
-                      <div className={`w-14 h-14 rounded-xl ${getCompanyColor(selectedJob.corporate?.companyName)} flex items-center justify-center text-white font-bold text-xl flex-shrink-0`}>
-                        {getCompanyInitial(selectedJob.corporate?.companyName)}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">{selectedJob.title}</h2>
-                        <p className="text-base text-gray-600 mt-0.5">{selectedJob.corporate?.companyName}</p>
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500 mt-2">
-                          <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> {selectedJob.location || 'Remote'}</span>
-                          {selectedJob.experienceMin && (
-                            <span className="flex items-center gap-1"><Briefcase className="h-3.5 w-3.5" /> {selectedJob.experienceMin}-{selectedJob.experienceMax} Yrs</span>
-                          )}
-                          <span className="flex items-center gap-1"><IndianRupee className="h-3.5 w-3.5" /> {formatSalary(selectedJob.salaryMin, selectedJob.salaryMax)}</span>
-                          {selectedJob.postedDate && (
-                            <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {timeAgo(selectedJob.postedDate)}</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      <Badge className="bg-emerald-100 text-emerald-700">{selectedJob.jobType}</Badge>
-                      {selectedJob.isRemote && <Badge className="bg-teal-100 text-teal-700">Remote Friendly</Badge>}
-                      {selectedJob.openings && <Badge variant="outline" className="text-gray-600"><Users className="h-3 w-3 mr-1" />{selectedJob.openings} Openings</Badge>}
-                    </div>
-                    <div className="flex gap-3 mt-5">
-                      <Button className="flex-1 bg-[#16a34a] hover:bg-[#15803d] h-11 font-semibold" onClick={() => {
-                        if (!isAuthenticated) { openLogin() } else { toast.success('Application feature available in dashboard') }
-                      }}>
-                        Apply Now
-                      </Button>
-                      <Button variant="outline" className="h-11 px-4">
-                        <Bookmark className="h-4 w-4 mr-1.5" /> Save
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+        <>
+          {/* Hero Header with Background - Superio style */}
+          <section className="relative bg-gradient-to-r from-[#1967d2] to-[#0146a6] py-8 sm:py-10 overflow-hidden">
+            <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'}} />
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+              <button onClick={() => setSelectedJob(null)} className="flex items-center gap-2 text-white/80 hover:text-white mb-5 text-sm transition-colors group">
+                <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back to job listings
+              </button>
+              <div className="flex flex-col sm:flex-row items-start gap-4">
+                <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl ${getCompanyColor(selectedJob.corporate?.companyName)} flex items-center justify-center text-white font-bold text-2xl sm:text-3xl flex-shrink-0 shadow-lg`}>
+                  {getCompanyInitial(selectedJob.corporate?.companyName)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white">{selectedJob.title}</h2>
+                  <p className="text-white/80 mt-0.5 text-sm sm:text-base">{selectedJob.corporate?.companyName}</p>
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-white/70 mt-2">
+                    <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4" /> {selectedJob.location || 'Remote'}</span>
+                    {selectedJob.experienceMin && <span className="flex items-center gap-1.5"><Briefcase className="h-4 w-4" /> {selectedJob.experienceMin}-{selectedJob.experienceMax} Yrs</span>}
+                    <span className="flex items-center gap-1.5"><IndianRupee className="h-4 w-4" /> {formatSalary(selectedJob.salaryMin, selectedJob.salaryMax)}</span>
+                    {selectedJob.postedDate && <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" /> {timeAgo(selectedJob.postedDate)}</span>}
+                  </div>
+                </div>
+                <div className="flex gap-2 mt-2 sm:mt-0 flex-shrink-0">
+                  <Button className="bg-[#f9ab00] hover:bg-[#e9a000] text-[#202124] font-semibold h-11 px-6 shadow-md" onClick={() => {
+                    if (!isAuthenticated) { openLogin() } else { toast.success('Application feature available in dashboard') }
+                  }}>
+                    Apply Now
+                  </Button>
+                  <Button variant="outline" className="h-11 px-4 bg-white/10 border-white/20 text-white hover:bg-white/20">
+                    <Bookmark className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-4">
+                <Badge className="bg-[rgba(25,103,210,0.2)] text-white border-0 rounded-full px-4 py-1">{selectedJob.jobType}</Badge>
+                {selectedJob.isRemote && <Badge className="bg-[rgba(52,168,83,0.2)] text-white border-0 rounded-full px-4 py-1">Remote Friendly</Badge>}
+                {selectedJob.openings && <Badge className="bg-[rgba(249,171,0,0.2)] text-white border-0 rounded-full px-4 py-1"><Users className="h-3 w-3 mr-1" />{selectedJob.openings} Openings</Badge>}
+              </div>
+            </div>
+          </section>
 
-                {/* Job Description */}
-                {selectedJob.description && (
-                  <Card>
-                    <CardContent className="p-5 sm:p-6">
-                      <h4 className="font-bold text-gray-900 text-lg mb-3">Job Description</h4>
-                      <div className="text-sm text-gray-600 whitespace-pre-line leading-relaxed">{selectedJob.description}</div>
+          {/* Main Content - Two Column Layout */}
+          <section className="py-8 bg-[#f5f7fc]">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid lg:grid-cols-3 gap-8">
+                {/* Left - Main Content */}
+                <div className="lg:col-span-2 space-y-6">
+                  {selectedJob.description && (
+                    <Card className="border-[#ecedf2]">
+                      <CardContent className="p-6">
+                        <h4 className="font-semibold text-[#202124] text-lg mb-4">Job Description</h4>
+                        <div className="text-[#5f6368] text-[15px] leading-[26px] whitespace-pre-line">{selectedJob.description}</div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {selectedJob.responsibilities && (
+                    <Card className="border-[#ecedf2]">
+                      <CardContent className="p-6">
+                        <h4 className="font-semibold text-[#202124] text-lg mb-4">Key Responsibilities</h4>
+                        <ul className="space-y-2.5">
+                          {selectedJob.responsibilities.split('\n').filter((l: string) => l.trim()).map((line: string, i: number) => (
+                            <li key={i} className="flex items-start gap-2.5 text-[#5f6368] text-[15px] leading-[22px]">
+                              <CheckCircle2 className="h-5 w-5 text-[#34a853] flex-shrink-0 mt-0.5" />
+                              <span>{line.replace(/^[-•*]\s*/, '')}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {selectedJob.requirements && (
+                    <Card className="border-[#ecedf2]">
+                      <CardContent className="p-6">
+                        <h4 className="font-semibold text-[#202124] text-lg mb-4">Skills & Experience</h4>
+                        <ul className="space-y-2.5">
+                          {selectedJob.requirements.split('\n').filter((l: string) => l.trim()).map((line: string, i: number) => (
+                            <li key={i} className="flex items-start gap-2.5 text-[#5f6368] text-[15px] leading-[22px]">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#5f6368] flex-shrink-0 mt-2" />
+                              <span>{line.replace(/^[-•*]\s*/, '')}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Share This Job */}
+                  <Card className="border-[#ecedf2]">
+                    <CardContent className="p-6">
+                      <h4 className="font-semibold text-[#202124] text-lg mb-4">Share This Job</h4>
+                      <div className="flex gap-3">
+                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1877F2] text-white text-sm font-medium hover:opacity-90 transition-opacity"><Facebook className="h-4 w-4" /> Facebook</button>
+                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1DA1F2] text-white text-sm font-medium hover:opacity-90 transition-opacity"><Twitter className="h-4 w-4" /> Twitter</button>
+                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0A66C2] text-white text-sm font-medium hover:opacity-90 transition-opacity"><Linkedin className="h-4 w-4" /> LinkedIn</button>
+                      </div>
                     </CardContent>
                   </Card>
-                )}
+                </div>
 
-                {/* Key Skills */}
-                {selectedJob.skills && (
-                  <Card>
-                    <CardContent className="p-5 sm:p-6">
-                      <h4 className="font-bold text-gray-900 text-lg mb-3">Key Skills</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedJob.skills.split(',').map((s: string) => (
-                          <Badge key={s.trim()} variant="secondary" className="bg-emerald-50 text-emerald-700 px-3 py-1 text-sm">{s.trim()}</Badge>
+                {/* Right Sidebar */}
+                <div className="space-y-6">
+                  {/* Job Overview Widget */}
+                  <Card className="border-[#ecedf2]">
+                    <CardContent className="p-5">
+                      <h4 className="font-semibold text-[#202124] mb-4">Job Overview</h4>
+                      <div className="space-y-4">
+                        {[
+                          { icon: CalendarDays, label: 'Date Posted', value: selectedJob.postedDate ? timeAgo(selectedJob.postedDate) : 'Recently', color: 'text-[#1967d2]' },
+                          { icon: Clock, label: 'Expiration', value: '30 days left', color: 'text-[#d93025]' },
+                          { icon: MapPin, label: 'Location', value: selectedJob.location || 'Remote', color: 'text-[#34a853]' },
+                          { icon: Briefcase, label: 'Job Title', value: selectedJob.title, color: 'text-[#1967d2]' },
+                          { icon: Clock, label: 'Hours', value: selectedJob.jobType === 'part-time' ? 'Part Time' : 'Full Time', color: 'text-[#f9ab00]' },
+                          { icon: IndianRupee, label: 'Salary', value: formatSalary(selectedJob.salaryMin, selectedJob.salaryMax), color: 'text-[#34a853]' },
+                        ].map((item, i) => (
+                          <div key={i} className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-lg bg-[#f5f7fc] flex items-center justify-center flex-shrink-0">
+                              <item.icon className={`h-4 w-4 ${item.color}`} />
+                            </div>
+                            <div>
+                              <p className="text-xs text-[#5f6368]">{item.label}</p>
+                              <p className="text-sm font-medium text-[#202124] truncate max-w-[160px]">{item.value}</p>
+                            </div>
+                          </div>
                         ))}
                       </div>
                     </CardContent>
                   </Card>
-                )}
 
-                {/* Requirements */}
-                {selectedJob.requirements && (
-                  <Card>
-                    <CardContent className="p-5 sm:p-6">
-                      <h4 className="font-bold text-gray-900 text-lg mb-3">Requirements</h4>
-                      <div className="text-sm text-gray-600 whitespace-pre-line leading-relaxed">{selectedJob.requirements}</div>
-                    </CardContent>
-                  </Card>
-                )}
+                  {/* Job Skills Widget */}
+                  {selectedJob.skills && (
+                    <Card className="border-[#ecedf2]">
+                      <CardContent className="p-5">
+                        <h4 className="font-semibold text-[#202124] mb-4">Job Skills</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedJob.skills.split(',').map((s: string) => (
+                            <Badge key={s.trim()} className="bg-[#f5f7fc] text-[#5f6368] border border-[#ecedf2] hover:bg-[#e2eaf8] hover:text-[#1967d2] rounded-md px-3 py-1.5 text-sm font-normal transition-colors">{s.trim()}</Badge>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
 
-                {/* Responsibilities */}
-                {selectedJob.responsibilities && (
-                  <Card>
-                    <CardContent className="p-5 sm:p-6">
-                      <h4 className="font-bold text-gray-900 text-lg mb-3">Responsibilities</h4>
-                      <div className="text-sm text-gray-600 whitespace-pre-line leading-relaxed">{selectedJob.responsibilities}</div>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-
-              {/* Right Sidebar */}
-              <div className="space-y-5">
-                {/* Quick Info Card */}
-                <Card className="border-emerald-100">
-                  <CardContent className="p-5 space-y-4">
-                    <h4 className="font-semibold text-gray-900">Job Highlights</h4>
-                    {[
-                      { icon: IndianRupee, label: 'Salary', value: formatSalary(selectedJob.salaryMin, selectedJob.salaryMax) },
-                      { icon: Briefcase, label: 'Experience', value: selectedJob.experienceMin ? `${selectedJob.experienceMin}-${selectedJob.experienceMax} Years` : 'Not specified' },
-                      { icon: MapPin, label: 'Location', value: selectedJob.location || 'Remote' },
-                      { icon: Building2, label: 'Job Type', value: selectedJob.jobType || 'Full Time' },
-                      { icon: Users, label: 'Openings', value: selectedJob.openings || '1' },
-                      { icon: CalendarDays, label: 'Posted', value: selectedJob.postedDate ? timeAgo(selectedJob.postedDate) : 'Recently' },
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-3 text-sm">
-                        <item.icon className="h-4 w-4 text-[#16a34a] flex-shrink-0" />
-                        <span className="text-gray-500 min-w-[80px]">{item.label}</span>
-                        <span className="font-medium text-gray-900">{item.value}</span>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-
-                {/* Benefits */}
-                {selectedJob.benefits && (
-                  <Card className="border-emerald-100">
+                  {/* Company Info Widget */}
+                  <Card className="border-[#ecedf2]">
                     <CardContent className="p-5">
-                      <h4 className="font-semibold text-gray-900 mb-3">Benefits & Perks</h4>
-                      <p className="text-sm text-gray-600 leading-relaxed">{selectedJob.benefits}</p>
+                      <h4 className="font-semibold text-[#202124] mb-4">Company Info</h4>
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className={`w-14 h-14 rounded-xl ${getCompanyColor(selectedJob.corporate?.companyName)} flex items-center justify-center text-white font-bold text-xl`}>
+                          {getCompanyInitial(selectedJob.corporate?.companyName)}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-[#202124]">{selectedJob.corporate?.companyName}</p>
+                          <button className="text-sm text-[#1967d2] hover:underline">View company profile</button>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        {[
+                          { icon: Building2, label: 'Industry', value: 'Technology' },
+                          { icon: Users, label: 'Company Size', value: '1,000 - 5,000' },
+                          { icon: CalendarDays, label: 'Founded', value: '2010' },
+                          { icon: Phone, label: 'Phone', value: '+91 123 456 7890' },
+                          { icon: Mail, label: 'Email', value: 'hr@company.com' },
+                        ].map((item, i) => (
+                          <div key={i} className="flex items-center gap-2.5 text-sm">
+                            <item.icon className="h-4 w-4 text-[#5f6368] flex-shrink-0" />
+                            <span className="text-[#5f6368] min-w-[90px]">{item.label}:</span>
+                            <span className="font-medium text-[#202124]">{item.value}</span>
+                          </div>
+                        ))}
+                        <div className="flex items-center gap-2 pt-2">
+                          <button className="w-8 h-8 rounded-full bg-[#1877F2] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Facebook className="h-3.5 w-3.5" /></button>
+                          <button className="w-8 h-8 rounded-full bg-[#1DA1F2] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Twitter className="h-3.5 w-3.5" /></button>
+                          <button className="w-8 h-8 rounded-full bg-[#0A66C2] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Linkedin className="h-3.5 w-3.5" /></button>
+                          <button className="w-8 h-8 rounded-full bg-[#1967d2] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Globe className="h-3.5 w-3.5" /></button>
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
-                )}
 
-                {/* About Company */}
-                <Card className="border-emerald-100">
-                  <CardContent className="p-5">
-                    <h4 className="font-semibold text-gray-900 mb-3">About the Company</h4>
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className={`w-10 h-10 rounded-lg ${getCompanyColor(selectedJob.corporate?.companyName)} flex items-center justify-center text-white font-bold text-sm`}>
-                        {getCompanyInitial(selectedJob.corporate?.companyName)}
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{selectedJob.corporate?.companyName}</p>
-                        <p className="text-xs text-gray-500">{selectedJob.location || 'India'}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Apply Again */}
-                <Button className="w-full bg-[#16a34a] hover:bg-[#15803d] h-12 font-semibold text-base" onClick={() => {
-                  if (!isAuthenticated) { openLogin() } else { toast.success('Application feature available in dashboard') }
-                }}>
-                  Apply Now
-                </Button>
+                  {/* Apply CTA Card */}
+                  <Card className="border-[#ecedf2] bg-gradient-to-br from-[#1967d2] to-[#0146a6]">
+                    <CardContent className="p-5 text-center">
+                      <h4 className="font-semibold text-white mb-2">Interested in this job?</h4>
+                      <p className="text-white/70 text-sm mb-4">Apply now and get a response within 48 hours</p>
+                      <Button className="w-full bg-[#f9ab00] hover:bg-[#e9a000] text-[#202124] font-semibold h-11 shadow-md" onClick={() => {
+                        if (!isAuthenticated) { openLogin() } else { toast.success('Application feature available in dashboard') }
+                      }}>
+                        Apply For This Job
+                      </Button>
+                      <Button variant="outline" className="w-full mt-2 bg-white/10 border-white/20 text-white hover:bg-white/20 h-10">
+                        <Bookmark className="h-4 w-4 mr-2" /> Save Job
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </>
       )}
 
       {/* ===== TOP COMPANIES HIRING ===== */}
@@ -1510,6 +1556,150 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                 onClick={openLogin}>
                 Sign In
               </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== DOWNLOAD MOBILE APP (Jobko-style) ===== */}
+      <section className="py-16 bg-gradient-to-br from-[#1967d2] to-[#0146a6] relative overflow-hidden">
+        {/* Decorative circles - Jobko style */}
+        <div className="absolute top-10 right-20 w-40 h-40 rounded-full bg-white/5 animate-pulse" />
+        <div className="absolute bottom-10 left-10 w-60 h-60 rounded-full bg-white/5 animate-pulse" style={{animationDelay: '2s'}} />
+        <div className="absolute top-1/2 left-1/3 w-32 h-32 rounded-full bg-[#7c66ff]/10 animate-pulse" style={{animationDelay: '1s'}} />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-10 items-center">
+            <div>
+              <Badge className="bg-[rgba(249,171,0,0.2)] text-[#f9ab00] border-0 rounded-full px-4 py-1.5 text-sm font-medium mb-4">
+                <Smartphone className="h-4 w-4 mr-1.5" /> Mobile App Available
+              </Badge>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight mb-4">
+                Find Your Dream Job<br />
+                <span className="text-[#f9ab00]">Anywhere, Anytime</span>
+              </h2>
+              <p className="text-white/70 text-base sm:text-lg leading-relaxed mb-8 max-w-lg">
+                Download the 3 Boxes Jobs mobile app and access thousands of job opportunities on the go.
+                Get instant notifications, apply with one tap, and track your applications in real time.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                {/* Google Play Button */}
+                <button
+                  onClick={() => window.open('/3boxes-jobs-app.apk', '_blank')}
+                  className="flex items-center gap-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-5 py-3 hover:bg-white/20 transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
+                    <Download className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-white/60 text-[10px] uppercase tracking-wider">Get it on</p>
+                    <p className="text-white font-bold text-sm">Google Play</p>
+                  </div>
+                </button>
+
+                {/* App Store Button */}
+                <button
+                  onClick={() => window.open('/3boxes-jobs-app.ipa', '_blank')}
+                  className="flex items-center gap-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-5 py-3 hover:bg-white/20 transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
+                    <Apple className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-white/60 text-[10px] uppercase tracking-wider">Download on the</p>
+                    <p className="text-white font-bold text-sm">App Store</p>
+                  </div>
+                </button>
+              </div>
+
+              <div className="flex items-center gap-6 text-white/60 text-sm">
+                <div className="flex items-center gap-2">
+                  <Star className="h-4 w-4 text-[#f9ab00]" />
+                  <span>4.8 Rating</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Download className="h-4 w-4" />
+                  <span>50K+ Downloads</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  <span>Free to Use</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Phone Mockup */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative">
+                {/* Phone frame */}
+                <div className="w-[280px] sm:w-[320px] h-[560px] sm:h-[640px] bg-[#111D39] rounded-[40px] border-4 border-gray-700 shadow-2xl overflow-hidden relative">
+                  {/* Status bar */}
+                  <div className="h-8 bg-[#111D39] flex items-center justify-center">
+                    <div className="w-20 h-4 bg-gray-800 rounded-full" />
+                  </div>
+                  {/* App content preview */}
+                  <div className="bg-[#111D39] p-4 h-full overflow-hidden">
+                    {/* App header */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <p className="text-white/60 text-[10px]">Welcome back!</p>
+                        <p className="text-white text-sm font-bold">Find Your Job</p>
+                      </div>
+                      <div className="w-8 h-8 rounded-full bg-[#7c66ff] flex items-center justify-center text-white text-xs font-bold">3B</div>
+                    </div>
+                    {/* Search bar */}
+                    <div className="bg-white/10 rounded-xl px-3 py-2.5 flex items-center gap-2 mb-4">
+                      <Search className="h-3.5 w-3.5 text-white/50" />
+                      <span className="text-white/40 text-xs">Search jobs...</span>
+                    </div>
+                    {/* Promo card */}
+                    <div className="bg-gradient-to-r from-[#00cc9a] to-[#34a853] rounded-2xl p-4 mb-4">
+                      <p className="text-white font-bold text-xs mb-1">Let&apos;s find a new job</p>
+                      <p className="text-white/70 text-[10px]">suitable for you</p>
+                    </div>
+                    {/* Category pills */}
+                    <div className="flex gap-2 mb-4 overflow-hidden">
+                      {['Company', 'Full Time', 'Part Time', 'Remote'].map(c => (
+                        <div key={c} className="px-3 py-1.5 bg-white/8 rounded-lg text-white/60 text-[10px] flex-shrink-0">{c}</div>
+                      ))}
+                    </div>
+                    {/* Job cards */}
+                    {[
+                      { title: 'Senior Developer', company: 'Google', loc: 'Bangalore', salary: '₹25L - ₹40L', color: 'bg-[#1967d2]' },
+                      { title: 'Product Manager', company: 'Amazon', loc: 'Hyderabad', salary: '₹30L - ₹50L', color: 'bg-[#f9ab00]' },
+                      { title: 'UX Designer', company: 'Microsoft', loc: 'Remote', salary: '₹20L - ₹35L', color: 'bg-[#7c66ff]' },
+                    ].map((job, i) => (
+                      <div key={i} className="bg-white/8 rounded-xl p-3 mb-2.5 flex items-center gap-3">
+                        <div className={`w-9 h-9 rounded-xl ${job.color} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}>
+                          {job.company.charAt(0)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-white text-xs font-semibold truncate">{job.title}</p>
+                          <p className="text-white/50 text-[10px]">{job.company} · {job.loc}</p>
+                        </div>
+                        <p className="text-[#00cc9a] text-[10px] font-bold flex-shrink-0">{job.salary}</p>
+                      </div>
+                    ))}
+                  </div>
+                  {/* Bottom nav bar */}
+                  <div className="absolute bottom-0 left-0 right-0 h-16 bg-[#2869fe] flex items-center justify-around px-6">
+                    {[Building2, Briefcase, Plus, MessageSquare, User].map((Icon, i) => (
+                      <Icon key={i} className={`h-5 w-5 ${i === 2 ? 'text-[#f9ab00]' : 'text-white/60'}`} />
+                    ))}
+                  </div>
+                </div>
+                {/* Floating notification */}
+                <div className="absolute -right-4 top-20 bg-white rounded-xl shadow-lg p-3 flex items-center gap-2 animate-bounce" style={{animationDuration: '3s'}}>
+                  <div className="w-8 h-8 rounded-full bg-[#34a853] flex items-center justify-center">
+                    <CheckCircle2 className="h-4 w-4 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-[#202124] font-semibold">New Match Found!</p>
+                    <p className="text-[8px] text-[#5f6368]">92% AI Match Score</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
