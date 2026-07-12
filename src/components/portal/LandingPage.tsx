@@ -295,7 +295,6 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                 <a href="#companies" className="hover:text-white font-medium transition-colors">Companies</a>
                 <a href="#ai-features" className="hover:text-white font-medium transition-colors">AI Features</a>
                 <a href="#training" className="hover:text-white font-medium transition-colors">Training</a>
-                <a href="#meaning" className="hover:text-white font-medium transition-colors">Why 3 Boxes?</a>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -1138,6 +1137,358 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
           </section>
         </div>
       )}
+      {/* ===== CORPORATE PARTNERS — Scrolling Companies + Advantages Workflow ===== */}
+      <section id="companies" className="py-16 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <motion.div initial={{ y: 10, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }}>
+              <Badge className="bg-green-50 text-[#16a34a] border-green-200 rounded-full px-4 py-1 text-xs font-semibold mb-3">Trusted By Top Employers</Badge>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Companies That <span className="text-[#16a34a]">Hire Through Us</span></h2>
+              <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">From startups to Fortune 500s — corporates trust 3 Boxes for AI-powered hiring that delivers better candidates faster.</p>
+            </motion.div>
+          </div>
+
+          {/* Scrolling Company Logos - Infinite Marquee */}
+          <div className="relative mb-12">
+            {/* Fade edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+            <div className="overflow-hidden">
+              <div className="flex gap-6 animate-marquee whitespace-nowrap">
+                {[...topCompanies, ...topCompanies, ...topCompanies].map((c, i) => (
+                  <div key={`${c.name}-${i}`} className="flex-shrink-0 w-[130px] h-[70px] flex items-center justify-center rounded-xl border border-gray-100 bg-gray-50 hover:border-[#16a34a]/30 hover:bg-green-50 transition-all group">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-10 h-10 rounded-lg ${getCompanyColor(c.name)} flex items-center justify-center text-white font-bold text-sm group-hover:scale-110 transition-transform`}>
+                        {c.logo}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Corporate Advantages - Infographic Workflow */}
+          <div className="mt-4">
+            <h3 className="text-xl font-bold text-gray-900 text-center mb-8">Why Corporates Choose <span className="text-[#16a34a]">3 Boxes</span></h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                {
+                  step: '01',
+                  icon: Building2,
+                  title: 'Post Jobs Instantly',
+                  desc: 'Create job postings in minutes with AI-assisted job description generation. Reach thousands of qualified candidates immediately across our platform.',
+                  color: 'from-[#16a34a] to-[#15803d]',
+                },
+                {
+                  step: '02',
+                  icon: Target,
+                  title: 'AI Smart Matching',
+                  desc: 'Our AI engine analyzes skills, experience, and cultural fit to match you with the most relevant candidates — no more sifting through hundreds of irrelevant resumes.',
+                  color: 'from-[#34a853] to-[#16a34a]',
+                },
+                {
+                  step: '03',
+                  icon: Brain,
+                  title: 'AI Interview Insights',
+                  desc: 'Get AI-generated interview summaries, skill ratings, and culture-fit analysis before you even meet the candidate. Save 70% of screening time.',
+                  color: 'from-[#f9ab00] to-[#e9a000]',
+                },
+                {
+                  step: '04',
+                  icon: BarChart3,
+                  title: 'Analytics Dashboard',
+                  desc: 'Real-time hiring analytics — track application funnels, time-to-hire, candidate quality scores, and ROI on your job postings with actionable insights.',
+                  color: 'from-[#15803d] to-[#166534]',
+                },
+              ].map((item, i) => (
+                <motion.div key={item.step}
+                  initial={{ y: 20, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ delay: i * 0.15 }}
+                  viewport={{ once: true }}
+                  className="relative"
+                >
+                  {/* Connecting line (not on last) */}
+                  {i < 3 && (
+                    <div className="hidden lg:block absolute top-12 -right-3 w-6">
+                      <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
+                        <path d="M0 6L8 6L12 2L16 6L24 6" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" opacity="0.3" />
+                        <circle cx="24" cy="6" r="2" fill="#16a34a" opacity="0.3" />
+                      </svg>
+                    </div>
+                  )}
+                  <Card className="border-0 shadow-sm hover:shadow-lg transition-all h-full group">
+                    <CardContent className="p-6">
+                      {/* Step badge */}
+                      <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} text-white font-bold text-lg mb-4 group-hover:scale-110 transition-transform shadow-md`}>
+                        {item.step}
+                      </div>
+                      {/* Icon */}
+                      <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center mb-3">
+                        <item.icon className="h-5 w-5 text-[#16a34a]" />
+                      </div>
+                      <h4 className="font-bold text-gray-900 text-base mb-2">{item.title}</h4>
+                      <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Corporate CTA */}
+            <div className="text-center mt-10">
+              <Button className="bg-[#16a34a] hover:bg-[#15803d] text-white font-semibold px-8 h-12 text-base rounded-xl shadow-md" onClick={openRegister}>
+                <Building2 className="h-5 w-5 mr-2" /> Register Your Company
+              </Button>
+              <p className="text-xs text-gray-400 mt-2">Free to post. Pay only when you hire.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== AI FEATURES — Portal Features + Infographic Workflow ===== */}
+      <section id="ai-features" className="py-16 bg-[#f5f7fc]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <motion.div initial={{ y: 10, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }}>
+              <Badge className="bg-green-50 text-[#16a34a] border-green-200 rounded-full px-4 py-1 text-xs font-semibold mb-3">AI-Powered Platform</Badge>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Built-In <span className="text-[#16a34a]">AI Features</span> for Every User</h2>
+              <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">Not just a job board — 3 Boxes is an intelligent career platform with AI tools designed for job seekers, recruiters, HR managers, and interviewers.</p>
+            </motion.div>
+          </div>
+
+          {/* Features by User Type */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Job Seekers */}
+            <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0 }} viewport={{ once: true }}>
+              <Card className="border-0 shadow-sm h-full overflow-hidden">
+                <div className="bg-gradient-to-br from-[#16a34a] to-[#15803d] p-6 text-center relative">
+                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
+                  <Users className="h-8 w-8 text-white mx-auto mb-2" />
+                  <h3 className="text-lg font-bold text-white">For Job Seekers</h3>
+                  <p className="text-green-100/80 text-xs mt-1">Smart tools to land your dream job</p>
+                </div>
+                <CardContent className="p-5 space-y-4">
+                  {[
+                    { icon: FileText, title: 'AI Resume Builder', desc: 'Auto-generate polished resumes with AI. Skills update automatically when you complete training courses.' },
+                    { icon: Brain, title: 'AI Mock Interviews', desc: 'Practice interviews with AI and get real-time feedback on communication, technical depth, and confidence.' },
+                    { icon: Target, title: 'Smart Job Matching', desc: 'AI calculates your match score with every job based on skills, experience, and career preferences.' },
+                    { icon: Zap, title: 'Skill Auto-Update', desc: 'Complete a training course and your skills automatically update across your profile and all resumes.' },
+                  ].map((feature, i) => (
+                    <div key={i} className="flex gap-3">
+                      <div className="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
+                        <feature.icon className="h-4 w-4 text-[#16a34a]" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 text-sm">{feature.title}</h4>
+                        <p className="text-xs text-gray-500 leading-relaxed mt-0.5">{feature.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Corporates & Recruiters */}
+            <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0.15 }} viewport={{ once: true }}>
+              <Card className="border-0 shadow-sm h-full overflow-hidden">
+                <div className="bg-gradient-to-br from-[#f9ab00] to-[#e9a000] p-6 text-center relative">
+                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
+                  <Building2 className="h-8 w-8 text-white mx-auto mb-2" />
+                  <h3 className="text-lg font-bold text-white">For Corporates & Recruiters</h3>
+                  <p className="text-amber-100/80 text-xs mt-1">Hire smarter, faster with AI</p>
+                </div>
+                <CardContent className="p-5 space-y-4">
+                  {[
+                    { icon: Target, title: 'AI Candidate Matching', desc: 'AI ranks candidates by skill match, experience relevance, and cultural fit — shortlist in seconds, not days.' },
+                    { icon: Brain, title: 'AI Interview Insights', desc: 'Get AI-generated summaries and skill ratings from mock interviews before scheduling real interviews.' },
+                    { icon: BarChart3, title: 'Hiring Analytics', desc: 'Real-time dashboards with application funnels, time-to-hire, source quality, and AI-driven hiring predictions.' },
+                    { icon: Users, title: 'Team Collaboration', desc: 'Recruiters, HR managers, and interviewers collaborate on a shared pipeline with role-based access and notes.' },
+                  ].map((feature, i) => (
+                    <div key={i} className="flex gap-3">
+                      <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
+                        <feature.icon className="h-4 w-4 text-[#f9ab00]" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 text-sm">{feature.title}</h4>
+                        <p className="text-xs text-gray-500 leading-relaxed mt-0.5">{feature.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Interviewers & Admins */}
+            <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} viewport={{ once: true }}>
+              <Card className="border-0 shadow-sm h-full overflow-hidden">
+                <div className="bg-gradient-to-br from-[#15803d] to-[#166534] p-6 text-center relative">
+                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
+                  <Shield className="h-8 w-8 text-white mx-auto mb-2" />
+                  <h3 className="text-lg font-bold text-white">For Interviewers & Admins</h3>
+                  <p className="text-green-100/80 text-xs mt-1">Streamlined evaluation tools</p>
+                </div>
+                <CardContent className="p-5 space-y-4">
+                  {[
+                    { icon: MessageSquare, title: 'Interview Scheduling', desc: 'AI suggests optimal time slots based on interviewer and candidate availability. Automated reminders included.' },
+                    { icon: CheckCircle2, title: 'Structured Evaluation', desc: 'Pre-built rubrics and scorecards for technical, behavioral, and cultural-fit assessments. Standardize your hiring.' },
+                    { icon: PieChart, title: 'Admin Dashboard', desc: 'Full platform control — manage users, jobs, applications, and analytics from a single powerful admin panel.' },
+                    { icon: Award, title: 'Quality Scoring', desc: 'AI generates candidate quality scores combining resume data, interview performance, and skill assessments.' },
+                  ].map((feature, i) => (
+                    <div key={i} className="flex gap-3">
+                      <div className="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
+                        <feature.icon className="h-4 w-4 text-[#16a34a]" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 text-sm">{feature.title}</h4>
+                        <p className="text-xs text-gray-500 leading-relaxed mt-0.5">{feature.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+
+          {/* AI Workflow Infographic */}
+          <div className="mt-12">
+            <h3 className="text-xl font-bold text-gray-900 text-center mb-8">How <span className="text-[#16a34a]">AI</span> Powers Your Hiring Journey</h3>
+            <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-0">
+              {[
+                { icon: FileText, label: 'AI Resume Scan', desc: 'Instant parsing & scoring', color: 'bg-[#16a34a]' },
+                { icon: Target, label: 'Smart Matching', desc: 'Skill-fit algorithms', color: 'bg-[#34a853]' },
+                { icon: Brain, label: 'AI Interview', desc: 'Automated screening', color: 'bg-[#f9ab00]' },
+                { icon: BarChart3, label: 'Quality Score', desc: 'Data-driven ranking', color: 'bg-[#15803d]' },
+                { icon: CheckCircle2, label: 'Hire the Best', desc: 'Confident decisions', color: 'bg-[#166534]' },
+              ].map((step, i) => (
+                <motion.div key={step.label} className="flex items-center"
+                  initial={{ x: -20, opacity: 0 }}
+                  whileInView={{ x: 0, opacity: 1 }}
+                  transition={{ delay: i * 0.15 }}
+                  viewport={{ once: true }}
+                >
+                  <div className="flex flex-col items-center text-center">
+                    <div className={`w-14 h-14 rounded-xl ${step.color} flex items-center justify-center text-white shadow-md`}>
+                      <step.icon className="h-6 w-6" />
+                    </div>
+                    <p className="font-semibold text-gray-900 text-xs mt-2">{step.label}</p>
+                    <p className="text-[10px] text-gray-500">{step.desc}</p>
+                  </div>
+                  {i < 4 && (
+                    <div className="hidden lg:flex items-center mx-2">
+                      <svg width="40" height="12" viewBox="0 0 40 12" fill="none">
+                        <path d="M0 6L12 6L16 2L20 6L24 2L28 6L40 6" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
+                        <circle cx="40" cy="6" r="3" fill="#16a34a" opacity="0.4" />
+                      </svg>
+                    </div>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== TRAINING MODULE — Linked to MarqAI Trainers ===== */}
+      <section id="training" className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left - Training Info */}
+            <motion.div initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} viewport={{ once: true }}>
+              <Badge className="bg-green-50 text-[#16a34a] border-green-200 rounded-full px-4 py-1 text-xs font-semibold mb-3">Upskill & Get Hired Faster</Badge>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight">
+                Training That <span className="text-[#16a34a]">Auto-Updates</span> Your Profile
+              </h2>
+              <p className="text-gray-500 mt-4 text-sm leading-relaxed">
+                Our integrated training portal — <a href="https://marqaitrainers.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-[#16a34a] font-semibold hover:underline">MarqAI Trainers</a> — offers industry-aligned courses designed to bridge the skill gap. Every course you complete automatically updates your skills across your 3 Boxes profile and resume, making you more visible to employers.
+              </p>
+
+              {/* Benefits */}
+              <div className="mt-6 space-y-4">
+                {[
+                  { icon: Zap, title: 'Skills Auto-Update', desc: 'Complete a course and your profile, resume, and job match scores update instantly — no manual entry needed.' },
+                  { icon: Target, title: 'Industry-Aligned Curriculum', desc: 'Courses designed with industry input so you learn exactly what employers are looking for in current job markets.' },
+                  { icon: Award, title: 'Verified Certificates', desc: 'Earn certificates that are displayed on your profile and visible to recruiters, giving you a competitive edge.' },
+                  { icon: TrendingUp, title: 'Higher Match Scores', desc: 'More verified skills = higher AI match scores = more interview calls. Training directly boosts your visibility.' },
+                  { icon: Brain, title: 'AI-Recommended Courses', desc: 'Our AI analyzes your profile and career goals to recommend the exact courses that will maximize your career growth.' },
+                ].map((benefit, i) => (
+                  <div key={i} className="flex gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
+                      <benefit.icon className="h-5 w-5 text-[#16a34a]" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 text-sm">{benefit.title}</h4>
+                      <p className="text-xs text-gray-500 leading-relaxed mt-0.5">{benefit.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="mt-8 flex flex-wrap gap-3">
+                <a href="https://marqaitrainers.vercel.app/" target="_blank" rel="noopener noreferrer">
+                  <Button className="bg-[#16a34a] hover:bg-[#15803d] text-white font-semibold px-6 h-11 rounded-xl shadow-md">
+                    <GraduationCap className="h-5 w-5 mr-2" /> Explore Training Portal
+                  </Button>
+                </a>
+                <Button variant="outline" className="border-[#16a34a] text-[#16a34a] hover:bg-green-50 font-semibold px-6 h-11 rounded-xl" onClick={openRegister}>
+                  <Rocket className="h-5 w-5 mr-2" /> Sign Up Free
+                </Button>
+              </div>
+            </motion.div>
+
+            {/* Right - Infographic Workflow */}
+            <motion.div initial={{ x: 20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} viewport={{ once: true }}>
+              <Card className="border-0 shadow-lg overflow-hidden">
+                <CardContent className="p-0">
+                  {/* Header */}
+                  <div className="bg-gradient-to-br from-[#16a34a] to-[#15803d] p-6 text-center relative">
+                    <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
+                    <GraduationCap className="h-10 w-10 text-white mx-auto mb-2" />
+                    <h3 className="text-lg font-bold text-white">Training → Profile → Job</h3>
+                    <p className="text-green-100/80 text-xs mt-1">See how training transforms your career journey</p>
+                  </div>
+
+                  {/* Workflow Steps */}
+                  <div className="p-6 space-y-0">
+                    {[
+                      { step: '1', icon: BookOpen, title: 'Enroll in a Course', desc: 'Choose from industry-aligned courses on MarqAI Trainers', color: 'bg-[#16a34a]', line: true },
+                      { step: '2', icon: Cpu, title: 'Learn & Complete', desc: 'Interactive lessons with hands-on projects and assessments', color: 'bg-[#34a853]', line: true },
+                      { step: '3', icon: Zap, title: 'Skills Auto-Update', desc: 'Your 3 Boxes profile & resume update automatically with new skills', color: 'bg-[#f9ab00]', line: true },
+                      { step: '4', icon: Target, title: 'Higher Match Scores', desc: 'AI re-calculates your job match scores — higher visibility to employers', color: 'bg-[#15803d]', line: true },
+                      { step: '5', icon: Trophy, title: 'Get Interview Calls', desc: 'More matches = more interviews = faster hiring', color: 'bg-[#166534]', line: false },
+                    ].map((item, i) => (
+                      <div key={i}>
+                        <div className="flex items-center gap-4">
+                          <div className="flex flex-col items-center flex-shrink-0">
+                            <div className={`w-11 h-11 rounded-xl ${item.color} flex items-center justify-center text-white font-bold text-lg shadow-md`}>
+                              {item.step}
+                            </div>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <item.icon className="h-4 w-4 text-[#16a34a]" />
+                              <h4 className="font-semibold text-gray-900 text-sm">{item.title}</h4>
+                            </div>
+                            <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
+                          </div>
+                        </div>
+                        {item.line && (
+                          <div className="flex ml-[22px] my-2">
+                            <div className="w-0.5 h-6 bg-gradient-to-b from-[#16a34a]/40 to-[#16a34a]/10" />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* ===== FOOTER ===== */}
       <footer className="bg-[#0d3320] text-gray-400 py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
