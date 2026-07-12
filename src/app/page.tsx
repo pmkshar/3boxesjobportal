@@ -1,7 +1,8 @@
 'use client'
 
 import { useAuthStore } from '@/lib/store'
-import { LandingPage } from '@/components/portal/LandingPage'
+import { PublicPageLayout } from '@/components/portal/PublicPageLayout'
+import { HomePage } from '@/components/portal/HomePage'
 import { JobSeekerDashboard } from '@/components/portal/JobSeekerDashboard'
 import { CorporateDashboard } from '@/components/portal/CorporateDashboard'
 import { RecruiterDashboard } from '@/components/portal/RecruiterDashboard'
@@ -10,12 +11,16 @@ import { AdminDashboard } from '@/components/portal/AdminDashboard'
 export default function Home() {
   const { user, isAuthenticated } = useAuthStore()
 
-  // Not authenticated: show landing portal page (login/register shown inline when clicked)
+  // Not authenticated: show public home page with navbar/footer
   if (!isAuthenticated || !user) {
-    return <LandingPage onNavigate={() => {}} />
+    return (
+      <PublicPageLayout>
+        <HomePage />
+      </PublicPageLayout>
+    )
   }
 
-  // Authenticated: show role-specific dashboard
+  // Authenticated: show role-specific dashboard (no public navbar/footer)
   switch (user.role) {
     case 'JOB_SEEKER':
       return <JobSeekerDashboard />
@@ -32,6 +37,10 @@ export default function Home() {
     case 'INTERVIEWER':
       return <AdminDashboard />
     default:
-      return <LandingPage onNavigate={() => {}} />
+      return (
+        <PublicPageLayout>
+          <HomePage />
+        </PublicPageLayout>
+      )
   }
 }
