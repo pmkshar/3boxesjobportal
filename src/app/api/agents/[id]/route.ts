@@ -1,17 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { memoryStore } from '@/lib/memory-store'
 
 export const dynamic = 'force-dynamic'
-
-// Helper: ensure DB is seeded before any agent operation
-async function ensureSeeded() {
-  try {
-    const { ensureSeedData } = await import('@/lib/db')
-    await ensureSeedData()
-  } catch {}
-}
 
 // GET /api/agents/[id] - Get single agent with tasks, emails, and recent stats
 export async function GET(
@@ -19,32 +9,30 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await ensureSeeded()
     const { id } = await params
 
-    const agent = await prisma.aIAgent.findUnique({
-      where: { id },
-      include: {
-        tasks: {
-          orderBy: { createdAt: 'desc' },
-          take: 20,
-        },
-        emails: {
-          orderBy: { createdAt: 'desc' },
-          take: 20,
-        },
-        stats: {
-          orderBy: { date: 'desc' },
-          take: 30,
-        },
-      },
-    })
+    const agents = await memoryStore.getAgents()
+    const agent = agents.find((a: any) => a.id === id)
 
     if (!agent) {
       return NextResponse.json({ error: 'Agent not found' }, { status: 404 })
     }
 
-    return NextResponse.json({ agent })
+    // Enrich with tasks, emails, and stats
+    const [tasks, emails, statsData] = await Promise.all([
+      memoryStore.getAgentTasks(id, 20),
+      memoryStore.getAgentEmails(id, 20),
+      memoryStore.getAgentStats(id),
+    ])
+
+    const enrichedAgent = {
+      ...agent,
+      tasks: tasks || [],
+      emails: emails || [],
+      stats: statsData?.dailyStats?.slice(0, 30) || [],
+    }
+
+    return NextResponse.json({ agent: enrichedAgent })
   } catch (error) {
     console.error('Agent fetch error:', error)
     return NextResponse.json({ error: 'Failed to fetch agent' }, { status: 500 })
@@ -57,11 +45,11 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await ensureSeeded()
     const { id } = await params
     const body = await request.json()
 
-    const existingAgent = await prisma.aIAgent.findUnique({ where: { id } })
+    const agents = await memoryStore.getAgents()
+    const existingAgent = agents.find((a: any) => a.id === id)
     if (!existingAgent) {
       return NextResponse.json({ error: 'Agent not found' }, { status: 404 })
     }
@@ -82,10 +70,7 @@ export async function PUT(
     if (body.dailyLimit !== undefined) updateData.dailyLimit = body.dailyLimit
     if (body.dailySent !== undefined) updateData.dailySent = body.dailySent
 
-    const agent = await prisma.aIAgent.update({
-      where: { id },
-      data: updateData,
-    })
+    const agent = await memoryStore.updateAgent(id, updateData)
 
     return NextResponse.json({ agent, message: 'Agent updated successfully' })
   } catch (error) {
@@ -100,16 +85,15 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await ensureSeeded()
     const { id } = await params
 
-    const existingAgent = await prisma.aIAgent.findUnique({ where: { id } })
+    const agents = await memoryStore.getAgents()
+    const existingAgent = agents.find((a: any) => a.id === id)
     if (!existingAgent) {
       return NextResponse.json({ error: 'Agent not found' }, { status: 404 })
     }
 
-    // Delete cascade will handle tasks, emails, and stats
-    await prisma.aIAgent.delete({ where: { id } })
+    await memoryStore.deleteAgent(id)
 
     return NextResponse.json({ message: 'Agent deleted successfully' })
   } catch (error) {

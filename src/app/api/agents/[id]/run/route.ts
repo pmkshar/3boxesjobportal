@@ -1,115 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { memoryStore } from '@/lib/memory-store'
 
 export const dynamic = 'force-dynamic'
-
-// Helper: ensure DB is seeded before any agent operation
-async function ensureSeeded() {
-  try {
-    const { ensureSeedData } = await import('@/lib/db')
-    await ensureSeedData()
-  } catch {}
-}
-
-// Helper: Generate realistic fake company data
-function generateFakeCompanies(count: number): Array<{
-  name: string
-  email: string
-  hrEmail: string
-  careersUrl: string
-  industry: string
-  size: string
-  location: string
-}> {
-  const companyPrefixes = [
-    'TechCorp', 'InnoVate', 'DigiSmart', 'CloudPeak', 'NexGen',
-    'QuantumLeap', 'SwiftCode', 'ByteForge', 'DataVault', 'CyberNest',
-    'AlphaWave', 'BlueShift', 'CoreLogic', 'DevSphere', 'ElevateIT',
-    'FutureSoft', 'GridPoint', 'HyperLink', 'IntelliSys', 'JupiterAI',
-  ]
-  const suffixes = [
-    'Solutions', 'Labs', 'Technologies', 'Systems', 'Innovations',
-    'Software', 'Digital', 'Analytics', 'Platform', 'Group',
-  ]
-  const industries = [
-    'Information Technology', 'FinTech', 'HealthTech', 'EdTech',
-    'E-Commerce', 'SaaS', 'AI/ML', 'Cybersecurity', 'Cloud Computing',
-    'Data Analytics', 'IoT', 'Blockchain', 'DevOps', 'Mobile',
-  ]
-  const sizes = ['1-10', '11-50', '51-200', '201-500', '501-1000', '1000+']
-  const locations = [
-    'Bangalore, India', 'Mumbai, India', 'Hyderabad, India',
-    'Pune, India', 'Chennai, India', 'Delhi, India',
-    'San Francisco, USA', 'Austin, USA', 'London, UK',
-    'Singapore', 'Berlin, Germany', 'Toronto, Canada',
-  ]
-
-  const companies = []
-  for (let i = 0; i < count; i++) {
-    const prefix = companyPrefixes[Math.floor(Math.random() * companyPrefixes.length)]
-    const suffix = suffixes[Math.floor(Math.random() * suffixes.length)]
-    const name = `${prefix} ${suffix}`
-    const domain = name.toLowerCase().replace(/[^a-z0-9]/g, '')
-    companies.push({
-      name,
-      email: `info@${domain}.com`,
-      hrEmail: `hr@${domain}.com`,
-      careersUrl: `https://${domain}.com/careers`,
-      industry: industries[Math.floor(Math.random() * industries.length)],
-      size: sizes[Math.floor(Math.random() * sizes.length)],
-      location: locations[Math.floor(Math.random() * locations.length)],
-    })
-  }
-  return companies
-}
-
-// Helper: Generate fake job listings
-function generateFakeJobs(count: number): Array<{
-  title: string
-  company: string
-  url: string
-  location: string
-  type: string
-  skills: string
-}> {
-  const titles = [
-    'Senior Software Engineer', 'Full-Stack Developer', 'Data Scientist',
-    'DevOps Engineer', 'Product Manager', 'UI/UX Designer',
-    'Backend Engineer', 'ML Engineer', 'Cloud Architect',
-    'Frontend Developer', 'Mobile Developer', 'QA Engineer',
-    'Security Analyst', 'Technical Lead', 'Solutions Architect',
-  ]
-  const types = ['full-time', 'remote', 'hybrid', 'contract']
-  const skillSets = [
-    'React, TypeScript, Node.js',
-    'Python, TensorFlow, SQL',
-    'AWS, Docker, Kubernetes',
-    'Java, Spring Boot, Microservices',
-    'Go, gRPC, Distributed Systems',
-    'Vue.js, GraphQL, PostgreSQL',
-  ]
-  const locations = [
-    'Bangalore', 'Mumbai', 'Hyderabad', 'Pune', 'Remote',
-    'San Francisco', 'Austin', 'London', 'Singapore',
-  ]
-
-  const jobs = []
-  for (let i = 0; i < count; i++) {
-    const title = titles[Math.floor(Math.random() * titles.length)]
-    const company = generateFakeCompanies(1)[0]
-    jobs.push({
-      title,
-      company: company.name,
-      url: `https://${company.name.toLowerCase().replace(/[^a-z0-9]/g, '')}.com/jobs/${title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
-      location: locations[Math.floor(Math.random() * locations.length)],
-      type: types[Math.floor(Math.random() * types.length)],
-      skills: skillSets[Math.floor(Math.random() * skillSets.length)],
-    })
-  }
-  return jobs
-}
 
 // POST /api/agents/[id]/run - Trigger agent to run (simulate)
 export async function POST(
@@ -117,10 +9,10 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await ensureSeeded()
     const { id } = await params
 
-    const agent = await prisma.aIAgent.findUnique({ where: { id } })
+    const agents = await memoryStore.getAgents()
+    const agent = agents.find((a: any) => a.id === id)
     if (!agent) {
       return NextResponse.json({ error: 'Agent not found' }, { status: 404 })
     }
@@ -149,8 +41,14 @@ export async function POST(
       )
     }
 
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    const result = await memoryStore.runAgent(id)
+
+    if (result.error) {
+      return NextResponse.json({ error: result.error }, { status: 404 })
+    }
+
+    // Simulate run summary with task creation
+    const actionsToTake = Math.min(remaining, Math.floor(Math.random() * 10) + 3)
 
     const runSummary: Record<string, unknown> = {
       agentId: id,
@@ -164,131 +62,72 @@ export async function POST(
       details: [] as Array<Record<string, unknown>>,
     }
 
-    const actionsToTake = Math.min(remaining, Math.floor(Math.random() * 10) + 3) // 3-12 actions
-
     if (agent.type === 'CANDIDATE_BUDDY') {
-      // Simulate searching jobs and creating application tasks
-      const fakeJobs = generateFakeJobs(actionsToTake)
+      // Create simulated application tasks
+      const taskCount = Math.min(actionsToTake, 5)
+      for (let i = 0; i < taskCount; i++) {
+        const jobTitles = ['Senior Software Engineer', 'Full-Stack Developer', 'Data Scientist', 'DevOps Engineer', 'Product Manager']
+        const companies = ['TechCorp Solutions', 'InnoVate Labs', 'DigiSmart Technologies', 'CloudPeak Systems', 'NexGen Innovations']
+        const title = jobTitles[Math.floor(Math.random() * jobTitles.length)]
+        const company = companies[Math.floor(Math.random() * companies.length)]
+        const domain = company.toLowerCase().replace(/[^a-z0-9]/g, '')
 
-      for (const job of fakeJobs) {
-        // Create a task for each job found
-        const task = await prisma.aIAgentTask.create({
-          data: {
-            agentId: id,
-            type: 'apply_job',
-            targetName: job.title,
-            targetCompany: job.company,
-            targetUrl: job.url,
-            targetData: JSON.stringify({
-              location: job.location,
-              type: job.type,
-              skills: job.skills,
-            }),
-            priority: Math.floor(Math.random() * 5) + 5, // 5-9 priority
-            status: 'PENDING',
-            requiresApproval: false,
-          },
+        await memoryStore.createAgentTask(id, {
+          type: 'apply_job',
+          targetName: title,
+          targetCompany: company,
+          targetUrl: `https://${domain}.com/jobs/${title.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
+          targetData: JSON.stringify({ location: 'Remote', type: 'full-time', skills: 'React, TypeScript, Node.js' }),
+          priority: Math.floor(Math.random() * 5) + 5,
+          status: 'PENDING',
+          requiresApproval: false,
         })
 
         runSummary.tasksCreated = (runSummary.tasksCreated as number) + 1
         runSummary.jobsFound = (runSummary.jobsFound as number) + 1
         ;(runSummary.details as Array<Record<string, unknown>>).push({
-          taskId: task.id,
           type: 'apply_job',
-          target: `${job.title} at ${job.company}`,
-          location: job.location,
-        })
-
-        // Update daily stat for tasks created
-        await prisma.aIAgentDailyStat.upsert({
-          where: { agentId_date: { agentId: id, date: today } },
-          create: {
-            agentId: id,
-            date: today,
-            tasksCreated: 1,
-            jobsApplied: 1,
-          },
-          update: {
-            tasksCreated: { increment: 1 },
-            jobsApplied: { increment: 1 },
-          },
+          target: `${title} at ${company}`,
+          location: 'Remote',
         })
       }
     } else {
-      // ADMIN_OUTREACH_* types: simulate scraping companies and creating email tasks
-      const fakeCompanies = generateFakeCompanies(Math.ceil(actionsToTake / 2))
-      const emailsToSend = actionsToTake - fakeCompanies.length
+      // ADMIN_OUTREACH_* types: create scrape tasks and email tasks
+      const companyCount = Math.ceil(actionsToTake / 2)
+      const emailCount = actionsToTake - companyCount
 
-      // Create scrape tasks for companies
-      for (const company of fakeCompanies) {
-        const scrapeTask = await prisma.aIAgentTask.create({
-          data: {
-            agentId: id,
-            type: 'scrape_company',
-            targetCompany: company.name,
-            targetUrl: company.careersUrl,
-            targetData: JSON.stringify({
-              industry: company.industry,
-              size: company.size,
-              location: company.location,
-              contactEmail: company.email,
-              hrEmail: company.hrEmail,
-            }),
-            priority: Math.floor(Math.random() * 3) + 7, // 7-9 priority for scraping
-            status: 'COMPLETED',
-            startedAt: new Date(),
-            completedAt: new Date(),
-            result: JSON.stringify({ scraped: true, contactsFound: 2 }),
-          },
+      // Create scrape tasks
+      for (let i = 0; i < companyCount; i++) {
+        const companyPrefixes = ['TechCorp', 'InnoVate', 'DigiSmart', 'CloudPeak', 'NexGen', 'QuantumLeap', 'SwiftCode', 'ByteForge']
+        const suffixes = ['Solutions', 'Labs', 'Technologies', 'Systems', 'Innovations']
+        const name = `${companyPrefixes[Math.floor(Math.random() * companyPrefixes.length)]} ${suffixes[Math.floor(Math.random() * suffixes.length)]}`
+        const domain = name.toLowerCase().replace(/[^a-z0-9]/g, '')
+        const industries = ['Information Technology', 'FinTech', 'HealthTech', 'E-Commerce', 'SaaS', 'AI/ML']
+
+        await memoryStore.createAgentTask(id, {
+          type: 'scrape_company',
+          targetCompany: name,
+          targetUrl: `https://${domain}.com/careers`,
+          targetData: JSON.stringify({
+            industry: industries[Math.floor(Math.random() * industries.length)],
+            size: '51-200',
+            location: 'Bangalore, India',
+            contactEmail: `info@${domain}.com`,
+            hrEmail: `hr@${domain}.com`,
+          }),
+          priority: Math.floor(Math.random() * 3) + 7,
+          status: 'COMPLETED',
+          result: JSON.stringify({ scraped: true, contactsFound: 2 }),
         })
 
         runSummary.companiesScraped = (runSummary.companiesScraped as number) + 1
         ;(runSummary.details as Array<Record<string, unknown>>).push({
-          taskId: scrapeTask.id,
           type: 'scrape_company',
-          company: company.name,
-          industry: company.industry,
-          hrEmail: company.hrEmail,
-        })
-
-        // Also create a company scrape record
-        await prisma.aICompanyScrape.create({
-          data: {
-            companyUrl: company.careersUrl,
-            companyName: company.name,
-            careersPageUrl: company.careersUrl,
-            contactEmail: company.email,
-            hrEmail: company.hrEmail,
-            industry: company.industry,
-            companySize: company.size,
-            location: company.location,
-            scrapeData: JSON.stringify(company),
-            status: 'scraped',
-            lastScrapedAt: new Date(),
-          },
-        })
-
-        // Update daily stat
-        await prisma.aIAgentDailyStat.upsert({
-          where: { agentId_date: { agentId: id, date: today } },
-          create: {
-            agentId: id,
-            date: today,
-            tasksCreated: 1,
-            tasksCompleted: 1,
-            companiesScraped: 1,
-            contactsFound: 2,
-          },
-          update: {
-            tasksCreated: { increment: 1 },
-            tasksCompleted: { increment: 1 },
-            companiesScraped: { increment: 1 },
-            contactsFound: { increment: 2 },
-          },
+          company: name,
         })
       }
 
-      // Create email tasks and send emails
+      // Create email tasks
       const emailSubjectTemplates: Record<string, string[]> = {
         ADMIN_OUTREACH_COMPANY: [
           'Partnership Opportunity with 3 Boxes',
@@ -316,108 +155,65 @@ export async function POST(
       const subjects = emailSubjectTemplates[agent.type] || emailSubjectTemplates['ADMIN_OUTREACH_COMPANY']
       const bodyTemplate = emailBodyTemplates[agent.type] || emailBodyTemplates['ADMIN_OUTREACH_COMPANY']
 
-      for (let i = 0; i < emailsToSend && i < fakeCompanies.length; i++) {
-        const company = fakeCompanies[i]
+      const companyPrefixes = ['TechCorp', 'InnoVate', 'DigiSmart', 'CloudPeak', 'NexGen', 'QuantumLeap', 'SwiftCode', 'ByteForge']
+      const suffixes = ['Solutions', 'Labs', 'Technologies', 'Systems', 'Innovations']
+
+      for (let i = 0; i < emailCount; i++) {
+        const name = `${companyPrefixes[Math.floor(Math.random() * companyPrefixes.length)]} ${suffixes[Math.floor(Math.random() * suffixes.length)]}`
+        const domain = name.toLowerCase().replace(/[^a-z0-9]/g, '')
+        const hrEmail = `hr@${domain}.com`
         const subject = subjects[Math.floor(Math.random() * subjects.length)]
-        const personalizedBody = bodyTemplate.replace('{{name}}', company.name.split(' ')[0])
+        const personalizedBody = bodyTemplate.replace('{{name}}', name.split(' ')[0])
 
         // Create email task
-        const emailTask = await prisma.aIAgentTask.create({
-          data: {
-            agentId: id,
-            type: 'send_email',
-            targetEmail: company.hrEmail,
-            targetName: company.name,
-            targetCompany: company.name,
-            targetData: JSON.stringify({ industry: company.industry }),
-            priority: Math.floor(Math.random() * 3) + 6,
-            status: 'APPROVED',
-            requiresApproval: false,
-          },
+        await memoryStore.createAgentTask(id, {
+          type: 'send_email',
+          targetEmail: hrEmail,
+          targetName: name,
+          targetCompany: name,
+          priority: Math.floor(Math.random() * 3) + 6,
+          status: 'APPROVED',
+          requiresApproval: false,
         })
 
-        // Send the actual email (simulated)
+        // Simulate email delivery metrics
         const delivered = Math.random() > 0.1
         const opened = delivered && Math.random() > 0.4
         const replied = opened && Math.random() > 0.65
+        const emailStatus = replied ? 'REPLIED' : opened ? 'OPENED' : delivered ? 'DELIVERED' : 'BOUNCED'
 
-        const email = await prisma.aIAgentEmail.create({
-          data: {
-            agentId: id,
-            taskId: emailTask.id,
-            toEmail: company.hrEmail,
-            toName: `HR Team at ${company.name}`,
-            company: company.name,
-            subject,
-            body: personalizedBody,
-            followUpSequence: 0,
-            status: replied ? 'REPLIED' : opened ? 'OPENED' : delivered ? 'DELIVERED' : 'BOUNCED',
-            sentAt: new Date(),
-            deliveredAt: delivered ? new Date() : null,
-            openedAt: opened ? new Date() : null,
-            repliedAt: replied ? new Date() : null,
-            openCount: opened ? Math.floor(Math.random() * 3) + 1 : 0,
-            replyCount: replied ? 1 : 0,
-            bouncedReason: delivered ? null : 'Simulated: mailbox not found',
-          },
-        })
-
-        // Update task as completed
-        await prisma.aIAgentTask.update({
-          where: { id: emailTask.id },
-          data: {
-            status: 'COMPLETED',
-            startedAt: new Date(),
-            completedAt: new Date(),
-            result: JSON.stringify({ emailId: email.id, status: email.status }),
-          },
+        // Create the email record
+        await memoryStore.createAgentEmail(id, {
+          toEmail: hrEmail,
+          toName: `HR Team at ${name}`,
+          company: name,
+          subject,
+          body: personalizedBody,
+          followUpSequence: 0,
+          status: emailStatus,
+          sentAt: new Date().toISOString(),
+          deliveredAt: delivered ? new Date().toISOString() : null,
+          openedAt: opened ? new Date().toISOString() : null,
+          repliedAt: replied ? new Date().toISOString() : null,
+          openCount: opened ? Math.floor(Math.random() * 3) + 1 : 0,
+          replyCount: replied ? 1 : 0,
+          bouncedReason: delivered ? null : 'Simulated: mailbox not found',
         })
 
         runSummary.emailsSent = (runSummary.emailsSent as number) + 1
         runSummary.tasksCreated = (runSummary.tasksCreated as number) + 1
         ;(runSummary.details as Array<Record<string, unknown>>).push({
-          taskId: emailTask.id,
-          emailId: email.id,
           type: 'send_email',
-          to: company.hrEmail,
-          company: company.name,
+          to: hrEmail,
+          company: name,
           subject,
-          status: email.status,
-        })
-
-        // Update daily stats
-        const statUpdate: Record<string, unknown> = {
-          tasksCreated: { increment: 1 },
-          tasksCompleted: { increment: 1 },
-          emailsSent: { increment: 1 },
-        }
-        if (delivered) statUpdate.emailsDelivered = { increment: 1 }
-        else statUpdate.emailsBounced = { increment: 1 }
-        if (opened) statUpdate.emailsOpened = { increment: 1 }
-        if (replied) statUpdate.emailsReplied = { increment: 1 }
-
-        await prisma.aIAgentDailyStat.upsert({
-          where: { agentId_date: { agentId: id, date: today } },
-          create: {
-            agentId: id,
-            date: today,
-            tasksCreated: 1,
-            tasksCompleted: 1,
-            emailsSent: 1,
-            emailsDelivered: delivered ? 1 : 0,
-            emailsBounced: delivered ? 0 : 1,
-            emailsOpened: opened ? 1 : 0,
-            emailsReplied: replied ? 1 : 0,
-          },
-          update: statUpdate,
+          status: emailStatus,
         })
 
         // Update agent totalResponses if replied
         if (replied) {
-          await prisma.aIAgent.update({
-            where: { id },
-            data: { totalResponses: { increment: 1 } },
-          })
+          const currentResponses = (agent.totalResponses || 0) + 1
+          await memoryStore.updateAgent(id, { totalResponses: currentResponses })
         }
       }
     }
@@ -428,50 +224,20 @@ export async function POST(
     const totalNewSuccess = (runSummary.companiesScraped as number) + (runSummary.emailsSent as number)
 
     const agentUpdate: Record<string, unknown> = {
-      totalTasks: { increment: totalNewTasks },
-      totalSuccess: { increment: totalNewSuccess },
-      totalEmailsSent: { increment: totalNewEmails },
-      lastRunAt: new Date(),
+      totalTasks: (agent.totalTasks || 0) + totalNewTasks,
+      totalSuccess: (agent.totalSuccess || 0) + totalNewSuccess,
+      totalEmailsSent: (agent.totalEmailsSent || 0) + totalNewEmails,
+      lastRunAt: new Date().toISOString(),
     }
 
     if (needsReset) {
       agentUpdate.dailySent = totalNewEmails
-      agentUpdate.dailyResetAt = new Date()
+      agentUpdate.dailyResetAt = new Date().toISOString()
     } else {
-      agentUpdate.dailySent = { increment: totalNewEmails }
+      agentUpdate.dailySent = (agent.dailySent || 0) + totalNewEmails
     }
 
-    await prisma.aIAgent.update({
-      where: { id },
-      data: agentUpdate,
-    })
-
-    // Recalculate daily rates
-    const todayStat = await prisma.aIAgentDailyStat.findUnique({
-      where: { agentId_date: { agentId: id, date: today } },
-    })
-    if (todayStat && todayStat.emailsSent > 0) {
-      await prisma.aIAgentDailyStat.update({
-        where: { id: todayStat.id },
-        data: {
-          deliveryRate: todayStat.emailsDelivered / todayStat.emailsSent,
-          openRate: todayStat.emailsOpened / todayStat.emailsSent,
-          replyRate: todayStat.emailsReplied / todayStat.emailsSent,
-          bounceRate: todayStat.emailsBounced / todayStat.emailsSent,
-        },
-      })
-    }
-
-    // Update avg response rate on agent
-    const updatedAgent = await prisma.aIAgent.findUnique({ where: { id } })
-    if (updatedAgent && updatedAgent.totalEmailsSent > 0) {
-      await prisma.aIAgent.update({
-        where: { id },
-        data: {
-          avgResponseRate: updatedAgent.totalResponses / updatedAgent.totalEmailsSent,
-        },
-      })
-    }
+    await memoryStore.updateAgent(id, agentUpdate)
 
     return NextResponse.json({
       message: `Agent ${agent.name} ran successfully`,

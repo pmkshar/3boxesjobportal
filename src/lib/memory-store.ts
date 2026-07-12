@@ -83,6 +83,12 @@ interface CourseRecord {
 let _users: UserRecord[] = []
 let _jobs: JobRecord[] = []
 let _courses: CourseRecord[] = []
+let _aiAgents: any[] = []
+let _aiAgentTasks: any[] = []
+let _aiAgentEmails: any[] = []
+let _aiEmailTemplates: any[] = []
+let _aiAgentDailyStats: any[] = []
+let _aiCompanyScrapes: any[] = []
 let _initialized = false
 let _dbAvailable = false
 
@@ -593,6 +599,269 @@ function seedMemoryData() {
     },
   ]
 
+  // ─── Seed AI Agents ──────────────────────────────────────────
+  const now = new Date()
+  const agentIds = ['agent-company-001', 'agent-candidate-001', 'agent-hr-001']
+
+  _aiAgents = [
+    {
+      id: agentIds[0],
+      name: 'Company Outreach Agent',
+      type: 'ADMIN_OUTREACH_COMPANY',
+      description: 'Automatically scrapes company websites for careers pages and contact emails, then sends introduction emails about our portal. Follows up until the company onboards.',
+      status: 'ACTIVE',
+      dailyLimit: 50,
+      dailySent: 8,
+      totalTasks: 12,
+      totalSuccess: 5,
+      totalFailed: 2,
+      totalEmailsSent: 35,
+      totalResponses: 8,
+      totalConversions: 3,
+      avgResponseRate: 0.23,
+      strategy: JSON.stringify({
+        targetIndustry: 'Technology, Finance, Healthcare',
+        emailTemplate: 'company_introduction',
+        followUpInterval: '3_days',
+        maxFollowUps: '5',
+        searchKeywords: 'careers, jobs, hiring, contact us',
+      }),
+      createdBy: 'demo-admin-001',
+      lastRunAt: new Date(now.getTime() - 3600000).toISOString(),
+      dailyResetAt: now.toISOString(),
+      createdAt: new Date(now.getTime() - 7 * 86400000).toISOString(),
+      updatedAt: now.toISOString(),
+    },
+    {
+      id: agentIds[1],
+      name: 'Candidate Outreach Agent',
+      type: 'ADMIN_OUTREACH_CANDIDATE',
+      description: 'Sends personalized emails to job seekers encouraging them to onboard our portal. Includes job recommendations based on their profile.',
+      status: 'ACTIVE',
+      dailyLimit: 50,
+      dailySent: 12,
+      totalTasks: 8,
+      totalSuccess: 4,
+      totalFailed: 1,
+      totalEmailsSent: 28,
+      totalResponses: 6,
+      totalConversions: 4,
+      avgResponseRate: 0.21,
+      strategy: JSON.stringify({
+        emailTemplate: 'candidate_introduction',
+        followUpInterval: '5_days',
+        maxFollowUps: '3',
+        includeJobRecommendations: 'true',
+      }),
+      createdBy: 'demo-admin-001',
+      lastRunAt: new Date(now.getTime() - 7200000).toISOString(),
+      dailyResetAt: now.toISOString(),
+      createdAt: new Date(now.getTime() - 6 * 86400000).toISOString(),
+      updatedAt: now.toISOString(),
+    },
+    {
+      id: agentIds[2],
+      name: 'HR Outreach Agent',
+      type: 'ADMIN_OUTREACH_HR',
+      description: 'Targets HR heads, HR managers, and HR executives to onboard them to our portal. Sends personalized introduction emails and follows up.',
+      status: 'ACTIVE',
+      dailyLimit: 50,
+      dailySent: 15,
+      totalTasks: 15,
+      totalSuccess: 6,
+      totalFailed: 3,
+      totalEmailsSent: 42,
+      totalResponses: 10,
+      totalConversions: 5,
+      avgResponseRate: 0.24,
+      strategy: JSON.stringify({
+        targetRoles: 'HR Head, HR Manager, HR Executive, Talent Acquisition Lead',
+        emailTemplate: 'hr_introduction',
+        followUpInterval: '4_days',
+        maxFollowUps: '4',
+        linkedInSearch: 'true',
+      }),
+      createdBy: 'demo-admin-001',
+      lastRunAt: new Date(now.getTime() - 1800000).toISOString(),
+      dailyResetAt: now.toISOString(),
+      createdAt: new Date(now.getTime() - 5 * 86400000).toISOString(),
+      updatedAt: now.toISOString(),
+    },
+  ]
+
+  // Seed AI Email Templates
+  _aiEmailTemplates = [
+    {
+      id: 'tpl-company-intro-001',
+      name: 'Company Introduction',
+      agentType: 'ADMIN_OUTREACH_COMPANY',
+      subject: "3 Boxes Jobs - India's AI-Powered Recruitment Platform | Partnership Opportunity",
+      body: `Dear {{recipientName}},\n\nI hope this email finds you well. I'm reaching out from 3 Boxes Jobs, India's fastest-growing AI-powered recruitment platform that connects top talent with leading companies like {{companyName}}.\n\nWhat makes us different:\n• AI-powered candidate matching with 95%+ accuracy\n• Pre-screened candidates with verified skills\n• 70% faster hiring process compared to traditional methods\n• Access to 50,000+ active job seekers across India\n\nI'd love to explore how 3 Boxes Jobs can streamline your hiring process at {{companyName}}. Would you be available for a brief 15-minute call this week?\n\nLooking forward to connecting!\n\nBest regards,\nThe 3 Boxes Jobs Team\n{{portalUrl}}`,
+      category: 'introduction',
+      isActive: true,
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
+    },
+    {
+      id: 'tpl-company-followup-001',
+      name: 'Company Follow-up',
+      agentType: 'ADMIN_OUTREACH_COMPANY',
+      subject: 'Following up - 3 Boxes Jobs Partnership',
+      body: `Dear {{recipientName}},\n\nI wanted to follow up on my previous email about partnering with 3 Boxes Jobs for your hiring needs at {{companyName}}.\n\nWe've recently helped companies like yours reduce their time-to-hire by 60% and improve candidate quality by 40%.\n\nWould you be interested in a quick demo? I can show you how our AI matching works in just 10 minutes.\n\nBest regards,\nThe 3 Boxes Jobs Team\n{{portalUrl}}`,
+      category: 'follow_up',
+      isActive: true,
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
+    },
+    {
+      id: 'tpl-candidate-intro-001',
+      name: 'Candidate Introduction',
+      agentType: 'ADMIN_OUTREACH_CANDIDATE',
+      subject: 'Your Dream Job is Waiting | 3 Boxes Jobs',
+      body: `Hi {{recipientName}},\n\nI noticed your impressive background and wanted to introduce you to 3 Boxes Jobs - India's AI-powered job portal that matches you with the perfect opportunities.\n\nWhy join 3 Boxes Jobs?\n• AI-powered job matching based on your skills & experience\n• Free resume builder with ATS optimization\n• Interview preparation with AI mock interviews\n• Access to 10,000+ jobs from top companies\n• Real-time application tracking\n\nRegistration is completely free! Join thousands of professionals who've already found their dream roles through our platform.\n\nSign up now: {{portalUrl}}\n\nBest regards,\nThe 3 Boxes Jobs Team`,
+      category: 'introduction',
+      isActive: true,
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
+    },
+    {
+      id: 'tpl-hr-intro-001',
+      name: 'HR Introduction',
+      agentType: 'ADMIN_OUTREACH_HR',
+      subject: 'Transform Your Hiring with 3 Boxes Jobs | Special Invitation for HR Leaders',
+      body: `Dear {{recipientName}},\n\nAs an HR leader, you know the challenges of finding the right talent quickly. 3 Boxes Jobs is India's AI-powered recruitment platform designed specifically to address these challenges.\n\nWhy HR leaders choose 3 Boxes Jobs:\n• AI-powered screening reduces unqualified applications by 80%\n• Automated interview scheduling saves 15+ hours per week\n• Skills-based matching ensures cultural fit\n• Employer branding tools to attract top talent\n• Analytics dashboard for data-driven hiring decisions\n\nI'd love to invite you to explore our platform and see how it can benefit your organization. We offer a free 30-day trial for new companies.\n\nWould you be interested in a personalized demo?\n\nBest regards,\nThe 3 Boxes Jobs Team\n{{portalUrl}}`,
+      category: 'introduction',
+      isActive: true,
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
+    },
+  ]
+
+  // Seed AI Agent Tasks (sample recent tasks)
+  const taskTypes = ['SCRAPE_COMPANY', 'SEND_EMAIL', 'FOLLOW_UP', 'EXTRACT_EMAIL']
+  const taskStatuses = ['COMPLETED', 'COMPLETED', 'COMPLETED', 'PENDING', 'APPROVED', 'RUNNING', 'FAILED']
+  const companies = ['TCS', 'Infosys', 'Wipro', 'HCL Technologies', 'Tech Mahindra', 'Google India', 'Microsoft India', 'Amazon India', 'Flipkart', 'Razorpay']
+  let taskId = 1
+  for (const agent of _aiAgents) {
+    for (let i = 0; i < 5; i++) {
+      _aiAgentTasks.push({
+        id: `task-${String(taskId++).padStart(3, '0')}`,
+        agentId: agent.id,
+        type: taskTypes[i % taskTypes.length],
+        status: taskStatuses[i % taskStatuses.length],
+        priority: Math.floor(Math.random() * 3) + 1,
+        targetEmail: `hr@${companies[i].toLowerCase().replace(/\s/g, '')}.com`,
+        targetName: `HR Manager`,
+        targetCompany: companies[i],
+        targetUrl: `https://${companies[i].toLowerCase().replace(/\s/g, '')}.com/careers`,
+        targetData: null,
+        scheduledAt: new Date(now.getTime() - (i + 1) * 3600000).toISOString(),
+        startedAt: taskStatuses[i % taskStatuses.length] !== 'PENDING' ? new Date(now.getTime() - i * 3600000).toISOString() : null,
+        completedAt: ['COMPLETED', 'FAILED'].includes(taskStatuses[i % taskStatuses.length]) ? new Date(now.getTime() - (i - 1) * 3600000).toISOString() : null,
+        result: taskStatuses[i % taskStatuses.length] === 'COMPLETED' ? 'Completed successfully' : null,
+        error: taskStatuses[i % taskStatuses.length] === 'FAILED' ? 'Connection timeout' : null,
+        retryCount: 0,
+        requiresApproval: i % 3 === 0,
+        approvedBy: i % 3 === 0 ? 'demo-admin-001' : null,
+        approvedAt: i % 3 === 0 ? new Date(now.getTime() - i * 3600000).toISOString() : null,
+        createdAt: new Date(now.getTime() - (i + 1) * 86400000).toISOString(),
+        updatedAt: now.toISOString(),
+      })
+    }
+  }
+
+  // Seed AI Agent Emails (sample recent emails)
+  const emailStatuses = ['SENT', 'DELIVERED', 'OPENED', 'REPLIED', 'SENT', 'BOUNCED']
+  let emailId = 1
+  for (const agent of _aiAgents) {
+    for (let i = 0; i < 4; i++) {
+      const status = emailStatuses[i % emailStatuses.length]
+      _aiAgentEmails.push({
+        id: `email-${String(emailId++).padStart(3, '0')}`,
+        agentId: agent.id,
+        taskId: _aiAgentTasks.find(t => t.agentId === agent.id)?.id || null,
+        toEmail: `contact@${companies[i].toLowerCase().replace(/\s/g, '')}.com`,
+        toName: `${companies[i]} HR Team`,
+        company: companies[i],
+        subject: `Partnership Opportunity - 3 Boxes Jobs × ${companies[i]}`,
+        body: 'Email content...',
+        templateId: _aiEmailTemplates.find(t => t.agentType === agent.type)?.id || null,
+        templateData: JSON.stringify({ companyName: companies[i], recipientName: 'HR Team' }),
+        status,
+        sentAt: status !== 'DRAFT' ? new Date(now.getTime() - (i + 1) * 7200000).toISOString() : null,
+        deliveredAt: ['DELIVERED', 'OPENED', 'REPLIED'].includes(status) ? new Date(now.getTime() - i * 7200000).toISOString() : null,
+        openedAt: ['OPENED', 'REPLIED'].includes(status) ? new Date(now.getTime() - i * 3600000).toISOString() : null,
+        repliedAt: status === 'REPLIED' ? new Date(now.getTime() - i * 1800000).toISOString() : null,
+        openCount: ['OPENED', 'REPLIED'].includes(status) ? Math.floor(Math.random() * 3) + 1 : 0,
+        replyCount: status === 'REPLIED' ? 1 : 0,
+        bouncedReason: status === 'BOUNCED' ? 'Mailbox full' : null,
+        followUpSequence: i,
+        nextFollowUpAt: i < 3 ? new Date(now.getTime() + (3 - i) * 86400000).toISOString() : null,
+        parentEmailId: i > 0 ? `email-${String(emailId - 2).padStart(3, '0')}` : null,
+        createdAt: new Date(now.getTime() - (i + 1) * 86400000).toISOString(),
+        updatedAt: now.toISOString(),
+      })
+    }
+  }
+
+  // Seed AI Agent Daily Stats (last 7 days for each agent)
+  const today7 = new Date()
+  today7.setHours(0, 0, 0, 0)
+  let statId = 1
+  for (const agent of _aiAgents) {
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today7)
+      date.setDate(date.getDate() - i)
+      _aiAgentDailyStats.push({
+        id: `stat-${String(statId++).padStart(3, '0')}`,
+        agentId: agent.id,
+        date: date.toISOString(),
+        tasksCreated: Math.floor(Math.random() * 5) + 1,
+        tasksCompleted: Math.floor(Math.random() * 4),
+        tasksFailed: Math.floor(Math.random() * 2),
+        emailsSent: Math.floor(Math.random() * 15) + 5,
+        emailsDelivered: Math.floor(Math.random() * 13) + 4,
+        emailsOpened: Math.floor(Math.random() * 8) + 2,
+        emailsReplied: Math.floor(Math.random() * 4),
+        emailsBounced: Math.floor(Math.random() * 2),
+        companiesScraped: agent.type === 'ADMIN_OUTREACH_COMPANY' ? Math.floor(Math.random() * 8) + 2 : 0,
+        contactsFound: Math.floor(Math.random() * 6) + 1,
+        jobsApplied: 0,
+        interviewsScheduled: Math.floor(Math.random() * 2),
+        onboardingsStarted: Math.floor(Math.random() * 2),
+        onboardingsCompleted: Math.floor(Math.random()),
+        deliveryRate: 0.85 + Math.random() * 0.12,
+        openRate: 0.25 + Math.random() * 0.2,
+        replyRate: 0.1 + Math.random() * 0.15,
+        bounceRate: Math.random() * 0.08,
+        conversionRate: 0.05 + Math.random() * 0.1,
+      })
+    }
+  }
+
+  // Seed Company Scrapes
+  let scrapeId = 1
+  for (let i = 0; i < 5; i++) {
+    const statuses = ['scraped', 'contacted', 'responded', 'onboarded', 'pending']
+    _aiCompanyScrapes.push({
+      id: `scrape-${String(scrapeId++).padStart(3, '0')}`,
+      companyUrl: `https://${companies[i].toLowerCase().replace(/\s/g, '')}.com`,
+      companyName: companies[i],
+      careersPageUrl: `https://${companies[i].toLowerCase().replace(/\s/g, '')}.com/careers`,
+      contactEmail: `careers@${companies[i].toLowerCase().replace(/\s/g, '')}.com`,
+      hrEmail: `hr@${companies[i].toLowerCase().replace(/\s/g, '')}.com`,
+      linkedInUrl: `https://linkedin.com/company/${companies[i].toLowerCase().replace(/\s/g, '')}`,
+      industry: 'Technology',
+      companySize: '1001-5000',
+      location: 'India',
+      scrapeData: null,
+      status: statuses[i],
+      lastScrapedAt: new Date(now.getTime() - i * 86400000).toISOString(),
+      createdAt: new Date(now.getTime() - (i + 3) * 86400000).toISOString(),
+      updatedAt: now.toISOString(),
+    })
+  }
+
   _initialized = true
 }
 
@@ -986,6 +1255,334 @@ export const memoryStore = {
         ...user,
         profile: user.jobSeekerProfile || user.corporateProfile || user.recruiterProfile || null,
       },
+    }
+  },
+
+  // ─── AI Agents ──────────────────────────────────────────
+
+  async getAgents(typeFilter?: string) {
+    if (await this.isDbAvailable()) {
+      try {
+        const { ensureSeedData } = await import('./db')
+        await ensureSeedData()
+        const { db } = await import('./db')
+        const where: any = {}
+        if (typeFilter) where.type = typeFilter
+        const agents = await db.aIAgent.findMany({
+          where,
+          orderBy: { createdAt: 'desc' },
+          include: {
+            _count: { select: { tasks: true, emails: true } },
+            stats: { orderBy: { date: 'desc' }, take: 1 },
+          },
+        })
+        return agents.map((a: any) => ({
+          ...a, taskCount: a._count?.tasks || 0, emailCount: a._count?.emails || 0,
+          todayStats: a.stats?.[0] || null,
+        }))
+      } catch (error) {
+        console.error('Prisma getAgents failed, falling back to memory:', error)
+        _dbAvailable = false
+      }
+    }
+    // Memory fallback
+    let agents = _aiAgents
+    if (typeFilter) agents = agents.filter(a => a.type === typeFilter)
+    return agents.map(a => ({
+      ...a,
+      taskCount: _aiAgentTasks.filter(t => t.agentId === a.id).length,
+      emailCount: _aiAgentEmails.filter(e => e.agentId === a.id).length,
+      todayStats: _aiAgentDailyStats.find(s => s.agentId === a.id && new Date(s.date).toDateString() === new Date().toDateString()) || null,
+    }))
+  },
+
+  async createAgent(data: { name: string; type: string; description?: string; strategy?: any; dailyLimit?: number; createdBy: string }) {
+    if (await this.isDbAvailable()) {
+      try {
+        const { db } = await import('./db')
+        const agent = await db.aIAgent.create({
+          data: {
+            name: data.name, type: data.type, description: data.description || null,
+            strategy: data.strategy ? JSON.stringify(data.strategy) : null,
+            dailyLimit: data.dailyLimit || 50, createdBy: data.createdBy,
+            status: 'ACTIVE', dailyResetAt: new Date(),
+          },
+        })
+        return agent
+      } catch (error) {
+        console.error('Prisma createAgent failed, falling back to memory:', error)
+        _dbAvailable = false
+      }
+    }
+    // Memory fallback
+    const agent = {
+      id: genId(), ...data, status: 'ACTIVE', dailySent: 0,
+      totalTasks: 0, totalSuccess: 0, totalFailed: 0, totalEmailsSent: 0,
+      totalResponses: 0, totalConversions: 0, avgResponseRate: 0,
+      lastRunAt: null, dailyResetAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
+    }
+    _aiAgents.push(agent)
+    return agent
+  },
+
+  async updateAgent(id: string, data: any) {
+    if (await this.isDbAvailable()) {
+      try {
+        const { db } = await import('./db')
+        return await db.aIAgent.update({ where: { id }, data })
+      } catch (error) {
+        console.error('Prisma updateAgent failed, falling back to memory:', error)
+        _dbAvailable = false
+      }
+    }
+    const idx = _aiAgents.findIndex(a => a.id === id)
+    if (idx >= 0) { _aiAgents[idx] = { ..._aiAgents[idx], ...data, updatedAt: new Date().toISOString() }; return _aiAgents[idx] }
+    return null
+  },
+
+  async deleteAgent(id: string) {
+    if (await this.isDbAvailable()) {
+      try {
+        const { db } = await import('./db')
+        await db.aIAgent.delete({ where: { id } })
+        return true
+      } catch (error) {
+        console.error('Prisma deleteAgent failed, falling back to memory:', error)
+        _dbAvailable = false
+      }
+    }
+    _aiAgents = _aiAgents.filter(a => a.id !== id)
+    _aiAgentTasks = _aiAgentTasks.filter(t => t.agentId !== id)
+    _aiAgentEmails = _aiAgentEmails.filter(e => e.agentId !== id)
+    _aiAgentDailyStats = _aiAgentDailyStats.filter(s => s.agentId !== id)
+    return true
+  },
+
+  async getAgentDashboard() {
+    if (await this.isDbAvailable()) {
+      try {
+        const { ensureSeedData } = await import('./db')
+        await ensureSeedData()
+        const res = await fetch('/api/agents/dashboard')
+        if (res.ok) return await res.json()
+      } catch (error) {
+        console.error('Prisma agentDashboard failed, falling back to memory:', error)
+        _dbAvailable = false
+      }
+    }
+    // Memory fallback - compute dashboard data
+    const agents = _aiAgents
+    const today = new Date(); today.setHours(0, 0, 0, 0)
+    const todayStats = _aiAgentDailyStats.filter(s => new Date(s.date).toDateString() === today.toDateString())
+    const todayAggregate = todayStats.reduce((acc, s) => ({
+      emailsSent: acc.emailsSent + s.emailsSent, emailsDelivered: acc.emailsDelivered + s.emailsDelivered,
+      emailsOpened: acc.emailsOpened + s.emailsOpened, emailsReplied: acc.emailsReplied + s.emailsReplied,
+      emailsBounced: acc.emailsBounced + s.emailsBounced, tasksCreated: acc.tasksCreated + s.tasksCreated,
+      tasksCompleted: acc.tasksCompleted + s.tasksCompleted, tasksFailed: acc.tasksFailed + s.tasksFailed,
+      companiesScraped: acc.companiesScraped + s.companiesScraped, contactsFound: acc.contactsFound + s.contactsFound,
+      jobsApplied: acc.jobsApplied + s.jobsApplied, interviewsScheduled: acc.interviewsScheduled + s.interviewsScheduled,
+      onboardingsStarted: acc.onboardingsStarted + s.onboardingsStarted, onboardingsCompleted: acc.onboardingsCompleted + s.onboardingsCompleted,
+    }), { emailsSent: 0, emailsDelivered: 0, emailsOpened: 0, emailsReplied: 0, emailsBounced: 0, tasksCreated: 0, tasksCompleted: 0, tasksFailed: 0, companiesScraped: 0, contactsFound: 0, jobsApplied: 0, interviewsScheduled: 0, onboardingsStarted: 0, onboardingsCompleted: 0 })
+
+    const overallTotals = agents.reduce((acc, a) => ({
+      totalTasks: acc.totalTasks + a.totalTasks, totalSuccess: acc.totalSuccess + a.totalSuccess,
+      totalFailed: acc.totalFailed + a.totalFailed, totalEmailsSent: acc.totalEmailsSent + a.totalEmailsSent,
+      totalResponses: acc.totalResponses + a.totalResponses, totalConversions: acc.totalConversions + a.totalConversions,
+    }), { totalTasks: 0, totalSuccess: 0, totalFailed: 0, totalEmailsSent: 0, totalResponses: 0, totalConversions: 0 })
+
+    const agentTypeBreakdown: any = {}
+    for (const agent of agents) {
+      if (!agentTypeBreakdown[agent.type]) agentTypeBreakdown[agent.type] = { count: 0, totalEmailsSent: 0, totalResponses: 0, totalConversions: 0, totalTasks: 0, totalSuccess: 0, avgResponseRate: 0, activeCount: 0 }
+      const b = agentTypeBreakdown[agent.type]
+      b.count++; b.totalEmailsSent += agent.totalEmailsSent; b.totalResponses += agent.totalResponses
+      b.totalConversions += agent.totalConversions; b.totalTasks += agent.totalTasks; b.totalSuccess += agent.totalSuccess
+      if (agent.status === 'ACTIVE') b.activeCount++
+      if (b.totalEmailsSent > 0) b.avgResponseRate = b.totalResponses / b.totalEmailsSent
+    }
+
+    // Build activity feed
+    const activityFeed = [
+      ..._aiAgentTasks.slice(0, 10).map(t => {
+        const agent = agents.find(a => a.id === t.agentId)
+        return { id: t.id, type: 'task' as const, taskType: t.type, agentId: t.agentId, agentName: agent?.name || '', agentType: agent?.type || '', status: t.status, target: t.targetCompany || 'N/A', createdAt: t.createdAt, completedAt: t.completedAt }
+      }),
+      ..._aiAgentEmails.slice(0, 10).map(e => {
+        const agent = agents.find(a => a.id === e.agentId)
+        return { id: e.id, type: 'email' as const, taskType: 'email', agentId: e.agentId, agentName: agent?.name || '', agentType: agent?.type || '', status: e.status, target: e.company || e.toName || e.toEmail, subject: e.subject, createdAt: e.createdAt, sentAt: e.sentAt }
+      }),
+    ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 20)
+
+    const overallRates = {
+      responseRate: overallTotals.totalEmailsSent > 0 ? overallTotals.totalResponses / overallTotals.totalEmailsSent : 0,
+      conversionRate: overallTotals.totalResponses > 0 ? overallTotals.totalConversions / overallTotals.totalResponses : 0,
+      taskSuccessRate: overallTotals.totalTasks > 0 ? overallTotals.totalSuccess / overallTotals.totalTasks : 0,
+      todayDeliveryRate: todayAggregate.emailsSent > 0 ? todayAggregate.emailsDelivered / todayAggregate.emailsSent : 0,
+      todayOpenRate: todayAggregate.emailsDelivered > 0 ? todayAggregate.emailsOpened / todayAggregate.emailsDelivered : 0,
+      todayReplyRate: todayAggregate.emailsOpened > 0 ? todayAggregate.emailsReplied / todayAggregate.emailsOpened : 0,
+      todayBounceRate: todayAggregate.emailsSent > 0 ? todayAggregate.emailsBounced / todayAggregate.emailsSent : 0,
+    }
+
+    return {
+      overview: { totalAgents: agents.length, activeAgents: agents.filter(a => a.status === 'ACTIVE').length, pausedAgents: agents.filter(a => a.status === 'PAUSED').length, stoppedAgents: agents.filter(a => a.status === 'STOPPED').length, errorAgents: agents.filter(a => a.status === 'ERROR').length },
+      todayMetrics: todayAggregate, overallTotals, overallRates, agentTypeBreakdown,
+      agents: agents.map(a => ({ ...a, taskCount: _aiAgentTasks.filter(t => t.agentId === a.id).length, emailCount: _aiAgentEmails.filter(e => e.agentId === a.id).length, todayStats: _aiAgentDailyStats.find(s => s.agentId === a.id && new Date(s.date).toDateString() === new Date().toDateString()) || null })),
+      activityFeed,
+    }
+  },
+
+  async getAgentTasks(agentId: string, limit?: number) {
+    if (await this.isDbAvailable()) {
+      try {
+        const { db } = await import('./db')
+        const tasks = await db.aIAgentTask.findMany({ where: { agentId }, orderBy: { createdAt: 'desc' }, take: limit || 50 })
+        return tasks
+      } catch (error) { _dbAvailable = false }
+    }
+    let tasks = _aiAgentTasks.filter(t => t.agentId === agentId).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    if (limit) tasks = tasks.slice(0, limit)
+    return tasks
+  },
+
+  async createAgentTask(agentId: string, data: any) {
+    if (await this.isDbAvailable()) {
+      try {
+        const { db } = await import('./db')
+        return await db.aIAgentTask.create({ data: { agentId, ...data } })
+      } catch (error) { _dbAvailable = false }
+    }
+    const task = { id: genId(), agentId, ...data, retryCount: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    _aiAgentTasks.unshift(task)
+    return task
+  },
+
+  async getAgentEmails(agentId: string, limit?: number) {
+    if (await this.isDbAvailable()) {
+      try {
+        const { db } = await import('./db')
+        const emails = await db.aIAgentEmail.findMany({ where: { agentId }, orderBy: { createdAt: 'desc' }, take: limit || 50 })
+        return emails
+      } catch (error) { _dbAvailable = false }
+    }
+    let emails = _aiAgentEmails.filter(e => e.agentId === agentId).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    if (limit) emails = emails.slice(0, limit)
+    return emails
+  },
+
+  async createAgentEmail(agentId: string, data: any) {
+    if (await this.isDbAvailable()) {
+      try {
+        const { db } = await import('./db')
+        return await db.aIAgentEmail.create({ data: { agentId, ...data } })
+      } catch (error) { _dbAvailable = false }
+    }
+    const email = { id: genId(), agentId, ...data, openCount: 0, replyCount: 0, followUpSequence: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    _aiAgentEmails.unshift(email)
+    return email
+  },
+
+  async getAgentStats(agentId: string) {
+    if (await this.isDbAvailable()) {
+      try {
+        const res = await fetch(`/api/agents/${agentId}/stats`)
+        if (res.ok) return await res.json()
+      } catch (error) { _dbAvailable = false }
+    }
+    const agent = _aiAgents.find(a => a.id === agentId)
+    if (!agent) return null
+    const dailyStats = _aiAgentDailyStats.filter(s => s.agentId === agentId).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    const aggregate = dailyStats.reduce((acc, s) => ({
+      emailsSent: acc.emailsSent + s.emailsSent, emailsDelivered: acc.emailsDelivered + s.emailsDelivered,
+      emailsOpened: acc.emailsOpened + s.emailsOpened, emailsReplied: acc.emailsReplied + s.emailsReplied,
+      emailsBounced: acc.emailsBounced + s.emailsBounced, tasksCreated: acc.tasksCreated + s.tasksCreated,
+      tasksCompleted: acc.tasksCompleted + s.tasksCompleted, tasksFailed: acc.tasksFailed + s.tasksFailed,
+      companiesScraped: acc.companiesScraped + s.companiesScraped, contactsFound: acc.contactsFound + s.contactsFound,
+      jobsApplied: acc.jobsApplied + s.jobsApplied, interviewsScheduled: acc.interviewsScheduled + s.interviewsScheduled,
+      onboardingsStarted: acc.onboardingsStarted + s.onboardingsStarted, onboardingsCompleted: acc.onboardingsCompleted + s.onboardingsCompleted,
+    }), { emailsSent: 0, emailsDelivered: 0, emailsOpened: 0, emailsReplied: 0, emailsBounced: 0, tasksCreated: 0, tasksCompleted: 0, tasksFailed: 0, companiesScraped: 0, contactsFound: 0, jobsApplied: 0, interviewsScheduled: 0, onboardingsStarted: 0, onboardingsCompleted: 0 })
+    const last30 = dailyStats.slice(0, 30)
+    const r30 = { deliveryRate: 0, openRate: 0, replyRate: 0, bounceRate: 0, conversionRate: 0, taskSuccessRate: 0 }
+    if (last30.length > 0) {
+      r30.deliveryRate = last30.reduce((a, s) => a + s.deliveryRate, 0) / last30.length
+      r30.openRate = last30.reduce((a, s) => a + s.openRate, 0) / last30.length
+      r30.replyRate = last30.reduce((a, s) => a + s.replyRate, 0) / last30.length
+      r30.bounceRate = last30.reduce((a, s) => a + s.bounceRate, 0) / last30.length
+      r30.conversionRate = last30.reduce((a, s) => a + s.conversionRate, 0) / last30.length
+      r30.taskSuccessRate = aggregate.tasksCreated > 0 ? aggregate.tasksCompleted / aggregate.tasksCreated : 0
+    }
+    return {
+      agentId, agentName: agent.name, agentType: agent.type, dailyStats,
+      aggregate,
+      last30DayRates: r30,
+      overallSummary: { totalTasks: agent.totalTasks, totalSuccess: agent.totalSuccess, totalFailed: agent.totalFailed, totalEmailsSent: agent.totalEmailsSent, totalResponses: agent.totalResponses, totalConversions: agent.totalConversions, avgResponseRate: agent.avgResponseRate, dailyLimit: agent.dailyLimit, dailySent: agent.dailySent, lastRunAt: agent.lastRunAt, status: agent.status },
+      taskStatusBreakdown: Object.entries(_aiAgentTasks.filter(t => t.agentId === agentId).reduce((acc: any, t) => { acc[t.status] = (acc[t.status] || 0) + 1; return acc }, {})).map(([status, count]) => ({ status, count: count as number })),
+      emailStatusBreakdown: Object.entries(_aiAgentEmails.filter(e => e.agentId === agentId).reduce((acc: any, e) => { acc[e.status] = (acc[e.status] || 0) + 1; return acc }, {})).map(([status, count]) => ({ status, count: count as number })),
+    }
+  },
+
+  async getEmailTemplates(agentType?: string) {
+    if (await this.isDbAvailable()) {
+      try {
+        const { db } = await import('./db')
+        const where: any = { isActive: true }
+        if (agentType) where.agentType = agentType
+        return await db.aIEmailTemplate.findMany({ where, orderBy: { createdAt: 'desc' } })
+      } catch (error) { _dbAvailable = false }
+    }
+    let templates = _aiEmailTemplates.filter(t => t.isActive)
+    if (agentType) templates = templates.filter(t => t.agentType === agentType)
+    return templates
+  },
+
+  async createEmailTemplate(data: any) {
+    if (await this.isDbAvailable()) {
+      try {
+        const { db } = await import('./db')
+        return await db.aIEmailTemplate.create({ data: { ...data, isActive: true } })
+      } catch (error) { _dbAvailable = false }
+    }
+    const template = { id: genId(), ...data, isActive: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    _aiEmailTemplates.push(template)
+    return template
+  },
+
+  async getCompanyScrapes() {
+    return _aiCompanyScrapes
+  },
+
+  async approveTasks(agentId: string, taskIds: string[]) {
+    if (await this.isDbAvailable()) {
+      try {
+        const { db } = await import('./db')
+        await db.aIAgentTask.updateMany({ where: { id: { in: taskIds }, agentId }, data: { status: 'APPROVED', approvedAt: new Date() } })
+        return true
+      } catch (error) { _dbAvailable = false }
+    }
+    for (const tid of taskIds) {
+      const task = _aiAgentTasks.find(t => t.id === tid && t.agentId === agentId)
+      if (task) { task.status = 'APPROVED'; task.approvedAt = new Date().toISOString() }
+    }
+    return true
+  },
+
+  async runAgent(agentId: string) {
+    // Simulate agent run
+    const agent = _aiAgents.find(a => a.id === agentId)
+    if (!agent) return { error: 'Agent not found' }
+    agent.lastRunAt = new Date().toISOString()
+    agent.dailySent = Math.min(agent.dailySent + 1, agent.dailyLimit)
+    return { message: 'Agent run triggered', agentId }
+  },
+
+  async scrapeCompany(url: string) {
+    // Simulated scrape
+    return {
+      companyUrl: url,
+      companyName: url.replace(/https?:\/\//, '').split('.')[0].charAt(0).toUpperCase() + url.replace(/https?:\/\//, '').split('.')[0].slice(1),
+      careersPageUrl: url + '/careers',
+      contactEmail: `careers@${url.replace(/https?:\/\//, '').split('/')[0]}`,
+      hrEmail: `hr@${url.replace(/https?:\/\//, '').split('/')[0]}`,
+      status: 'scraped',
     }
   },
 }

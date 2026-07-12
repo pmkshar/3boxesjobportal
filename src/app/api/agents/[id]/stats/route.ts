@@ -1,17 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { memoryStore } from '@/lib/memory-store'
 
 export const dynamic = 'force-dynamic'
-
-// Helper: ensure DB is seeded before any agent operation
-async function ensureSeeded() {
-  try {
-    const { ensureSeedData } = await import('@/lib/db')
-    await ensureSeedData()
-  } catch {}
-}
 
 // GET /api/agents/[id]/stats - Get agent stats (daily stats for last 30 days + overall summary)
 export async function GET(
@@ -19,62 +9,58 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await ensureSeeded()
     const { id } = await params
 
-    const agent = await prisma.aIAgent.findUnique({ where: { id } })
+    const agents = await memoryStore.getAgents()
+    const agent = agents.find((a: any) => a.id === id)
     if (!agent) {
       return NextResponse.json({ error: 'Agent not found' }, { status: 404 })
     }
 
-    // Get daily stats for the last 30 days
-    const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-    thirtyDaysAgo.setHours(0, 0, 0, 0)
+    // Get stats from memoryStore
+    const statsData = await memoryStore.getAgentStats(id)
 
-    const dailyStats = await prisma.aIAgentDailyStat.findMany({
-      where: {
-        agentId: id,
-        date: { gte: thirtyDaysAgo },
-      },
-      orderBy: { date: 'asc' },
-    })
+    if (!statsData) {
+      return NextResponse.json({ error: 'Failed to fetch agent stats' }, { status: 500 })
+    }
 
-    // Calculate aggregate stats from daily stats
-    const aggregate = dailyStats.reduce(
-      (acc, stat) => ({
-        tasksCreated: acc.tasksCreated + stat.tasksCreated,
-        tasksCompleted: acc.tasksCompleted + stat.tasksCompleted,
-        tasksFailed: acc.tasksFailed + stat.tasksFailed,
-        emailsSent: acc.emailsSent + stat.emailsSent,
-        emailsDelivered: acc.emailsDelivered + stat.emailsDelivered,
-        emailsOpened: acc.emailsOpened + stat.emailsOpened,
-        emailsReplied: acc.emailsReplied + stat.emailsReplied,
-        emailsBounced: acc.emailsBounced + stat.emailsBounced,
-        companiesScraped: acc.companiesScraped + stat.companiesScraped,
-        contactsFound: acc.contactsFound + stat.contactsFound,
-        jobsApplied: acc.jobsApplied + stat.jobsApplied,
-        interviewsScheduled: acc.interviewsScheduled + stat.interviewsScheduled,
-        onboardingsStarted: acc.onboardingsStarted + stat.onboardingsStarted,
-        onboardingsCompleted: acc.onboardingsCompleted + stat.onboardingsCompleted,
-      }),
-      {
-        tasksCreated: 0,
-        tasksCompleted: 0,
-        tasksFailed: 0,
-        emailsSent: 0,
-        emailsDelivered: 0,
-        emailsOpened: 0,
-        emailsReplied: 0,
-        emailsBounced: 0,
-        companiesScraped: 0,
-        contactsFound: 0,
-        jobsApplied: 0,
-        interviewsScheduled: 0,
-        onboardingsStarted: 0,
-        onboardingsCompleted: 0,
-      }
-    )
+    // Get tasks and emails for status breakdowns
+    const [tasks, emails] = await Promise.all([
+      memoryStore.getAgentTasks(id, 500),
+      memoryStore.getAgentEmails(id, 500),
+    ])
+
+    // Task status breakdown
+    const taskStatusMap: Record<string, number> = {}
+    for (const task of tasks) {
+      const status = task.status || 'UNKNOWN'
+      taskStatusMap[status] = (taskStatusMap[status] || 0) + 1
+    }
+    const taskStatusBreakdown = Object.entries(taskStatusMap).map(([status, count]) => ({
+      status,
+      count,
+    }))
+
+    // Email status breakdown
+    const emailStatusMap: Record<string, number> = {}
+    for (const email of emails) {
+      const status = email.status || 'UNKNOWN'
+      emailStatusMap[status] = (emailStatusMap[status] || 0) + 1
+    }
+    const emailStatusBreakdown = Object.entries(emailStatusMap).map(([status, count]) => ({
+      status,
+      count,
+    }))
+
+    // Get daily stats and calculate aggregates
+    const dailyStats = statsData.dailyStats || []
+    const aggregate = statsData.aggregate || {
+      tasksCreated: 0, tasksCompleted: 0, tasksFailed: 0,
+      emailsSent: 0, emailsDelivered: 0, emailsOpened: 0,
+      emailsReplied: 0, emailsBounced: 0, companiesScraped: 0,
+      contactsFound: 0, jobsApplied: 0, interviewsScheduled: 0,
+      onboardingsStarted: 0, onboardingsCompleted: 0,
+    }
 
     // Calculate derived rates from aggregates
     const last30DayRates = {
@@ -86,7 +72,7 @@ export async function GET(
       taskSuccessRate: aggregate.tasksCreated > 0 ? aggregate.tasksCompleted / aggregate.tasksCreated : 0,
     }
 
-    // Overall summary from the agent record itself
+    // Overall summary from the agent record
     const overallSummary = {
       totalTasks: agent.totalTasks,
       totalSuccess: agent.totalSuccess,
@@ -101,20 +87,6 @@ export async function GET(
       status: agent.status,
     }
 
-    // Task status breakdown
-    const taskStatusBreakdown = await prisma.aIAgentTask.groupBy({
-      by: ['status'],
-      where: { agentId: id },
-      _count: { status: true },
-    })
-
-    // Email status breakdown
-    const emailStatusBreakdown = await prisma.aIAgentEmail.groupBy({
-      by: ['status'],
-      where: { agentId: id },
-      _count: { status: true },
-    })
-
     return NextResponse.json({
       agentId: id,
       agentName: agent.name,
@@ -123,14 +95,8 @@ export async function GET(
       aggregate,
       last30DayRates,
       overallSummary,
-      taskStatusBreakdown: taskStatusBreakdown.map((item) => ({
-        status: item.status,
-        count: item._count.status,
-      })),
-      emailStatusBreakdown: emailStatusBreakdown.map((item) => ({
-        status: item.status,
-        count: item._count.status,
-      })),
+      taskStatusBreakdown,
+      emailStatusBreakdown,
     })
   } catch (error) {
     console.error('Agent stats fetch error:', error)
