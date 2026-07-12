@@ -180,7 +180,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
   const getCompanyInitial = (name?: string) => name ? name.charAt(0).toUpperCase() : 'C'
 
   const companyColors = [
-    'bg-[#1967d2]', 'bg-[#34a853]', 'bg-[#f9ab00]', 'bg-[#d93025]',
+    'bg-[#16a34a]', 'bg-[#34a853]', 'bg-[#f9ab00]', 'bg-[#d93025]',
     'bg-[#7c66ff]', 'bg-[#a55fff]', 'bg-[#00cc9a]', 'bg-[#2869fe]',
   ]
 
@@ -896,7 +896,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {searchResults.map((job: any, i: number) => (
                   <motion.div key={job.id} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: i * 0.04 }}>
-                    <Card className={`hover:shadow-lg transition-all cursor-pointer border-gray-100 group ${selectedJob?.id === job.id ? 'ring-[#1967d2] border-[#1967d2]' : 'hover:border-emerald-200'}`}
+                    <Card className={`hover:shadow-lg transition-all cursor-pointer border-gray-100 group ${selectedJob?.id === job.id ? 'ring-[#16a34a] border-[#16a34a]' : 'hover:border-emerald-200'}`}
                       onClick={() => setSelectedJob(job)}>
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3 mb-3">
@@ -978,7 +978,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                   transition={{ delay: i * 0.05 }}
                   viewport={{ once: true }}
                 >
-                  <Card className={`hover:shadow-lg transition-all cursor-pointer border-gray-100 group ${selectedJob?.id === job.id ? 'ring-[#1967d2] border-[#1967d2]' : 'hover:border-emerald-200'}`}
+                  <Card className={`hover:shadow-lg transition-all cursor-pointer border-gray-100 group ${selectedJob?.id === job.id ? 'ring-[#16a34a] border-[#16a34a]' : 'hover:border-emerald-200'}`}
                     onClick={() => setSelectedJob(job)}>
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3 mb-3">
@@ -1034,18 +1034,33 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
         </div>
       </section>
 
-      {/* ===== INLINE JOB DETAIL (Superio-style, replaces popup) ===== */}
+      {/* ===== FULL-PAGE JOB DETAIL (overlay replaces page content) ===== */}
       {selectedJob && (
-        <>
-          {/* Hero Header with Background - Superio style */}
-          <section className="relative bg-gradient-to-r from-[#1967d2] to-[#0146a6] py-8 sm:py-10 overflow-hidden">
+        <div className="fixed inset-0 z-50 bg-white overflow-y-auto">
+          {/* Sticky top action bar */}
+          <div className="sticky top-0 z-10 bg-gradient-to-r from-[#16a34a] to-[#15803d] py-3 px-4 sm:px-6 shadow-lg">
+            <div className="max-w-7xl mx-auto flex items-center gap-3">
+              <button onClick={() => setSelectedJob(null)} className="flex items-center gap-2 text-white/90 hover:text-white text-sm transition-colors group bg-white/10 hover:bg-white/20 rounded-lg px-3 py-2">
+                <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back to Jobs
+              </button>
+              <div className="flex-1" />
+              <Button className="bg-[#f9ab00] hover:bg-[#e9a000] text-[#202124] font-semibold h-9 px-5 shadow-md" onClick={() => {
+                if (!isAuthenticated) { openLogin() } else { toast.success('Application feature available in dashboard') }
+              }}>
+                Apply Now
+              </Button>
+              <Button variant="outline" className="h-9 px-3 bg-white/10 border-white/20 text-white hover:bg-white/20">
+                <Bookmark className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Hero Header - Green banner */}
+          <section className="relative bg-gradient-to-r from-[#16a34a] to-[#15803d] pb-8 pt-4 overflow-hidden">
             <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'}} />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-              <button onClick={() => setSelectedJob(null)} className="flex items-center gap-2 text-white/80 hover:text-white mb-5 text-sm transition-colors group">
-                <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back to job listings
-              </button>
               <div className="flex flex-col sm:flex-row items-start gap-4">
-                <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl ${getCompanyColor(selectedJob.corporate?.companyName)} flex items-center justify-center text-white font-bold text-2xl sm:text-3xl flex-shrink-0 shadow-lg`}>
+                <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl ${getCompanyColor(selectedJob.corporate?.companyName)} flex items-center justify-center text-white font-bold text-2xl sm:text-3xl flex-shrink-0 shadow-lg ring-2 ring-white/30`}>
                   {getCompanyInitial(selectedJob.corporate?.companyName)}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -1058,21 +1073,11 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                     {selectedJob.postedDate && <span className="flex items-center gap-1.5"><Clock className="h-4 w-4" /> {timeAgo(selectedJob.postedDate)}</span>}
                   </div>
                 </div>
-                <div className="flex gap-2 mt-2 sm:mt-0 flex-shrink-0">
-                  <Button className="bg-[#f9ab00] hover:bg-[#e9a000] text-[#202124] font-semibold h-11 px-6 shadow-md" onClick={() => {
-                    if (!isAuthenticated) { openLogin() } else { toast.success('Application feature available in dashboard') }
-                  }}>
-                    Apply Now
-                  </Button>
-                  <Button variant="outline" className="h-11 px-4 bg-white/10 border-white/20 text-white hover:bg-white/20">
-                    <Bookmark className="h-4 w-4" />
-                  </Button>
-                </div>
               </div>
               <div className="flex flex-wrap gap-2 mt-4">
-                <Badge className="bg-[rgba(25,103,210,0.2)] text-white border-0 rounded-full px-4 py-1">{selectedJob.jobType}</Badge>
-                {selectedJob.isRemote && <Badge className="bg-[rgba(52,168,83,0.2)] text-white border-0 rounded-full px-4 py-1">Remote Friendly</Badge>}
-                {selectedJob.openings && <Badge className="bg-[rgba(249,171,0,0.2)] text-white border-0 rounded-full px-4 py-1"><Users className="h-3 w-3 mr-1" />{selectedJob.openings} Openings</Badge>}
+                <Badge className="bg-[rgba(22,163,74,0.3)] text-white border-0 rounded-full px-4 py-1">{selectedJob.jobType}</Badge>
+                {selectedJob.isRemote && <Badge className="bg-[rgba(52,168,83,0.3)] text-white border-0 rounded-full px-4 py-1">Remote Friendly</Badge>}
+                {selectedJob.openings && <Badge className="bg-[rgba(249,171,0,0.3)] text-white border-0 rounded-full px-4 py-1"><Users className="h-3 w-3 mr-1" />{selectedJob.openings} Openings</Badge>}
               </div>
             </div>
           </section>
@@ -1099,7 +1104,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                         <ul className="space-y-2.5">
                           {selectedJob.responsibilities.split('\n').filter((l: string) => l.trim()).map((line: string, i: number) => (
                             <li key={i} className="flex items-start gap-2.5 text-[#5f6368] text-[15px] leading-[22px]">
-                              <CheckCircle2 className="h-5 w-5 text-[#34a853] flex-shrink-0 mt-0.5" />
+                              <CheckCircle2 className="h-5 w-5 text-[#16a34a] flex-shrink-0 mt-0.5" />
                               <span>{line.replace(/^[-•*]\s*/, '')}</span>
                             </li>
                           ))}
@@ -1115,7 +1120,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                         <ul className="space-y-2.5">
                           {selectedJob.requirements.split('\n').filter((l: string) => l.trim()).map((line: string, i: number) => (
                             <li key={i} className="flex items-start gap-2.5 text-[#5f6368] text-[15px] leading-[22px]">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#5f6368] flex-shrink-0 mt-2" />
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#16a34a] flex-shrink-0 mt-2" />
                               <span>{line.replace(/^[-•*]\s*/, '')}</span>
                             </li>
                           ))}
@@ -1129,9 +1134,9 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                     <CardContent className="p-6">
                       <h4 className="font-semibold text-[#202124] text-lg mb-4">Share This Job</h4>
                       <div className="flex gap-3">
-                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1877F2] text-white text-sm font-medium hover:opacity-90 transition-opacity"><Facebook className="h-4 w-4" /> Facebook</button>
-                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1DA1F2] text-white text-sm font-medium hover:opacity-90 transition-opacity"><Twitter className="h-4 w-4" /> Twitter</button>
-                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0A66C2] text-white text-sm font-medium hover:opacity-90 transition-opacity"><Linkedin className="h-4 w-4" /> LinkedIn</button>
+                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#16a34a] text-white text-sm font-medium hover:opacity-90 transition-opacity"><Facebook className="h-4 w-4" /> Facebook</button>
+                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#15803d] text-white text-sm font-medium hover:opacity-90 transition-opacity"><Twitter className="h-4 w-4" /> Twitter</button>
+                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#22c55e] text-white text-sm font-medium hover:opacity-90 transition-opacity"><Linkedin className="h-4 w-4" /> LinkedIn</button>
                       </div>
                     </CardContent>
                   </Card>
@@ -1145,10 +1150,10 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                       <h4 className="font-semibold text-[#202124] mb-4">Job Overview</h4>
                       <div className="space-y-4">
                         {[
-                          { icon: CalendarDays, label: 'Date Posted', value: selectedJob.postedDate ? timeAgo(selectedJob.postedDate) : 'Recently', color: 'text-[#1967d2]' },
+                          { icon: CalendarDays, label: 'Date Posted', value: selectedJob.postedDate ? timeAgo(selectedJob.postedDate) : 'Recently', color: 'text-[#16a34a]' },
                           { icon: Clock, label: 'Expiration', value: '30 days left', color: 'text-[#d93025]' },
                           { icon: MapPin, label: 'Location', value: selectedJob.location || 'Remote', color: 'text-[#34a853]' },
-                          { icon: Briefcase, label: 'Job Title', value: selectedJob.title, color: 'text-[#1967d2]' },
+                          { icon: Briefcase, label: 'Job Title', value: selectedJob.title, color: 'text-[#16a34a]' },
                           { icon: Clock, label: 'Hours', value: selectedJob.jobType === 'part-time' ? 'Part Time' : 'Full Time', color: 'text-[#f9ab00]' },
                           { icon: IndianRupee, label: 'Salary', value: formatSalary(selectedJob.salaryMin, selectedJob.salaryMax), color: 'text-[#34a853]' },
                         ].map((item, i) => (
@@ -1173,7 +1178,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                         <h4 className="font-semibold text-[#202124] mb-4">Job Skills</h4>
                         <div className="flex flex-wrap gap-2">
                           {selectedJob.skills.split(',').map((s: string) => (
-                            <Badge key={s.trim()} className="bg-[#f5f7fc] text-[#5f6368] border border-[#ecedf2] hover:bg-[#e2eaf8] hover:text-[#1967d2] rounded-md px-3 py-1.5 text-sm font-normal transition-colors">{s.trim()}</Badge>
+                            <Badge key={s.trim()} className="bg-[#f5f7fc] text-[#5f6368] border border-[#ecedf2] hover:bg-green-50 hover:text-[#16a34a] rounded-md px-3 py-1.5 text-sm font-normal transition-colors">{s.trim()}</Badge>
                           ))}
                         </div>
                       </CardContent>
@@ -1190,7 +1195,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                         </div>
                         <div>
                           <p className="font-semibold text-[#202124]">{selectedJob.corporate?.companyName}</p>
-                          <button className="text-sm text-[#1967d2] hover:underline">View company profile</button>
+                          <button className="text-sm text-[#16a34a] hover:underline">View company profile</button>
                         </div>
                       </div>
                       <div className="space-y-3">
@@ -1208,17 +1213,17 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                           </div>
                         ))}
                         <div className="flex items-center gap-2 pt-2">
-                          <button className="w-8 h-8 rounded-full bg-[#1877F2] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Facebook className="h-3.5 w-3.5" /></button>
-                          <button className="w-8 h-8 rounded-full bg-[#1DA1F2] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Twitter className="h-3.5 w-3.5" /></button>
-                          <button className="w-8 h-8 rounded-full bg-[#0A66C2] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Linkedin className="h-3.5 w-3.5" /></button>
-                          <button className="w-8 h-8 rounded-full bg-[#1967d2] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Globe className="h-3.5 w-3.5" /></button>
+                          <button className="w-8 h-8 rounded-full bg-[#16a34a] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Facebook className="h-3.5 w-3.5" /></button>
+                          <button className="w-8 h-8 rounded-full bg-[#15803d] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Twitter className="h-3.5 w-3.5" /></button>
+                          <button className="w-8 h-8 rounded-full bg-[#22c55e] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Linkedin className="h-3.5 w-3.5" /></button>
+                          <button className="w-8 h-8 rounded-full bg-[#16a34a] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Globe className="h-3.5 w-3.5" /></button>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
 
                   {/* Apply CTA Card */}
-                  <Card className="border-[#ecedf2] bg-gradient-to-br from-[#1967d2] to-[#0146a6]">
+                  <Card className="border-[#ecedf2] bg-gradient-to-br from-[#16a34a] to-[#15803d]">
                     <CardContent className="p-5 text-center">
                       <h4 className="font-semibold text-white mb-2">Interested in this job?</h4>
                       <p className="text-white/70 text-sm mb-4">Apply now and get a response within 48 hours</p>
@@ -1236,7 +1241,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
               </div>
             </div>
           </section>
-        </>
+        </div>
       )}
 
       {/* ===== TOP COMPANIES HIRING ===== */}
@@ -1562,7 +1567,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       </section>
 
       {/* ===== DOWNLOAD MOBILE APP (Jobko-style) ===== */}
-      <section className="py-16 bg-gradient-to-br from-[#1967d2] to-[#0146a6] relative overflow-hidden">
+      <section className="py-16 bg-gradient-to-br from-[#16a34a] to-[#15803d] relative overflow-hidden">
         {/* Decorative circles - Jobko style */}
         <div className="absolute top-10 right-20 w-40 h-40 rounded-full bg-white/5 animate-pulse" />
         <div className="absolute bottom-10 left-10 w-60 h-60 rounded-full bg-white/5 animate-pulse" style={{animationDelay: '2s'}} />
@@ -1666,7 +1671,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                     </div>
                     {/* Job cards */}
                     {[
-                      { title: 'Senior Developer', company: 'Google', loc: 'Bangalore', salary: '₹25L - ₹40L', color: 'bg-[#1967d2]' },
+                      { title: 'Senior Developer', company: 'Google', loc: 'Bangalore', salary: '₹25L - ₹40L', color: 'bg-[#16a34a]' },
                       { title: 'Product Manager', company: 'Amazon', loc: 'Hyderabad', salary: '₹30L - ₹50L', color: 'bg-[#f9ab00]' },
                       { title: 'UX Designer', company: 'Microsoft', loc: 'Remote', salary: '₹20L - ₹35L', color: 'bg-[#7c66ff]' },
                     ].map((job, i) => (

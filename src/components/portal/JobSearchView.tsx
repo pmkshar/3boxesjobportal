@@ -17,10 +17,10 @@ import {
   LayoutGrid, List, MapPinned,
 } from 'lucide-react'
 
-// Superio-style color palette
+// Green color palette (3 Boxes brand)
 const S = {
-  primary: '#1967d2',
-  primaryHover: '#0146a6',
+  primary: '#16a34a',
+  primaryHover: '#15803d',
   accent: '#f9ab00',
   success: '#34a853',
   danger: '#d93025',
@@ -120,7 +120,7 @@ export function JobSearchView() {
   const getCompanyInitial = (name?: string) => name ? name.charAt(0).toUpperCase() : 'C'
 
   const companyColors = [
-    'bg-[#1967d2]', 'bg-[#34a853]', 'bg-[#f9ab00]', 'bg-[#d93025]',
+    'bg-[#16a34a]', 'bg-[#34a853]', 'bg-[#f9ab00]', 'bg-[#d93025]',
     'bg-[#7c66ff]', 'bg-[#a55fff]', 'bg-[#00cc9a]', 'bg-[#2869fe]',
   ]
 
@@ -134,20 +134,32 @@ export function JobSearchView() {
   // Related jobs (filtered from current list)
   const relatedJobs = jobs.filter(j => j.id !== selectedJob?.id).slice(0, 4)
 
-  // ========== SUPERIO-STYLE JOB DETAIL VIEW ==========
+  // ========== FULL-PAGE JOB DETAIL VIEW ==========
   if (selectedJob) {
     return (
-      <div className="space-y-0 -m-4 sm:-m-6">
-        {/* Hero Header with Background - Superio style */}
-        <div className="relative bg-gradient-to-r from-[#1967d2] to-[#0146a6] py-8 sm:py-10 px-4 sm:px-6 overflow-hidden">
-          {/* Decorative pattern overlay */}
+      <div className="fixed inset-0 z-50 bg-white overflow-y-auto">
+        {/* Sticky top action bar */}
+        <div className="sticky top-0 z-10 bg-gradient-to-r from-[#16a34a] to-[#15803d] py-3 px-4 sm:px-6 shadow-lg">
+          <div className="max-w-5xl mx-auto flex items-center gap-3">
+            <button onClick={() => { setSelectedJob(null); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className="flex items-center gap-2 text-white/90 hover:text-white text-sm transition-colors group bg-white/10 hover:bg-white/20 rounded-lg px-3 py-2">
+              <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back to Jobs
+            </button>
+            <div className="flex-1" />
+            <Button className="bg-[#f9ab00] hover:bg-[#e9a000] text-[#202124] font-semibold h-9 px-5 shadow-md" disabled={applying} onClick={() => handleApply(selectedJob.id)}>
+              {applying ? 'Applying...' : 'Apply Now'}
+            </Button>
+            <Button variant="outline" className="h-9 px-3 bg-white/10 border-white/20 text-white hover:bg-white/20" onClick={(e) => toggleSave(selectedJob.id, e)}>
+              <Bookmark className={`h-4 w-4 ${savedJobs.has(selectedJob.id) ? 'fill-white' : ''}`} />
+            </Button>
+          </div>
+        </div>
+
+        {/* Job Header - Green banner */}
+        <div className="relative bg-gradient-to-r from-[#16a34a] to-[#15803d] pb-8 pt-4 px-4 sm:px-6 overflow-hidden">
           <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'}} />
           <div className="max-w-5xl mx-auto relative z-10">
-            <button onClick={() => setSelectedJob(null)} className="flex items-center gap-2 text-white/80 hover:text-white mb-5 text-sm transition-colors group">
-              <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back to search results
-            </button>
             <div className="flex flex-col sm:flex-row items-start gap-4">
-              <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl ${getCompanyColor(selectedJob.corporate?.companyName)} flex items-center justify-center text-white font-bold text-2xl sm:text-3xl flex-shrink-0 shadow-lg`}>
+              <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl ${getCompanyColor(selectedJob.corporate?.companyName)} flex items-center justify-center text-white font-bold text-2xl sm:text-3xl flex-shrink-0 shadow-lg ring-2 ring-white/30`}>
                 {getCompanyInitial(selectedJob.corporate?.companyName)}
               </div>
               <div className="flex-1 min-w-0">
@@ -164,19 +176,11 @@ export function JobSearchView() {
                   )}
                 </div>
               </div>
-              <div className="flex gap-2 mt-2 sm:mt-0 flex-shrink-0">
-                <Button className="bg-[#f9ab00] hover:bg-[#e9a000] text-[#202124] font-semibold h-11 px-6 shadow-md" disabled={applying} onClick={() => handleApply(selectedJob.id)}>
-                  {applying ? 'Applying...' : 'Apply Now'}
-                </Button>
-                <Button variant="outline" className="h-11 px-4 bg-white/10 border-white/20 text-white hover:bg-white/20" onClick={(e) => toggleSave(selectedJob.id, e)}>
-                  <Bookmark className={`h-4 w-4 ${savedJobs.has(selectedJob.id) ? 'fill-white' : ''}`} />
-                </Button>
-              </div>
             </div>
             <div className="flex flex-wrap gap-2 mt-4">
-              <Badge className="bg-[rgba(25,103,210,0.2)] text-white border-0 rounded-full px-4 py-1">{selectedJob.jobType}</Badge>
-              {selectedJob.isRemote && <Badge className="bg-[rgba(52,168,83,0.2)] text-white border-0 rounded-full px-4 py-1">Remote Friendly</Badge>}
-              {selectedJob.openings && <Badge className="bg-[rgba(249,171,0,0.2)] text-white border-0 rounded-full px-4 py-1"><Users className="h-3 w-3 mr-1" />{selectedJob.openings} Openings</Badge>}
+              <Badge className="bg-[rgba(22,163,74,0.3)] text-white border-0 rounded-full px-4 py-1">{selectedJob.jobType}</Badge>
+              {selectedJob.isRemote && <Badge className="bg-[rgba(52,168,83,0.3)] text-white border-0 rounded-full px-4 py-1">Remote Friendly</Badge>}
+              {selectedJob.openings && <Badge className="bg-[rgba(249,171,0,0.3)] text-white border-0 rounded-full px-4 py-1"><Users className="h-3 w-3 mr-1" />{selectedJob.openings} Openings</Badge>}
             </div>
           </div>
         </div>
@@ -204,7 +208,7 @@ export function JobSearchView() {
                     <ul className="space-y-2.5">
                       {selectedJob.responsibilities.split('\n').filter((l: string) => l.trim()).map((line: string, i: number) => (
                         <li key={i} className="flex items-start gap-2.5 text-[#5f6368] text-[15px] leading-[22px]">
-                          <CheckCircle2 className="h-5 w-5 text-[#34a853] flex-shrink-0 mt-0.5" />
+                          <CheckCircle2 className="h-5 w-5 text-[#16a34a] flex-shrink-0 mt-0.5" />
                           <span>{line.replace(/^[-•*]\s*/, '')}</span>
                         </li>
                       ))}
@@ -221,7 +225,7 @@ export function JobSearchView() {
                     <ul className="space-y-2.5">
                       {selectedJob.requirements.split('\n').filter((l: string) => l.trim()).map((line: string, i: number) => (
                         <li key={i} className="flex items-start gap-2.5 text-[#5f6368] text-[15px] leading-[22px]">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#5f6368] flex-shrink-0 mt-2" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#16a34a] flex-shrink-0 mt-2" />
                           <span>{line.replace(/^[-•*]\s*/, '')}</span>
                         </li>
                       ))}
@@ -230,18 +234,18 @@ export function JobSearchView() {
                 </Card>
               )}
 
-              {/* Share This Job - Superio style */}
+              {/* Share This Job */}
               <Card className="border-[#ecedf2]">
                 <CardContent className="p-6">
                   <h3 className="font-semibold text-[#202124] text-lg mb-4">Share This Job</h3>
                   <div className="flex gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1877F2] text-white text-sm font-medium hover:opacity-90 transition-opacity">
+                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#16a34a] text-white text-sm font-medium hover:opacity-90 transition-opacity">
                       <Facebook className="h-4 w-4" /> Facebook
                     </button>
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1DA1F2] text-white text-sm font-medium hover:opacity-90 transition-opacity">
+                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#15803d] text-white text-sm font-medium hover:opacity-90 transition-opacity">
                       <Twitter className="h-4 w-4" /> Twitter
                     </button>
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0A66C2] text-white text-sm font-medium hover:opacity-90 transition-opacity">
+                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#22c55e] text-white text-sm font-medium hover:opacity-90 transition-opacity">
                       <Linkedin className="h-4 w-4" /> LinkedIn
                     </button>
                   </div>
@@ -265,15 +269,15 @@ export function JobSearchView() {
                               {getCompanyInitial(job.corporate?.companyName)}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-medium text-[#202124] text-sm group-hover:text-[#1967d2] transition-colors truncate">{job.title}</h4>
+                              <h4 className="font-medium text-[#202124] text-sm group-hover:text-[#16a34a] transition-colors truncate">{job.title}</h4>
                               <div className="flex items-center gap-3 text-xs text-[#5f6368] mt-0.5">
                                 <span className="flex items-center gap-1"><Building2 className="h-3 w-3" /> {job.corporate?.companyName}</span>
                                 <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.location || 'Remote'}</span>
-                                <span className="font-medium text-[#1967d2]">{formatSalary(job.salaryMin, job.salaryMax)}</span>
+                                <span className="font-medium text-[#16a34a]">{formatSalary(job.salaryMin, job.salaryMax)}</span>
                               </div>
                             </div>
                             <div className="flex flex-wrap gap-1 flex-shrink-0">
-                              <Badge className="bg-[rgba(25,103,210,0.15)] text-[#1967d2] border-0 text-[11px] rounded-full px-3">{job.jobType}</Badge>
+                              <Badge className="bg-[rgba(22,163,74,0.15)] text-[#16a34a] border-0 text-[11px] rounded-full px-3">{job.jobType}</Badge>
                               {job.isRemote && <Badge className="bg-[rgba(52,168,83,0.15)] text-[#34a853] border-0 text-[11px] rounded-full px-3">Remote</Badge>}
                             </div>
                           </div>
@@ -293,12 +297,12 @@ export function JobSearchView() {
                   <h4 className="font-semibold text-[#202124] mb-4">Job Overview</h4>
                   <div className="space-y-4">
                     {[
-                      { icon: CalendarDays, label: 'Date Posted', value: selectedJob.postedDate ? timeAgo(selectedJob.postedDate) : 'Recently', color: 'text-[#1967d2]' },
+                      { icon: CalendarDays, label: 'Date Posted', value: selectedJob.postedDate ? timeAgo(selectedJob.postedDate) : 'Recently', color: 'text-[#16a34a]' },
                       { icon: Clock, label: 'Expiration', value: selectedJob.closingDate ? timeAgo(selectedJob.closingDate) : '30 days left', color: 'text-[#d93025]' },
                       { icon: MapPin, label: 'Location', value: selectedJob.location || 'Remote', color: 'text-[#34a853]' },
-                      { icon: Briefcase, label: 'Job Title', value: selectedJob.title, color: 'text-[#1967d2]' },
+                      { icon: Briefcase, label: 'Job Title', value: selectedJob.title, color: 'text-[#16a34a]' },
                       { icon: Clock, label: 'Hours', value: selectedJob.jobType === 'part-time' ? 'Part Time' : 'Full Time', color: 'text-[#f9ab00]' },
-                      { icon: Star, label: 'Rate', value: selectedJob.jobType || 'Full Time', color: 'text-[#1967d2]' },
+                      { icon: Star, label: 'Rate', value: selectedJob.jobType || 'Full Time', color: 'text-[#16a34a]' },
                       { icon: IndianRupee, label: 'Salary', value: formatSalary(selectedJob.salaryMin, selectedJob.salaryMax), color: 'text-[#34a853]' },
                     ].map((item, i) => (
                       <div key={i} className="flex items-center gap-3">
@@ -322,7 +326,7 @@ export function JobSearchView() {
                     <h4 className="font-semibold text-[#202124] mb-4">Job Skills</h4>
                     <div className="flex flex-wrap gap-2">
                       {selectedJob.skills.split(',').map((s: string) => (
-                        <Badge key={s.trim()} className="bg-[#f5f7fc] text-[#5f6368] border border-[#ecedf2] hover:bg-[#e2eaf8] hover:text-[#1967d2] rounded-md px-3 py-1.5 text-sm font-normal transition-colors cursor-pointer">
+                        <Badge key={s.trim()} className="bg-[#f5f7fc] text-[#5f6368] border border-[#ecedf2] hover:bg-green-50 hover:text-[#16a34a] rounded-md px-3 py-1.5 text-sm font-normal transition-colors cursor-pointer">
                           {s.trim()}
                         </Badge>
                       ))}
@@ -341,7 +345,7 @@ export function JobSearchView() {
                     </div>
                     <div>
                       <p className="font-semibold text-[#202124]">{selectedJob.corporate?.companyName}</p>
-                      <button className="text-sm text-[#1967d2] hover:underline">View company profile</button>
+                      <button className="text-sm text-[#16a34a] hover:underline">View company profile</button>
                     </div>
                   </div>
                   <div className="space-y-3">
@@ -360,17 +364,17 @@ export function JobSearchView() {
                       </div>
                     ))}
                     <div className="flex items-center gap-2 pt-2">
-                      <button className="w-8 h-8 rounded-full bg-[#1877F2] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Facebook className="h-3.5 w-3.5" /></button>
-                      <button className="w-8 h-8 rounded-full bg-[#1DA1F2] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Twitter className="h-3.5 w-3.5" /></button>
-                      <button className="w-8 h-8 rounded-full bg-[#0A66C2] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Linkedin className="h-3.5 w-3.5" /></button>
-                      <button className="w-8 h-8 rounded-full bg-[#1967d2] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Globe className="h-3.5 w-3.5" /></button>
+                      <button className="w-8 h-8 rounded-full bg-[#16a34a] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Facebook className="h-3.5 w-3.5" /></button>
+                      <button className="w-8 h-8 rounded-full bg-[#15803d] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Twitter className="h-3.5 w-3.5" /></button>
+                      <button className="w-8 h-8 rounded-full bg-[#22c55e] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Linkedin className="h-3.5 w-3.5" /></button>
+                      <button className="w-8 h-8 rounded-full bg-[#16a34a] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Globe className="h-3.5 w-3.5" /></button>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Apply CTA Card */}
-              <Card className="border-[#ecedf2] bg-gradient-to-br from-[#1967d2] to-[#0146a6]">
+              <Card className="border-[#ecedf2] bg-gradient-to-br from-[#16a34a] to-[#15803d]">
                 <CardContent className="p-5 text-center">
                   <h4 className="font-semibold text-white mb-2">Interested in this job?</h4>
                   <p className="text-white/70 text-sm mb-4">Apply now and get a response within 48 hours</p>
@@ -390,23 +394,23 @@ export function JobSearchView() {
     )
   }
 
-  // ========== MAIN SEARCH VIEW - SUPERIO STYLE ==========
+  // ========== MAIN SEARCH VIEW ==========
   return (
     <div className="space-y-4">
-      {/* Search Bar - Superio style */}
+      {/* Search Bar */}
       <Card className="border-[#ecedf2] bg-[#f5f7fc]">
         <CardContent className="p-4 sm:p-5">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5f6368]" />
               <Input placeholder="Job title, keyword, or company" value={search}
-                onChange={(e) => setSearch(e.target.value)} className="pl-9 h-11 bg-white border-[#ecedf2] focus:border-[#1967d2]"
+                onChange={(e) => setSearch(e.target.value)} className="pl-9 h-11 bg-white border-[#ecedf2] focus:border-[#16a34a]"
                 onKeyDown={(e) => e.key === 'Enter' && loadJobs()} />
             </div>
             <div className="relative flex-1">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#5f6368]" />
               <Input placeholder="City or location" value={location}
-                onChange={(e) => setLocation(e.target.value)} className="pl-9 h-11 bg-white border-[#ecedf2] focus:border-[#1967d2]"
+                onChange={(e) => setLocation(e.target.value)} className="pl-9 h-11 bg-white border-[#ecedf2] focus:border-[#16a34a]"
                 onKeyDown={(e) => e.key === 'Enter' && loadJobs()} />
             </div>
             <Select value={experience} onValueChange={setExperience}>
@@ -424,7 +428,7 @@ export function JobSearchView() {
                 <SelectItem value="10">10+ Years</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={loadJobs} className="bg-[#1967d2] hover:bg-[#0146a6] h-11 px-6 font-semibold shadow-sm">
+            <Button onClick={loadJobs} className="bg-[#16a34a] hover:bg-[#15803d] h-11 px-6 font-semibold shadow-sm">
               <Search className="h-4 w-4 mr-2" /> Find Jobs
             </Button>
           </div>
@@ -442,7 +446,7 @@ export function JobSearchView() {
               </SelectContent>
             </Select>
             <Button variant={isRemote ? 'default' : 'outline'} size="sm"
-              className={`h-8 text-xs ${isRemote ? 'bg-[#34a853] hover:bg-[#2d9249] text-white' : 'border-[#ecedf2] text-[#5f6368]'}`}
+              className={`h-8 text-xs ${isRemote ? 'bg-[#16a34a] hover:bg-[#15803d] text-white' : 'border-[#ecedf2] text-[#5f6368]'}`}
               onClick={() => setIsRemote(!isRemote)}>
               <Wifi className="h-3 w-3 mr-1" /> Remote
             </Button>
@@ -450,17 +454,17 @@ export function JobSearchView() {
         </CardContent>
       </Card>
 
-      {/* Results Header - Superio style */}
+      {/* Results Header */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-[#5f6368]">
           {loading ? 'Searching...' : <>Showing <span className="font-semibold text-[#202124]">{jobs.length}</span> of <span className="font-semibold text-[#202124]">{totalJobs}</span> jobs</>}
         </p>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1 bg-[#f5f7fc] rounded-lg p-0.5">
-            <button onClick={() => setViewMode('grid')} className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-[#1967d2]' : 'text-[#5f6368] hover:text-[#202124]'}`}>
+            <button onClick={() => setViewMode('grid')} className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-[#16a34a]' : 'text-[#5f6368] hover:text-[#202124]'}`}>
               <LayoutGrid className="h-4 w-4" />
             </button>
-            <button onClick={() => setViewMode('list')} className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-[#1967d2]' : 'text-[#5f6368] hover:text-[#202124]'}`}>
+            <button onClick={() => setViewMode('list')} className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-[#16a34a]' : 'text-[#5f6368] hover:text-[#202124]'}`}>
               <List className="h-4 w-4" />
             </button>
           </div>
@@ -470,7 +474,7 @@ export function JobSearchView() {
         </div>
       </div>
 
-      {/* Job Cards - Superio style */}
+      {/* Job Cards */}
       {loading ? (
         <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-3'}>
           {Array.from({ length: 6 }).map((_, i) => (
@@ -482,7 +486,7 @@ export function JobSearchView() {
           <Briefcase className="h-16 w-16 mx-auto mb-4 text-[#ecedf2]" />
           <p className="text-xl font-semibold text-[#202124]">No jobs found</p>
           <p className="text-sm text-[#5f6368] mt-1">Try adjusting your search criteria</p>
-          <Button variant="outline" className="mt-4 border-[#1967d2] text-[#1967d2]" onClick={() => { setSearch(''); setLocation(''); setJobType(''); setExperience(''); setIsRemote(false); loadJobs() }}>
+          <Button variant="outline" className="mt-4 border-[#16a34a] text-[#16a34a]" onClick={() => { setSearch(''); setLocation(''); setJobType(''); setExperience(''); setIsRemote(false); loadJobs() }}>
             Clear all filters
           </Button>
         </div>
@@ -490,7 +494,7 @@ export function JobSearchView() {
         /* Grid View - Card Tiles */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {jobs.map((job, i) => (
-            <Card key={job.id} className="hover:shadow-lg transition-all cursor-pointer group border-[#ecedf2] hover:border-[#1967d2]/20"
+            <Card key={job.id} className="hover:shadow-lg transition-all cursor-pointer group border-[#ecedf2] hover:border-[#16a34a]/30"
               onClick={() => setSelectedJob(job)}>
               <CardContent className="p-5">
                 <div className="flex items-start gap-3 mb-3">
@@ -498,20 +502,20 @@ export function JobSearchView() {
                     {getCompanyInitial(job.corporate?.companyName)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-[#202124] text-sm leading-tight group-hover:text-[#1967d2] transition-colors line-clamp-2">{job.title}</h3>
+                    <h3 className="font-medium text-[#202124] text-sm leading-tight group-hover:text-[#16a34a] transition-colors line-clamp-2">{job.title}</h3>
                     <p className="text-xs text-[#5f6368] mt-0.5 truncate">{job.corporate?.companyName}</p>
                   </div>
                   <button onClick={(e) => toggleSave(job.id, e)} className="p-1.5 rounded-lg hover:bg-[#f5f7fc] transition-colors flex-shrink-0">
-                    <Bookmark className={`h-4 w-4 ${savedJobs.has(job.id) ? 'fill-[#1967d2] text-[#1967d2]' : 'text-[#ecedf2] hover:text-[#5f6368]'}`} />
+                    <Bookmark className={`h-4 w-4 ${savedJobs.has(job.id) ? 'fill-[#16a34a] text-[#16a34a]' : 'text-[#ecedf2] hover:text-[#5f6368]'}`} />
                   </button>
                 </div>
                 <div className="space-y-1.5 mb-3">
                   <div className="flex items-center gap-2 text-xs text-[#5f6368]">
                     <MapPin className="h-3 w-3 flex-shrink-0" /><span className="truncate">{job.location || 'Remote'}</span>
-                    {job.isRemote && <Badge className="text-[10px] px-1.5 py-0 bg-[rgba(52,168,83,0.15)] text-[#34a853] border-0 rounded-full">WFH</Badge>}
+                    {job.isRemote && <Badge className="text-[10px] px-1.5 py-0 bg-[rgba(22,163,74,0.15)] text-[#16a34a] border-0 rounded-full">WFH</Badge>}
                   </div>
                   <div className="flex items-center gap-2 text-xs text-[#5f6368]">
-                    <IndianRupee className="h-3 w-3 flex-shrink-0" /><span className="font-medium text-[#34a853]">{formatSalary(job.salaryMin, job.salaryMax)}</span>
+                    <IndianRupee className="h-3 w-3 flex-shrink-0" /><span className="font-medium text-[#16a34a]">{formatSalary(job.salaryMin, job.salaryMax)}</span>
                   </div>
                   {job.experienceMin && (
                     <div className="flex items-center gap-2 text-xs text-[#5f6368]">
@@ -524,15 +528,15 @@ export function JobSearchView() {
                 </div>
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   {job.skills?.split(',').slice(0, 3).map((s: string) => (
-                    <Badge key={s.trim()} className="text-[10px] px-2 py-0.5 bg-[rgba(25,103,210,0.15)] text-[#1967d2] border-0 rounded-full">{s.trim()}</Badge>
+                    <Badge key={s.trim()} className="text-[10px] px-2 py-0.5 bg-[rgba(22,163,74,0.15)] text-[#16a34a] border-0 rounded-full">{s.trim()}</Badge>
                   ))}
                   {job.skills?.split(',').length > 3 && (
                     <Badge className="text-[10px] px-2 py-0.5 bg-[#f5f7fc] text-[#5f6368] border-0 rounded-full">+{job.skills.split(',').length - 3}</Badge>
                   )}
                 </div>
                 <div className="flex items-center justify-between pt-3 border-t border-[#ecedf2]">
-                  <Badge className="bg-[rgba(25,103,210,0.15)] text-[#1967d2] border-0 rounded-full text-[11px] px-3">{job.jobType || 'Full Time'}</Badge>
-                  <span className="text-xs font-medium text-[#1967d2] flex items-center gap-0.5 group-hover:gap-1.5 transition-all">
+                  <Badge className="bg-[rgba(22,163,74,0.15)] text-[#16a34a] border-0 rounded-full text-[11px] px-3">{job.jobType || 'Full Time'}</Badge>
+                  <span className="text-xs font-medium text-[#16a34a] flex items-center gap-0.5 group-hover:gap-1.5 transition-all">
                     View Details <ChevronRight className="h-3 w-3" />
                   </span>
                 </div>
@@ -541,10 +545,10 @@ export function JobSearchView() {
           ))}
         </div>
       ) : (
-        /* List View - Superio horizontal card style */
+        /* List View */
         <div className="space-y-3">
           {jobs.map((job, i) => (
-            <Card key={job.id} className="hover:shadow-md transition-all cursor-pointer group border-[#ecedf2] hover:border-[#1967d2]/20"
+            <Card key={job.id} className="hover:shadow-md transition-all cursor-pointer group border-[#ecedf2] hover:border-[#16a34a]/30"
               onClick={() => setSelectedJob(job)}>
               <CardContent className="p-4 sm:p-5">
                 <div className="flex items-center gap-4">
@@ -552,27 +556,27 @@ export function JobSearchView() {
                     {getCompanyInitial(job.corporate?.companyName)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-[#202124] text-sm sm:text-base group-hover:text-[#1967d2] transition-colors truncate">{job.title}</h3>
+                    <h3 className="font-medium text-[#202124] text-sm sm:text-base group-hover:text-[#16a34a] transition-colors truncate">{job.title}</h3>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#5f6368] mt-1">
                       <span className="flex items-center gap-1"><Building2 className="h-3 w-3" /> {job.corporate?.companyName}</span>
                       <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.location || 'Remote'}</span>
-                      <span className="flex items-center gap-1"><IndianRupee className="h-3 w-3" /> <span className="font-medium text-[#34a853]">{formatSalary(job.salaryMin, job.salaryMax)}</span></span>
+                      <span className="flex items-center gap-1"><IndianRupee className="h-3 w-3" /> <span className="font-medium text-[#16a34a]">{formatSalary(job.salaryMin, job.salaryMax)}</span></span>
                       <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {job.postedDate ? timeAgo(job.postedDate) : 'Recently'}</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5 mt-2">
                       {job.skills?.split(',').slice(0, 4).map((s: string) => (
-                        <Badge key={s.trim()} className="text-[10px] px-2 py-0.5 bg-[rgba(25,103,210,0.15)] text-[#1967d2] border-0 rounded-full">{s.trim()}</Badge>
+                        <Badge key={s.trim()} className="text-[10px] px-2 py-0.5 bg-[rgba(22,163,74,0.15)] text-[#16a34a] border-0 rounded-full">{s.trim()}</Badge>
                       ))}
                       {job.skills?.split(',').length > 4 && <Badge className="text-[10px] px-2 py-0.5 bg-[#f5f7fc] text-[#5f6368] border-0 rounded-full">+{job.skills.split(',').length - 4}</Badge>}
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-2 flex-shrink-0">
                     <div className="flex gap-1.5">
-                      <Badge className="bg-[rgba(25,103,210,0.15)] text-[#1967d2] border-0 rounded-full text-[11px] px-3">{job.jobType || 'Full Time'}</Badge>
+                      <Badge className="bg-[rgba(22,163,74,0.15)] text-[#16a34a] border-0 rounded-full text-[11px] px-3">{job.jobType || 'Full Time'}</Badge>
                       {job.isRemote && <Badge className="bg-[rgba(52,168,83,0.15)] text-[#34a853] border-0 rounded-full text-[11px] px-3">Remote</Badge>}
                     </div>
                     <button onClick={(e) => toggleSave(job.id, e)} className="p-1.5 rounded-full hover:bg-[#f5f7fc] transition-colors">
-                      <Bookmark className={`h-4 w-4 ${savedJobs.has(job.id) ? 'fill-[#1967d2] text-[#1967d2]' : 'text-[#ecedf2]'}`} />
+                      <Bookmark className={`h-4 w-4 ${savedJobs.has(job.id) ? 'fill-[#16a34a] text-[#16a34a]' : 'text-[#ecedf2]'}`} />
                     </button>
                   </div>
                 </div>
@@ -582,7 +586,7 @@ export function JobSearchView() {
         </div>
       )}
 
-      {/* Pagination - Superio style */}
+      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between pt-4 border-t border-[#ecedf2]">
           <p className="text-sm text-[#5f6368]">Showing page {page} of {totalPages}</p>
@@ -594,7 +598,7 @@ export function JobSearchView() {
               const pageNum = i + 1
               return (
                 <Button key={pageNum} variant={page === pageNum ? 'default' : 'outline'} size="sm"
-                  className={`w-9 h-9 ${page === pageNum ? 'bg-[#1967d2] hover:bg-[#0146a6]' : 'border-[#ecedf2] text-[#5f6368]'}`}
+                  className={`w-9 h-9 ${page === pageNum ? 'bg-[#16a34a] hover:bg-[#15803d]' : 'border-[#ecedf2] text-[#5f6368]'}`}
                   onClick={() => setPage(pageNum)}>
                   {pageNum}
                 </Button>
