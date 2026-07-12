@@ -18,7 +18,7 @@ import {
   Heart, Shield, Clock, BookOpen, Code, PieChart, UserCheck,
   IndianRupee, Globe, ChevronDown, Layers, Box, Trophy, Rocket,
   PenTool, MessageSquare, Cpu, Lightbulb, Handshake, Wifi, X,
-  Mail, Lock, User, Bookmark, ArrowLeft, CalendarDays, List, LayoutGrid, Facebook, Linkedin, Twitter, Smartphone, Download, Apple, Plus,
+  Mail, Lock, User, Bookmark, ArrowLeft, CalendarDays, List, LayoutGrid, Facebook, Linkedin, Twitter, Smartphone, Download, Apple, Plus, Phone,
 } from 'lucide-react'
 
 // Company Green Color Palette
