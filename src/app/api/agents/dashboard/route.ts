@@ -5,9 +5,18 @@ const prisma = new PrismaClient()
 
 export const dynamic = 'force-dynamic'
 
+// Helper: ensure DB is seeded before any agent operation
+async function ensureSeeded() {
+  try {
+    const { ensureSeedData } = await import('@/lib/db')
+    await ensureSeedData()
+  } catch {}
+}
+
 // GET /api/agents/dashboard - Get super admin dashboard data
 export async function GET() {
   try {
+    await ensureSeeded()
     // Get all agents with their stats
     const agents = await prisma.aIAgent.findMany({
       include: {

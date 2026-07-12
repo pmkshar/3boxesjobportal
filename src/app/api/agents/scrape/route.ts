@@ -5,6 +5,14 @@ const prisma = new PrismaClient()
 
 export const dynamic = 'force-dynamic'
 
+// Helper: ensure DB is seeded before any agent operation
+async function ensureSeeded() {
+  try {
+    const { ensureSeedData } = await import('@/lib/db')
+    await ensureSeedData()
+  } catch {}
+}
+
 // Helper: Extract company name from URL
 function extractCompanyName(url: string): string {
   try {
@@ -112,6 +120,7 @@ function generateFakeScrapeData(url: string) {
 // POST /api/agents/scrape - Scrape a company website (simulated)
 export async function POST(request: NextRequest) {
   try {
+    await ensureSeeded()
     const body = await request.json()
     const { url } = body
 

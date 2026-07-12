@@ -5,12 +5,21 @@ const prisma = new PrismaClient()
 
 export const dynamic = 'force-dynamic'
 
+// Helper: ensure DB is seeded before any agent operation
+async function ensureSeeded() {
+  try {
+    const { ensureSeedData } = await import('@/lib/db')
+    await ensureSeedData()
+  } catch {}
+}
+
 // POST /api/agents/[id]/approve - Approve pending tasks
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await ensureSeeded()
     const { id } = await params
     const body = await request.json()
     const { taskIds, approvedBy } = body

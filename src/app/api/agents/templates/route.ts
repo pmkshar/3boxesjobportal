@@ -5,9 +5,18 @@ const prisma = new PrismaClient()
 
 export const dynamic = 'force-dynamic'
 
+// Helper: ensure DB is seeded before any agent operation
+async function ensureSeeded() {
+  try {
+    const { ensureSeedData } = await import('@/lib/db')
+    await ensureSeedData()
+  } catch {}
+}
+
 // GET /api/agents/templates - List email templates (filter by agentType)
 export async function GET(request: NextRequest) {
   try {
+    await ensureSeeded()
     const searchParams = request.nextUrl.searchParams
     const agentType = searchParams.get('agentType') || undefined
     const category = searchParams.get('category') || undefined
@@ -31,6 +40,7 @@ export async function GET(request: NextRequest) {
 // POST /api/agents/templates - Create email template
 export async function POST(request: NextRequest) {
   try {
+    await ensureSeeded()
     const body = await request.json()
     const { name, agentType, subject, body: templateBody, category } = body
 

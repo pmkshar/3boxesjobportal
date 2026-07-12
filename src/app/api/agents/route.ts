@@ -5,9 +5,19 @@ const prisma = new PrismaClient()
 
 export const dynamic = 'force-dynamic'
 
+// Helper: ensure DB is seeded before any agent operation
+async function ensureSeeded() {
+  try {
+    const { ensureSeedData } = await import('@/lib/db')
+    await ensureSeedData()
+  } catch {}
+}
+
 // GET /api/agents - List all agents with stats summary
 export async function GET(request: NextRequest) {
   try {
+    await ensureSeeded()
+
     const { searchParams } = new URL(request.url)
     const typeFilter = searchParams.get('type')
 
@@ -70,6 +80,8 @@ export async function GET(request: NextRequest) {
 // POST /api/agents - Create a new agent
 export async function POST(request: NextRequest) {
   try {
+    await ensureSeeded()
+
     const body = await request.json()
     const { name, type, description, strategy, dailyLimit, createdBy } = body
 
