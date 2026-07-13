@@ -67,6 +67,20 @@ export async function POST() {
           linkedInSearch: 'true',
         }),
       },
+      {
+        name: 'Data Entry Agent',
+        type: 'ADMIN_DATA_ENTRY',
+        description: 'Upload resumes (ZIP/individual) to automatically extract candidate information, create profiles in the portal, and send welcome emails with login credentials.',
+        dailyLimit: 200,
+        status: 'ACTIVE',
+        strategy: JSON.stringify({
+          autoCreateCandidates: 'true',
+          sendWelcomeEmail: 'true',
+          welcomeEmailTemplate: 'candidate_welcome',
+          defaultPassword: 'demo123',
+          requireEmailVerification: 'false',
+        }),
+      },
     ]
 
     const createdAgents = []
@@ -162,6 +176,14 @@ export async function POST() {
         subject: 'Transform Your Hiring with 3 Boxes Jobs | Special Invitation for HR Leaders',
         body: `Dear {{recipientName}},\n\nAs an HR leader, you know the challenges of finding the right talent quickly. 3 Boxes Jobs is designed specifically to address these challenges.\n\nBest regards,\nThe 3 Boxes Jobs Team\n{{portalUrl}}`,
         category: 'introduction',
+        isActive: true,
+      })
+      await memoryStore.createEmailTemplate({
+        name: 'Candidate Welcome',
+        agentType: 'ADMIN_DATA_ENTRY',
+        subject: 'Welcome to 3 Boxes Jobs! Your Account is Ready | Login Details Inside',
+        body: `Hi {{recipientName}},\n\nWelcome to 3 Boxes Jobs - India's AI-Powered Recruitment Platform!\n\nYour account has been created. Login details:\nEmail: {{recipientEmail}}\nPassword: {{tempPassword}}\n\nLogin Now: {{portalUrl}}/login\n\nPlease change your password after first login.\n\nBest regards,\nThe 3 Boxes Jobs Team`,
+        category: 'welcome',
         isActive: true,
       })
     }

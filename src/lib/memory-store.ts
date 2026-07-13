@@ -601,7 +601,7 @@ function seedMemoryData() {
 
   // ─── Seed AI Agents ──────────────────────────────────────────
   const now = new Date()
-  const agentIds = ['agent-company-001', 'agent-candidate-001', 'agent-hr-001']
+  const agentIds = ['agent-company-001', 'agent-candidate-001', 'agent-hr-001', 'agent-dataentry-001']
 
   _aiAgents = [
     {
@@ -687,6 +687,34 @@ function seedMemoryData() {
       createdAt: new Date(now.getTime() - 5 * 86400000).toISOString(),
       updatedAt: now.toISOString(),
     },
+    {
+      id: agentIds[3],
+      name: 'Data Entry Agent',
+      type: 'ADMIN_DATA_ENTRY',
+      description: 'Upload resumes (ZIP/individual) to automatically extract candidate information, create profiles in the portal, and send welcome emails with login credentials.',
+      status: 'ACTIVE',
+      dailyLimit: 200,
+      dailySent: 0,
+      totalTasks: 0,
+      totalSuccess: 0,
+      totalFailed: 0,
+      totalEmailsSent: 0,
+      totalResponses: 0,
+      totalConversions: 0,
+      avgResponseRate: 0,
+      strategy: JSON.stringify({
+        autoCreateCandidates: 'true',
+        sendWelcomeEmail: 'true',
+        welcomeEmailTemplate: 'candidate_welcome',
+        defaultPassword: 'demo123',
+        requireEmailVerification: 'false',
+      }),
+      createdBy: 'demo-admin-001',
+      lastRunAt: null,
+      dailyResetAt: now.toISOString(),
+      createdAt: new Date(now.getTime() - 1 * 86400000).toISOString(),
+      updatedAt: now.toISOString(),
+    },
   ]
 
   // Seed AI Email Templates
@@ -731,6 +759,17 @@ function seedMemoryData() {
       subject: 'Transform Your Hiring with 3 Boxes Jobs | Special Invitation for HR Leaders',
       body: `Dear {{recipientName}},\n\nAs an HR leader, you know the challenges of finding the right talent quickly. 3 Boxes Jobs is India's AI-powered recruitment platform designed specifically to address these challenges.\n\nWhy HR leaders choose 3 Boxes Jobs:\n• AI-powered screening reduces unqualified applications by 80%\n• Automated interview scheduling saves 15+ hours per week\n• Skills-based matching ensures cultural fit\n• Employer branding tools to attract top talent\n• Analytics dashboard for data-driven hiring decisions\n\nI'd love to invite you to explore our platform and see how it can benefit your organization. We offer a free 30-day trial for new companies.\n\nWould you be interested in a personalized demo?\n\nBest regards,\nThe 3 Boxes Jobs Team\n{{portalUrl}}`,
       category: 'introduction',
+      isActive: true,
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
+    },
+    {
+      id: 'tpl-candidate-welcome-001',
+      name: 'Candidate Welcome',
+      agentType: 'ADMIN_DATA_ENTRY',
+      subject: 'Welcome to 3 Boxes Jobs! Your Account is Ready | Login Details Inside',
+      body: `Hi {{recipientName}},\n\nWelcome to 3 Boxes Jobs - India's AI-Powered Recruitment Platform!\n\nYour account has been created and you can now access our platform to:\n• Get AI-matched job recommendations based on your profile\n• Apply to 10,000+ jobs from top companies across India\n• Track your applications in real-time\n• Build your resume with our AI Resume Builder\n• Practice interviews with AI Mock Interviews\n\nYour Login Details:\nEmail: {{recipientEmail}}\nPassword: {{tempPassword}}\n\nLogin Now: {{portalUrl}}/login\n\nImportant: Please change your password after your first login for security.\n\nWe've already set up your profile based on your resume. You can review and update it anytime from your dashboard.\n\nStart exploring: {{portalUrl}}/find-jobs\n\nBest regards,\nThe 3 Boxes Jobs Team\n{{portalUrl}}`,
+      category: 'welcome',
       isActive: true,
       createdAt: now.toISOString(),
       updatedAt: now.toISOString(),
@@ -1668,5 +1707,151 @@ export const memoryStore = {
     }
 
     return scrape
+  },
+
+  // ─── Resume Processing & Candidate Creation ──────────────────
+
+  // Store for uploaded candidates (pending and processed)
+  _uploadedCandidates: [] as any[],
+
+  async processResumeUpload(agentId: string, candidates: any[]) {
+    const agent = _aiAgents.find(a => a.id === agentId)
+    if (!agent) return { error: 'Agent not found' }
+
+    const results: any[] = []
+    const defaultPassword = 'demo123'
+
+    for (const candidate of candidates) {
+      try {
+        // Check if candidate email already exists
+        const existingUser = _users.find(u => u.email === candidate.email)
+        if (existingUser) {
+          results.push({
+            ...candidate,
+            status: 'duplicate',
+            message: `Candidate with email ${candidate.email} already exists`,
+          })
+          continue
+        }
+
+        // Create user account
+        const userId = genId()
+        const hashedPw = hashPassword(defaultPassword)
+        const newUser: UserRecord = {
+          id: userId,
+          email: candidate.email,
+          name: candidate.name || 'Unknown Candidate',
+          password: hashedPw,
+          role: 'JOB_SEEKER',
+          phone: candidate.phone || null,
+          location: candidate.location || null,
+          bio: candidate.summary || null,
+          isActive: true,
+          emailVerified: false,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          jobSeekerProfile: {
+            id: genId(),
+            userId,
+            headline: candidate.headline || candidate.title || '',
+            experienceYears: candidate.experienceYears || 0,
+            currentRole: candidate.title || '',
+            currentCompany: candidate.company || '',
+            education: candidate.education || '',
+            expectedSalary: candidate.expectedSalary || '',
+            jobType: candidate.jobType || 'full-time',
+            availability: candidate.availability || 'immediate',
+            skills: candidate.skills || '',
+            linkedInUrl: candidate.linkedIn || '',
+            aiSkillScore: Math.floor(Math.random() * 30) + 50,
+            profileComplete: candidate.skills ? 75 : 40,
+          },
+        }
+        _users.push(newUser)
+
+        // Create task for this upload
+        const task = {
+          id: genId(),
+          agentId,
+          type: 'upload_resume',
+          status: 'COMPLETED' as const,
+          priority: 5,
+          targetEmail: candidate.email,
+          targetName: candidate.name,
+          targetCompany: candidate.company || null,
+          targetData: JSON.stringify(candidate),
+          result: JSON.stringify({ userId, created: true, welcomeEmailSent: true }),
+          requiresApproval: false,
+          retryCount: 0,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+        _aiAgentTasks.unshift(task)
+
+        // Create welcome email
+        const welcomeEmail = {
+          id: genId(),
+          agentId,
+          taskId: task.id,
+          toEmail: candidate.email,
+          toName: candidate.name,
+          company: candidate.company || null,
+          subject: `Welcome to 3 Boxes Jobs! Your Account is Ready | Login Details Inside`,
+          body: `<p>Hi ${candidate.name},</p><p>Welcome to 3 Boxes Jobs - India's AI-Powered Recruitment Platform!</p><p>Your account has been created and you can now access our platform to:</p><ul><li>Get AI-matched job recommendations based on your profile</li><li>Apply to 10,000+ jobs from top companies across India</li><li>Track your applications in real-time</li><li>Build your resume with our AI Resume Builder</li><li>Practice interviews with AI Mock Interviews</li></ul><p><strong>Your Login Details:</strong></p><p>Email: ${candidate.email}<br/>Password: ${defaultPassword}</p><p>Login Now: https://3boxesjobs.com/login</p><p><em>Important: Please change your password after your first login for security.</em></p><p>We've already set up your profile based on your resume. You can review and update it anytime from your dashboard.</p><p>Best regards,<br/>The 3 Boxes Jobs Team</p>`,
+          templateId: _aiEmailTemplates.find(t => t.agentType === 'ADMIN_DATA_ENTRY')?.id || null,
+          templateData: JSON.stringify({ recipientName: candidate.name, recipientEmail: candidate.email, tempPassword: defaultPassword, portalUrl: 'https://3boxesjobs.com' }),
+          status: 'SENT',
+          sentAt: new Date().toISOString(),
+          deliveredAt: new Date().toISOString(),
+          openCount: 0,
+          replyCount: 0,
+          followUpSequence: 0,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+        _aiAgentEmails.unshift(welcomeEmail)
+
+        // Update agent stats
+        agent.totalTasks++
+        agent.totalSuccess++
+        agent.totalEmailsSent++
+        agent.dailySent = Math.min(agent.dailySent + 1, agent.dailyLimit)
+
+        results.push({
+          ...candidate,
+          status: 'created',
+          userId,
+          email: candidate.email,
+          tempPassword: defaultPassword,
+          welcomeEmailSent: true,
+          message: `Candidate created successfully. Welcome email sent to ${candidate.email}`,
+        })
+      } catch (error: any) {
+        results.push({
+          ...candidate,
+          status: 'error',
+          message: error.message || 'Failed to create candidate',
+        })
+        agent.totalTasks++
+        agent.totalFailed++
+      }
+    }
+
+    // Store uploaded candidates for UI display
+    ;(this as any)._uploadedCandidates = [...results, ...((this as any)._uploadedCandidates || [])]
+
+    agent.lastRunAt = new Date().toISOString()
+
+    return {
+      totalProcessed: candidates.length,
+      created: results.filter(r => r.status === 'created').length,
+      duplicates: results.filter(r => r.status === 'duplicate').length,
+      errors: results.filter(r => r.status === 'error').length,
+      results,
+    }
+  },
+
+  async getUploadedCandidates() {
+    return (this as any)._uploadedCandidates || []
   },
 }

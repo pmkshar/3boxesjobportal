@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
       'ADMIN_OUTREACH_COMPANY',
       'ADMIN_OUTREACH_CANDIDATE',
       'ADMIN_OUTREACH_HR',
+      'ADMIN_DATA_ENTRY',
     ]
     if (!validTypes.includes(agentType)) {
       return NextResponse.json(

@@ -32,6 +32,7 @@ import {
   ArrowUpRight, Users, Briefcase, Building2, TrendingUp, Activity,
   ChevronRight, ExternalLink, Copy, ThumbsUp, Zap, Target,
   MailOpen, MailCheck, MailX, Globe2, Download, Star, Phone, Calendar,
+  FileUp, Upload, UserPlus, FileType,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { format } from 'date-fns'
@@ -43,6 +44,7 @@ const AGENT_TYPE_COLORS: Record<string, string> = {
   ADMIN_OUTREACH_COMPANY: '#f9ab00',
   ADMIN_OUTREACH_CANDIDATE: '#3b82f6',
   ADMIN_OUTREACH_HR: '#8b5cf6',
+  ADMIN_DATA_ENTRY: '#ef4444',
 }
 
 const AGENT_TYPE_LABELS: Record<string, string> = {
@@ -50,6 +52,7 @@ const AGENT_TYPE_LABELS: Record<string, string> = {
   ADMIN_OUTREACH_COMPANY: 'Company Outreach',
   ADMIN_OUTREACH_CANDIDATE: 'Candidate Outreach',
   ADMIN_OUTREACH_HR: 'HR Outreach',
+  ADMIN_DATA_ENTRY: 'Data Entry',
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -89,6 +92,7 @@ const SCRAPE_STATUS_COLORS: Record<string, string> = {
 
 const TEMPLATE_VARIABLES = [
   '{{companyName}}', '{{recipientName}}', '{{senderName}}', '{{portalName}}', '{{portalUrl}}',
+  '{{recipientEmail}}', '{{tempPassword}}',
 ]
 
 // ─── Types ──────────────────────────────────────────────────────────────
@@ -377,6 +381,13 @@ export function AIAgentDashboard() {
     body: '',
   })
 
+  // Data Entry Agent states
+  const [uploadLoading, setUploadLoading] = useState(false)
+  const [uploadResult, setUploadResult] = useState<any>(null)
+  const [uploadedCandidates, setUploadedCandidates] = useState<any[]>([])
+  const [dataEntryAgentId, setDataEntryAgentId] = useState<string>('')
+  const [dragActive, setDragActive] = useState(false)
+
   // ─── Fetch functions ────────────────────────────────────────────────────
 
   const fetchDashboard = useCallback(async () => {
@@ -475,6 +486,18 @@ export function AIAgentDashboard() {
     }
   }, [])
 
+  const fetchUploadedCandidates = useCallback(async () => {
+    try {
+      const res = await fetch('/api/agents/uploaded-candidates')
+      if (res.ok) {
+        const data = await res.json()
+        setUploadedCandidates(data.candidates || [])
+      }
+    } catch (err) {
+      console.error('Uploaded candidates fetch error:', err)
+    }
+  }, [])
+
   // ─── Load data on mount ─────────────────────────────────────────────────
 
   useEffect(() => {
@@ -506,8 +529,14 @@ export function AIAgentDashboard() {
     if (activeTab === 'emails') fetchAllEmails()
     if (activeTab === 'templates') fetchTemplates()
     if (activeTab === 'scraper') fetchScrapedCompanies()
+    if (activeTab === 'data-entry') {
+      // Find the data entry agent
+      const dataEntryAgent = agents.find(a => a.type === 'ADMIN_DATA_ENTRY')
+      if (dataEntryAgent) setDataEntryAgentId(dataEntryAgent.id)
+      fetchUploadedCandidates()
+    }
     if (activeTab === 'analytics' && selectedAgentId) fetchAgentStats(selectedAgentId)
-  }, [activeTab, agents.length, selectedAgentId, fetchAllTasks, fetchAllEmails, fetchTemplates, fetchScrapedCompanies, fetchAgentStats])
+  }, [activeTab, agents.length, selectedAgentId, fetchAllTasks, fetchAllEmails, fetchTemplates, fetchScrapedCompanies, fetchUploadedCandidates, fetchAgentStats])
 
   // ─── Action handlers ────────────────────────────────────────────────────
 
@@ -708,6 +737,63 @@ export function AIAgentDashboard() {
       setScrapeLoading(false)
     }
   }
+
+  const handleUploadResumes = async (files: FileList | null) => {
+    if (!files || files.length === 0) return
+    if (!dataEntryAgentId) {
+      alert('Data Entry Agent not found. Please seed agents first.')
+      return
+    }
+
+    setUploadLoading(true)
+    setUploadResult(null)
+
+    try {
+      for (const file of Array.from(files)) {
+        const formData = new FormData()
+        formData.append('file', file)
+        formData.append('agentId', dataEntryAgentId)
+
+        const res = await fetch('/api/agents/upload-resumes', {
+          method: 'POST',
+          body: formData,
+        })
+        const data = await res.json()
+
+        if (res.ok) {
+          setUploadResult(data)
+          await fetchUploadedCandidates()
+          await fetchDashboard()
+        } else {
+          alert(data.error || 'Failed to process resumes')
+        }
+      }
+    } catch (err) {
+      console.error('Upload error:', err)
+      alert('Failed to upload resumes. Please try again.')
+    } finally {
+      setUploadLoading(false)
+    }
+  }
+
+  const handleDrag = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true)
+    } else if (e.type === 'dragleave') {
+      setDragActive(false)
+    }
+  }, [])
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleUploadResumes(e.dataTransfer.files)
+    }
+  }, [dataEntryAgentId])
 
   const handleCreateTemplate = async () => {
     try {
@@ -1162,6 +1248,10 @@ export function AIAgentDashboard() {
             <TabsTrigger value="scraper" className="gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
               <Globe className="h-4 w-4" />
               <span className="hidden sm:inline">Scraper</span>
+            </TabsTrigger>
+            <TabsTrigger value="data-entry" className="gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <FileUp className="h-4 w-4" />
+              <span className="hidden sm:inline">Data Entry</span>
             </TabsTrigger>
           </TabsList>
 
@@ -2713,6 +2803,297 @@ export function AIAgentDashboard() {
               </Card>
             )}
           </TabsContent>
+
+          {/* ═══════════════════════════════════════════════════════════════════
+              TAB 8: DATA ENTRY AGENT - Resume Upload & Candidate Creation
+              ═══════════════════════════════════════════════════════════════════ */}
+          <TabsContent value="data-entry" className="space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-semibold">Data Entry Agent</h2>
+                <p className="text-sm text-muted-foreground">Upload resumes (ZIP/DOCX/TXT/CSV) to auto-create candidate profiles and send welcome emails</p>
+              </div>
+              {dataEntryAgentId && (
+                <Badge className="bg-green-100 text-green-800" variant="secondary">
+                  <Bot className="h-3 w-3 mr-1" />
+                  Agent Active
+                </Badge>
+              )}
+            </div>
+
+            {/* How It Works */}
+            <Card>
+              <CardContent className="p-4">
+                <h3 className="text-sm font-semibold mb-3">How It Works</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                  <div className="flex items-start gap-2">
+                    <div className="h-6 w-6 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-xs font-bold shrink-0">1</div>
+                    <div>
+                      <p className="text-xs font-medium">Upload ZIP</p>
+                      <p className="text-[10px] text-muted-foreground">ZIP folder of resumes (DOCX/TXT/PDF)</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <div className="h-6 w-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold shrink-0">2</div>
+                    <div>
+                      <p className="text-xs font-medium">Extract Data</p>
+                      <p className="text-[10px] text-muted-foreground">AI parses name, email, phone, skills</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <div className="h-6 w-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold shrink-0">3</div>
+                    <div>
+                      <p className="text-xs font-medium">Create Profiles</p>
+                      <p className="text-[10px] text-muted-foreground">Auto-create candidate accounts in portal</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <div className="h-6 w-6 rounded-full bg-green-100 text-green-700 flex items-center justify-center text-xs font-bold shrink-0">4</div>
+                    <div>
+                      <p className="text-xs font-medium">Send Welcome</p>
+                      <p className="text-[10px] text-muted-foreground">Email with login credentials sent</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Upload Area */}
+            <Card>
+              <CardContent className="p-4">
+                <div
+                  className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                    dragActive ? 'border-red-400 bg-red-50 dark:bg-red-900/10' : 'border-muted-foreground/25 hover:border-muted-foreground/50'
+                  }`}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                >
+                  {uploadLoading ? (
+                    <div className="space-y-3">
+                      <Loader2 className="h-10 w-10 mx-auto animate-spin text-red-500" />
+                      <p className="text-sm font-medium">Processing resumes...</p>
+                      <p className="text-xs text-muted-foreground">Extracting candidate data and creating profiles</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="h-12 w-12 mx-auto rounded-full bg-red-100 flex items-center justify-center">
+                        <Upload className="h-6 w-6 text-red-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold">Drop your ZIP file here</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          or click to browse · Supports ZIP, DOCX, TXT, CSV files
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-center gap-2 mt-2">
+                        <label htmlFor="resume-upload">
+                          <input
+                            id="resume-upload"
+                            type="file"
+                            className="hidden"
+                            accept=".zip,.docx,.txt,.csv"
+                            multiple
+                            onChange={e => handleUploadResumes(e.target.files)}
+                          />
+                          <Button
+                            className="text-white"
+                            style={{ backgroundColor: '#ef4444' }}
+                            onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#dc2626')}
+                            onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#ef4444')}
+                            asChild
+                          >
+                            <span>
+                              <FileUp className="h-4 w-4 mr-2" />
+                              Choose File
+                            </span>
+                          </Button>
+                        </label>
+                      </div>
+                      <div className="flex items-center justify-center gap-4 text-[10px] text-muted-foreground mt-2">
+                        <span className="flex items-center gap-1"><FileType className="h-3 w-3" /> DOCX</span>
+                        <span className="flex items-center gap-1"><FileText className="h-3 w-3" /> TXT</span>
+                        <span className="flex items-center gap-1"><FileUp className="h-3 w-3" /> ZIP</span>
+                        <span className="flex items-center gap-1"><FileText className="h-3 w-3" /> CSV</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Upload Result */}
+            {uploadResult && (
+              <Card className="border-green-200 dark:border-green-800">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-600" />
+                    <h3 className="text-sm font-semibold text-green-800 dark:text-green-300">Upload Complete!</h3>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="p-2 rounded-lg bg-muted/50 text-center">
+                      <p className="text-lg font-bold">{uploadResult.totalProcessed}</p>
+                      <p className="text-[10px] text-muted-foreground">Total Processed</p>
+                    </div>
+                    <div className="p-2 rounded-lg bg-green-50 dark:bg-green-900/20 text-center">
+                      <p className="text-lg font-bold text-green-700 dark:text-green-400">{uploadResult.created}</p>
+                      <p className="text-[10px] text-muted-foreground">Created</p>
+                    </div>
+                    <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-center">
+                      <p className="text-lg font-bold text-amber-700 dark:text-amber-400">{uploadResult.duplicates}</p>
+                      <p className="text-[10px] text-muted-foreground">Duplicates</p>
+                    </div>
+                    <div className="p-2 rounded-lg bg-red-50 dark:bg-red-900/20 text-center">
+                      <p className="text-lg font-bold text-red-700 dark:text-red-400">{uploadResult.errors}</p>
+                      <p className="text-[10px] text-muted-foreground">Errors</p>
+                    </div>
+                  </div>
+
+                  {/* Results detail list */}
+                  {uploadResult.results && uploadResult.results.length > 0 && (
+                    <div className="mt-3">
+                      <p className="text-xs font-medium mb-2">Candidate Results:</p>
+                      <div className="max-h-[200px] overflow-y-auto space-y-1">
+                        {uploadResult.results.map((r: any, idx: number) => (
+                          <div key={idx} className={`flex items-center justify-between p-2 rounded text-xs ${
+                            r.status === 'created' ? 'bg-green-50 dark:bg-green-900/10' :
+                            r.status === 'duplicate' ? 'bg-amber-50 dark:bg-amber-900/10' :
+                            'bg-red-50 dark:bg-red-900/10'
+                          }`}>
+                            <div className="flex items-center gap-2">
+                              {r.status === 'created' ? <CheckCircle2 className="h-3.5 w-3.5 text-green-600" /> :
+                               r.status === 'duplicate' ? <AlertTriangle className="h-3.5 w-3.5 text-amber-600" /> :
+                               <XCircle className="h-3.5 w-3.5 text-red-600" />}
+                              <span className="font-medium">{r.name || 'Unknown'}</span>
+                              <span className="text-muted-foreground">{r.email}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {r.status === 'created' && r.tempPassword && (
+                                <Badge className="bg-blue-100 text-blue-700 text-[9px]" variant="secondary">
+                                  PW: {r.tempPassword}
+                                </Badge>
+                              )}
+                              <Badge className={`text-[9px] ${
+                                r.status === 'created' ? 'bg-green-100 text-green-700' :
+                                r.status === 'duplicate' ? 'bg-amber-100 text-amber-700' :
+                                'bg-red-100 text-red-700'
+                              }`} variant="secondary">
+                                {r.status}
+                              </Badge>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Previously Uploaded Candidates */}
+            {uploadedCandidates.length > 0 && (
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <UserPlus className="h-4 w-4" />
+                    Uploaded Candidates ({uploadedCandidates.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <ScrollArea className="max-h-[400px]">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead className="hidden md:table-cell">Phone</TableHead>
+                          <TableHead className="hidden lg:table-cell">Skills</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead className="hidden md:table-cell">Login</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {uploadedCandidates.map((c: any, idx: number) => (
+                          <TableRow key={idx}>
+                            <TableCell>
+                              <div className="max-w-[130px]">
+                                <p className="text-sm font-medium truncate">{c.name || 'Unknown'}</p>
+                                {c.title && <p className="text-[10px] text-muted-foreground truncate">{c.title}</p>}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <p className="text-xs truncate max-w-[180px]">{c.email || 'N/A'}</p>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              <p className="text-xs">{c.phone || 'N/A'}</p>
+                            </TableCell>
+                            <TableCell className="hidden lg:table-cell">
+                              <p className="text-[10px] truncate max-w-[200px]" title={c.skills}>{c.skills ? (c.skills.length > 50 ? c.skills.substring(0, 50) + '...' : c.skills) : 'N/A'}</p>
+                            </TableCell>
+                            <TableCell>
+                              <Badge className={`text-[9px] ${
+                                c.status === 'created' ? 'bg-green-100 text-green-700' :
+                                c.status === 'duplicate' ? 'bg-amber-100 text-amber-700' :
+                                'bg-red-100 text-red-700'
+                              }`} variant="secondary">
+                                {c.status || 'processed'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {c.tempPassword ? (
+                                <div className="flex items-center gap-1">
+                                  <span className="text-[10px] font-mono bg-muted px-1.5 py-0.5 rounded">{c.tempPassword}</span>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-5 w-5 p-0"
+                                    onClick={() => navigator.clipboard.writeText(`Email: ${c.email}\nPassword: ${c.tempPassword}`)}
+                                  >
+                                    <Copy className="h-2.5 w-2.5" />
+                                  </Button>
+                                </div>
+                              ) : (
+                                <span className="text-[10px] text-muted-foreground">—</span>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* No Data Entry Agent Warning */}
+            {!dataEntryAgentId && !loading && (
+              <Card className="border-amber-200 dark:border-amber-800">
+                <CardContent className="p-4 text-center">
+                  <AlertTriangle className="h-8 w-8 mx-auto mb-2 text-amber-500" />
+                  <h3 className="text-sm font-semibold mb-1">Data Entry Agent Not Found</h3>
+                  <p className="text-xs text-muted-foreground mb-3">The Data Entry Agent needs to be created first. Click below to seed default agents.</p>
+                  <Button
+                    className="text-white"
+                    style={{ backgroundColor: '#ef4444' }}
+                    onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#dc2626')}
+                    onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#ef4444')}
+                    onClick={async () => {
+                      const res = await fetch('/api/agents/seed', { method: 'POST' })
+                      if (res.ok) {
+                        await fetchDashboard()
+                        const de = agents.find(a => a.type === 'ADMIN_DATA_ENTRY')
+                        if (de) setDataEntryAgentId(de.id)
+                      }
+                    }}
+                  >
+                    <Bot className="h-4 w-4 mr-2" />
+                    Seed Default Agents
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
         </Tabs>
       </div>
 
@@ -2775,6 +3156,12 @@ export function AIAgentDashboard() {
                     <div className="flex items-center gap-2">
                       <Users className="h-3.5 w-3.5" style={{ color: '#8b5cf6' }} />
                       HR Outreach
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="ADMIN_DATA_ENTRY">
+                    <div className="flex items-center gap-2">
+                      <FileUp className="h-3.5 w-3.5" style={{ color: '#ef4444' }} />
+                      Data Entry
                     </div>
                   </SelectItem>
                 </SelectContent>
