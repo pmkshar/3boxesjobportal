@@ -31,7 +31,7 @@ import {
   CheckCircle2, Clock, AlertTriangle, XCircle, Loader2, Search,
   ArrowUpRight, Users, Briefcase, Building2, TrendingUp, Activity,
   ChevronRight, ExternalLink, Copy, ThumbsUp, Zap, Target,
-  MailOpen, MailCheck, MailX, Globe2, Download, Star,
+  MailOpen, MailCheck, MailX, Globe2, Download, Star, Phone, Calendar,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { format } from 'date-fns'
@@ -452,10 +452,11 @@ export function AIAgentDashboard() {
 
   const fetchScrapedCompanies = useCallback(async () => {
     try {
-      // Since there's no list endpoint, we'll get them from dashboard or scrape data
-      // The scraped companies come from the scrape endpoint and agent runs
-      // For now, we can try fetching a general endpoint or use stored data
-      setScrapedCompanies([])
+      const res = await fetch('/api/agents/scrapes')
+      if (res.ok) {
+        const data = await res.json()
+        setScrapedCompanies(data.scrapes || [])
+      }
     } catch (err) {
       console.error('Scraped companies fetch error:', err)
     }
@@ -480,6 +481,19 @@ export function AIAgentDashboard() {
     const init = async () => {
       setLoading(true)
       await fetchDashboard()
+      // If no agents found, try to seed default agents (important for Vercel)
+      const res = await fetch('/api/agents')
+      if (res.ok) {
+        const data = await res.json()
+        if (!data.agents || data.agents.length === 0) {
+          console.log('No agents found, seeding defaults...')
+          const seedRes = await fetch('/api/agents/seed', { method: 'POST' })
+          if (seedRes.ok) {
+            console.log('Default agents seeded successfully')
+            await fetchDashboard()
+          }
+        }
+      }
       setLoading(false)
     }
     init()
@@ -1873,70 +1887,83 @@ export function AIAgentDashboard() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>To</TableHead>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Contact Person</TableHead>
+                        <TableHead className="hidden md:table-cell">Email</TableHead>
+                        <TableHead className="hidden lg:table-cell">Phone</TableHead>
                         <TableHead>Subject</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="hidden md:table-cell">Sent Date</TableHead>
                         <TableHead className="text-center">Opens</TableHead>
-                        <TableHead className="text-center">Replies</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {getFilteredEmails().length > 0 ? (
-                        getFilteredEmails().map(email => (
-                          <TableRow key={email.id} className="hover:bg-muted/50 cursor-pointer" onClick={() => {
-                            setSelectedEmail(email)
-                            setEmailDetailOpen(true)
-                          }}>
-                            <TableCell>
-                              <div className="max-w-[180px]">
-                                <p className="text-sm truncate font-medium">{email.toName || email.toEmail}</p>
-                                <p className="text-[10px] text-muted-foreground truncate">{email.toEmail}</p>
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <p className="text-sm truncate max-w-[250px]">{email.subject}</p>
-                            </TableCell>
-                            <TableCell>
-                              <Badge className={`text-[10px] ${EMAIL_STATUS_COLORS[email.status] || ''}`} variant="secondary">
-                                {email.status}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="hidden md:table-cell text-xs text-muted-foreground">
-                              {email.sentAt ? formatDate(email.sentAt) : 'Not sent'}
-                            </TableCell>
-                            <TableCell className="text-center">
-                              <div className="flex items-center justify-center gap-1">
-                                <MailOpen className="h-3 w-3 text-muted-foreground" />
-                                <span className="text-xs">{email.openCount}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell className="text-center">
-                              <div className="flex items-center justify-center gap-1">
-                                <MailCheck className="h-3 w-3 text-muted-foreground" />
-                                <span className="text-xs">{email.replyCount}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-7 px-2"
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  setSelectedEmail(email)
-                                  setEmailDetailOpen(true)
-                                }}
-                              >
-                                <Eye className="h-3.5 w-3.5" />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))
+                        getFilteredEmails().map(email => {
+                          let templateData: any = null
+                          try { templateData = email.templateData ? JSON.parse(email.templateData) : null } catch { templateData = null }
+                          return (
+                            <TableRow key={email.id} className="hover:bg-muted/50 cursor-pointer" onClick={() => {
+                              setSelectedEmail(email)
+                              setEmailDetailOpen(true)
+                            }}>
+                              <TableCell>
+                                <div className="max-w-[120px]">
+                                  <p className="text-sm font-medium truncate">{email.company || 'N/A'}</p>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div className="max-w-[130px]">
+                                  <p className="text-sm truncate font-medium">{email.toName || 'N/A'}</p>
+                                  {templateData?.recipientDesignation && (
+                                    <p className="text-[10px] text-muted-foreground truncate">{templateData.recipientDesignation}</p>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                <p className="text-[10px] text-muted-foreground truncate max-w-[150px]">{email.toEmail}</p>
+                              </TableCell>
+                              <TableCell className="hidden lg:table-cell">
+                                <p className="text-[10px] text-muted-foreground">{templateData?.recipientPhone || 'N/A'}</p>
+                              </TableCell>
+                              <TableCell>
+                                <p className="text-xs truncate max-w-[180px]">{email.subject}</p>
+                              </TableCell>
+                              <TableCell>
+                                <Badge className={`text-[10px] ${EMAIL_STATUS_COLORS[email.status] || ''}`} variant="secondary">
+                                  {email.status}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell text-xs text-muted-foreground">
+                                {email.sentAt ? formatDate(email.sentAt) : 'Not sent'}
+                              </TableCell>
+                              <TableCell className="text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                  <MailOpen className="h-3 w-3 text-muted-foreground" />
+                                  <span className="text-xs">{email.openCount}</span>
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-7 px-2"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setSelectedEmail(email)
+                                    setEmailDetailOpen(true)
+                                  }}
+                                >
+                                  <Eye className="h-3.5 w-3.5" />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          )
+                        })
                       ) : (
                         <TableRow>
-                          <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                          <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
                             <Mail className="h-8 w-8 mx-auto mb-2 opacity-50" />
                             <p className="text-sm">No emails found. Run an agent to generate and send emails.</p>
                           </TableCell>
@@ -1960,7 +1987,10 @@ export function AIAgentDashboard() {
                     {selectedEmail?.subject}
                   </DialogDescription>
                 </DialogHeader>
-                {selectedEmail && (
+                {selectedEmail && (() => {
+                  let templateData: any = null
+                  try { templateData = selectedEmail.templateData ? JSON.parse(selectedEmail.templateData) : null } catch { templateData = null }
+                  return (
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div>
@@ -1977,10 +2007,29 @@ export function AIAgentDashboard() {
                         <p className="font-medium">{selectedEmail.company || 'N/A'}</p>
                       </div>
                       <div>
+                        <p className="text-muted-foreground text-xs">Contact Person</p>
+                        <p className="font-medium">{selectedEmail.toName || 'N/A'}</p>
+                        {templateData?.recipientDesignation && (
+                          <p className="text-xs text-muted-foreground">{templateData.recipientDesignation}</p>
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground text-xs">Contact Email</p>
+                        <p className="font-medium text-xs">{selectedEmail.toEmail}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground text-xs">Contact Phone</p>
+                        <p className="font-medium text-xs">{templateData?.recipientPhone || 'N/A'}</p>
+                      </div>
+                      <div>
                         <p className="text-muted-foreground text-xs">Status</p>
                         <Badge className={`text-xs ${EMAIL_STATUS_COLORS[selectedEmail.status] || ''}`} variant="secondary">
                           {selectedEmail.status}
                         </Badge>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground text-xs">Follow-up Sequence</p>
+                        <p className="font-medium">#{selectedEmail.followUpSequence}</p>
                       </div>
                     </div>
                     <Separator />
@@ -2024,7 +2073,8 @@ export function AIAgentDashboard() {
                       <span>Opened: {selectedEmail.openedAt ? formatDate(selectedEmail.openedAt) : 'N/A'}</span>
                     </div>
                   </div>
-                )}
+                  )
+                })()}
               </DialogContent>
             </Dialog>
           </TabsContent>
@@ -2468,55 +2518,189 @@ export function AIAgentDashboard() {
 
             {/* Scraped Companies List */}
             {scrapedCompanies.length > 0 ? (
-              <Card>
-                <CardContent className="p-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Company</TableHead>
-                        <TableHead className="hidden md:table-cell">URL</TableHead>
-                        <TableHead>Contact Email</TableHead>
-                        <TableHead className="hidden lg:table-cell">HR Email</TableHead>
-                        <TableHead>Status</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {scrapedCompanies.map(company => (
-                        <TableRow key={company.id}>
-                          <TableCell>
-                            <div>
-                              <p className="font-medium text-sm">{company.companyName || 'Unknown'}</p>
-                              {company.industry && (
-                                <p className="text-[10px] text-muted-foreground">{company.industry}</p>
+              <div className="space-y-4">
+                {/* Summary Stats */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <Card className="p-3">
+                    <div className="flex items-center gap-2">
+                      <Building2 className="h-4 w-4 text-blue-500" />
+                      <div>
+                        <p className="text-[10px] text-muted-foreground">Total Scraped</p>
+                        <p className="text-lg font-bold">{scrapedCompanies.length}</p>
+                      </div>
+                    </div>
+                  </Card>
+                  <Card className="p-3">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-green-500" />
+                      <div>
+                        <p className="text-[10px] text-muted-foreground">Contacted</p>
+                        <p className="text-lg font-bold">{scrapedCompanies.filter(c => ['contacted', 'responded', 'onboarded'].includes(c.status)).length}</p>
+                      </div>
+                    </div>
+                  </Card>
+                  <Card className="p-3">
+                    <div className="flex items-center gap-2">
+                      <ThumbsUp className="h-4 w-4 text-emerald-500" />
+                      <div>
+                        <p className="text-[10px] text-muted-foreground">Responded</p>
+                        <p className="text-lg font-bold">{scrapedCompanies.filter(c => ['responded', 'onboarded'].includes(c.status)).length}</p>
+                      </div>
+                    </div>
+                  </Card>
+                  <Card className="p-3">
+                    <div className="flex items-center gap-2">
+                      <Users className="h-4 w-4 text-purple-500" />
+                      <div>
+                        <p className="text-[10px] text-muted-foreground">Onboarded</p>
+                        <p className="text-lg font-bold">{scrapedCompanies.filter(c => c.status === 'onboarded').length}</p>
+                      </div>
+                    </div>
+                  </Card>
+                </div>
+
+                {/* Scraped Companies Detail Cards */}
+                <div className="space-y-3">
+                  {scrapedCompanies.map(company => {
+                    let parsedData: any = null
+                    try { parsedData = company.scrapeData ? JSON.parse(company.scrapeData) : null } catch { parsedData = null }
+                    return (
+                      <Card key={company.id} className="overflow-hidden">
+                        <CardContent className="p-0">
+                          {/* Header row */}
+                          <div className="flex items-start justify-between p-4 bg-muted/30 border-b">
+                            <div className="flex items-center gap-3">
+                              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                                {(company.companyName || '?').charAt(0)}
+                              </div>
+                              <div>
+                                <h3 className="font-semibold text-sm">{company.companyName || 'Unknown'}</h3>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                  {company.industry && <span className="text-[10px] text-muted-foreground">{company.industry}</span>}
+                                  {company.location && <span className="text-[10px] text-muted-foreground">· {company.location}</span>}
+                                  {company.companySize && <span className="text-[10px] text-muted-foreground">· {company.companySize} employees</span>}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Badge className={`text-[10px] ${SCRAPE_STATUS_COLORS[company.status] || ''}`} variant="secondary">
+                                {company.status}
+                              </Badge>
+                              {company.lastScrapedAt && (
+                                <span className="text-[10px] text-muted-foreground">
+                                  {formatDateShort(company.lastScrapedAt)}
+                                </span>
                               )}
                             </div>
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell">
-                            <a href={company.companyUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline flex items-center gap-1">
-                              {company.companyUrl.length > 30 ? company.companyUrl.substring(0, 30) + '...' : company.companyUrl}
-                              <ExternalLink className="h-3 w-3" />
-                            </a>
-                          </TableCell>
-                          <TableCell>
-                            <p className="text-xs">{company.contactEmail || 'N/A'}</p>
-                          </TableCell>
-                          <TableCell className="hidden lg:table-cell">
-                            <p className="text-xs">{company.hrEmail || 'N/A'}</p>
-                          </TableCell>
-                          <TableCell>
-                            <Badge
-                              className={`text-[10px] ${SCRAPE_STATUS_COLORS[company.status] || ''}`}
-                              variant="secondary"
-                            >
-                              {company.status}
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
+                          </div>
+
+                          {/* Contact details grid */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 divide-y md:divide-y-0 md:divide-x">
+                            {/* Primary Contact */}
+                            <div className="p-3">
+                              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">Primary Contact</p>
+                              <div className="space-y-1.5">
+                                <div className="flex items-center gap-2">
+                                  <Users className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                                  <span className="text-xs font-medium">{parsedData?.contactName || company.contactEmail?.split('@')[0] || 'N/A'}</span>
+                                </div>
+                                {parsedData?.contactDesignation && (
+                                  <div className="flex items-center gap-2">
+                                    <Briefcase className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                                    <span className="text-[10px] text-muted-foreground">{parsedData.contactDesignation}</span>
+                                  </div>
+                                )}
+                                <div className="flex items-center gap-2">
+                                  <Mail className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                                  <span className="text-[10px]">{company.contactEmail || 'N/A'}</span>
+                                </div>
+                                {parsedData?.contactPhone && (
+                                  <div className="flex items-center gap-2">
+                                    <Phone className="h-3.5 w-3.5 text-green-500 shrink-0" />
+                                    <span className="text-[10px]">{parsedData.contactPhone}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* HR Contact */}
+                            <div className="p-3">
+                              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">HR Contact</p>
+                              <div className="space-y-1.5">
+                                <div className="flex items-center gap-2">
+                                  <Users className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                                  <span className="text-xs font-medium">{parsedData?.hrName || 'N/A'}</span>
+                                </div>
+                                {parsedData?.hrDesignation && (
+                                  <div className="flex items-center gap-2">
+                                    <Briefcase className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                                    <span className="text-[10px] text-muted-foreground">{parsedData.hrDesignation}</span>
+                                  </div>
+                                )}
+                                <div className="flex items-center gap-2">
+                                  <Mail className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                                  <span className="text-[10px]">{company.hrEmail || 'N/A'}</span>
+                                </div>
+                                {parsedData?.hrPhone && (
+                                  <div className="flex items-center gap-2">
+                                    <Phone className="h-3.5 w-3.5 text-green-500 shrink-0" />
+                                    <span className="text-[10px]">{parsedData.hrPhone}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Company Details */}
+                            <div className="p-3">
+                              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">Company Details</p>
+                              <div className="space-y-1.5">
+                                {company.companyUrl && (
+                                  <div className="flex items-center gap-2">
+                                    <Globe2 className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                                    <a href={company.companyUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-600 hover:underline truncate">
+                                      {company.companyUrl.length > 35 ? company.companyUrl.substring(0, 35) + '...' : company.companyUrl}
+                                    </a>
+                                  </div>
+                                )}
+                                {company.linkedInUrl && (
+                                  <div className="flex items-center gap-2">
+                                    <ExternalLink className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                                    <a href={company.linkedInUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-600 hover:underline">LinkedIn</a>
+                                  </div>
+                                )}
+                                {parsedData?.revenue && (
+                                  <div className="flex items-center gap-2">
+                                    <TrendingUp className="h-3.5 w-3.5 text-green-500 shrink-0" />
+                                    <span className="text-[10px]">Revenue: {parsedData.revenue}</span>
+                                  </div>
+                                )}
+                                {parsedData?.openPositions !== undefined && (
+                                  <div className="flex items-center gap-2">
+                                    <Briefcase className="h-3.5 w-3.5 text-orange-500 shrink-0" />
+                                    <span className="text-[10px]">{parsedData.openPositions} open positions</span>
+                                  </div>
+                                )}
+                                {parsedData?.foundedYear && (
+                                  <div className="flex items-center gap-2">
+                                    <Calendar className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                                    <span className="text-[10px]">Founded: {parsedData.foundedYear}</span>
+                                  </div>
+                                )}
+                                {parsedData?.techStack && (
+                                  <div className="flex items-center gap-2">
+                                    <Zap className="h-3.5 w-3.5 text-yellow-500 shrink-0" />
+                                    <span className="text-[10px] truncate" title={parsedData.techStack}>{parsedData.techStack}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )
+                  })}
+                </div>
+              </div>
             ) : (
               <Card>
                 <CardContent className="text-center py-12">

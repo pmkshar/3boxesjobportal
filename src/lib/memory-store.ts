@@ -770,23 +770,33 @@ function seedMemoryData() {
     }
   }
 
-  // Seed AI Agent Emails (sample recent emails)
+  // Seed AI Agent Emails (sample recent emails with contact details)
   const emailStatuses = ['SENT', 'DELIVERED', 'OPENED', 'REPLIED', 'SENT', 'BOUNCED']
+  const emailContactDetails = [
+    { toName: 'Rajesh Kumar', toDesignation: 'VP - Talent Acquisition', toPhone: '+91-22-6788-9999' },
+    { toName: 'Priya Menon', toDesignation: 'Head - Global Talent Acquisition', toPhone: '+91-80-2852-0362' },
+    { toName: 'Suresh Iyer', toDesignation: 'HR Director', toPhone: '+91-80-2852-0363' },
+    { toName: 'Deepa Nair', toDesignation: 'Chief Human Resources Officer', toPhone: '+91-80-2839-9999' },
+    { toName: 'Anita Sharma', toDesignation: 'Senior HR Manager', toPhone: '+91-22-6788-8888' },
+    { toName: 'Vikram Rao', toDesignation: 'Talent Acquisition Lead', toPhone: '+91-80-2839-8888' },
+  ]
   let emailId = 1
   for (const agent of _aiAgents) {
     for (let i = 0; i < 4; i++) {
       const status = emailStatuses[i % emailStatuses.length]
+      const contact = emailContactDetails[(emailId - 1) % emailContactDetails.length]
+      const companyDomain = companies[i].toLowerCase().replace(/\s/g, '')
       _aiAgentEmails.push({
         id: `email-${String(emailId++).padStart(3, '0')}`,
         agentId: agent.id,
         taskId: _aiAgentTasks.find(t => t.agentId === agent.id)?.id || null,
-        toEmail: `contact@${companies[i].toLowerCase().replace(/\s/g, '')}.com`,
-        toName: `${companies[i]} HR Team`,
+        toEmail: `hr@${companyDomain}.com`,
+        toName: contact.toName,
         company: companies[i],
         subject: `Partnership Opportunity - 3 Boxes Jobs × ${companies[i]}`,
-        body: 'Email content...',
+        body: `<p>Dear ${contact.toName},</p><p>I hope this email finds you well. I'm reaching out from 3 Boxes Jobs, India's fastest-growing AI-powered recruitment platform that connects top talent with leading companies like ${companies[i]}.</p><p>What makes us different:</p><ul><li>AI-powered candidate matching with 95%+ accuracy</li><li>Pre-screened candidates with verified skills</li><li>70% faster hiring process compared to traditional methods</li><li>Access to 50,000+ active job seekers across India</li></ul><p>I'd love to explore how 3 Boxes Jobs can streamline your hiring process at ${companies[i]}. Would you be available for a brief 15-minute call this week?</p><p>Looking forward to connecting!</p><p>Best regards,<br/>The 3 Boxes Jobs Team<br/>https://3boxesjobs.com</p>`,
         templateId: _aiEmailTemplates.find(t => t.agentType === agent.type)?.id || null,
-        templateData: JSON.stringify({ companyName: companies[i], recipientName: 'HR Team' }),
+        templateData: JSON.stringify({ companyName: companies[i], recipientName: contact.toName, recipientDesignation: contact.toDesignation, recipientPhone: contact.toPhone }),
         status,
         sentAt: status !== 'DRAFT' ? new Date(now.getTime() - (i + 1) * 7200000).toISOString() : null,
         deliveredAt: ['DELIVERED', 'OPENED', 'REPLIED'].includes(status) ? new Date(now.getTime() - i * 7200000).toISOString() : null,
@@ -839,22 +849,50 @@ function seedMemoryData() {
     }
   }
 
-  // Seed Company Scrapes
+  // Seed Company Scrapes (with rich contact data)
+  const companyDetails = [
+    { name: 'TCS', location: 'Mumbai, India', size: '10000+', industry: 'Information Technology', hrName: 'Rajesh Kumar', hrDesignation: 'VP - Talent Acquisition', hrPhone: '+91-22-6788-9999', contactName: 'Anita Sharma', contactDesignation: 'Senior HR Manager', contactPhone: '+91-22-6788-8888', website: 'tcs.com' },
+    { name: 'Infosys', location: 'Bangalore, India', size: '10000+', industry: 'Information Technology & Consulting', hrName: 'Priya Menon', hrDesignation: 'Head - Global Talent Acquisition', hrPhone: '+91-80-2852-0362', contactName: 'Suresh Iyer', contactDesignation: 'HR Director', contactPhone: '+91-80-2852-0363', website: 'infosys.com' },
+    { name: 'Wipro', location: 'Bangalore, India', size: '10000+', industry: 'Information Technology & Consulting', hrName: 'Deepa Nair', hrDesignation: 'Chief Human Resources Officer', hrPhone: '+91-80-2839-9999', contactName: 'Vikram Rao', contactDesignation: 'Talent Acquisition Lead', contactPhone: '+91-80-2839-8888', website: 'wipro.com' },
+    { name: 'HCL Technologies', location: 'Noida, India', size: '10001-50000', industry: 'Information Technology Services', hrName: 'Apparao V', hrDesignation: 'Global Head - HR', hrPhone: '+91-120-251-8001', contactName: 'Meena Reddy', contactDesignation: 'Recruitment Manager', contactPhone: '+91-120-251-8002', website: 'hcltech.com' },
+    { name: 'Tech Mahindra', location: 'Pune, India', size: '10001-50000', industry: 'IT Services & Consulting', hrName: 'Harshvendra Soin', hrDesignation: 'Chief People Officer', hrPhone: '+91-20-6601-8999', contactName: 'Ritu Bhasin', contactDesignation: 'HR Business Partner', contactPhone: '+91-20-6601-8998', website: 'techmahindra.com' },
+    { name: 'Google India', location: 'Bangalore, India', size: '10001-50000', industry: 'Internet & Technology', hrName: 'Aparna Chennapragada', hrDesignation: 'VP - People Operations', hrPhone: '+91-80-6721-8000', contactName: 'Karan Bajaj', contactDesignation: 'Senior Recruiter', contactPhone: '+91-80-6721-8001', website: 'google.co.in' },
+    { name: 'Microsoft India', location: 'Hyderabad, India', size: '10001-50000', industry: 'Software & Cloud Computing', hrName: 'Ira Gupta', hrDesignation: 'Head - HR India', hrPhone: '+91-40-6629-8000', contactName: 'Nikhil Desai', contactDesignation: 'Talent Sourcing Manager', contactPhone: '+91-40-6629-8001', website: 'microsoft.com/en-in' },
+    { name: 'Amazon India', location: 'Hyderabad, India', size: '10001-50000', industry: 'E-Commerce & Cloud', hrName: 'Raj Raghavan', hrDesignation: 'Director - HR India', hrPhone: '+91-40-6629-9000', contactName: 'Sneha Patel', contactDesignation: 'Recruiting Manager', contactPhone: '+91-40-6629-9001', website: 'amazon.in' },
+    { name: 'Flipkart', location: 'Bangalore, India', size: '5001-10000', industry: 'E-Commerce', hrName: 'Krishna Raghavan', hrDesignation: 'Chief People Officer', hrPhone: '+91-80-6128-8000', contactName: 'Amit Joshi', contactDesignation: 'Senior Talent Acquisition', contactPhone: '+91-80-6128-8001', website: 'flipkart.com' },
+    { name: 'Razorpay', location: 'Bangalore, India', size: '1001-5000', industry: 'Fintech & Payments', hrName: 'Chitra Sharma', hrDesignation: 'Head - People & Culture', hrPhone: '+91-80-6822-7000', contactName: 'Dev Prasad', contactDesignation: 'Talent Acquisition Lead', contactPhone: '+91-80-6822-7001', website: 'razorpay.com' },
+  ]
+
   let scrapeId = 1
-  for (let i = 0; i < 5; i++) {
-    const statuses = ['scraped', 'contacted', 'responded', 'onboarded', 'pending']
+  for (let i = 0; i < companyDetails.length; i++) {
+    const c = companyDetails[i]
+    const statuses = ['scraped', 'contacted', 'responded', 'onboarded', 'pending', 'scraped', 'contacted', 'responded', 'pending', 'scraped']
+    const domain = c.website
     _aiCompanyScrapes.push({
       id: `scrape-${String(scrapeId++).padStart(3, '0')}`,
-      companyUrl: `https://${companies[i].toLowerCase().replace(/\s/g, '')}.com`,
-      companyName: companies[i],
-      careersPageUrl: `https://${companies[i].toLowerCase().replace(/\s/g, '')}.com/careers`,
-      contactEmail: `careers@${companies[i].toLowerCase().replace(/\s/g, '')}.com`,
-      hrEmail: `hr@${companies[i].toLowerCase().replace(/\s/g, '')}.com`,
-      linkedInUrl: `https://linkedin.com/company/${companies[i].toLowerCase().replace(/\s/g, '')}`,
-      industry: 'Technology',
-      companySize: '1001-5000',
-      location: 'India',
-      scrapeData: null,
+      companyUrl: `https://${domain}`,
+      companyName: c.name,
+      careersPageUrl: `https://${domain}/careers`,
+      contactEmail: `careers@${domain}`,
+      hrEmail: `hr@${domain}`,
+      linkedInUrl: `https://linkedin.com/company/${c.name.toLowerCase().replace(/\s/g, '-')}`,
+      industry: c.industry,
+      companySize: c.size,
+      location: c.location,
+      scrapeData: JSON.stringify({
+        hrName: c.hrName,
+        hrDesignation: c.hrDesignation,
+        hrPhone: c.hrPhone,
+        contactName: c.contactName,
+        contactDesignation: c.contactDesignation,
+        contactPhone: c.contactPhone,
+        companyPhone: c.hrPhone,
+        numberOfEmployees: c.size,
+        foundedYear: c.name === 'TCS' ? 1968 : c.name === 'Infosys' ? 1981 : c.name === 'Wipro' ? 1945 : c.name === 'HCL Technologies' ? 1976 : c.name === 'Tech Mahindra' ? 1986 : c.name === 'Google India' ? 2004 : c.name === 'Microsoft India' ? 1990 : c.name === 'Amazon India' ? 2013 : c.name === 'Flipkart' ? 2007 : 2014,
+        revenue: c.name === 'TCS' ? '$27B+' : c.name === 'Infosys' ? '$18B+' : c.name === 'Wipro' ? '$10B+' : c.name === 'HCL Technologies' ? '$12B+' : c.name === 'Tech Mahindra' ? '$6B+' : c.name === 'Google India' ? '$5B+' : c.name === 'Microsoft India' ? '$4B+' : c.name === 'Amazon India' ? '$3B+' : c.name === 'Flipkart' ? '$2B+' : '$500M+',
+        techStack: ['Java', 'Python', 'React', 'Node.js', 'AWS', 'Azure', 'Kubernetes'].slice(0, 3 + Math.floor(Math.random() * 4)).join(', '),
+        openPositions: Math.floor(Math.random() * 200) + 10,
+      }),
       status: statuses[i],
       lastScrapedAt: new Date(now.getTime() - i * 86400000).toISOString(),
       createdAt: new Date(now.getTime() - (i + 3) * 86400000).toISOString(),
@@ -1575,14 +1613,60 @@ export const memoryStore = {
   },
 
   async scrapeCompany(url: string) {
-    // Simulated scrape
-    return {
-      companyUrl: url,
-      companyName: url.replace(/https?:\/\//, '').split('.')[0].charAt(0).toUpperCase() + url.replace(/https?:\/\//, '').split('.')[0].slice(1),
-      careersPageUrl: url + '/careers',
-      contactEmail: `careers@${url.replace(/https?:\/\//, '').split('/')[0]}`,
-      hrEmail: `hr@${url.replace(/https?:\/\//, '').split('/')[0]}`,
-      status: 'scraped',
+    // Simulated scrape with rich contact data
+    const domain = url.replace(/https?:\/\//, '').split('/')[0]
+    const name = domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1)
+    const firstNames = ['Rajesh', 'Priya', 'Suresh', 'Anita', 'Vikram', 'Deepa', 'Amit', 'Sneha', 'Karan', 'Meena']
+    const lastNames = ['Kumar', 'Sharma', 'Iyer', 'Nair', 'Rao', 'Reddy', 'Joshi', 'Patel', 'Desai', 'Bhasin']
+    const designations = ['HR Manager', 'Talent Acquisition Lead', 'VP - Human Resources', 'Director - People Operations', 'Chief People Officer']
+    const seed = domain.split('').reduce((a, c) => a + c.charCodeAt(0), 0)
+    const contactName = `${firstNames[seed % firstNames.length]} ${lastNames[(seed + 3) % lastNames.length]}`
+    const hrName = `${firstNames[(seed + 1) % firstNames.length]} ${lastNames[(seed + 2) % lastNames.length]}`
+    const designation = designations[seed % designations.length]
+    const areaCode = ['22', '80', '40', '20', '120'][seed % 5]
+    const phone = `+91-${areaCode}-${1000 + seed}-${5000 + seed}`
+
+    const scrapeData = {
+      hrName,
+      hrDesignation: designation,
+      hrPhone: phone,
+      contactName,
+      contactDesignation: designation === 'Chief People Officer' ? 'Senior HR Manager' : 'Recruitment Coordinator',
+      contactPhone: `+91-${areaCode}-${1000 + seed}-${5001 + seed}`,
+      companyPhone: phone,
+      numberOfEmployees: ['501-1000', '1001-5000', '5001-10000', '10000+'][seed % 4],
+      foundedYear: 2000 + (seed % 24),
+      revenue: ['$10M+', '$50M+', '$100M+', '$500M+', '$1B+'][seed % 5],
+      techStack: ['Java', 'Python', 'React', 'Node.js', 'AWS', 'Azure', 'Kubernetes'].slice(0, 3 + (seed % 4)).join(', '),
+      openPositions: 5 + (seed % 50),
     }
+
+    const scrape = {
+      id: genId(),
+      companyUrl: url,
+      companyName: name,
+      careersPageUrl: `${url}/careers`,
+      contactEmail: `careers@${domain}`,
+      hrEmail: `hr@${domain}`,
+      linkedInUrl: `https://linkedin.com/company/${domain.split('.')[0]}`,
+      industry: ['Technology', 'IT Services', 'Consulting', 'E-Commerce', 'Fintech'][seed % 5],
+      companySize: scrapeData.numberOfEmployees,
+      location: ['Bangalore, India', 'Mumbai, India', 'Hyderabad, India', 'Pune, India', 'Delhi, India'][seed % 5],
+      scrapeData: JSON.stringify(scrapeData),
+      status: 'scraped',
+      lastScrapedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+
+    // Add to scrapes list
+    const existing = _aiCompanyScrapes.findIndex(c => c.companyUrl === url)
+    if (existing >= 0) {
+      _aiCompanyScrapes[existing] = scrape
+    } else {
+      _aiCompanyScrapes.unshift(scrape)
+    }
+
+    return scrape
   },
 }
