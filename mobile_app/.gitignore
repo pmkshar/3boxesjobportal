@@ -1,0 +1,30 @@
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.lock
+build/
+.packages
+.pub-cache/
+.pub/
+*.iml
+
+# Android
+**/gradle-wrapper.jar
+**/local.properties
+**/build/
+**/.gradle/
+
+# iOS
+**/Pods/
+**/xcuserdata/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Generated
+*.g.dart
+*.freezed.dart
