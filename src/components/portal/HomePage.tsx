@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { HeroIllustration } from './Illustrations'
 import { useAuthStore } from '@/lib/store'
+import { usePWAInstall } from '@/hooks/use-pwa-install'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import {
@@ -17,7 +18,7 @@ import {
   IndianRupee, Globe, ChevronDown, Layers, Box, Trophy, Rocket,
   PenTool, MessageSquare, Cpu, Lightbulb, Handshake, Wifi, X,
   Bookmark, LayoutGrid, Shield, BookOpen, Star, Download,
-  Heart, Bell, User,
+  Heart, Bell, User, Smartphone, Share,
 } from 'lucide-react'
 
 // Job categories config
@@ -109,6 +110,7 @@ export function HomePage() {
   const [jobs, setJobs] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const { user, isAuthenticated } = useAuthStore()
+  const { isInstallable, isInstalled, platform, install } = usePWAInstall()
 
   useEffect(() => {
     loadFeaturedJobs()
@@ -1097,7 +1099,9 @@ export function HomePage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left - App Info */}
             <motion.div initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} viewport={{ once: true }}>
-              <Badge className="bg-green-50 text-[#16a34a] border-green-200 rounded-full px-4 py-1 text-xs font-semibold mb-3">Coming Soon</Badge>
+              <Badge className="bg-green-50 text-[#16a34a] border-green-200 rounded-full px-4 py-1 text-xs font-semibold mb-3">
+                {isInstalled ? '✓ Installed' : 'Install Now'}
+              </Badge>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight">
                 Get Jobs on the Go with <span className="bg-gradient-to-r from-[#16a34a] to-[#7c66ff] bg-clip-text text-transparent">3 Boxes App</span>
               </h2>
@@ -1122,13 +1126,67 @@ export function HomePage() {
               </div>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <Button className="bg-black hover:bg-gray-800 text-white font-semibold px-6 h-12 rounded-xl shadow-md">
-                  <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
-                  App Store
-                </Button>
-                <Button className="bg-black hover:bg-gray-800 text-white font-semibold px-6 h-12 rounded-xl shadow-md">
-                  <Download className="h-5 w-5 mr-2" /> Google Play
-                </Button>
+                {isInstalled ? (
+                  <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-xl px-6 h-12">
+                    <CheckCircle2 className="h-5 w-5 text-green-600" />
+                    <span className="text-green-700 font-semibold">App Installed</span>
+                  </div>
+                ) : isInstallable ? (
+                  /* Android/Chrome: Show native install prompt */
+                  <Button 
+                    onClick={async () => {
+                      const ok = await install()
+                      if (ok) toast.success('3 Boxes Jobs app installed!')
+                    }}
+                    className="bg-gradient-to-r from-[#16a34a] to-[#059669] hover:from-[#15803d] hover:to-[#047857] text-white font-semibold px-6 h-12 rounded-xl shadow-lg shadow-green-200/50"
+                  >
+                    <Download className="h-5 w-5 mr-2" /> Install App
+                  </Button>
+                ) : platform === 'ios' ? (
+                  /* iOS: Show Add to Home Screen instructions */
+                  <div className="space-y-3">
+                    <Button 
+                      onClick={() => toast.info('Tap the Share button below, then "Add to Home Screen"', { duration: 6000 })}
+                      className="bg-gradient-to-r from-[#16a34a] to-[#059669] hover:from-[#15803d] hover:to-[#047857] text-white font-semibold px-6 h-12 rounded-xl shadow-lg shadow-green-200/50"
+                    >
+                      <Share className="h-5 w-5 mr-2" /> Add to Home Screen
+                    </Button>
+                    <p className="text-xs text-gray-400 flex items-center gap-1">
+                      <Share className="h-3 w-3" /> Tap Share icon in Safari, then &quot;Add to Home Screen&quot;
+                    </p>
+                  </div>
+                ) : (
+                  /* Desktop/Other: Show install buttons that trigger PWA install */
+                  <>
+                    <Button 
+                      onClick={async () => {
+                        if (isInstallable) {
+                          const ok = await install()
+                          if (ok) toast.success('3 Boxes Jobs app installed!')
+                        } else {
+                          toast.info('Open this site in Chrome or Edge on your phone to install the app', { duration: 5000 })
+                        }
+                      }}
+                      className="bg-black hover:bg-gray-800 text-white font-semibold px-6 h-12 rounded-xl shadow-md"
+                    >
+                      <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
+                      App Store
+                    </Button>
+                    <Button 
+                      onClick={async () => {
+                        if (isInstallable) {
+                          const ok = await install()
+                          if (ok) toast.success('3 Boxes Jobs app installed!')
+                        } else {
+                          toast.info('Open this site in Chrome on your Android phone to install the app', { duration: 5000 })
+                        }
+                      }}
+                      className="bg-black hover:bg-gray-800 text-white font-semibold px-6 h-12 rounded-xl shadow-md"
+                    >
+                      <Download className="h-5 w-5 mr-2" /> Google Play
+                    </Button>
+                  </>
+                )}
               </div>
             </motion.div>
 
@@ -1164,13 +1222,12 @@ export function HomePage() {
                         <span className="text-white font-bold text-sm">3 Boxes Jobs</span>
                       </div>
                       <h3 className="text-white text-lg font-bold mb-1">Hello, Priya!</h3>
-                      <p className="text-green-100/70 text-xs mb-4">3 new job matches today</p>
+                      <p className="text-green-100/70 text-xs mb-3">3 new job matches today</p>
                       {/* Mini job cards */}
                       <div className="space-y-2">
                         {[
                           { title: 'Senior React Dev', company: 'Google', salary: '₹25L-40L' },
                           { title: 'Data Scientist', company: 'Amazon', salary: '₹20L-35L' },
-                          { title: 'Product Manager', company: 'Flipkart', salary: '₹22L-38L' },
                         ].map((job, i) => (
                           <div key={i} className="bg-white/15 backdrop-blur-sm rounded-xl p-3">
                             <div className="flex items-center justify-between">
@@ -1183,16 +1240,21 @@ export function HomePage() {
                           </div>
                         ))}
                       </div>
-                      {/* Quick actions */}
-                      <div className="mt-4 grid grid-cols-3 gap-2">
+                      {/* Feature grid - showing all 8 features */}
+                      <div className="mt-3 grid grid-cols-4 gap-1.5">
                         {[
-                          { icon: Search, label: 'Search' },
-                          { icon: Brain, label: 'Interview' },
-                          { icon: FileText, label: 'Resume' },
+                          { icon: Search, label: 'Find Jobs' },
+                          { icon: Brain, label: 'AI Interview' },
+                          { icon: FileText, label: 'CV Manager' },
+                          { icon: Target, label: 'Skill Gap' },
+                          { icon: Target, label: 'Job Fit' },
+                          { icon: GraduationCap, label: 'Training' },
+                          { icon: BarChart3, label: 'Analytics' },
+                          { icon: User, label: 'Profile' },
                         ].map((action, i) => (
-                          <div key={i} className="bg-white/10 rounded-xl p-2 text-center">
-                            <action.icon className="h-4 w-4 text-white mx-auto mb-1" />
-                            <span className="text-[9px] text-green-100/80">{action.label}</span>
+                          <div key={i} className="bg-white/10 rounded-lg p-1.5 text-center">
+                            <action.icon className="h-3.5 w-3.5 text-white mx-auto mb-0.5" />
+                            <span className="text-[8px] text-green-100/80 leading-tight">{action.label}</span>
                           </div>
                         ))}
                       </div>
@@ -1203,7 +1265,7 @@ export function HomePage() {
                         {[
                           { icon: Briefcase, active: true },
                           { icon: Search, active: false },
-                          { icon: MessageSquare, active: false },
+                          { icon: Brain, active: false },
                           { icon: User, active: false },
                         ].map((nav, i) => (
                           <nav.icon key={i} className={`h-4 w-4 ${nav.active ? 'text-green-300' : 'text-white/50'}`} />

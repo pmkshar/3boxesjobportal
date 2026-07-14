@@ -111,7 +111,7 @@ export function JobSeekerDashboard() {
           </button>
 
           {/* Nav items */}
-          <nav className="flex-1 px-3 pt-6 space-y-1">
+          <nav className="flex-1 px-3 pt-6 space-y-1 overflow-y-auto">
             {navItems.map((item) => (
               <button key={item.id}
                 onClick={() => setActiveView(item.id)}
@@ -188,59 +188,83 @@ export function JobSeekerDashboard() {
           </div>
         </aside>
 
-        {/* Mobile nav overlay */}
+        {/* Mobile nav overlay - all features accessible */}
         {mobileMenuOpen && (
           <div className="lg:hidden fixed inset-0 z-50">
             <div className="absolute inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
-            <div className="absolute left-0 top-0 bottom-0 w-[260px] bg-[var(--theme-sidebar)] flex flex-col overflow-y-auto">
+            <div className="absolute left-0 top-0 bottom-0 w-[280px] bg-[var(--theme-sidebar)] flex flex-col overflow-y-auto -webkit-overflow-scrolling-touch">
               <div className="flex items-center justify-between px-4 h-16 border-b border-[var(--theme-sidebar-hover)]">
                 <span className="text-white font-bold">3 Boxes Jobs</span>
                 <button onClick={() => setMobileMenuOpen(false)} className="text-[#A3B8D0]"><X className="h-5 w-5" /></button>
               </div>
-              <nav className="flex-1 px-3 pt-4 space-y-1">
+              <nav className="flex-1 px-3 pt-4 space-y-1 pb-4">
                 {navItems.map((item) => (
                   <button key={item.id}
                     onClick={() => { setActiveView(item.id); setMobileMenuOpen(false) }}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all ${
+                    className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm transition-all ${
                       activeView === item.id ? 'bg-[var(--theme-sidebar-hover)] text-white font-medium' : 'text-[#A3B8D0] hover:bg-[var(--theme-sidebar-hover)] hover:text-white'
                     }`}>
-                    <item.icon className="h-[18px] w-[18px]" />
+                    <item.icon className="h-5 w-5" />
                     <span>{item.label}</span>
                   </button>
                 ))}
               </nav>
-              <div className="px-3 pb-4 space-y-1">
+              <div className="px-3 pb-6 space-y-1 border-t border-[var(--theme-sidebar-hover)] pt-3">
                 <ThemeSwitcher />
-                <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[#A3B8D0] hover:text-red-400"
+                <button className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm text-[#A3B8D0] hover:text-red-400"
                   onClick={() => { useAuthStore.getState().logout(); window.location.reload() }}>
-                  <LogOut className="h-[18px] w-[18px]" /><span>Logout</span>
+                  <LogOut className="h-5 w-5" /><span>Logout</span>
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* Mobile bottom nav */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40 px-2 py-1.5 shadow-lg">
-          <div className="flex justify-around">
-            {navItems.slice(0, 5).map((item) => (
-              <button key={item.id} onClick={() => setActiveView(item.id)}
-                className={`flex flex-col items-center py-1 px-2 text-xs rounded-lg transition-colors ${
-                  activeView === item.id ? 'text-[var(--theme-primary)] font-medium' : 'text-[#66789C]'
-                }`}>
-                <item.icon className="h-5 w-5 mb-0.5" />
-                <span className="truncate max-w-[56px] text-[10px]">{item.label}</span>
-              </button>
-            ))}
-            <button className="flex flex-col items-center py-1 px-2 text-xs text-[#66789C]" onClick={() => setMobileMenuOpen(true)}>
-              <Menu className="h-5 w-5 mb-0.5" />
-              <span className="text-[10px]">More</span>
+        {/* Mobile bottom nav - shows key features with More button */}
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40 safe-area-bottom">
+          <div className="flex justify-around items-center px-1 py-1.5">
+            {/* Home */}
+            <button onClick={() => setActiveView('dashboard')}
+              className={`flex flex-col items-center py-1 px-1.5 rounded-lg transition-colors min-w-0 ${
+                activeView === 'dashboard' ? 'text-[var(--theme-primary)] font-medium' : 'text-[#66789C]'
+              }`}>
+              <LayoutDashboard className="h-5 w-5" />
+              <span className="text-[9px] mt-0.5 truncate">Home</span>
+            </button>
+            {/* Find Jobs */}
+            <button onClick={() => setActiveView('jobs')}
+              className={`flex flex-col items-center py-1 px-1.5 rounded-lg transition-colors min-w-0 ${
+                activeView === 'jobs' ? 'text-[var(--theme-primary)] font-medium' : 'text-[#66789C]'
+              }`}>
+              <Search className="h-5 w-5" />
+              <span className="text-[9px] mt-0.5 truncate">Jobs</span>
+            </button>
+            {/* AI Interview */}
+            <button onClick={() => setActiveView('interview')}
+              className={`flex flex-col items-center py-1 px-1.5 rounded-lg transition-colors min-w-0 ${
+                activeView === 'interview' ? 'text-[var(--theme-primary)] font-medium' : 'text-[#66789C]'
+              }`}>
+              <Brain className="h-5 w-5" />
+              <span className="text-[9px] mt-0.5 truncate">Interview</span>
+            </button>
+            {/* CV Manager */}
+            <button onClick={() => setActiveView('resume')}
+              className={`flex flex-col items-center py-1 px-1.5 rounded-lg transition-colors min-w-0 ${
+                activeView === 'resume' ? 'text-[var(--theme-primary)] font-medium' : 'text-[#66789C]'
+              }`}>
+              <FileText className="h-5 w-5" />
+              <span className="text-[9px] mt-0.5 truncate">CV</span>
+            </button>
+            {/* More */}
+            <button className="flex flex-col items-center py-1 px-1.5 rounded-lg text-[#66789C] min-w-0" onClick={() => setMobileMenuOpen(true)}>
+              <Menu className="h-5 w-5" />
+              <span className="text-[9px] mt-0.5">More</span>
             </button>
           </div>
         </div>
 
-        {/* Main Content */}
-        <main className="flex-1 min-w-0">
+        {/* Main Content - scrollable on mobile */}
+        <main className="flex-1 min-w-0 overflow-y-auto -webkit-overflow-scrolling-touch">
           {/* Breadcrumb - JobBox style */}
           <div className="px-4 lg:px-8 pt-5 pb-0">
             <div className="flex items-center justify-between">
@@ -256,7 +280,7 @@ export function JobSeekerDashboard() {
               </div>
             </div>
           </div>
-          <div className="p-4 lg:p-8 pb-24 lg:pb-8">
+          <div className="p-4 lg:p-8 pb-28 lg:pb-8">
             {renderContent()}
           </div>
         </main>
@@ -412,6 +436,31 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
         {/* Decorative circles */}
         <div className="absolute right-0 top-0 w-64 h-64 bg-[var(--theme-primary-light)] rounded-full -mr-20 -mt-20" />
         <div className="absolute right-20 bottom-0 w-32 h-32 bg-[var(--theme-primary-light)] rounded-full -mb-10" />
+      </div>
+
+      {/* Quick Access Feature Cards - Mobile-friendly grid */}
+      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+        {[
+          { id: 'interview' as View, icon: Brain, label: 'AI Interview', color: 'bg-purple-50 text-purple-700 border-purple-200' },
+          { id: 'resume' as View, icon: FileText, label: 'CV Manager', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+          { id: 'tracker' as View, icon: FileCheck, label: 'Applications Tracker', color: 'bg-green-50 text-green-700 border-green-200' },
+          { id: 'ai-buddy' as View, icon: Bot, label: 'AI Buddy', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+          { id: 'skill-gap' as View, icon: Target, label: 'Skill Gap', color: 'bg-amber-50 text-amber-700 border-amber-200' },
+          { id: 'job-fit' as View, icon: Target, label: 'Job Fit', color: 'bg-teal-50 text-teal-700 border-teal-200' },
+          { id: 'training' as View, icon: GraduationCap, label: 'Training', color: 'bg-cyan-50 text-cyan-700 border-cyan-200' },
+          { id: 'analytics' as View, icon: BarChart3, label: 'Analytics', color: 'bg-orange-50 text-orange-700 border-orange-200' },
+          { id: 'applications' as View, icon: FileCheck, label: 'Applications', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+          { id: 'profile' as View, icon: User, label: 'My Profile', color: 'bg-pink-50 text-pink-700 border-pink-200' },
+          { id: 'jobs' as View, icon: Search, label: 'Find Jobs', color: 'bg-lime-50 text-lime-700 border-lime-200' },
+          { id: 'dashboard' as View, icon: LayoutDashboard, label: 'Dashboard', color: 'bg-slate-50 text-slate-700 border-slate-200' },
+        ].map((feature) => (
+          <button key={feature.id}
+            onClick={() => onNavigate(feature.id)}
+            className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border ${feature.color} hover:shadow-md transition-all active:scale-95`}>
+            <feature.icon className="h-5 w-5" />
+            <span className="text-[10px] sm:text-xs font-medium text-center leading-tight">{feature.label}</span>
+          </button>
+        ))}
       </div>
 
       {/* Stat cards - JobBox 4-col grid with 8 cards */}

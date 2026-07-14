@@ -129,8 +129,32 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    /* Enable smooth scrolling on mobile */
+    scroll-behavior: smooth;
+    /* Prevent overscroll bounce on iOS */
+    overscroll-behavior: none;
+  }
   body {
     @apply bg-background text-foreground;
+    /* Fix iOS Safari viewport height bug */
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    /* Enable smooth touch scrolling */
+    -webkit-overflow-scrolling: touch;
+    /* Prevent horizontal overflow on mobile */
+    overflow-x: hidden;
+  }
+  /* PWA standalone mode - ensure content fills screen */
+  @media (display-mode: standalone) {
+    body {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
   }
 }
 
@@ -288,4 +312,69 @@ input:focus, select:focus, textarea:focus {
 }
 .animate-marquee:hover {
   animation-play-state: paused;
+}
+
+/* ===== Mobile PWA & Touch Fixes ===== */
+
+/* Fix scroll containers on mobile */
+@media (max-width: 1023px) {
+  /* Ensure main content scrolls properly under fixed bottom nav */
+  main {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+  }
+
+  /* Fix overflow clipping on mobile */
+  .min-h-screen {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+
+  /* Make scrollable areas work properly */
+  [class*="overflow-"] {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Ensure content above bottom nav */
+  .pb-24 {
+    padding-bottom: 6rem;
+  }
+}
+
+/* Standalone PWA mode fixes */
+@media (display-mode: standalone) {
+  /* Hide elements that don't make sense in app mode */
+  .pwa-hide {
+    display: none !important;
+  }
+
+  /* Add bottom padding for native bottom bar */
+  .pwa-bottom-pad {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* iOS Safari safe area fixes */
+@supports (padding: max(0px)) {
+  .safe-area-bottom {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Remove hover effects on touch devices */
+  .stat-card-hover:hover {
+    transform: none;
+    box-shadow: none;
+  }
 }
