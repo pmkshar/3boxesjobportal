@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { memoryStore } from '@/lib/memory-store'
+import JSZip from 'jszip'
 
 export const dynamic = 'force-dynamic'
 
@@ -10,44 +11,29 @@ export const config = {
 
 // ─── DOCX Text Extractor (JSZip-based, Vercel-compatible) ──────────
 // DOCX files are ZIP archives containing XML. We extract text from
-// word/document.xml using JSZip (already proven to work on Vercel)
-// instead of mammoth which fails on Vercel's serverless runtime.
+// word/document.xml using JSZip. This approach avoids mammoth which
+// fails on Vercel's serverless runtime.
+//
+// Multiple extraction strategies are used for maximum compatibility:
+// 1. Parse <w:p> paragraphs with <w:t> text elements (standard Word format)
+// 2. Fallback: strip all XML tags and extract readable text
+// 3. Fallback: scan for any text-like content in any XML file
 
-async function extractDocxText(fileBuffer: ArrayBuffer | Buffer): Promise<string> {
-  const JSZip = (await import('jszip')).default
-  const zip = await JSZip.loadAsync(fileBuffer)
-
-  // Primary: word/document.xml
-  const docXmlFile = zip.file('word/document.xml')
-  if (!docXmlFile) {
-    throw new Error('Invalid DOCX: word/document.xml not found')
-  }
-
-  const xmlContent = await docXmlFile.async('string')
-
-  // Extract text from <w:t> elements in the XML
-  // Each <w:p> is a paragraph, each <w:r> is a run, each <w:t> has text
+function extractTextFromDocXml(xmlContent: string): string {
   const paragraphs: string[] = []
 
-  // Split by paragraph tags to preserve line breaks
+  // Strategy 1: Match <w:p>...</w:p> blocks and extract <w:t> text
+  // Handle both regular and self-closing paragraph tags
   const paraRegex = /<w:p[\s>][\s\S]*?<\/w:p>/g
   const paraMatches = xmlContent.match(paraRegex) || []
 
   for (const para of paraMatches) {
-    // Extract all <w:t> text content within this paragraph
     const textRegex = /<w:t[^>]*>([\s\S]*?)<\/w:t>/g
     let textMatch: RegExpExecArray | null
     const textParts: string[] = []
 
     while ((textMatch = textRegex.exec(para)) !== null) {
-      // Decode XML entities
-      const text = textMatch[1]
-        .replace(/&amp;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&quot;/g, '"')
-        .replace(/&apos;/g, "'")
-        .replace(/&#\d+;/g, ' ')
+      const text = decodeXmlEntities(textMatch[1])
       textParts.push(text)
     }
 
@@ -56,7 +42,150 @@ async function extractDocxText(fileBuffer: ArrayBuffer | Buffer): Promise<string
     }
   }
 
-  return paragraphs.join('\n')
+  if (paragraphs.length > 0) {
+    return paragraphs.join('\n')
+  }
+
+  // Strategy 2: Fallback - strip all XML tags and keep text content
+  // This handles non-standard DOCX formats or files with different namespace prefixes
+  const strippedText = xmlContent
+    .replace(/<[^>]+>/g, '\n')
+    .split('\n')
+    .map(line => decodeXmlEntities(line.trim()))
+    .filter(line => line.length > 0 && /[a-zA-Z]{2,}/.test(line))
+    .join('\n')
+
+  if (strippedText.length > 20) {
+    return strippedText
+  }
+
+  // Strategy 3: Last resort - look for any text between > and < in the XML
+  const textChunks: string[] = []
+  const chunkRegex = />([^<]+)</g
+  let chunkMatch: RegExpExecArray | null
+  while ((chunkMatch = chunkRegex.exec(xmlContent)) !== null) {
+    const chunk = decodeXmlEntities(chunkMatch[1].trim())
+    if (chunk.length > 1 && /[a-zA-Z]/.test(chunk)) {
+      textChunks.push(chunk)
+    }
+  }
+
+  return textChunks.join('\n')
+}
+
+function decodeXmlEntities(text: string): string {
+  return text
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&#(\d+);/g, (_, num) => {
+      const code = parseInt(num)
+      return code > 31 && code < 65535 ? String.fromCharCode(code) : ' '
+    })
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => {
+      const code = parseInt(hex, 16)
+      return code > 31 && code < 65535 ? String.fromCharCode(code) : ' '
+    })
+}
+
+async function extractDocxText(fileBuffer: ArrayBuffer | Buffer): Promise<string> {
+  console.log('[DOCX] Starting extraction, buffer size:', fileBuffer.byteLength)
+
+  // Validate buffer is not empty
+  if (!fileBuffer || fileBuffer.byteLength < 100) {
+    throw new Error('File buffer is too small to be a valid DOCX file (min 100 bytes, got ' + (fileBuffer?.byteLength || 0) + ')')
+  }
+
+  // Validate ZIP signature (DOCX files start with PK header: 50 4B 03 04)
+  const header = new Uint8Array(fileBuffer.slice(0, 4))
+  const isZipSignature = header[0] === 0x50 && header[1] === 0x4B && header[2] === 0x03 && header[3] === 0x04
+  if (!isZipSignature) {
+    throw new Error('File does not appear to be a valid DOCX/ZIP file. It may be a legacy .doc format or corrupted. Header bytes: ' + Array.from(header).map(b => b.toString(16).padStart(2, '0')).join(' '))
+  }
+
+  let zip: JSZip
+  try {
+    zip = await JSZip.loadAsync(fileBuffer)
+    console.log('[DOCX] ZIP loaded successfully, entries:', Object.keys(zip.files).length)
+  } catch (zipErr: any) {
+    throw new Error('Failed to open DOCX as ZIP archive: ' + (zipErr.message || String(zipErr)))
+  }
+
+  // Try to find the document XML - check multiple possible locations
+  const possibleDocPaths = [
+    'word/document.xml',
+    'Word/document.xml',
+    'word/Document.xml',
+  ]
+
+  let docXmlFile: JSZip.JSZipObject | null = null
+  let usedPath = ''
+
+  for (const path of possibleDocPaths) {
+    docXmlFile = zip.file(path) || null
+    if (docXmlFile) {
+      usedPath = path
+      break
+    }
+  }
+
+  // If standard paths don't work, search for any file named document.xml
+  if (!docXmlFile) {
+    const allFiles = Object.entries(zip.files)
+    const docFile = allFiles.find(([name, f]) =>
+      !f.dir && name.toLowerCase().endsWith('document.xml')
+    )
+    if (docFile) {
+      docXmlFile = docFile[1]
+      usedPath = docFile[0]
+    }
+  }
+
+  if (!docXmlFile) {
+    // Last resort: try to find ANY xml file that might contain document content
+    const allFiles = Object.entries(zip.files)
+    console.log('[DOCX] All ZIP entries:', allFiles.map(([n]) => n).join(', '))
+
+    const xmlFiles = allFiles.filter(([name, f]) =>
+      !f.dir && name.toLowerCase().endsWith('.xml') && !name.includes('_rels')
+    )
+
+    if (xmlFiles.length === 0) {
+      throw new Error('No XML content files found in the DOCX archive. Found entries: ' + allFiles.map(([n]) => n).join(', '))
+    }
+
+    // Try each XML file for text content
+    for (const [xmlPath, xmlEntry] of xmlFiles) {
+      try {
+        const xmlContent = await xmlEntry.async('string')
+        const extracted = extractTextFromDocXml(xmlContent)
+        if (extracted.length > 20) {
+          console.log('[DOCX] Extracted from fallback XML:', xmlPath, 'length:', extracted.length)
+          return extracted
+        }
+      } catch {
+        // Skip this file
+      }
+    }
+
+    throw new Error('Could not find document.xml or any readable XML content in the DOCX archive')
+  }
+
+  console.log('[DOCX] Found document XML at:', usedPath)
+
+  const xmlContent = await docXmlFile.async('string')
+  console.log('[DOCX] XML content length:', xmlContent.length)
+
+  if (!xmlContent || xmlContent.length < 10) {
+    throw new Error('Document XML is empty or too small')
+  }
+
+  const text = extractTextFromDocXml(xmlContent)
+  console.log('[DOCX] Extracted text length:', text.length, 'first 200 chars:', text.substring(0, 200))
+
+  return text
 }
 
 // ─── Resume Text Parser ────────────────────────────────────────────
@@ -189,7 +318,7 @@ function parseResumeText(text: string, fileName: string): Record<string, any> {
   return candidate
 }
 
-// ─── Extract text from a single file inside a ZIP or standalone ────
+// ─── Extract text from a single file (standalone or within ZIP) ────
 
 async function extractTextFromFile(
   fileBuffer: ArrayBuffer,
@@ -205,7 +334,7 @@ async function extractTextFromFile(
   } else if (lowerName.endsWith('.doc')) {
     // .doc (legacy binary format) — best-effort text extraction
     const text = new TextDecoder('utf-8', { fatal: false }).decode(fileBuffer)
-    // Filter to readable ASCII + common CJK ranges
+    // Filter to readable characters
     return text.replace(/[^\x20-\x7E\u4e00-\u9fff\u0900-\u097F\n\r]/g, ' ').replace(/\s+/g, ' ')
   } else if (lowerName.endsWith('.pdf')) {
     // PDF basic text extraction (no external deps)
@@ -247,18 +376,25 @@ export async function POST(request: NextRequest) {
 
     // Handle file upload
     if (file) {
-      const buffer = Buffer.from(await file.arrayBuffer())
+      console.log('[UPLOAD] File received:', file.name, 'size:', file.size, 'type:', file.type)
+
+      const arrayBuffer = await file.arrayBuffer()
+      console.log('[UPLOAD] ArrayBuffer size:', arrayBuffer.byteLength, 'first 4 bytes:', Array.from(new Uint8Array(arrayBuffer.slice(0, 4))).map(b => b.toString(16).padStart(2, '0')).join(' '))
+
+      const buffer = Buffer.from(arrayBuffer)
       const lowerName = file.name.toLowerCase()
 
       if (lowerName.endsWith('.zip')) {
         // ─── ZIP file: extract and parse each resume inside ───
         try {
-          const JSZip = (await import('jszip')).default
           const zip = await JSZip.loadAsync(buffer)
+          console.log('[ZIP] Opened successfully, entries:', Object.keys(zip.files).length)
 
           const fileEntries = Object.entries(zip.files).filter(
             ([name, f]) => !f.dir && /\.(docx?|txt|pdf)$/i.test(name) && !name.startsWith('__MACOSX')
           )
+
+          console.log('[ZIP] Resume files found:', fileEntries.map(([n]) => n).join(', '))
 
           for (const [entryName, zipEntry] of fileEntries) {
             try {
@@ -273,7 +409,7 @@ export async function POST(request: NextRequest) {
                 }
               }
             } catch (err) {
-              console.error(`Error parsing ${entryName}:`, err)
+              console.error(`[ZIP] Error parsing ${entryName}:`, err)
               // Add with filename as fallback so we don't lose the entry
               const fallbackName = entryName.split('/').pop()?.replace(/\.\w+$/, '').replace(/[_-]/g, ' ') || 'Unknown'
               candidates.push({
@@ -287,7 +423,7 @@ export async function POST(request: NextRequest) {
             }
           }
         } catch (zipErr) {
-          console.error('ZIP processing error:', zipErr)
+          console.error('[ZIP] Processing error:', zipErr)
           return NextResponse.json({
             error: 'Failed to process ZIP file. Please ensure it is a valid ZIP archive.',
             details: String(zipErr),
@@ -296,23 +432,31 @@ export async function POST(request: NextRequest) {
       } else if (lowerName.endsWith('.docx') || lowerName.endsWith('.doc')) {
         // ─── Single DOCX / DOC file ───
         try {
-          const text = await extractTextFromFile(buffer, file.name)
+          const text = await extractTextFromFile(arrayBuffer, file.name)
+          console.log('[DOCX] Extracted text length:', text.length)
+
           if (text.trim().length > 10) {
             const parsed = parseResumeText(text, file.name)
             if (parsed.email || parsed.name) {
               candidates.push(parsed)
+            } else {
+              return NextResponse.json({
+                error: 'Could not extract candidate name or email from the DOCX file. Please ensure the resume contains a name and email address.',
+                extractedTextPreview: text.substring(0, 500),
+              }, { status: 400 })
             }
           } else {
             return NextResponse.json({
               error: 'The uploaded DOCX file appears to be empty or could not be read. Please ensure the file contains readable text.',
+              hint: 'The file may be in legacy .doc format. Try saving it as .docx in Microsoft Word or Google Docs, or upload a .txt version.',
             }, { status: 400 })
           }
-        } catch (docxErr) {
-          console.error('DOCX parse error:', docxErr)
+        } catch (docxErr: any) {
+          console.error('[DOCX] Parse error:', docxErr)
           return NextResponse.json({
-            error: 'Failed to parse DOCX file. The file may be corrupted or in an unsupported format.',
-            details: String(docxErr),
-            hint: 'Try saving the resume as a .txt file and uploading again, or copy-paste the content into the manual entry form.',
+            error: 'Failed to parse DOCX file. ' + (docxErr.message || 'The file may be corrupted or in an unsupported format.'),
+            details: docxErr.message || String(docxErr),
+            hint: 'If this is a legacy .doc file, please save it as .docx in Microsoft Word or Google Docs first. You can also try uploading a .txt version.',
           }, { status: 400 })
         }
       } else if (lowerName.endsWith('.txt')) {
@@ -351,7 +495,7 @@ export async function POST(request: NextRequest) {
       } else if (lowerName.endsWith('.pdf')) {
         // ─── Single PDF file (basic text extraction) ───
         try {
-          const text = await extractTextFromFile(buffer, file.name)
+          const text = await extractTextFromFile(arrayBuffer, file.name)
           if (text.trim().length > 10) {
             const parsed = parseResumeText(text, file.name)
             if (parsed.email || parsed.name) {
@@ -359,7 +503,7 @@ export async function POST(request: NextRequest) {
             }
           }
         } catch (pdfErr) {
-          console.error('PDF parse error:', pdfErr)
+          console.error('[PDF] Parse error:', pdfErr)
           return NextResponse.json({
             error: 'Failed to extract text from PDF. Please try uploading a DOCX or TXT version instead.',
             details: String(pdfErr),
@@ -385,11 +529,11 @@ export async function POST(request: NextRequest) {
       message: `Processed ${result.totalProcessed} candidates: ${result.created} created, ${result.duplicates} duplicates, ${result.errors} errors`,
       ...result,
     }, { status: 201 })
-  } catch (error) {
-    console.error('Resume upload error:', error)
+  } catch (error: any) {
+    console.error('[UPLOAD] Resume upload error:', error)
     return NextResponse.json({
       error: 'Failed to process resume upload',
-      details: String(error),
+      details: error.message || String(error),
     }, { status: 500 })
   }
 }

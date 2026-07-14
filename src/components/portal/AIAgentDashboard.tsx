@@ -765,7 +765,10 @@ export function AIAgentDashboard() {
           await fetchUploadedCandidates()
           await fetchDashboard()
         } else {
-          alert(data.error || 'Failed to process resumes')
+          const errorMsg = data.error || 'Failed to process resumes'
+          const hint = data.hint ? `\n\n💡 ${data.hint}` : ''
+          const details = data.details ? `\n\nDetails: ${data.details}` : ''
+          alert(errorMsg + hint + details)
         }
       }
     } catch (err) {
@@ -2893,7 +2896,7 @@ export function AIAgentDashboard() {
                             id="resume-upload"
                             type="file"
                             className="hidden"
-                            accept=".zip,.docx,.txt,.csv"
+                            accept=".zip,.docx,.doc,.txt,.csv,.pdf"
                             multiple
                             onChange={e => handleUploadResumes(e.target.files)}
                           />
