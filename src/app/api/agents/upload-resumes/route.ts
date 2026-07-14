@@ -192,6 +192,32 @@ async function extractDocxText(fileBuffer: ArrayBuffer | Buffer): Promise<string
 // Extracts structured candidate data from plain text (from DOCX/PDF/TXT)
 
 function parseResumeText(text: string, fileName: string): Record<string, any> {
+  try {
+  return _parseResumeTextInner(text, fileName)
+  } catch (err: any) {
+    console.error('[parseResumeText] Error parsing resume text:', err.message)
+    // Return minimal candidate with filename as fallback
+    const nameFromFn = fileName.replace(/\.(docx?|pdf|txt)$/i, '').replace(/[_-]/g, ' ')
+    const fallbackName = nameFromFn.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
+    return {
+      name: fallbackName,
+      email: '',
+      phone: '',
+      location: '',
+      title: '',
+      company: '',
+      skills: '',
+      education: '',
+      experienceYears: 0,
+      summary: text.substring(0, 300),
+      linkedIn: '',
+      source: fileName,
+      parseWarning: 'Partial extraction due to: ' + (err.message || String(err)),
+    }
+  }
+}
+
+function _parseResumeTextInner(text: string, fileName: string): Record<string, any> {
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean)
   const candidate: Record<string, any> = {
     name: '',
@@ -276,7 +302,20 @@ function parseResumeText(text: string, fileName: string): Record<string, any> {
   } else {
     // Try to extract common tech skills from the whole text
     const techKeywords = ['JavaScript', 'TypeScript', 'Python', 'Java', 'React', 'Angular', 'Vue', 'Node.js', 'Express', 'Django', 'Flask', 'AWS', 'Azure', 'GCP', 'Docker', 'Kubernetes', 'MongoDB', 'PostgreSQL', 'MySQL', 'Redis', 'GraphQL', 'REST', 'CI/CD', 'Git', 'Machine Learning', 'Data Science', 'AI', 'NLP', 'C++', 'C#', '.NET', 'Spring', 'Hibernate', 'Jenkins', 'Terraform', 'Ansible', 'Linux', 'HTML', 'CSS', 'SASS', 'Tailwind', 'Figma', 'Photoshop', 'Agile', 'Scrum', 'JIRA']
-    const found = techKeywords.filter(k => new RegExp(`\\b${k.replace('.', '\\.')}\\b`, 'i').test(text))
+    const found = techKeywords.filter(k => {
+      try {
+        const escaped = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        // Keywords with special chars (C++, C#, .NET) need lookaround boundaries
+        // Normal alphabetic keywords use standard word boundary
+        const hasSpecialChar = /[^a-zA-Z\s]/.test(k)
+        const pattern = hasSpecialChar
+          ? `(?<![a-zA-Z0-9])${escaped}(?![a-zA-Z0-9])`
+          : `\\b${escaped}\\b`
+        return new RegExp(pattern, 'i').test(text)
+      } catch {
+        return false
+      }
+    })
     if (found.length > 0) candidate.skills = found.join(', ')
   }
 
