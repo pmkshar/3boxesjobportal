@@ -13,6 +13,7 @@ import 'job_fit_screen.dart';
 import 'training_screen.dart';
 import 'analytics_screen.dart';
 import 'my_profile_screen.dart';
+import 'resume_builder_screen.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -112,6 +113,7 @@ class _MainNavigationState extends State<MainNavigation> {
                   _FeatureCard(icon: Icons.assignment, label: 'Applications', color: const Color(0xFF10B981), onTap: () { Navigator.pop(context); _navigateToFeature(5); }),
                   _FeatureCard(icon: Icons.track_changes, label: 'Tracker', color: const Color(0xFF059669), onTap: () { Navigator.pop(context); _navigateToFeature(6); }),
                   _FeatureCard(icon: Icons.description, label: 'CV Manager', color: const Color(0xFF3B82F6), onTap: () { Navigator.pop(context); setState(() => _currentIndex = 3); }),
+                  _FeatureCard(icon: Icons.auto_awesome, label: 'Resume Builder', color: const Color(0xFFEC4899), onTap: () { Navigator.pop(context); _navigateToFeature(13); }),
                   _FeatureCard(icon: Icons.psychology, label: 'AI Interview', color: const Color(0xFF8B5CF6), onTap: () { Navigator.pop(context); setState(() => _currentIndex = 2); }),
                   _FeatureCard(icon: Icons.smart_toy, label: 'AI Buddy', color: const Color(0xFF6366F1), onTap: () { Navigator.pop(context); _navigateToFeature(7); }),
                   _FeatureCard(icon: Icons.track_changes_outlined, label: 'Skill Gap', color: const Color(0xFFF59E0B), onTap: () { Navigator.pop(context); _navigateToFeature(8); }),
@@ -144,6 +146,7 @@ class _MainNavigationState extends State<MainNavigation> {
       case 10: return const TrainingScreen();
       case 11: return const AnalyticsScreen();
       case 12: return const MyProfileScreen();
+      case 13: return const ResumeBuilderScreen();
       default: return const DashboardScreen();
     }
   }
