@@ -8,8 +8,59 @@ export const config = {
   api: { bodyParser: { sizeLimit: '50mb' } },
 }
 
+// ─── DOCX Text Extractor (JSZip-based, Vercel-compatible) ──────────
+// DOCX files are ZIP archives containing XML. We extract text from
+// word/document.xml using JSZip (already proven to work on Vercel)
+// instead of mammoth which fails on Vercel's serverless runtime.
+
+async function extractDocxText(fileBuffer: ArrayBuffer | Buffer): Promise<string> {
+  const JSZip = (await import('jszip')).default
+  const zip = await JSZip.loadAsync(fileBuffer)
+
+  // Primary: word/document.xml
+  const docXmlFile = zip.file('word/document.xml')
+  if (!docXmlFile) {
+    throw new Error('Invalid DOCX: word/document.xml not found')
+  }
+
+  const xmlContent = await docXmlFile.async('string')
+
+  // Extract text from <w:t> elements in the XML
+  // Each <w:p> is a paragraph, each <w:r> is a run, each <w:t> has text
+  const paragraphs: string[] = []
+
+  // Split by paragraph tags to preserve line breaks
+  const paraRegex = /<w:p[\s>][\s\S]*?<\/w:p>/g
+  const paraMatches = xmlContent.match(paraRegex) || []
+
+  for (const para of paraMatches) {
+    // Extract all <w:t> text content within this paragraph
+    const textRegex = /<w:t[^>]*>([\s\S]*?)<\/w:t>/g
+    let textMatch: RegExpExecArray | null
+    const textParts: string[] = []
+
+    while ((textMatch = textRegex.exec(para)) !== null) {
+      // Decode XML entities
+      const text = textMatch[1]
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&apos;/g, "'")
+        .replace(/&#\d+;/g, ' ')
+      textParts.push(text)
+    }
+
+    if (textParts.length > 0) {
+      paragraphs.push(textParts.join(''))
+    }
+  }
+
+  return paragraphs.join('\n')
+}
+
 // ─── Resume Text Parser ────────────────────────────────────────────
-// Extracts structured candidate data from plain text (from DOCX/PDF/ TXT)
+// Extracts structured candidate data from plain text (from DOCX/PDF/TXT)
 
 function parseResumeText(text: string, fileName: string): Record<string, any> {
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean)
@@ -138,6 +189,33 @@ function parseResumeText(text: string, fileName: string): Record<string, any> {
   return candidate
 }
 
+// ─── Extract text from a single file inside a ZIP or standalone ────
+
+async function extractTextFromFile(
+  fileBuffer: ArrayBuffer,
+  fileName: string
+): Promise<string> {
+  const lowerName = fileName.toLowerCase()
+
+  if (lowerName.endsWith('.docx')) {
+    // DOCX = ZIP archive with XML → use JSZip extraction (Vercel-safe)
+    return await extractDocxText(fileBuffer)
+  } else if (lowerName.endsWith('.txt')) {
+    return new TextDecoder().decode(fileBuffer)
+  } else if (lowerName.endsWith('.doc')) {
+    // .doc (legacy binary format) — best-effort text extraction
+    const text = new TextDecoder('utf-8', { fatal: false }).decode(fileBuffer)
+    // Filter to readable ASCII + common CJK ranges
+    return text.replace(/[^\x20-\x7E\u4e00-\u9fff\u0900-\u097F\n\r]/g, ' ').replace(/\s+/g, ' ')
+  } else if (lowerName.endsWith('.pdf')) {
+    // PDF basic text extraction (no external deps)
+    const text = new TextDecoder('utf-8', { fatal: false }).decode(fileBuffer)
+    return text.replace(/[^\x20-\x7E\n\r]/g, ' ').replace(/\s+/g, ' ')
+  }
+
+  return ''
+}
+
 // ─── POST Handler ──────────────────────────────────────────────────
 
 export async function POST(request: NextRequest) {
@@ -167,43 +245,28 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Handle ZIP file upload
+    // Handle file upload
     if (file) {
       const buffer = Buffer.from(await file.arrayBuffer())
+      const lowerName = file.name.toLowerCase()
 
-      if (file.name.endsWith('.zip')) {
-        // Process ZIP file
+      if (lowerName.endsWith('.zip')) {
+        // ─── ZIP file: extract and parse each resume inside ───
         try {
           const JSZip = (await import('jszip')).default
           const zip = await JSZip.loadAsync(buffer)
-          const mammoth = await import('mammoth')
 
           const fileEntries = Object.entries(zip.files).filter(
-            ([name, f]) => !f.dir && /\.(docx?|txt|pdf)$/i.test(name)
+            ([name, f]) => !f.dir && /\.(docx?|txt|pdf)$/i.test(name) && !name.startsWith('__MACOSX')
           )
 
           for (const [entryName, zipEntry] of fileEntries) {
             try {
               const fileBuffer = await zipEntry.async('arraybuffer')
               const fileName = entryName.split('/').pop() || entryName
-              let text = ''
+              const text = await extractTextFromFile(fileBuffer, fileName)
 
-              if (fileName.endsWith('.docx')) {
-                const result = await mammoth.extractRawText({ buffer: Buffer.from(fileBuffer) })
-                text = result.value
-              } else if (fileName.endsWith('.txt')) {
-                text = new TextDecoder().decode(fileBuffer)
-              } else if (fileName.endsWith('.doc')) {
-                // .doc files can't be parsed by mammoth, extract what we can
-                text = new TextDecoder('utf-8', { fatal: false }).decode(fileBuffer)
-              } else if (fileName.endsWith('.pdf')) {
-                // PDF text extraction - basic approach using text decoder
-                text = new TextDecoder('utf-8', { fatal: false }).decode(fileBuffer)
-                // Clean up non-text content
-                text = text.replace(/[^\x20-\x7E\n\r]/g, ' ').replace(/\s+/g, ' ')
-              }
-
-              if (text && text.trim().length > 20) {
+              if (text && text.trim().length > 10) {
                 const parsed = parseResumeText(text, fileName)
                 if (parsed.email || parsed.name) {
                   candidates.push(parsed)
@@ -211,42 +274,56 @@ export async function POST(request: NextRequest) {
               }
             } catch (err) {
               console.error(`Error parsing ${entryName}:`, err)
-              // Still add with filename as fallback
+              // Add with filename as fallback so we don't lose the entry
+              const fallbackName = entryName.split('/').pop()?.replace(/\.\w+$/, '').replace(/[_-]/g, ' ') || 'Unknown'
               candidates.push({
-                name: entryName.split('/').pop()?.replace(/\.\w+$/, '').replace(/[_-]/g, ' ') || 'Unknown',
+                name: fallbackName,
                 email: '',
                 phone: '',
                 source: entryName,
                 status: 'parse_error',
+                parseError: String(err),
               })
             }
           }
         } catch (zipErr) {
           console.error('ZIP processing error:', zipErr)
-          return NextResponse.json({ error: 'Failed to process ZIP file. Please ensure it is a valid ZIP archive.' }, { status: 400 })
+          return NextResponse.json({
+            error: 'Failed to process ZIP file. Please ensure it is a valid ZIP archive.',
+            details: String(zipErr),
+          }, { status: 400 })
         }
-      } else if (file.name.endsWith('.docx')) {
-        // Single DOCX file
+      } else if (lowerName.endsWith('.docx') || lowerName.endsWith('.doc')) {
+        // ─── Single DOCX / DOC file ───
         try {
-          const mammoth = await import('mammoth')
-          const result = await mammoth.extractRawText({ buffer })
-          const text = result.value
-          if (text.trim().length > 20) {
+          const text = await extractTextFromFile(buffer, file.name)
+          if (text.trim().length > 10) {
             const parsed = parseResumeText(text, file.name)
-            candidates.push(parsed)
+            if (parsed.email || parsed.name) {
+              candidates.push(parsed)
+            }
+          } else {
+            return NextResponse.json({
+              error: 'The uploaded DOCX file appears to be empty or could not be read. Please ensure the file contains readable text.',
+            }, { status: 400 })
           }
-        } catch {
-          return NextResponse.json({ error: 'Failed to parse DOCX file' }, { status: 400 })
+        } catch (docxErr) {
+          console.error('DOCX parse error:', docxErr)
+          return NextResponse.json({
+            error: 'Failed to parse DOCX file. The file may be corrupted or in an unsupported format.',
+            details: String(docxErr),
+            hint: 'Try saving the resume as a .txt file and uploading again, or copy-paste the content into the manual entry form.',
+          }, { status: 400 })
         }
-      } else if (file.name.endsWith('.txt')) {
-        // Single TXT file
+      } else if (lowerName.endsWith('.txt')) {
+        // ─── Single TXT file ───
         const text = buffer.toString('utf-8')
-        if (text.trim().length > 20) {
+        if (text.trim().length > 10) {
           const parsed = parseResumeText(text, file.name)
           candidates.push(parsed)
         }
-      } else if (file.name.endsWith('.csv')) {
-        // CSV file with candidate data
+      } else if (lowerName.endsWith('.csv')) {
+        // ─── CSV file with candidate data ───
         const text = buffer.toString('utf-8')
         const lines = text.split('\n').filter(l => l.trim())
         if (lines.length > 1) {
@@ -271,11 +348,34 @@ export async function POST(request: NextRequest) {
             if (candidate.email || candidate.name) candidates.push(candidate)
           }
         }
+      } else if (lowerName.endsWith('.pdf')) {
+        // ─── Single PDF file (basic text extraction) ───
+        try {
+          const text = await extractTextFromFile(buffer, file.name)
+          if (text.trim().length > 10) {
+            const parsed = parseResumeText(text, file.name)
+            if (parsed.email || parsed.name) {
+              candidates.push(parsed)
+            }
+          }
+        } catch (pdfErr) {
+          console.error('PDF parse error:', pdfErr)
+          return NextResponse.json({
+            error: 'Failed to extract text from PDF. Please try uploading a DOCX or TXT version instead.',
+            details: String(pdfErr),
+          }, { status: 400 })
+        }
+      } else {
+        return NextResponse.json({
+          error: `Unsupported file format: ${file.name}. Supported formats: .zip, .docx, .doc, .txt, .csv, .pdf`,
+        }, { status: 400 })
       }
     }
 
     if (candidates.length === 0) {
-      return NextResponse.json({ error: 'No candidates could be extracted from the uploaded file. Please ensure resumes contain email addresses.' }, { status: 400 })
+      return NextResponse.json({
+        error: 'No candidates could be extracted from the uploaded file. Please ensure resumes contain email addresses or names.',
+      }, { status: 400 })
     }
 
     // Process candidates through the data entry agent
@@ -287,6 +387,9 @@ export async function POST(request: NextRequest) {
     }, { status: 201 })
   } catch (error) {
     console.error('Resume upload error:', error)
-    return NextResponse.json({ error: 'Failed to process resume upload', details: String(error) }, { status: 500 })
+    return NextResponse.json({
+      error: 'Failed to process resume upload',
+      details: String(error),
+    }, { status: 500 })
   }
 }
