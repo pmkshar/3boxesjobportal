@@ -40,7 +40,7 @@ import { AIAgentDashboard } from '@/components/portal/AIAgentDashboard'
 
 // ─── Types ──────────────────────────────────────────────────────────────
 
-type AdminView = 'dashboard' | 'users' | 'roles' | 'interview' | 'settings' | 'audit' | 'ai-agents'
+type AdminView = 'dashboard' | 'users' | 'candidates' | 'roles' | 'interview' | 'settings' | 'audit' | 'ai-agents'
 
 interface ManagedUser {
   id: string
@@ -208,6 +208,7 @@ const DEMO_AUDIT: AuditEntry[] = [
 const navItems: { id: AdminView; label: string; icon: any }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'users', label: 'User Management', icon: Users },
+  { id: 'candidates', label: 'Candidates', icon: GraduationCap },
   { id: 'roles', label: 'Role & Access', icon: Shield },
   { id: 'interview', label: 'AI Interview Config', icon: Brain },
   { id: 'settings', label: 'System Settings', icon: Settings },
@@ -334,7 +335,7 @@ export function AdminDashboard() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // ─── User Management State ────────────────────────────────────────
-  const [users, setUsers] = useState<ManagedUser[]>(DEMO_USERS)
+  const [users, setUsers] = useState<ManagedUser[]>([])
   const [userSearch, setUserSearch] = useState('')
   const [userRoleFilter, setUserRoleFilter] = useState<string>('all')
   const [userStatusFilter, setUserStatusFilter] = useState<string>('all')
@@ -342,6 +343,40 @@ export function AdminDashboard() {
   const [editingUser, setEditingUser] = useState<ManagedUser | null>(null)
   const [viewingUser, setViewingUser] = useState<ManagedUser | null>(null)
   const [userForm, setUserForm] = useState({ name: '', email: '', role: 'JOB_SEEKER' as UserRole, department: '', status: 'active' as ManagedUser['status'] })
+
+  // Fetch real users from the API
+  const fetchRealUsers = async () => {
+    try {
+      const res = await fetch('/api/users')
+      if (res.ok) {
+        const data = await res.json()
+        const apiUsers: ManagedUser[] = (data.users || []).map((u: any) => ({
+          id: u.id,
+          name: u.name || 'Unknown',
+          email: u.email || '',
+          role: u.role || 'JOB_SEEKER',
+          status: u.isActive ? 'active' : 'inactive',
+          lastLogin: u.updatedAt || u.createdAt || new Date().toISOString(),
+          createdAt: u.createdAt || new Date().toISOString().split('T')[0],
+          department: u.corporateProfile?.companyName || u.recruiterProfile?.agencyName || u.jobSeekerProfile?.currentCompany || '',
+          phone: u.phone || '',
+          location: u.location || '',
+          skills: u.jobSeekerProfile?.skills || '',
+          headline: u.jobSeekerProfile?.headline || '',
+          experienceYears: u.jobSeekerProfile?.experienceYears || 0,
+          education: u.jobSeekerProfile?.education || '',
+        }))
+        setUsers(apiUsers)
+      }
+    } catch (err) {
+      console.error('Failed to fetch users:', err)
+      // Fallback to demo users if API fails
+      setUsers(DEMO_USERS)
+    }
+  }
+
+  // Load real users on mount
+  useEffect(() => { fetchRealUsers() }, [])
 
   // ─── Role Management State ────────────────────────────────────────
   const [roles, setRoles] = useState<RoleConfig[]>([...DEFAULT_ROLES])
@@ -530,6 +565,7 @@ export function AdminDashboard() {
   const viewLabels: Record<AdminView, string> = {
     dashboard: 'Dashboard',
     users: 'User Management',
+    candidates: 'Candidates',
     roles: 'Role & Access Management',
     interview: 'AI Interview Config',
     settings: 'System Settings',
@@ -841,7 +877,22 @@ export function AdminDashboard() {
                 <div><p className="text-xs text-[#66789C]">Created</p><p className="text-sm font-medium text-[#05264E]">{new Date(viewingUser.createdAt).toLocaleDateString()}</p></div>
                 <div><p className="text-xs text-[#66789C]">Last Login</p><p className="text-sm font-medium text-[#05264E]">{viewingUser.lastLogin === '-' ? 'Never' : new Date(viewingUser.lastLogin).toLocaleString()}</p></div>
                 <div><p className="text-xs text-[#66789C]">User ID</p><p className="text-sm font-medium text-[#05264E] font-mono">#{viewingUser.id}</p></div>
+                {(viewingUser as any).phone && <div><p className="text-xs text-[#66789C]">Phone</p><p className="text-sm font-medium text-[#05264E]">{(viewingUser as any).phone}</p></div>}
+                {(viewingUser as any).location && <div><p className="text-xs text-[#66789C]">Location</p><p className="text-sm font-medium text-[#05264E]">{(viewingUser as any).location}</p></div>}
+                {(viewingUser as any).headline && <div className="col-span-2"><p className="text-xs text-[#66789C]">Headline</p><p className="text-sm font-medium text-[#05264E]">{(viewingUser as any).headline}</p></div>}
+                {(viewingUser as any).experienceYears > 0 && <div><p className="text-xs text-[#66789C]">Experience</p><p className="text-sm font-medium text-[#05264E]">{(viewingUser as any).experienceYears} years</p></div>}
+                {(viewingUser as any).education && <div><p className="text-xs text-[#66789C]">Education</p><p className="text-sm font-medium text-[#05264E]">{(viewingUser as any).education}</p></div>}
               </div>
+              {(viewingUser as any).skills && (
+                <div>
+                  <p className="text-xs text-[#66789C] mb-1">Skills</p>
+                  <div className="flex flex-wrap gap-1">
+                    {(viewingUser as any).skills.split(',').map((s: string, i: number) => (
+                      <Badge key={i} variant="outline" className="text-[10px] h-5 bg-[#F0F2F5] border-0 text-[#66789C]">{s.trim()}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
           <DialogFooter>
@@ -853,6 +904,72 @@ export function AdminDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
+  )
+
+  // ─── Candidates View (JOB_SEEKER users) ───────────────────────────
+  const candidateUsers = users.filter(u => u.role === 'JOB_SEEKER')
+
+  const renderCandidatesView = () => (
+    <div className="space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-semibold text-[#05264E]">Candidates</h2>
+          <p className="text-sm text-[#66789C]">{candidateUsers.length} total candidates · {candidateUsers.filter(c => c.status === 'active').length} active</p>
+        </div>
+        <Button className="text-white text-sm rounded-lg"
+          style={{ backgroundColor: theme.primary }}
+          onClick={() => fetchRealUsers()}>
+          <Users className="h-4 w-4 mr-1" /> Refresh
+        </Button>
+      </div>
+
+      {candidateUsers.length === 0 ? (
+        <div className="text-center py-12">
+          <GraduationCap className="h-12 w-12 mx-auto text-[#D0D5DD] mb-3" />
+          <p className="text-[#66789C]">No candidates found. Upload resumes via the AI Agents Data Entry tab.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+          {candidateUsers.map(c => (
+            <div key={c.id} className="bg-white rounded-xl border border-[#E4E8EC] p-4 hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => setViewingUser(c)}>
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-10 w-10">
+                    <AvatarFallback className="text-[10px] font-semibold"
+                      style={{ backgroundColor: `${theme.primary}15`, color: theme.primary }}>
+                      {c.name.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-semibold text-[#05264E]">{c.name}</p>
+                    <p className="text-[11px] text-[#66789C]">{(c as any).headline || c.email}</p>
+                  </div>
+                </div>
+                <StatusBadge status={c.status} />
+              </div>
+              {(c as any).skills && (
+                <div className="flex flex-wrap gap-1 mt-3">
+                  {(c as any).skills.split(',').slice(0, 4).map((s: string, i: number) => (
+                    <Badge key={i} variant="outline" className="text-[10px] h-5 bg-[#F0F2F5] border-0 text-[#66789C]">{s.trim()}</Badge>
+                  ))}
+                  {(c as any).skills.split(',').length > 4 && <Badge variant="outline" className="text-[10px] h-5 bg-[#F0F2F5] border-0 text-[#66789C]">+{(c as any).skills.split(',').length - 4}</Badge>}
+                </div>
+              )}
+              <div className="flex items-center gap-3 mt-2 text-xs text-[#66789C]">
+                {(c as any).location && <span><MapPin className="h-3 w-3 inline mr-0.5" />{(c as any).location}</span>}
+                {(c as any).experienceYears > 0 && <span><Clock className="h-3 w-3 inline mr-0.5" />{(c as any).experienceYears} yrs</span>}
+                {(c as any).education && <span><GraduationCap className="h-3 w-3 inline mr-0.5" />{(c as any).education.split('-')[0].trim()}</span>}
+              </div>
+              <div className="mt-2 text-xs text-[#66789C]">
+                {(c as any).phone && <span className="mr-3">{(c as any).phone}</span>}
+                <span>{c.email}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 
@@ -1692,6 +1809,7 @@ export function AdminDashboard() {
     switch (activeView) {
       case 'dashboard': return renderDashboard()
       case 'users': return renderUserManagement()
+      case 'candidates': return renderCandidatesView()
       case 'roles': return renderRoleAccess()
       case 'interview': return renderInterviewConfig()
       case 'settings': return renderSettings()

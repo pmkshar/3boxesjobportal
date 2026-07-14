@@ -24,13 +24,14 @@ import {
   UserCheck, Award, MessageSquare, Globe, Zap,
 } from 'lucide-react'
 
-type View = 'dashboard' | 'post-job' | 'my-jobs' | 'applications' | 'profile' | 'analytics'
+type View = 'dashboard' | 'post-job' | 'my-jobs' | 'applications' | 'find-candidates' | 'profile' | 'analytics'
 
 const navItems: { id: View; label: string; icon: any }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'post-job', label: 'Post Job', icon: Plus },
   { id: 'my-jobs', label: 'My Jobs', icon: Briefcase },
   { id: 'applications', label: 'Applications', icon: FileCheck },
+  { id: 'find-candidates', label: 'Find Candidates', icon: Search },
   { id: 'profile', label: 'Company Profile', icon: Building2 },
   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
 ]
@@ -96,6 +97,7 @@ export function CorporateDashboard() {
       case 'post-job': return <PostJobForm onPosted={loadJobs} />
       case 'my-jobs': return <MyJobsList jobs={jobs} onRefresh={loadJobs} />
       case 'applications': return <CorpApplications />
+      case 'find-candidates': return <FindCandidates />
       case 'profile': return <CompanyProfile />
       case 'analytics': return <CorpAnalytics stats={stats} jobs={jobs} />
     }
@@ -709,6 +711,165 @@ function CompanyProfile() {
         <div><Label className="text-[#05264E] font-medium">Location</Label><Input value={profile.location || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" /></div>
         <Button className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white font-semibold rounded-lg h-10">Save Profile</Button>
       </CardContent></Card>
+    </div>
+  )
+}
+
+function FindCandidates() {
+  const [candidates, setCandidates] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [skillFilter, setSkillFilter] = useState('')
+  const [locationFilter, setLocationFilter] = useState('')
+  const [expMin, setExpMin] = useState('')
+  const [expMax, setExpMax] = useState('')
+  const [selectedCandidate, setSelectedCandidate] = useState<any>(null)
+
+  const fetchCandidates = async () => {
+    setLoading(true)
+    try {
+      const params = new URLSearchParams()
+      if (searchTerm) params.set('search', searchTerm)
+      if (skillFilter) params.set('skills', skillFilter)
+      if (locationFilter) params.set('location', locationFilter)
+      if (expMin) params.set('experienceMin', expMin)
+      if (expMax) params.set('experienceMax', expMax)
+
+      const res = await fetch(`/api/candidates?${params.toString()}`)
+      if (res.ok) {
+        const data = await res.json()
+        setCandidates(data.candidates || [])
+      }
+    } catch (err) {
+      console.error('Error fetching candidates:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => { fetchCandidates() }, [])
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    fetchCandidates()
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-[#05264E]">Find Candidates</h2>
+        <Badge variant="outline" className="text-xs border-[var(--theme-primary)] text-[var(--theme-primary)]">{candidates.length} candidates</Badge>
+      </div>
+
+      {/* Search & Filters */}
+      <form onSubmit={handleSearch} className="panel p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+          <div className="lg:col-span-2">
+            <Input placeholder="Search by name, role, company..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="h-9 text-sm" />
+          </div>
+          <Input placeholder="Skills (e.g. React, Python)" value={skillFilter} onChange={e => setSkillFilter(e.target.value)} className="h-9 text-sm" />
+          <Input placeholder="Location (e.g. Bangalore)" value={locationFilter} onChange={e => setLocationFilter(e.target.value)} className="h-9 text-sm" />
+          <div className="flex gap-2">
+            <Input placeholder="Min Yrs" type="number" min="0" value={expMin} onChange={e => setExpMin(e.target.value)} className="h-9 text-sm w-1/2" />
+            <Input placeholder="Max Yrs" type="number" min="0" value={expMax} onChange={e => setExpMax(e.target.value)} className="h-9 text-sm w-1/2" />
+          </div>
+        </div>
+        <div className="flex justify-end mt-3">
+          <Button type="submit" size="sm" className="text-white bg-[var(--theme-primary)] hover:opacity-90" disabled={loading}>
+            <Search className="h-4 w-4 mr-1" /> {loading ? 'Searching...' : 'Search'}
+          </Button>
+        </div>
+      </form>
+
+      {/* Results */}
+      {loading ? (
+        <div className="text-center py-12 text-[#66789C]">Loading candidates...</div>
+      ) : candidates.length === 0 ? (
+        <div className="text-center py-12">
+          <Users className="h-12 w-12 mx-auto text-[#D0D5DD] mb-3" />
+          <p className="text-[#66789C]">No candidates found. Try adjusting your filters.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {candidates.map((c) => (
+            <div key={c.id} className="bg-white rounded-xl border border-[#E4E8EC] p-4 hover:shadow-md transition-shadow cursor-pointer" onClick={() => setSelectedCandidate(c)}>
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[var(--theme-primary-light)] flex items-center justify-center text-[var(--theme-primary)] font-semibold text-sm">
+                    {c.name?.charAt(0)?.toUpperCase() || '?'}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-[#05264E]">{c.name}</p>
+                    <p className="text-xs text-[#66789C]">{c.headline || c.currentRole || 'Job Seeker'}</p>
+                  </div>
+                </div>
+                <Badge variant="outline" className="text-[10px] border-[#10B981] text-[#10B981] h-5">{c.experienceYears || 0} yrs</Badge>
+              </div>
+              {c.currentCompany && <p className="text-xs text-[#66789C] mt-2"><Building2 className="h-3 w-3 inline mr-1" />{c.currentCompany}</p>}
+              {c.skills && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {c.skills.split(',').slice(0, 6).map((s: string, i: number) => (
+                    <Badge key={i} variant="outline" className="text-[10px] h-5 bg-[#F0F2F5] border-0 text-[#66789C]">{s.trim()}</Badge>
+                  ))}
+                  {c.skills.split(',').length > 6 && <Badge variant="outline" className="text-[10px] h-5 bg-[#F0F2F5] border-0 text-[#66789C]">+{c.skills.split(',').length - 6}</Badge>}
+                </div>
+              )}
+              <div className="flex items-center gap-3 mt-2 text-xs text-[#66789C]">
+                {c.location && <span><MapPin className="h-3 w-3 inline mr-0.5" />{c.location}</span>}
+                {c.education && <span><GraduationCap className="h-3 w-3 inline mr-0.5" />{c.education.split('-')[0].trim()}</span>}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Candidate Detail Dialog */}
+      <Dialog open={!!selectedCandidate} onOpenChange={() => setSelectedCandidate(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-[#05264E]">{selectedCandidate?.name}</DialogTitle>
+          </DialogHeader>
+          {selectedCandidate && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-14 h-14 rounded-full bg-[var(--theme-primary-light)] flex items-center justify-center text-[var(--theme-primary)] font-bold text-xl">
+                  {selectedCandidate.name?.charAt(0)?.toUpperCase()}
+                </div>
+                <div>
+                  <p className="font-semibold text-[#05264E]">{selectedCandidate.headline || selectedCandidate.currentRole || 'Job Seeker'}</p>
+                  {selectedCandidate.currentCompany && <p className="text-sm text-[#66789C]">{selectedCandidate.currentCompany}</p>}
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                {selectedCandidate.email && <div><span className="text-[#66789C]">Email:</span> <span className="text-[#05264E]">{selectedCandidate.email}</span></div>}
+                {selectedCandidate.phone && <div><span className="text-[#66789C]">Phone:</span> <span className="text-[#05264E]">{selectedCandidate.phone}</span></div>}
+                {selectedCandidate.location && <div><span className="text-[#66789C]">Location:</span> <span className="text-[#05264E]">{selectedCandidate.location}</span></div>}
+                {selectedCandidate.experienceYears > 0 && <div><span className="text-[#66789C]">Experience:</span> <span className="text-[#05264E]">{selectedCandidate.experienceYears} years</span></div>}
+                {selectedCandidate.education && <div><span className="text-[#66789C]">Education:</span> <span className="text-[#05264E]">{selectedCandidate.education}</span></div>}
+                {selectedCandidate.availability && <div><span className="text-[#66789C]">Availability:</span> <span className="text-[#05264E]">{selectedCandidate.availability}</span></div>}
+                {selectedCandidate.jobType && <div><span className="text-[#66789C]">Job Type:</span> <span className="text-[#05264E]">{selectedCandidate.jobType}</span></div>}
+                {selectedCandidate.linkededInUrl && <div className="col-span-2"><span className="text-[#66789C]">LinkedIn:</span> <a href={selectedCandidate.linkededInUrl} target="_blank" className="text-[var(--theme-primary)] hover:underline ml-1">{selectedCandidate.linkededInUrl}</a></div>}
+              </div>
+              {selectedCandidate.skills && (
+                <div>
+                  <p className="text-sm text-[#66789C] mb-2">Skills</p>
+                  <div className="flex flex-wrap gap-1">
+                    {selectedCandidate.skills.split(',').map((s: string, i: number) => (
+                      <Badge key={i} variant="outline" className="text-[11px] h-6 bg-[var(--theme-primary-light)] border-0 text-[var(--theme-primary)]">{s.trim()}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {selectedCandidate.bio && (
+                <div>
+                  <p className="text-sm text-[#66789C] mb-1">About</p>
+                  <p className="text-sm text-[#05264E]">{selectedCandidate.bio}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

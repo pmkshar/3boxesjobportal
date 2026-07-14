@@ -1854,4 +1854,83 @@ export const memoryStore = {
   async getUploadedCandidates() {
     return (this as any)._uploadedCandidates || []
   },
+
+  // Get all users, optionally filtered by role
+  async getUsers(role?: string, search?: string): Promise<any[]> {
+    let users = _users.map(u => {
+      const { password, ...safe } = u
+      return safe
+    })
+    if (role) {
+      users = users.filter(u => u.role === role)
+    }
+    if (search) {
+      const q = search.toLowerCase()
+      users = users.filter(u =>
+        u.name?.toLowerCase().includes(q) ||
+        u.email?.toLowerCase().includes(q) ||
+        u.phone?.includes(q) ||
+        u.location?.toLowerCase().includes(q) ||
+        u.jobSeekerProfile?.skills?.toLowerCase().includes(q) ||
+        u.jobSeekerProfile?.headline?.toLowerCase().includes(q) ||
+        u.jobSeekerProfile?.currentRole?.toLowerCase().includes(q) ||
+        u.jobSeekerProfile?.currentCompany?.toLowerCase().includes(q)
+      )
+    }
+    return users
+  },
+
+  // Get all candidates (JOB_SEEKER role users) with their profiles
+  async getCandidates(search?: string, skills?: string, location?: string, experienceMin?: number, experienceMax?: number): Promise<any[]> {
+    let candidates = _users
+      .filter(u => u.role === 'JOB_SEEKER' && u.isActive)
+      .map(u => {
+        const { password, ...safe } = u
+        return {
+          ...safe,
+          // Flatten jobSeekerProfile for easy access
+          headline: u.jobSeekerProfile?.headline || '',
+          currentRole: u.jobSeekerProfile?.currentRole || '',
+          currentCompany: u.jobSeekerProfile?.currentCompany || '',
+          skills: u.jobSeekerProfile?.skills || '',
+          experienceYears: u.jobSeekerProfile?.experienceYears || 0,
+          education: u.jobSeekerProfile?.education || '',
+          expectedSalary: u.jobSeekerProfile?.expectedSalary || '',
+          jobType: u.jobSeekerProfile?.jobType || 'full-time',
+          availability: u.jobSeekerProfile?.availability || 'immediate',
+          linkededInUrl: u.jobSeekerProfile?.linkedInUrl || '',
+          aiSkillScore: u.jobSeekerProfile?.aiSkillScore || 0,
+          profileComplete: u.jobSeekerProfile?.profileComplete || 0,
+        }
+      })
+
+    if (search) {
+      const q = search.toLowerCase()
+      candidates = candidates.filter(c =>
+        c.name?.toLowerCase().includes(q) ||
+        c.email?.toLowerCase().includes(q) ||
+        c.headline?.toLowerCase().includes(q) ||
+        c.currentRole?.toLowerCase().includes(q) ||
+        c.currentCompany?.toLowerCase().includes(q)
+      )
+    }
+    if (skills) {
+      const skillList = skills.toLowerCase().split(',').map(s => s.trim()).filter(Boolean)
+      candidates = candidates.filter(c =>
+        skillList.some(s => c.skills?.toLowerCase().includes(s))
+      )
+    }
+    if (location) {
+      const loc = location.toLowerCase()
+      candidates = candidates.filter(c => c.location?.toLowerCase().includes(loc))
+    }
+    if (experienceMin !== undefined && experienceMin > 0) {
+      candidates = candidates.filter(c => (c.experienceYears || 0) >= experienceMin)
+    }
+    if (experienceMax !== undefined && experienceMax > 0) {
+      candidates = candidates.filter(c => (c.experienceYears || 0) <= experienceMax)
+    }
+
+    return candidates
+  },
 }
