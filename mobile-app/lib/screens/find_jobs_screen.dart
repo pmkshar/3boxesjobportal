@@ -20,12 +20,11 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
   final List<String> _locations = [
     'All',
     'Remote',
-    'New York, NY',
-    'San Francisco, CA',
-    'Austin, TX',
-    'Chicago, IL',
-    'Seattle, WA',
-    'London, UK',
+    'Bangalore, India',
+    'Hyderabad, India',
+    'Pune, India',
+    'Mumbai, India',
+    'Chennai, India',
   ];
 
   // Fallback demo data
@@ -146,6 +145,135 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
     },
   ];
 
+  /// Transform API job data into the format the UI expects.
+  /// API fields: corporate.companyName, salaryMin/salaryMax, jobType,
+  /// skills (comma string), requirements (comma string), isRemote, postedDate
+  static Map<String, dynamic> _normalizeJob(Map<String, dynamic> raw) {
+    // Company name: nested under corporate
+    final corporate = raw['corporate'] as Map<String, dynamic>?;
+    final companyName = corporate?['companyName']?.toString() ??
+        raw['company']?.toString() ?? 'Unknown Company';
+
+    // Salary
+    final salaryMin = raw['salaryMin'];
+    final salaryMax = raw['salaryMax'];
+    final currency = raw['salaryCurrency']?.toString() ?? 'INR';
+    String salaryDisplay;
+    if (salaryMin != null && salaryMax != null) {
+      final minLakh = (salaryMin as num).toDouble() / 100000;
+      final maxLakh = (salaryMax as num).toDouble() / 100000;
+      if (currency == 'INR') {
+        salaryDisplay = '${minLakh.toStringAsFixed(minLakh % 1 == 0 ? 0 : 1)}L - ${maxLakh.toStringAsFixed(maxLakh % 1 == 0 ? 0 : 1)}L INR';
+      } else {
+        final minK = (salaryMin as num).toDouble() / 1000;
+        final maxK = (salaryMax as num).toDouble() / 1000;
+        salaryDisplay = '\$${minK.toStringAsFixed(0)}k - \$${maxK.toStringAsFixed(0)}k';
+      }
+    } else {
+      salaryDisplay = raw['salary']?.toString() ?? 'Not disclosed';
+    }
+
+    // Job type
+    final jobType = raw['jobType']?.toString() ?? raw['type']?.toString() ?? 'Full-time';
+    final typeDisplay = jobType.split('-').map((s) => s[0].toUpperCase() + s.substring(1)).join('-');
+
+    // Tags: build from isRemote + jobType + skills
+    final isRemote = raw['isRemote'] == true;
+    final tags = <String>[];
+    if (isRemote) tags.add('Remote');
+    tags.add(typeDisplay);
+
+    // Skills as tags (show first few)
+    final skillsStr = raw['skills']?.toString() ?? '';
+    if (skillsStr.isNotEmpty) {
+      final skillList = skillsStr.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
+      for (int i = 0; i < skillList.length && i < 3; i++) {
+        if (!tags.contains(skillList[i])) {
+          tags.add(skillList[i]);
+        }
+      }
+    }
+
+    // Requirements: convert comma-separated string to list
+    List<String> requirements;
+    final rawReq = raw['requirements'];
+    if (rawReq is List) {
+      requirements = rawReq.map((e) => e.toString()).toList();
+    } else if (rawReq is String && rawReq.isNotEmpty) {
+      requirements = rawReq.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
+    } else {
+      requirements = (raw['requirements'] as List<dynamic>?)?.cast<String>() ?? [];
+    }
+
+    // Description
+    final description = raw['description']?.toString() ?? 'No description available.';
+
+    // Responsibilities
+    final responsibilities = raw['responsibilities']?.toString() ?? '';
+    final benefits = raw['benefits']?.toString() ?? '';
+
+    // Build full description with responsibilities and benefits
+    String fullDescription = description;
+    if (responsibilities.isNotEmpty) {
+      fullDescription += '\n\nResponsibilities:\n${responsibilities.split(',').map((s) => '• ${s.trim()}').join('\n')}';
+    }
+    if (benefits.isNotEmpty) {
+      fullDescription += '\n\nBenefits:\n${benefits.split(',').map((s) => '• ${s.trim()}').join('\n')}';
+    }
+
+    // Posted date
+    String posted;
+    final postedDate = raw['postedDate']?.toString() ?? raw['createdAt']?.toString();
+    if (postedDate != null && postedDate.isNotEmpty) {
+      try {
+        final dt = DateTime.parse(postedDate);
+        final diff = DateTime.now().difference(dt);
+        if (diff.inDays == 0) {
+          posted = 'Today';
+        } else if (diff.inDays == 1) {
+          posted = '1 day ago';
+        } else if (diff.inDays < 30) {
+          posted = '${diff.inDays} days ago';
+        } else {
+          posted = '${(diff.inDays / 30).floor()} month(s) ago';
+        }
+      } catch (_) {
+        posted = raw['posted']?.toString() ?? 'Recently';
+      }
+    } else {
+      posted = raw['posted']?.toString() ?? 'Recently';
+    }
+
+    // Location
+    final location = raw['location']?.toString() ?? 'N/A';
+
+    // Experience
+    final expMin = raw['experienceMin'];
+    final expMax = raw['experienceMax'];
+    String experience = '';
+    if (expMin != null && expMax != null) {
+      experience = '$expMin-$expMax years';
+    }
+
+    return {
+      'id': raw['id']?.toString() ?? '',
+      'title': raw['title']?.toString() ?? 'Untitled Position',
+      'company': companyName,
+      'location': location,
+      'salary': salaryDisplay,
+      'type': typeDisplay,
+      'tags': tags,
+      'description': fullDescription,
+      'requirements': requirements,
+      'posted': posted,
+      'isRemote': isRemote,
+      'experience': experience,
+      'skills': skillsStr,
+      'benefits': benefits,
+      'openings': raw['openings']?.toString() ?? '',
+    };
+  }
+
   @override
   void initState() {
     super.initState();
@@ -172,8 +300,12 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
       final results = await ApiService.getJobs(queryParams: queryParams);
       if (mounted) {
         if (results.isNotEmpty) {
+          // Normalize API data to match UI format
+          final normalized = results
+              .map<Map<String, dynamic>>((r) => _normalizeJob(Map<String, dynamic>.from(r as Map)))
+              .toList();
           setState(() {
-            _jobs = results.cast<Map<String, dynamic>>();
+            _jobs = normalized;
             _isLoading = false;
           });
         } else {
@@ -207,8 +339,11 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
       final results = await ApiService.getJobs(queryParams: queryParams);
       if (mounted) {
         if (results.isNotEmpty) {
+          final normalized = results
+              .map<Map<String, dynamic>>((r) => _normalizeJob(Map<String, dynamic>.from(r as Map)))
+              .toList();
           setState(() {
-            _jobs = results.cast<Map<String, dynamic>>();
+            _jobs = normalized;
             _isRefreshing = false;
           });
         } else {
@@ -273,13 +408,17 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
                 const SizedBox(height: 16),
                 // Info chips
                 Wrap(
-                  spacing: 12,
+                  spacing: 10,
                   runSpacing: 8,
                   children: [
                     _detailChip(Icons.location_on_outlined, job['location'] ?? 'N/A'),
                     _detailChip(Icons.attach_money, job['salary'] ?? 'Not disclosed'),
                     _detailChip(Icons.access_time, job['posted'] ?? 'N/A'),
                     _detailChip(Icons.work_outline, job['type'] ?? 'N/A'),
+                    if (job['experience'] != null && (job['experience'] as String).isNotEmpty)
+                      _detailChip(Icons.timeline, job['experience']),
+                    if (job['openings'] != null && (job['openings'] as String).isNotEmpty)
+                      _detailChip(Icons.group_outlined, '${job['openings']} openings'),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -296,9 +435,12 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
                       } else if (tag == 'Urgent') {
                         bgColor = const Color(0xFFFFEBEE);
                         textColor = const Color(0xFFC62828);
-                      } else {
+                      } else if (tag == 'Full-time' || tag == 'Part-time') {
                         bgColor = const Color(0xFFE3F2FD);
                         textColor = const Color(0xFF1565C0);
+                      } else {
+                        bgColor = const Color(0xFFF3E5F5);
+                        textColor = const Color(0xFF7B1FA2);
                       }
                       return Chip(
                         label: Text(tag.toString()),
@@ -341,6 +483,57 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
                       ],
                     ),
                   )),
+                ],
+                // Skills
+                if (job['skills'] != null && (job['skills'] as String).isNotEmpty) ...[
+                  const SizedBox(height: 24),
+                  const Text('Key Skills', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: (job['skills'] as String)
+                        .split(',')
+                        .map((s) => s.trim())
+                        .where((s) => s.isNotEmpty)
+                        .map((skill) => Chip(
+                              label: Text(skill, style: const TextStyle(fontSize: 12)),
+                              backgroundColor: _primaryColor.withOpacity(0.08),
+                              labelStyle: TextStyle(color: _primaryColor, fontWeight: FontWeight.w500, fontSize: 12),
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ))
+                        .toList(),
+                  ),
+                ],
+                // Benefits
+                if (job['benefits'] != null && (job['benefits'] as String).isNotEmpty) ...[
+                  const SizedBox(height: 24),
+                  const Text('Benefits', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: (job['benefits'] as String)
+                        .split(',')
+                        .map((s) => s.trim())
+                        .where((s) => s.isNotEmpty)
+                        .map((benefit) => Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFF3E0),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.card_giftcard, size: 14, color: Color(0xFFE65100)),
+                                  const SizedBox(width: 4),
+                                  Text(benefit, style: const TextStyle(fontSize: 12, color: Color(0xFFE65100), fontWeight: FontWeight.w500)),
+                                ],
+                              ),
+                            ))
+                        .toList(),
+                  ),
                 ],
                 const SizedBox(height: 32),
                 // Apply button
@@ -602,11 +795,11 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
                 children: [
                   Icon(Icons.location_on_outlined, size: 15, color: Colors.grey[500]),
                   const SizedBox(width: 4),
-                  Text(job['location'] ?? 'N/A', style: TextStyle(fontSize: 12, color: Colors.grey[500])),
+                  Flexible(child: Text(job['location'] ?? 'N/A', style: TextStyle(fontSize: 12, color: Colors.grey[500]), overflow: TextOverflow.ellipsis)),
                   const SizedBox(width: 16),
                   Icon(Icons.attach_money, size: 15, color: Colors.grey[500]),
                   const SizedBox(width: 4),
-                  Text(job['salary'] ?? 'Not disclosed', style: TextStyle(fontSize: 12, color: Colors.grey[500])),
+                  Flexible(child: Text(job['salary'] ?? 'Not disclosed', style: TextStyle(fontSize: 12, color: Colors.grey[500]), overflow: TextOverflow.ellipsis)),
                 ],
               ),
               const SizedBox(height: 10),
