@@ -1,34 +1,22 @@
 # Work Log
 
 ---
-Task ID: 1
+Task ID: 2
 Agent: Main Agent
-Task: Rebuild Flutter mobile app from scratch, update app icon, build new APK, and push to GitHub
+Task: Fix 4 mobile app issues: Find Jobs tap, app icon, Training link, AI Interview video, CV Manager expand
 
 Work Log:
-- Discovered that mobile-app/ was in .gitignore, so previous Flutter code was never pushed to GitHub
-- Previous Flutter code and SDK were deleted during disk cleanup in prior session
-- Installed Flutter SDK 3.24.5 at /home/z/flutter/
-- Installed Android command-line tools and platform SDK at /home/z/android-sdk/
-- Downloaded JDK 17 for jlink support at /home/z/jdk-17.0.12/
-- Created new Flutter project: com.threeboxes.threeboxes_jobs
-- Updated .gitignore: removed blanket mobile-app/ exclusion, added specific Flutter build artifact exclusions so source code is tracked
-- Updated pubspec.yaml with dependencies: http, shared_preferences, url_launcher, flutter_launcher_icons
-- Created API service (api_service.dart) with full backend integration
-- Created 12 native Flutter screens: login, main_navigation, find_jobs, ai_interview, resume_builder, applications_tracker, cv_manager, ai_buddy, skill_gap, job_fit, training, analytics, profile
-- Updated Android build config: AGP 8.7.0, Kotlin 2.0.21, Gradle 8.9, Java 17, compileSdk 34, minSdk 21
-- Added INTERNET permission to AndroidManifest.xml
-- Changed app label from "threeboxes_jobs" to "3 Boxes Jobs"
-- Generated custom app icon: green circle with 3-boxes logo for all mipmap sizes
-- Fixed withValues() → withOpacity() for Flutter 3.24.5 compatibility
-- Fixed class name mismatches (AIInterviewScreen → AiInterviewScreen, etc.)
-- Disabled lint checks to reduce memory usage during build
-- Successfully built APK (25.9MB) after resolving OOM issues with reduced JVM heap
-- Replaced old WebView APK (20MB) at public/3boxes-jobs-app.apk
-- Pushed all changes to GitHub (commit 210f97a)
+- Fixed Find Jobs: Replaced showModalBottomSheet (which wasn't working) with full-screen _JobDetailPage navigation
+- Fixed App Icon: Replaced Z logo with proper 3 Boxes logo (3 green ascending boxes on green #00C853 background)
+- Fixed Training: All courses now link to marqaitrainers.vercel.app with url_launcher; added Marqa Trainers banner
+- Fixed AI Interview: Added Video Interview mode with camera UI, recording button, AI interviewer badge, timer
+- Fixed CV Manager: Added _ResumeDetailPage with full-screen detail view, resume preview, edit/delete actions
+- Regenerated all mipmap icons with new 3 Boxes logo
+- Updated website icons (favicon, PWA icons) to match
+- Rebuilt APK (25.9MB) successfully
+- GitHub push failed - token expired (ghp_Vq83FHxK...)
 
 Stage Summary:
-- New native Flutter mobile app v2.0 with all AI features is now on GitHub
-- APK is replaced and will be served via Vercel after deployment
-- App icon uses the 3-boxes-jobs portal logo on green background
-- All 12 feature screens implemented with native UI (not WebView)
+- All 5 fixes implemented and APK rebuilt locally at /home/z/my-project/public/3boxes-jobs-app.apk
+- Could NOT push to GitHub due to expired GitHub token
+- User needs to update GitHub token to complete the deployment
