@@ -30,6 +30,12 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
 
   final TextEditingController _answerController = TextEditingController();
 
+  // Interview mode: 'chat' or 'video'
+  String _interviewMode = 'chat';
+  bool _isRecording = false;
+  int _recordingSeconds = 0;
+  Duration _recordDuration = Duration.zero;
+
   final List<Map<String, String>> _interviewTypes = [
     {
       'key': 'behavioral',
@@ -48,6 +54,12 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
       'label': 'Mixed',
       'description': 'A blend of behavioral and technical questions for comprehensive prep',
       'icon': 'shuffle',
+    },
+    {
+      'key': 'video',
+      'label': 'Video Interview',
+      'description': 'AI-led video interview with face recording and real-time feedback',
+      'icon': 'videocam',
     },
   ];
 
@@ -159,8 +171,11 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
 
   Future<void> _startInterview() async {
     setState(() => _isLoading = true);
+    _interviewMode = _selectedType == 'video' ? 'video' : 'chat';
+
     try {
-      final response = await ApiService.startInterview(type: _selectedType);
+      final type = _selectedType == 'video' ? 'mixed' : _selectedType;
+      final response = await ApiService.startInterview(type: type);
       if (response.containsKey('interviewId') &&
           !response.containsKey('error')) {
         _interviewId = response['interviewId'];
@@ -183,8 +198,9 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
   }
 
   void _useDemoQuestions() {
+    final type = _selectedType == 'video' ? 'mixed' : _selectedType;
     setState(() {
-      _questions = List.from(_demoQuestions[_selectedType] ?? []);
+      _questions = List.from(_demoQuestions[type] ?? _demoQuestions['behavioral']!);
       _totalQuestions = _questions.length;
       _interviewId = null; // offline mode
       _isSelectingType = false;
@@ -331,6 +347,18 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
     });
   }
 
+  // Toggle recording for video interview
+  void _toggleRecording() {
+    setState(() {
+      _isRecording = !_isRecording;
+      if (_isRecording) {
+        _recordingSeconds = 0;
+      } else {
+        _recordingSeconds = 0;
+      }
+    });
+  }
+
   IconData _getTypeIcon(String key) {
     switch (key) {
       case 'behavioral':
@@ -339,6 +367,8 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
         return Icons.code;
       case 'mixed':
         return Icons.shuffle;
+      case 'video':
+        return Icons.videocam;
       default:
         return Icons.quiz;
     }
@@ -508,6 +538,269 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
 
   // ── Question Flow ──────────────────────────────────────────────────
   Widget _buildQuestionFlow() {
+    if (_interviewMode == 'video') {
+      return _buildVideoInterviewFlow();
+    }
+    return _buildChatInterviewFlow();
+  }
+
+  // ── Video Interview Flow ────────────────────────────────────────────
+  Widget _buildVideoInterviewFlow() {
+    final question = _questions[_currentQuestionIndex];
+    final progress = (_currentQuestionIndex + 1) / _totalQuestions;
+
+    return Column(
+      children: [
+        // Progress bar
+        LinearProgressIndicator(
+          value: progress,
+          backgroundColor: Colors.grey[200],
+          valueColor: const AlwaysStoppedAnimation<Color>(_primaryColor),
+          minHeight: 4,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Question ${_currentQuestionIndex + 1} of $_totalQuestions',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey[600]),
+              ),
+              if (question['category'] != null)
+                Chip(
+                  label: Text(question['category'], style: const TextStyle(fontSize: 11)),
+                  backgroundColor: _primaryColor.withOpacity(0.1),
+                  labelStyle: const TextStyle(color: _primaryColor),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  visualDensity: VisualDensity.compact,
+                ),
+            ],
+          ),
+        ),
+        // Video preview area (simulated camera feed)
+        Expanded(
+          flex: 3,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Stack(
+              children: [
+                // Camera preview placeholder
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.black87,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        _isRecording ? Icons.videocam : Icons.videocam_off,
+                        color: _isRecording ? _primaryColor : Colors.white54,
+                        size: 48,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _isRecording ? 'Recording...' : 'Camera Preview',
+                        style: TextStyle(
+                          color: _isRecording ? _primaryColor : Colors.white54,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      if (_isRecording) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          '00:${_recordingSeconds.toString().padLeft(2, '0')}',
+                          style: const TextStyle(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                // Recording indicator
+                if (_isRecording)
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                          ),
+                          const SizedBox(width: 6),
+                          const Text('REC', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                    ),
+                  ),
+                // AI Interviewer badge
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: _primaryColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.smart_toy, color: Colors.white, size: 14),
+                        SizedBox(width: 4),
+                        Text('AI Interviewer', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        // Question display
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Card(
+            elevation: 3,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.record_voice_over, color: _primaryColor, size: 20),
+                      const SizedBox(width: 8),
+                      Text('AI asks:', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.grey[600])),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    question['question'] ?? '',
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, height: 1.4),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        // Controls
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // Record button
+              GestureDetector(
+                onTap: _toggleRecording,
+                child: Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _isRecording ? Colors.red : _primaryColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: (_isRecording ? Colors.red : _primaryColor).withOpacity(0.4),
+                        blurRadius: 12,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    _isRecording ? Icons.stop : Icons.fiber_manual_record,
+                    color: Colors.white,
+                    size: 32,
+                  ),
+                ),
+              ),
+              // Submit answer (text fallback)
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: FilledButton(
+                    onPressed: _isSubmitting ? null : _submitVideoAnswer,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: _primaryColor,
+                      disabledBackgroundColor: Colors.grey[300],
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: _isSubmitting
+                        ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                        : Text(
+                            _currentQuestionIndex < _totalQuestions - 1 ? 'Next Question' : 'Finish Interview',
+                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                          ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Optional text answer
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+          child: TextField(
+            controller: _answerController,
+            maxLines: 2,
+            decoration: InputDecoration(
+              hintText: 'Optional: Type key points you covered in your video answer...',
+              filled: true,
+              fillColor: Colors.grey[50],
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.grey[300]!)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.grey[300]!)),
+              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: _primaryColor, width: 2)),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            ),
+            style: const TextStyle(fontSize: 13),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _submitVideoAnswer() async {
+    final answerText = _answerController.text.trim().isNotEmpty
+        ? _answerController.text.trim()
+        : 'Video response recorded (${_isRecording ? "ongoing" : "completed"})';
+
+    setState(() => _isSubmitting = true);
+    _isRecording = false;
+
+    _answers.add({
+      'questionId': _questions[_currentQuestionIndex]['id'],
+      'question': _questions[_currentQuestionIndex]['question'],
+      'category': _questions[_currentQuestionIndex]['category'],
+      'answer': answerText,
+      'mode': 'video',
+    });
+
+    _currentQuestionIndex++;
+    _answerController.clear();
+
+    if (_currentQuestionIndex >= _totalQuestions) {
+      _generateResults();
+    } else {
+      setState(() => _isSubmitting = false);
+    }
+  }
+
+  // ── Chat Interview Flow ─────────────────────────────────────────────
+  Widget _buildChatInterviewFlow() {
     final question = _questions[_currentQuestionIndex];
     final progress =
         (_currentQuestionIndex + 1) / _totalQuestions;

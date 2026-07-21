@@ -215,192 +215,9 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
   }
 
   void _showJobDetails(Map<String, dynamic> job) {
-    final tags = (job['tags'] as List<dynamic>?)?.cast<String>() ?? <String>[];
-    final requirements =
-        (job['requirements'] as List<dynamic>?)?.cast<String>() ?? <String>[];
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.85,
-        minChildSize: 0.5,
-        maxChildSize: 0.95,
-        builder: (context, scrollController) => Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Column(
-            children: [
-              // Drag handle
-              Container(
-                margin: const EdgeInsets.only(top: 12),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              Expanded(
-                child: ListView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.all(20),
-                  children: [
-                    // Title
-                    Text(
-                      job['title'] ?? 'Untitled Position',
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      job['company'] ?? 'Unknown Company',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[700],
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    // Info row
-                    Wrap(
-                      spacing: 16,
-                      runSpacing: 8,
-                      children: [
-                        _infoChip(
-                          Icons.location_on_outlined,
-                          job['location'] ?? 'N/A',
-                        ),
-                        _infoChip(
-                          Icons.attach_money,
-                          job['salary'] ?? 'Not disclosed',
-                        ),
-                        _infoChip(
-                          Icons.access_time,
-                          job['posted'] ?? 'N/A',
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    // Tags
-                    if (tags.isNotEmpty)
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: tags.map((tag) {
-                          Color bgColor;
-                          Color textColor;
-                          if (tag == 'Remote') {
-                            bgColor = const Color(0xFFE8F5E9);
-                            textColor = const Color(0xFF2E7D32);
-                          } else if (tag == 'Urgent') {
-                            bgColor = const Color(0xFFFFEBEE);
-                            textColor = const Color(0xFFC62828);
-                          } else {
-                            bgColor = const Color(0xFFE3F2FD);
-                            textColor = const Color(0xFF1565C0);
-                          }
-                          return Chip(
-                            label: Text(tag),
-                            backgroundColor: bgColor,
-                            labelStyle: TextStyle(
-                              color: textColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 12,
-                            ),
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                          );
-                        }).toList(),
-                      ),
-                    const SizedBox(height: 20),
-                    // Description
-                    const Text(
-                      'Description',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      job['description'] ?? 'No description available.',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[700],
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    // Requirements
-                    if (requirements.isNotEmpty) ...[
-                      const Text(
-                        'Requirements',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      ...requirements.map((req) => Padding(
-                            padding: const EdgeInsets.only(bottom: 6),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Icon(Icons.check_circle,
-                                    size: 18, color: _primaryColor),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    req,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey[700],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )),
-                    ],
-                    const SizedBox(height: 30),
-                    // Apply button
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: FilledButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          _applyToJob(job);
-                        },
-                        style: FilledButton.styleFrom(
-                          backgroundColor: _primaryColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text(
-                          'Apply Now',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => _JobDetailPage(job: job, onApply: () => _applyToJob(job)),
       ),
     );
   }
@@ -712,6 +529,154 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+// Full-screen Job Detail Page
+class _JobDetailPage extends StatelessWidget {
+  final Map<String, dynamic> job;
+  final VoidCallback onApply;
+
+  const _JobDetailPage({required this.job, required this.onApply});
+
+  static const Color _primaryColor = Color(0xFF00C853);
+
+  @override
+  Widget build(BuildContext context) {
+    final tags = (job['tags'] as List<dynamic>?)?.cast<String>() ?? <String>[];
+    final requirements = (job['requirements'] as List<dynamic>?)?.cast<String>() ?? <String>[];
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(job['company'] ?? 'Job Details'),
+        backgroundColor: _primaryColor,
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Title
+            Text(
+              job['title'] ?? 'Untitled Position',
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              job['company'] ?? 'Unknown Company',
+              style: TextStyle(fontSize: 16, color: Colors.grey[700], fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 16),
+            // Info chips
+            Wrap(
+              spacing: 12,
+              runSpacing: 8,
+              children: [
+                _detailChip(Icons.location_on_outlined, job['location'] ?? 'N/A'),
+                _detailChip(Icons.attach_money, job['salary'] ?? 'Not disclosed'),
+                _detailChip(Icons.access_time, job['posted'] ?? 'N/A'),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Tags
+            if (tags.isNotEmpty)
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: tags.map((tag) {
+                  Color bgColor, textColor;
+                  if (tag == 'Remote') {
+                    bgColor = const Color(0xFFE8F5E9);
+                    textColor = const Color(0xFF2E7D32);
+                  } else if (tag == 'Urgent') {
+                    bgColor = const Color(0xFFFFEBEE);
+                    textColor = const Color(0xFFC62828);
+                  } else {
+                    bgColor = const Color(0xFFE3F2FD);
+                    textColor = const Color(0xFF1565C0);
+                  }
+                  return Chip(
+                    label: Text(tag),
+                    backgroundColor: bgColor,
+                    labelStyle: TextStyle(color: textColor, fontWeight: FontWeight.w600, fontSize: 12),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  );
+                }).toList(),
+              ),
+            const SizedBox(height: 24),
+            // Description
+            const Text('Description', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey[200]!),
+              ),
+              child: Text(
+                job['description'] ?? 'No description available.',
+                style: TextStyle(fontSize: 14, color: Colors.grey[800], height: 1.6),
+              ),
+            ),
+            const SizedBox(height: 24),
+            // Requirements
+            if (requirements.isNotEmpty) ...[
+              const Text('Requirements', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              ...requirements.map((req) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.check_circle, size: 20, color: _primaryColor),
+                    const SizedBox(width: 10),
+                    Expanded(child: Text(req, style: TextStyle(fontSize: 14, color: Colors.grey[700]))),
+                  ],
+                ),
+              )),
+            ],
+            const SizedBox(height: 32),
+            // Apply button
+            SizedBox(
+              width: double.infinity,
+              height: 54,
+              child: FilledButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  onApply();
+                },
+                style: FilledButton.styleFrom(
+                  backgroundColor: _primaryColor,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                ),
+                child: const Text('Apply Now', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _detailChip(IconData icon, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        Icon(icon, size: 16, color: Colors.grey[600]),
+        const SizedBox(width: 6),
+        Text(label, style: TextStyle(fontSize: 13, color: Colors.grey[700], fontWeight: FontWeight.w500)),
+      ]),
     );
   }
 }

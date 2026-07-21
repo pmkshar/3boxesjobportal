@@ -209,7 +209,7 @@ class _CvManagerScreenState extends State<CvManagerScreen>
             child: InkWell(
               borderRadius: BorderRadius.circular(16),
               onTap: () {
-                // TODO: Open resume editor
+                _showResumeDetail(resume);
               },
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -280,6 +280,29 @@ class _CvManagerScreenState extends State<CvManagerScreen>
             ),
           );
         },
+      ),
+    );
+  }
+
+  // ── Resume Detail ────────────────────────────────────────────────
+  void _showResumeDetail(Map<String, dynamic> resume) {
+    final color = _templateColor(resume['templateType'] as String?);
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => _ResumeDetailPage(
+          resume: resume,
+          color: color,
+          icon: _templateIcon(resume['templateType'] as String?),
+          onEdit: () {
+            Navigator.pop(context);
+            _navigateToBuilder(resume['templateType'] ?? 'Professional');
+          },
+          onDelete: () {
+            Navigator.pop(context);
+            _showDeleteDialog(resume);
+          },
+        ),
       ),
     );
   }
@@ -410,6 +433,222 @@ class _CvManagerScreenState extends State<CvManagerScreen>
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+// Full-screen Resume Detail Page
+class _ResumeDetailPage extends StatelessWidget {
+  final Map<String, dynamic> resume;
+  final Color color;
+  final IconData icon;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  const _ResumeDetailPage({
+    required this.resume,
+    required this.color,
+    required this.icon,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  static const Color _primaryColor = Color(0xFF00C853);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        title: Text(resume['name'] ?? 'Resume Details'),
+        backgroundColor: _primaryColor,
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header card
+            Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [color.withOpacity(0.1), color.withOpacity(0.05)],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 72,
+                      height: 72,
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: Icon(icon, color: color, size: 36),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      resume['name'] ?? 'Untitled',
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        resume['templateType'] ?? 'N/A',
+                        style: TextStyle(color: color, fontWeight: FontWeight.w600, fontSize: 13),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Details section
+            const Text('Details', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 12),
+            _detailRow(Icons.description, 'Resume Name', resume['name'] ?? 'Untitled'),
+            _detailRow(Icons.category, 'Template Type', resume['templateType'] ?? 'N/A'),
+            _detailRow(Icons.calendar_today, 'Last Modified', resume['lastModified'] ?? 'Unknown'),
+            _detailRow(Icons.folder, 'Status', 'Active'),
+
+            const SizedBox(height: 20),
+
+            // Preview section
+            const Text('Resume Preview', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey[200]!),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Column(
+                      children: [
+                        Container(width: 80, height: 4, color: color),
+                        const SizedBox(height: 16),
+                        const Text('Your Name', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 4),
+                        Text('email@example.com | +91-XXXXX-XXXXX',
+                            style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                  _previewSection('Professional Summary', color),
+                  _previewSection('Experience', color),
+                  _previewSection('Education', color),
+                  _previewSection('Skills', color),
+                  const SizedBox(height: 12),
+                  Center(
+                    child: Text(
+                      'Tap "Edit Resume" to fill in your details',
+                      style: TextStyle(fontSize: 12, color: Colors.grey[500], fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Action buttons
+            Row(
+              children: [
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: onEdit,
+                    icon: const Icon(Icons.edit, size: 18),
+                    label: const Text('Edit Resume'),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: _primaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: onDelete,
+                    icon: const Icon(Icons.delete_outline, size: 18),
+                    label: const Text('Delete'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.red,
+                      side: const BorderSide(color: Colors.red),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _detailRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: Colors.grey[600]),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[500])),
+                Text(value, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _previewSection(String title, Color color) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(width: 4, height: 16, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2))),
+              const SizedBox(width: 8),
+              Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Container(height: 8, width: double.infinity, decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(4))),
+          const SizedBox(height: 4),
+          Container(height: 8, width: MediaQueryData().size.width * 0.6, decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(4))),
         ],
       ),
     );
