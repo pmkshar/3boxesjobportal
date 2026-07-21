@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../services/api_service.dart';
+import 'webview_screen.dart';
 
 class TrainingScreen extends StatefulWidget {
   const TrainingScreen({super.key});
@@ -174,15 +175,10 @@ class _TrainingScreenState extends State<TrainingScreen> {
 
   List<Map<String, dynamic>> get _filteredCourses {
     return _courses.where((course) {
-      final matchesCategory =
-          _selectedCategory == 'All' || course['category'] == _selectedCategory;
+      final matchesCategory = _selectedCategory == 'All' || course['category'] == _selectedCategory;
       final matchesSearch = _searchQuery.isEmpty ||
-          (course['title'] as String)
-              .toLowerCase()
-              .contains(_searchQuery.toLowerCase()) ||
-          (course['provider'] as String)
-              .toLowerCase()
-              .contains(_searchQuery.toLowerCase());
+          (course['title'] as String).toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          (course['provider'] as String).toLowerCase().contains(_searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     }).toList();
   }
@@ -192,30 +188,30 @@ class _TrainingScreenState extends State<TrainingScreen> {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
-      // Fallback: try the main site
-      final mainUri = Uri.parse(_marqaTrainersUrl);
-      if (await canLaunchUrl(mainUri)) {
-        await launchUrl(mainUri, mode: LaunchMode.externalApplication);
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Could not open $url'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not open $url'), backgroundColor: Colors.red),
+        );
       }
     }
   }
 
   void _openCourse(Map<String, dynamic> course) {
     final url = course['url'] as String? ?? _marqaTrainersUrl;
-    _launchUrl(url);
+    // Open in WebView within the app
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => WebViewScreen(url: url, title: course['title'] as String? ?? 'Course'),
+      ),
+    );
   }
 
   void _openMarqaTrainers() {
-    _launchUrl(_marqaTrainersUrl);
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const WebViewScreen(url: _marqaTrainersUrl, title: 'Marqa Trainers'),
+      ),
+    );
   }
 
   Widget _buildRatingStars(double rating) {
@@ -224,19 +220,12 @@ class _TrainingScreenState extends State<TrainingScreen> {
       children: [
         for (int i = 1; i <= 5; i++)
           Icon(
-            i <= rating.floor()
-                ? Icons.star
-                : i - 0.5 <= rating
-                    ? Icons.star_half
-                    : Icons.star_border,
+            i <= rating.floor() ? Icons.star : i - 0.5 <= rating ? Icons.star_half : Icons.star_border,
             size: 16,
             color: Colors.amber,
           ),
         const SizedBox(width: 4),
-        Text(
-          rating.toStringAsFixed(1),
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-        ),
+        Text(rating.toStringAsFixed(1), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
       ],
     );
   }
@@ -257,7 +246,6 @@ class _TrainingScreenState extends State<TrainingScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Course image placeholder
               Container(
                 width: 80,
                 height: 80,
@@ -268,33 +256,17 @@ class _TrainingScreenState extends State<TrainingScreen> {
                 child: Icon(icon, color: color, size: 36),
               ),
               const SizedBox(width: 12),
-              // Course details
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      course['title'] as String,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    Text(course['title'] as String, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis),
                     const SizedBox(height: 4),
                     Row(
                       children: [
                         Icon(Icons.school, size: 14, color: _primaryColor),
                         const SizedBox(width: 4),
-                        Text(
-                          course['provider'] as String,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: _primaryColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        Text(course['provider'] as String, style: TextStyle(fontSize: 13, color: _primaryColor, fontWeight: FontWeight.w600)),
                       ],
                     ),
                     const SizedBox(height: 6),
@@ -302,10 +274,7 @@ class _TrainingScreenState extends State<TrainingScreen> {
                       children: [
                         Icon(Icons.schedule, size: 14, color: Colors.grey[500]),
                         const SizedBox(width: 4),
-                        Text(
-                          course['duration'] as String,
-                          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                        ),
+                        Text(course['duration'] as String, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
                         const SizedBox(width: 12),
                         _buildRatingStars(course['rating'] as double),
                       ],
@@ -315,15 +284,13 @@ class _TrainingScreenState extends State<TrainingScreen> {
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         onPressed: () => _openCourse(course),
-                        icon: const Icon(Icons.open_in_new, size: 16),
-                        label: const Text('View Course'),
+                        icon: const Icon(Icons.open_in_browser, size: 16),
+                        label: const Text('Open Course'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _primaryColor,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 8),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           elevation: 0,
                         ),
                       ),
@@ -334,24 +301,6 @@ class _TrainingScreenState extends State<TrainingScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _infoChip(IconData icon, String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: Colors.grey[700]),
-          const SizedBox(width: 4),
-          Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[700])),
-        ],
       ),
     );
   }
@@ -370,14 +319,12 @@ class _TrainingScreenState extends State<TrainingScreen> {
       ),
       body: Column(
         children: [
-          // Marqa Trainers Banner
+          // Marqa Trainers Banner - opens WebView
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF00C853), Color(0xFF00E676)],
-              ),
+              gradient: LinearGradient(colors: [Color(0xFF00C853), Color(0xFF00E676)]),
             ),
             child: InkWell(
               onTap: _openMarqaTrainers,
@@ -385,10 +332,7 @@ class _TrainingScreenState extends State<TrainingScreen> {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
                     child: const Icon(Icons.school, color: Colors.white, size: 28),
                   ),
                   const SizedBox(width: 12),
@@ -396,32 +340,16 @@ class _TrainingScreenState extends State<TrainingScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Marqa Trainers',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        Text('Marqa Trainers', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                         SizedBox(height: 2),
-                        Text(
-                          'Professional courses & certifications',
-                          style: TextStyle(color: Colors.white70, fontSize: 13),
-                        ),
+                        Text('Browse all courses & certifications', style: TextStyle(color: Colors.white70, fontSize: 13)),
                       ],
                     ),
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Text(
-                      'Visit',
-                      style: TextStyle(color: Color(0xFF00C853), fontWeight: FontWeight.bold, fontSize: 13),
-                    ),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                    child: const Text('Open', style: TextStyle(color: Color(0xFF00C853), fontWeight: FontWeight.bold, fontSize: 13)),
                   ),
                 ],
               ),
@@ -438,10 +366,7 @@ class _TrainingScreenState extends State<TrainingScreen> {
                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
                 filled: true,
                 fillColor: Colors.grey[100],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                 contentPadding: const EdgeInsets.symmetric(vertical: 10),
               ),
             ),
@@ -481,15 +406,10 @@ class _TrainingScreenState extends State<TrainingScreen> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
             child: Row(
               children: [
-                Text(
-                  '${filtered.length} course${filtered.length != 1 ? 's' : ''} found',
-                  style: TextStyle(fontSize: 13, color: Colors.grey[600], fontWeight: FontWeight.w500),
-                ),
+                Text('${filtered.length} course${filtered.length != 1 ? 's' : ''} found',
+                    style: TextStyle(fontSize: 13, color: Colors.grey[600], fontWeight: FontWeight.w500)),
                 const Spacer(),
-                Text(
-                  'Powered by Marqa Trainers',
-                  style: TextStyle(fontSize: 11, color: _primaryColor, fontWeight: FontWeight.w600),
-                ),
+                Text('Powered by Marqa Trainers', style: TextStyle(fontSize: 11, color: _primaryColor, fontWeight: FontWeight.w600)),
               ],
             ),
           ),

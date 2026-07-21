@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 import '../services/api_service.dart';
 
 class AiInterviewScreen extends StatefulWidget {
@@ -34,7 +36,13 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
   String _interviewMode = 'chat';
   bool _isRecording = false;
   int _recordingSeconds = 0;
-  Duration _recordDuration = Duration.zero;
+  Timer? _recordingTimer;
+
+  // Camera
+  CameraController? _cameraController;
+  List<CameraDescription> _cameras = [];
+  bool _cameraInitialized = false;
+  bool _cameraPermissionDenied = false;
 
   final List<Map<String, String>> _interviewTypes = [
     {
@@ -66,118 +74,88 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
   // 5 built-in demo questions per type
   static const Map<String, List<Map<String, dynamic>>> _demoQuestions = {
     'behavioral': [
-      {
-        'id': 'b1',
-        'question':
-            'Tell me about a time when you had to deal with a difficult team member. How did you handle the situation?',
-        'category': 'Teamwork',
-      },
-      {
-        'id': 'b2',
-        'question':
-            'Describe a situation where you had to meet a tight deadline. What steps did you take to ensure timely delivery?',
-        'category': 'Time Management',
-      },
-      {
-        'id': 'b3',
-        'question':
-            'Give an example of when you took initiative to solve a problem that wasn\'t strictly your responsibility.',
-        'category': 'Leadership',
-      },
-      {
-        'id': 'b4',
-        'question':
-            'Tell me about a time when you received critical feedback. How did you respond and what did you learn?',
-        'category': 'Growth Mindset',
-      },
-      {
-        'id': 'b5',
-        'question':
-            'Describe a situation where you had to adapt to a significant change at work. How did you manage the transition?',
-        'category': 'Adaptability',
-      },
+      {'id': 'b1', 'question': 'Tell me about a time when you had to deal with a difficult team member. How did you handle the situation?', 'category': 'Teamwork'},
+      {'id': 'b2', 'question': 'Describe a situation where you had to meet a tight deadline. What steps did you take to ensure timely delivery?', 'category': 'Time Management'},
+      {'id': 'b3', 'question': 'Give an example of when you took initiative to solve a problem that wasn\'t strictly your responsibility.', 'category': 'Leadership'},
+      {'id': 'b4', 'question': 'Tell me about a time when you received critical feedback. How did you respond and what did you learn?', 'category': 'Growth Mindset'},
+      {'id': 'b5', 'question': 'Describe a situation where you had to adapt to a significant change at work. How did you manage the transition?', 'category': 'Adaptability'},
     ],
     'technical': [
-      {
-        'id': 't1',
-        'question':
-            'Explain the difference between REST and GraphQL. When would you choose one over the other?',
-        'category': 'API Design',
-      },
-      {
-        'id': 't2',
-        'question':
-            'How would you design a URL shortening service? Walk through the key components and trade-offs.',
-        'category': 'System Design',
-      },
-      {
-        'id': 't3',
-        'question':
-            'What is the difference between SQL and NoSQL databases? Give examples of when to use each.',
-        'category': 'Databases',
-      },
-      {
-        'id': 't4',
-        'question':
-            'Explain the concept of containerization and how Docker differs from traditional virtualization.',
-        'category': 'DevOps',
-      },
-      {
-        'id': 't5',
-        'question':
-            'Describe the CAP theorem and its implications for distributed system design.',
-        'category': 'Architecture',
-      },
+      {'id': 't1', 'question': 'Explain the difference between REST and GraphQL. When would you choose one over the other?', 'category': 'API Design'},
+      {'id': 't2', 'question': 'How would you design a URL shortening service? Walk through the key components and trade-offs.', 'category': 'System Design'},
+      {'id': 't3', 'question': 'What is the difference between SQL and NoSQL databases? Give examples of when to use each.', 'category': 'Databases'},
+      {'id': 't4', 'question': 'Explain the concept of containerization and how Docker differs from traditional virtualization.', 'category': 'DevOps'},
+      {'id': 't5', 'question': 'Describe the CAP theorem and its implications for distributed system design.', 'category': 'Architecture'},
     ],
     'mixed': [
-      {
-        'id': 'm1',
-        'question':
-            'Tell me about a time you had to explain a complex technical concept to a non-technical stakeholder.',
-        'category': 'Communication',
-      },
-      {
-        'id': 'm2',
-        'question':
-            'How would you prioritize features when you have conflicting requests from different teams?',
-        'category': 'Prioritization',
-      },
-      {
-        'id': 'm3',
-        'question':
-            'Explain the concept of microservices and discuss when a monolithic architecture might be preferable.',
-        'category': 'Architecture',
-      },
-      {
-        'id': 'm4',
-        'question':
-            'Describe how you would handle a production outage. Walk through your incident response process.',
-        'category': 'Crisis Management',
-      },
-      {
-        'id': 'm5',
-        'question':
-            'Tell me about a project where you had to learn a new technology quickly. How did you get up to speed?',
-        'category': 'Learning Agility',
-      },
+      {'id': 'm1', 'question': 'Tell me about a time you had to explain a complex technical concept to a non-technical stakeholder.', 'category': 'Communication'},
+      {'id': 'm2', 'question': 'How would you prioritize features when you have conflicting requests from different teams?', 'category': 'Prioritization'},
+      {'id': 'm3', 'question': 'Explain the concept of microservices and discuss when a monolithic architecture might be preferable.', 'category': 'Architecture'},
+      {'id': 'm4', 'question': 'Describe how you would handle a production outage. Walk through your incident response process.', 'category': 'Crisis Management'},
+      {'id': 'm5', 'question': 'Tell me about a project where you had to learn a new technology quickly. How did you get up to speed?', 'category': 'Learning Agility'},
     ],
   };
 
   @override
+  void initState() {
+    super.initState();
+    _initCamera();
+  }
+
+  @override
   void dispose() {
     _answerController.dispose();
+    _recordingTimer?.cancel();
+    _cameraController?.dispose();
     super.dispose();
+  }
+
+  Future<void> _initCamera() async {
+    try {
+      _cameras = await availableCameras();
+      if (_cameras.isNotEmpty) {
+        // Find front camera
+        CameraDescription? frontCamera;
+        for (final camera in _cameras) {
+          if (camera.lensDirection == CameraLensDirection.front) {
+            frontCamera = camera;
+            break;
+          }
+        }
+        final cameraToUse = frontCamera ?? _cameras.first;
+
+        _cameraController = CameraController(
+          cameraToUse,
+          ResolutionPreset.medium,
+          enableAudio: true,
+        );
+
+        await _cameraController!.initialize();
+        if (mounted) {
+          setState(() => _cameraInitialized = true);
+        }
+      }
+    } catch (e) {
+      // Camera not available - will use simulated view
+      if (mounted) {
+        setState(() => _cameraPermissionDenied = true);
+      }
+    }
   }
 
   Future<void> _startInterview() async {
     setState(() => _isLoading = true);
     _interviewMode = _selectedType == 'video' ? 'video' : 'chat';
 
+    // If video mode, ensure camera is ready
+    if (_interviewMode == 'video' && !_cameraInitialized) {
+      await _initCamera();
+    }
+
     try {
       final type = _selectedType == 'video' ? 'mixed' : _selectedType;
       final response = await ApiService.startInterview(type: type);
-      if (response.containsKey('interviewId') &&
-          !response.containsKey('error')) {
+      if (response.containsKey('interviewId') && !response.containsKey('error')) {
         _interviewId = response['interviewId'];
         final questionsList = response['questions'] as List<dynamic>?;
         if (questionsList != null && questionsList.isNotEmpty) {
@@ -190,7 +168,6 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
           return;
         }
       }
-      // Fallback to demo
       _useDemoQuestions();
     } catch (e) {
       _useDemoQuestions();
@@ -202,16 +179,18 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
     setState(() {
       _questions = List.from(_demoQuestions[type] ?? _demoQuestions['behavioral']!);
       _totalQuestions = _questions.length;
-      _interviewId = null; // offline mode
+      _interviewId = null;
       _isSelectingType = false;
       _isLoading = false;
     });
   }
 
   Future<void> _submitAnswer() async {
-    if (_answerController.text.trim().isEmpty) return;
+    if (_answerController.text.trim().isEmpty && _interviewMode == 'chat') return;
 
-    final answerText = _answerController.text.trim();
+    final answerText = _answerController.text.trim().isNotEmpty
+        ? _answerController.text.trim()
+        : 'Video response recorded';
     setState(() => _isSubmitting = true);
 
     _answers.add({
@@ -223,12 +202,8 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
 
     try {
       if (_interviewId != null) {
-        final response = await ApiService.submitInterviewAnswer(
-          _interviewId!,
-          answerText,
-        );
-        if (response.containsKey('nextQuestion') &&
-            response['nextQuestion'] != null) {
+        final response = await ApiService.submitInterviewAnswer(_interviewId!, answerText);
+        if (response.containsKey('nextQuestion') && response['nextQuestion'] != null) {
           setState(() {
             _currentQuestionIndex++;
             _questions.add(response['nextQuestion'] as Map<String, dynamic>);
@@ -237,16 +212,13 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
             _isSubmitting = false;
           });
           return;
-        } else if (response.containsKey('results') ||
-            response.containsKey('completed')) {
+        } else if (response.containsKey('results') || response.containsKey('completed')) {
           _finishInterview(response);
           return;
         }
       }
-      // Move to next question or finish
       _currentQuestionIndex++;
       _answerController.clear();
-
       if (_currentQuestionIndex >= _totalQuestions) {
         _generateResults();
       } else {
@@ -255,7 +227,6 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
     } catch (e) {
       _currentQuestionIndex++;
       _answerController.clear();
-
       if (_currentQuestionIndex >= _totalQuestions) {
         _generateResults();
       } else {
@@ -275,12 +246,10 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
   }
 
   void _generateResults() {
-    // Generate demo results
     final categoryScores = <String, List<int>>{};
     for (final answer in _answers) {
       final cat = answer['category'] as String? ?? 'General';
       categoryScores.putIfAbsent(cat, () => []);
-      // Simulate a score for demo
       final score = 60 + (answer['answer'] as String).length % 35;
       categoryScores[cat]!.add(score);
     }
@@ -292,8 +261,7 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
       categoryAverages[entry.key] = avg;
       totalScore += avg.toInt();
     }
-    final overallScore =
-        categoryAverages.isEmpty ? 0 : totalScore ~/ categoryAverages.length;
+    final overallScore = categoryAverages.isEmpty ? 0 : totalScore ~/ categoryAverages.length;
 
     setState(() {
       _results = {
@@ -332,6 +300,7 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
   }
 
   void _resetInterview() {
+    _recordingTimer?.cancel();
     setState(() {
       _isSelectingType = true;
       _isLoading = false;
@@ -344,61 +313,63 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
       _showResults = false;
       _results = null;
       _answerController.clear();
+      _isRecording = false;
+      _recordingSeconds = 0;
     });
   }
 
-  // Toggle recording for video interview
   void _toggleRecording() {
-    setState(() {
-      _isRecording = !_isRecording;
-      if (_isRecording) {
+    if (_isRecording) {
+      _recordingTimer?.cancel();
+      setState(() {
+        _isRecording = false;
         _recordingSeconds = 0;
-      } else {
+      });
+    } else {
+      setState(() {
+        _isRecording = true;
         _recordingSeconds = 0;
-      }
-    });
+      });
+      _recordingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        setState(() {
+          _recordingSeconds++;
+        });
+      });
+    }
+  }
+
+  String _formatDuration(int seconds) {
+    final m = (seconds ~/ 60).toString().padLeft(2, '0');
+    final s = (seconds % 60).toString().padLeft(2, '0');
+    return '$m:$s';
   }
 
   IconData _getTypeIcon(String key) {
     switch (key) {
-      case 'behavioral':
-        return Icons.psychology;
-      case 'technical':
-        return Icons.code;
-      case 'mixed':
-        return Icons.shuffle;
-      case 'video':
-        return Icons.videocam;
-      default:
-        return Icons.quiz;
+      case 'behavioral': return Icons.psychology;
+      case 'technical': return Icons.code;
+      case 'mixed': return Icons.shuffle;
+      case 'video': return Icons.videocam;
+      default: return Icons.quiz;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = ThemeData(
-      colorSchemeSeed: _primaryColor,
-      useMaterial3: true,
-    );
+    final theme = ThemeData(colorSchemeSeed: _primaryColor, useMaterial3: true);
 
     return Theme(
       data: theme,
       child: Scaffold(
         backgroundColor: const Color(0xFFF5F7FA),
         appBar: AppBar(
-          title: const Text(
-            'AI Interview',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          title: const Text('AI Interview', style: TextStyle(fontWeight: FontWeight.bold)),
           backgroundColor: _primaryColor,
           foregroundColor: Colors.white,
           elevation: 0,
           actions: [
             if (!_isSelectingType)
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: _resetInterview,
-              ),
+              IconButton(icon: const Icon(Icons.close), onPressed: _resetInterview),
           ],
         ),
         body: _isLoading
@@ -428,15 +399,9 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Choose Interview Type',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
+          const Text('Choose Interview Type', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          Text(
-            'Select the type of interview you want to practice',
-            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-          ),
+          Text('Select the type of interview you want to practice', style: TextStyle(fontSize: 14, color: Colors.grey[600])),
           const SizedBox(height: 24),
           ..._interviewTypes.map((type) {
             final isSelected = _selectedType == type['key'];
@@ -447,18 +412,14 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                 borderRadius: BorderRadius.circular(14),
                 elevation: isSelected ? 3 : 1,
                 child: InkWell(
-                  onTap: () =>
-                      setState(() => _selectedType = type['key']!),
+                  onTap: () => setState(() => _selectedType = type['key']!),
                   borderRadius: BorderRadius.circular(14),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: isSelected ? _primaryColor : Colors.transparent,
-                        width: 2,
-                      ),
+                      border: Border.all(color: isSelected ? _primaryColor : Colors.transparent, width: 2),
                     ),
                     child: Row(
                       children: [
@@ -466,46 +427,35 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                           width: 48,
                           height: 48,
                           decoration: BoxDecoration(
-                            color: isSelected
-                                ? _primaryColor.withOpacity(0.1)
-                                : Colors.grey[100],
+                            color: isSelected ? _primaryColor.withOpacity(0.1) : Colors.grey[100],
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Icon(
-                            _getTypeIcon(type['key']!),
-                            color: isSelected ? _primaryColor : Colors.grey,
-                            size: 24,
-                          ),
+                          child: Icon(_getTypeIcon(type['key']!), color: isSelected ? _primaryColor : Colors.grey, size: 24),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                type['label']!,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: isSelected
-                                      ? _primaryColor
-                                      : Colors.black87,
-                                ),
+                              Row(
+                                children: [
+                                  Text(type['label']!, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: isSelected ? _primaryColor : Colors.black87)),
+                                  if (type['key'] == 'video') ...[
+                                    const SizedBox(width: 8),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(color: Colors.red.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
+                                      child: const Text('LIVE', style: TextStyle(color: Colors.red, fontSize: 9, fontWeight: FontWeight.bold)),
+                                    ),
+                                  ],
+                                ],
                               ),
                               const SizedBox(height: 2),
-                              Text(
-                                type['description']!,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
+                              Text(type['description']!, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
                             ],
                           ),
                         ),
-                        if (isSelected)
-                          const Icon(Icons.check_circle,
-                              color: _primaryColor, size: 24),
+                        if (isSelected) const Icon(Icons.check_circle, color: _primaryColor, size: 24),
                       ],
                     ),
                   ),
@@ -521,14 +471,9 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
               onPressed: _startInterview,
               style: FilledButton.styleFrom(
                 backgroundColor: _primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text(
-                'Start Interview',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
+              child: const Text('Start Interview', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             ),
           ),
         ],
@@ -544,7 +489,7 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
     return _buildChatInterviewFlow();
   }
 
-  // ── Video Interview Flow ────────────────────────────────────────────
+  // ── Video Interview Flow with REAL CAMERA ──────────────────────────
   Widget _buildVideoInterviewFlow() {
     final question = _questions[_currentQuestionIndex];
     final progress = (_currentQuestionIndex + 1) / _totalQuestions;
@@ -579,46 +524,48 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
             ],
           ),
         ),
-        // Video preview area (simulated camera feed)
+        // Camera preview area
         Expanded(
           flex: 3,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Stack(
               children: [
-                // Camera preview placeholder
+                // Actual camera preview or fallback
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.black87,
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        _isRecording ? Icons.videocam : Icons.videocam_off,
-                        color: _isRecording ? _primaryColor : Colors.white54,
-                        size: 48,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        _isRecording ? 'Recording...' : 'Camera Preview',
-                        style: TextStyle(
-                          color: _isRecording ? _primaryColor : Colors.white54,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                  clipBehavior: Clip.antiAlias,
+                  child: _cameraInitialized && _cameraController != null
+                      ? FittedBox(
+                          fit: BoxFit.cover,
+                          child: SizedBox(
+                            width: _cameraController!.value.previewSize?.height ?? 200,
+                            height: _cameraController!.value.previewSize?.width ?? 300,
+                            child: CameraPreview(_cameraController!),
+                          ),
+                        )
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              _cameraPermissionDenied ? Icons.videocam_off : Icons.videocam,
+                              color: _cameraPermissionDenied ? Colors.redAccent : Colors.white54,
+                              size: 48,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              _cameraPermissionDenied
+                                  ? 'Camera not available\nUsing simulated view'
+                                  : 'Initializing camera...',
+                              style: const TextStyle(color: Colors.white54, fontSize: 14),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                         ),
-                      ),
-                      if (_isRecording) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          '00:${_recordingSeconds.toString().padLeft(2, '0')}',
-                          style: const TextStyle(color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ],
-                  ),
                 ),
                 // Recording indicator
                 if (_isRecording)
@@ -627,20 +574,15 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                     right: 12,
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+                      decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(20)),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            width: 8,
-                            height: 8,
-                            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                          ),
+                          Container(width: 8, height: 8, decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle)),
                           const SizedBox(width: 6),
                           const Text('REC', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+                          const SizedBox(width: 6),
+                          Text(_formatDuration(_recordingSeconds), style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),
@@ -651,10 +593,7 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                   left: 12,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: _primaryColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                    decoration: BoxDecoration(color: _primaryColor, borderRadius: BorderRadius.circular(20)),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -665,6 +604,23 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                     ),
                   ),
                 ),
+                // Timer at bottom of camera
+                if (_isRecording)
+                  Positioned(
+                    bottom: 12,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        decoration: BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(20)),
+                        child: Text(
+                          _formatDuration(_recordingSeconds),
+                          style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -688,10 +644,7 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    question['question'] ?? '',
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, height: 1.4),
-                  ),
+                  Text(question['question'] ?? '', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, height: 1.4)),
                 ],
               ),
             ),
@@ -703,7 +656,7 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // Record button
+              // Record/Stop button
               GestureDetector(
                 onTap: _toggleRecording,
                 child: Container(
@@ -727,7 +680,7 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                   ),
                 ),
               ),
-              // Submit answer (text fallback)
+              // Submit answer
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16),
@@ -776,10 +729,11 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
   Future<void> _submitVideoAnswer() async {
     final answerText = _answerController.text.trim().isNotEmpty
         ? _answerController.text.trim()
-        : 'Video response recorded (${_isRecording ? "ongoing" : "completed"})';
+        : 'Video response recorded (${_formatDuration(_recordingSeconds)})';
 
     setState(() => _isSubmitting = true);
     _isRecording = false;
+    _recordingTimer?.cancel();
 
     _answers.add({
       'questionId': _questions[_currentQuestionIndex]['id'],
@@ -795,19 +749,20 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
     if (_currentQuestionIndex >= _totalQuestions) {
       _generateResults();
     } else {
-      setState(() => _isSubmitting = false);
+      setState(() {
+        _recordingSeconds = 0;
+        _isSubmitting = false;
+      });
     }
   }
 
   // ── Chat Interview Flow ─────────────────────────────────────────────
   Widget _buildChatInterviewFlow() {
     final question = _questions[_currentQuestionIndex];
-    final progress =
-        (_currentQuestionIndex + 1) / _totalQuestions;
+    final progress = (_currentQuestionIndex + 1) / _totalQuestions;
 
     return Column(
       children: [
-        // Progress bar
         LinearProgressIndicator(
           value: progress,
           backgroundColor: Colors.grey[200],
@@ -819,20 +774,11 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Question ${_currentQuestionIndex + 1} of $_totalQuestions',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey[600],
-                ),
-              ),
+              Text('Question ${_currentQuestionIndex + 1} of $_totalQuestions',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey[600])),
               if (question['category'] != null)
                 Chip(
-                  label: Text(
-                    question['category'],
-                    style: const TextStyle(fontSize: 11),
-                  ),
+                  label: Text(question['category'], style: const TextStyle(fontSize: 11)),
                   backgroundColor: _primaryColor.withOpacity(0.1),
                   labelStyle: const TextStyle(color: _primaryColor),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -842,7 +788,6 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
             ],
           ),
         ),
-        // Question card
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -851,9 +796,7 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
               children: [
                 Card(
                   elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   child: Padding(
                     padding: const EdgeInsets.all(20),
                     child: Column(
@@ -868,42 +811,20 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                                 color: _primaryColor.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: const Icon(Icons.quiz,
-                                  color: _primaryColor, size: 20),
+                              child: const Icon(Icons.quiz, color: _primaryColor, size: 20),
                             ),
                             const SizedBox(width: 12),
-                            Text(
-                              'Interview Question',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.grey[600],
-                              ),
-                            ),
+                            Text('Interview Question', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey[600])),
                           ],
                         ),
                         const SizedBox(height: 16),
-                        Text(
-                          question['question'] ?? '',
-                          style: const TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.w500,
-                            height: 1.5,
-                          ),
-                        ),
+                        Text(question['question'] ?? '', style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500, height: 1.5)),
                       ],
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Answer field
-                const Text(
-                  'Your Answer',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                const Text('Your Answer', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
                 TextField(
                   controller: _answerController,
@@ -912,58 +833,32 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                     hintText: 'Type your answer here... Use the STAR method for behavioral questions.',
                     filled: true,
                     fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey[300]!),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide:
-                          const BorderSide(color: _primaryColor, width: 2),
-                    ),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey[300]!)),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Colors.grey[300]!)),
+                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: _primaryColor, width: 2)),
                   ),
                 ),
               ],
             ),
           ),
         ),
-        // Submit button
         Padding(
           padding: const EdgeInsets.all(20),
           child: SizedBox(
             width: double.infinity,
             height: 52,
             child: FilledButton(
-              onPressed:
-                  _isSubmitting ? null : _submitAnswer,
+              onPressed: _isSubmitting ? null : _submitAnswer,
               style: FilledButton.styleFrom(
                 backgroundColor: _primaryColor,
                 disabledBackgroundColor: Colors.grey[300],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               child: _isSubmitting
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
+                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                   : Text(
-                      _currentQuestionIndex < _totalQuestions - 1
-                          ? 'Submit & Next'
-                          : 'Finish Interview',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      _currentQuestionIndex < _totalQuestions - 1 ? 'Submit & Next' : 'Finish Interview',
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
             ),
           ),
@@ -975,8 +870,7 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
   // ── Results Screen ─────────────────────────────────────────────────
   Widget _buildResultsScreen() {
     final overallScore = (_results?['overallScore'] as int?) ?? 0;
-    final categories =
-        (_results?['categories'] as Map<String, dynamic>?) ?? {};
+    final categories = (_results?['categories'] as Map<String, dynamic>?) ?? {};
     final tips = (_results?['tips'] as List<dynamic>?)?.cast<String>() ?? [];
 
     return SingleChildScrollView(
@@ -984,17 +878,13 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
       child: Column(
         children: [
           const SizedBox(height: 10),
-          // Overall score circle
           Container(
             width: 160,
             height: 160,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: [
-                  _primaryColor.withOpacity(0.1),
-                  _primaryColor.withOpacity(0.3),
-                ],
+                colors: [_primaryColor.withOpacity(0.1), _primaryColor.withOpacity(0.3)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -1006,33 +896,14 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 12, offset: const Offset(0, 4))],
                 ),
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        '$overallScore',
-                        style: const TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          color: _primaryColor,
-                        ),
-                      ),
-                      const Text(
-                        'out of 100',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
-                      ),
+                      Text('$overallScore', style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: _primaryColor)),
+                      const Text('out of 100', style: TextStyle(fontSize: 12, color: Colors.grey)),
                     ],
                   ),
                 ),
@@ -1041,26 +912,12 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            overallScore >= 85
-                ? 'Excellent!'
-                : overallScore >= 70
-                    ? 'Good Job!'
-                    : 'Keep Practicing!',
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
+            overallScore >= 85 ? 'Excellent!' : overallScore >= 70 ? 'Good Job!' : 'Keep Practicing!',
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 24),
-          // Category scores
           if (categories.isNotEmpty) ...[
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Category Scores',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
+            const Align(alignment: Alignment.centerLeft, child: Text('Category Scores', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
             const SizedBox(height: 12),
             ...categories.entries.map((entry) {
               final score = entry.value.toDouble();
@@ -1072,25 +929,8 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          entry.key,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
-                          '${score.toInt()}%',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: score >= 80
-                                ? _primaryColor
-                                : score >= 60
-                                    ? Colors.orange
-                                    : Colors.red,
-                          ),
-                        ),
+                        Text(entry.key, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                        Text('${score.toInt()}%', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: score >= 80 ? _primaryColor : score >= 60 ? Colors.orange : Colors.red)),
                       ],
                     ),
                     const SizedBox(height: 4),
@@ -1099,13 +939,7 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                       child: LinearProgressIndicator(
                         value: score / 100,
                         backgroundColor: Colors.grey[200],
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          score >= 80
-                              ? _primaryColor
-                              : score >= 60
-                                  ? Colors.orange
-                                  : Colors.red,
-                        ),
+                        valueColor: AlwaysStoppedAnimation<Color>(score >= 80 ? _primaryColor : score >= 60 ? Colors.orange : Colors.red),
                         minHeight: 8,
                       ),
                     ),
@@ -1115,15 +949,8 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
             }),
           ],
           const SizedBox(height: 16),
-          // Improvement tips
           if (tips.isNotEmpty) ...[
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Improvement Tips',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
+            const Align(alignment: Alignment.centerLeft, child: Text('Improvement Tips', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))),
             const SizedBox(height: 12),
             ...tips.asMap().entries.map((entry) {
               return Padding(
@@ -1135,53 +962,23 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
                       width: 24,
                       height: 24,
                       margin: const EdgeInsets.only(right: 12, top: 1),
-                      decoration: BoxDecoration(
-                        color: _primaryColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${entry.key + 1}',
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: _primaryColor,
-                          ),
-                        ),
-                      ),
+                      decoration: BoxDecoration(color: _primaryColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
+                      child: Center(child: Text('${entry.key + 1}', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: _primaryColor))),
                     ),
-                    Expanded(
-                      child: Text(
-                        entry.value,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey[700],
-                          height: 1.4,
-                        ),
-                      ),
-                    ),
+                    Expanded(child: Text(entry.value, style: TextStyle(fontSize: 13, color: Colors.grey[700], height: 1.4))),
                   ],
                 ),
               );
             }),
           ],
           const SizedBox(height: 24),
-          // Retry button
           SizedBox(
             width: double.infinity,
             height: 52,
             child: FilledButton(
               onPressed: _resetInterview,
-              style: FilledButton.styleFrom(
-                backgroundColor: _primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text(
-                'Try Another Interview',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
+              style: FilledButton.styleFrom(backgroundColor: _primaryColor, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+              child: const Text('Try Another Interview', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             ),
           ),
           const SizedBox(height: 20),
