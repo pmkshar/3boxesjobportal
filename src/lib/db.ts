@@ -1,22 +1,58 @@
 import { PrismaClient } from '@prisma/client'
+import { PrismaLibSql } from '@prisma/adapter-libsql'
+import { createClient } from '@libsql/client'
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-export const db =
-  globalForPrisma.prisma ??
-  new PrismaClient({
+// ─── Database Setup ────────────────────────────────────────────
+// Demo (SQLite file) : DATABASE_URL=file:./db/custom.db  (ephemeral on Vercel, auto-seeds)
+// Production (Turso) : DATABASE_URL=libsql://...turso.io  (persistent cloud DB)
+//
+// When TURSO_AUTH_TOKEN is set, we use the Turso adapter for persistent cloud storage.
+// Otherwise, we fall back to regular SQLite (for local dev and demo environment).
+
+function createPrismaClient(): PrismaClient {
+  const databaseUrl = process.env.DATABASE_URL || 'file:./db/custom.db'
+  const tursoAuthToken = process.env.TURSO_AUTH_TOKEN
+
+  // If Turso auth token is provided → use Turso (production/persistent)
+  if (tursoAuthToken && databaseUrl.startsWith('libsql://')) {
+    const libsql = createClient({
+      url: databaseUrl,
+      authToken: tursoAuthToken,
+    })
+    const adapter = new PrismaLibSql(libsql)
+    return new PrismaClient({
+      adapter,
+      log: process.env.NODE_ENV === 'development' ? ['query'] : [],
+    })
+  }
+
+  // Otherwise → regular SQLite (demo/local, ephemeral on Vercel)
+  return new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query'] : [],
   })
+}
+
+export const db = globalForPrisma.prisma ?? createPrismaClient()
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
 
 // Auto-seed mechanism: ensures demo data exists on Vercel (ephemeral filesystem)
+// Only seeds in DEMO mode (SQLite, no Turso token). Production (Turso) is seeded manually.
 let seedPromise: Promise<void> | null = null
 
 export async function ensureSeedData() {
   if (seedPromise) return seedPromise
+
+  // Skip auto-seeding in production (Turso) — production data is managed manually
+  const isProduction = process.env.TURSO_AUTH_TOKEN && process.env.DATABASE_URL?.startsWith('libsql://')
+  if (isProduction) {
+    seedPromise = Promise.resolve()
+    return seedPromise
+  }
 
   seedPromise = (async () => {
     try {

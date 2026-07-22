@@ -975,7 +975,22 @@ export const memoryStore = {
   // Check if Prisma DB is available (with timeout to prevent hanging on Vercel)
   // On Vercel (VERCEL env var set), skip Prisma entirely — SQLite doesn't work there
   async isDbAvailable(): Promise<boolean> {
-    // Skip Prisma on Vercel — SQLite is incompatible with serverless
+    // If Turso is configured, always use Prisma (even on Vercel) — Turso works in serverless
+    const hasTurso = process.env.TURSO_AUTH_TOKEN && process.env.DATABASE_URL?.startsWith('libsql://')
+    if (hasTurso) {
+      if (_dbAvailable) return true
+      try {
+        const dbModule = await import('./db') as any
+        if (!dbModule?.db) { _dbAvailable = false; return false }
+        await dbModule.db.user.count()
+        _dbAvailable = true
+        return true
+      } catch {
+        _dbAvailable = false
+        return false
+      }
+    }
+    // Skip Prisma on Vercel when using SQLite — SQLite is incompatible with serverless
     if (process.env.VERCEL || process.env.VERCEL_ENV) {
       _dbAvailable = false
       return false
