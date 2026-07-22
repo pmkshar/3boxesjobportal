@@ -59,3 +59,4 @@ mobile-app/.flutter-plugins-dependencies
 mobile-app/ios/Pods/
 mobile-app/ios/.symlinks/
 *.deb
+.env*
