@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { useAuthStore } from '@/lib/store'
+import { getDemoCredentials, getEnvironmentLabel } from '@/lib/demo-credentials'
 import { toast } from 'sonner'
 import {
   Briefcase, X, Mail, Lock, User, ChevronDown, Menu, Search,
@@ -17,6 +18,8 @@ import { usePathname } from 'next/navigation'
 
 export function PortalNavbar() {
   const { user, isAuthenticated, login: authLogin } = useAuthStore()
+  const credentials = getDemoCredentials()
+  const envLabel = getEnvironmentLabel()
   const [authView, setAuthView] = useState<'none' | 'login' | 'register'>('none')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
@@ -229,9 +232,10 @@ export function PortalNavbar() {
                     </Button>
                     <p className="text-sm text-gray-500 text-center">Don&apos;t have an account? <button className="text-[#16a34a] font-semibold hover:underline" onClick={openRegister}>Register Free</button></p>
                     <div className="bg-green-50 rounded-xl p-3 text-xs text-gray-600">
-                      <p className="font-semibold text-[#16a34a] mb-1">Demo Accounts:</p>
-                      <p>Job Seeker: seeker@3boxes.com / demo123</p>
-                      <p>Corporate: corporate@3boxes.com / demo123</p>
+                      <p className="font-semibold text-[#16a34a] mb-1">{envLabel} Accounts:</p>
+                      {Object.entries(credentials).slice(0, 4).map(([role, cred]) => (
+                        <p key={role}>{cred.label}: {cred.email} / {cred.password}</p>
+                      ))}
                     </div>
                   </div>
                 ) : (

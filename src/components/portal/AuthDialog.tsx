@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAuthStore } from '@/lib/store'
 import { toast } from 'sonner'
+import { getDemoCredentials, getEnvironmentLabel, type DemoRole } from '@/lib/demo-credentials'
 import { Briefcase, Users, UserCheck, Mail, Lock, User, Building2, ChevronRight } from 'lucide-react'
 
 interface AuthDialogProps {
@@ -27,15 +28,28 @@ const roles = [
   { value: 'INTERVIEWER', label: 'Interviewer', icon: UserCheck, desc: 'Conduct and review interviews', color: 'blue' },
 ] as const
 
+const demoIconMap: Record<string, any> = {
+  JOB_SEEKER: Users,
+  CORPORATE: Building2,
+  RECRUITER: UserCheck,
+  SUPER_ADMIN: Briefcase,
+  ADMIN: Briefcase,
+  HR_MANAGER: Users,
+  INTERVIEWER: UserCheck,
+}
+
 export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: AuthDialogProps) {
   const [tab, setTab] = useState(defaultTab)
   const [loading, setLoading] = useState(false)
   const [selectedRole, setSelectedRole] = useState<string>('JOB_SEEKER')
   const { login } = useAuthStore()
+  const credentials = useMemo(() => getDemoCredentials(), [])
+  const envLabel = useMemo(() => getEnvironmentLabel(), [])
 
   // Login form
   const [loginEmail, setLoginEmail] = useState('')
   const [loginPassword, setLoginPassword] = useState('')
+  const [loginError, setLoginError] = useState<string | null>(null)
 
   // Register form
   const [regName, setRegName] = useState('')
@@ -48,10 +62,12 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
 
   const handleLogin = async () => {
     if (!loginEmail || !loginPassword) {
+      setLoginError('Please fill in all fields')
       toast.error('Please fill in all fields')
       return
     }
     setLoading(true)
+    setLoginError(null)
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
@@ -65,10 +81,14 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
         onSuccess?.()
         onClose()
       } else {
-        toast.error(data.error || 'Login failed')
+        const errorMsg = data.error || 'Login failed'
+        setLoginError(errorMsg)
+        toast.error(errorMsg)
       }
     } catch {
-      toast.error('Network error. Please try again.')
+      const errorMsg = 'Network error. Please try again.'
+      setLoginError(errorMsg)
+      toast.error(errorMsg)
     } finally {
       setLoading(false)
     }
@@ -116,21 +136,13 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
     }
   }
 
-  const fillDemo = (role: string) => {
-    const demoAccounts: Record<string, { email: string; password: string }> = {
-      JOB_SEEKER: { email: 'seeker@3boxes.com', password: 'demo123' },
-      CORPORATE: { email: 'corp@3boxes.com', password: 'demo123' },
-      RECRUITER: { email: 'recruiter@3boxes.com', password: 'demo123' },
-      SUPER_ADMIN: { email: 'superadmin@3boxes.com', password: 'demo123' },
-      ADMIN: { email: 'admin@3boxes.com', password: 'demo123' },
-      HR_MANAGER: { email: 'hr@3boxes.com', password: 'demo123' },
-      INTERVIEWER: { email: 'interviewer@3boxes.com', password: 'demo123' },
-    }
-    const demo = demoAccounts[role]
+  const fillDemo = (role: DemoRole) => {
+    const demo = credentials[role]
     if (demo) {
       setLoginEmail(demo.email)
       setLoginPassword(demo.password)
-      toast.info(`Demo credentials filled for ${role.replace('_', ' ')}`)
+      setLoginError(null)
+      toast.info(`Credentials filled for ${demo.label}`)
     }
   }
 
@@ -159,7 +171,7 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
                 <div className="relative mt-1">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input id="login-email" type="email" placeholder="you@example.com"
-                    value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} className="pl-9" />
+                    value={loginEmail} onChange={(e) => { setLoginEmail(e.target.value); setLoginError(null) }} className="pl-9" />
                 </div>
               </div>
               <div>
@@ -167,10 +179,16 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
                 <div className="relative mt-1">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input id="login-password" type="password" placeholder="••••••"
-                    value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} className="pl-9"
+                    value={loginPassword} onChange={(e) => { setLoginPassword(e.target.value); setLoginError(null) }} className="pl-9"
                     onKeyDown={(e) => e.key === 'Enter' && handleLogin()} />
                 </div>
               </div>
+              {loginError && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-2.5 text-sm text-red-600 flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5"/><line x1="8" y2="4.5" x2="8" y2="9" stroke="currentColor" strokeWidth="1.5"/><circle cx="8" cy="11.5" r="0.75" fill="currentColor"/></svg>
+                  {loginError}
+                </div>
+              )}
             </div>
 
             <Button className="w-full bg-[#16a34a] hover:bg-[#15803d]" onClick={handleLogin} disabled={loading}>
@@ -178,26 +196,16 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
             </Button>
 
             <div className="bg-[#16a34a]/5 rounded-lg p-3 text-sm">
-              <p className="font-medium text-[#16a34a] mb-2">Quick Demo Access:</p>
+              <p className="font-medium text-[#16a34a] mb-2">Quick {envLabel} Access:</p>
               <div className="space-y-1.5">
-                <button onClick={() => fillDemo('JOB_SEEKER')} className="flex items-center gap-2 text-[#16a34a] hover:text-[#15803d] w-full text-left">
-                  <Users className="h-3.5 w-3.5" /> Job Seeker: seeker@3boxes.com
-                </button>
-                <button onClick={() => fillDemo('CORPORATE')} className="flex items-center gap-2 text-[#16a34a] hover:text-[#15803d] w-full text-left">
-                  <Building2 className="h-3.5 w-3.5" /> Corporate: corp@3boxes.com
-                </button>
-                <button onClick={() => fillDemo('RECRUITER')} className="flex items-center gap-2 text-[#16a34a] hover:text-[#15803d] w-full text-left">
-                  <UserCheck className="h-3.5 w-3.5" /> Recruiter: recruiter@3boxes.com
-                </button>
-                <button onClick={() => fillDemo('SUPER_ADMIN')} className="flex items-center gap-2 text-[#16a34a] hover:text-[#15803d] w-full text-left">
-                  <Briefcase className="h-3.5 w-3.5" /> Super Admin: superadmin@3boxes.com
-                </button>
-                <button onClick={() => fillDemo('HR_MANAGER')} className="flex items-center gap-2 text-[#16a34a] hover:text-[#15803d] w-full text-left">
-                  <Users className="h-3.5 w-3.5" /> HR Manager: hr@3boxes.com
-                </button>
-                <button onClick={() => fillDemo('INTERVIEWER')} className="flex items-center gap-2 text-[#16a34a] hover:text-[#15803d] w-full text-left">
-                  <UserCheck className="h-3.5 w-3.5" /> Interviewer: interviewer@3boxes.com
-                </button>
+                {Object.entries(credentials).map(([role, cred]) => {
+                  const Icon = demoIconMap[role] || Users
+                  return (
+                    <button key={role} onClick={() => fillDemo(role as DemoRole)} className="flex items-center gap-2 text-[#16a34a] hover:text-[#15803d] w-full text-left">
+                      <Icon className="h-3.5 w-3.5" /> {cred.label}: {cred.email}
+                    </button>
+                  )
+                })}
               </div>
               <p className="text-[#16a34a]/70 mt-1">Password: demo123</p>
             </div>

@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { HeroIllustration, JobMatchIllustration, ResumeIllustration, InterviewIllustration, SkillsIllustration, GrowthIllustration, CollabIllustration } from './Illustrations'
 import { useAuthStore } from '@/lib/store'
+import { getDemoCredentials, getEnvironmentLabel, type DemoRole } from '@/lib/demo-credentials'
 import { toast } from 'sonner'
 import {
   Briefcase, Brain, FileText, Users, BarChart3, GraduationCap,
@@ -257,22 +258,15 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
     }
   }
 
-  // Fill demo credentials
-  const fillDemo = (role: string) => {
-    const demoAccounts: Record<string, { email: string; password: string }> = {
-      JOB_SEEKER: { email: 'seeker@3boxes.com', password: 'demo123' },
-      CORPORATE: { email: 'corp@3boxes.com', password: 'demo123' },
-      RECRUITER: { email: 'recruiter@3boxes.com', password: 'demo123' },
-      SUPER_ADMIN: { email: 'superadmin@3boxes.com', password: 'demo123' },
-      ADMIN: { email: 'admin@3boxes.com', password: 'demo123' },
-      HR_MANAGER: { email: 'hr@3boxes.com', password: 'demo123' },
-      INTERVIEWER: { email: 'interviewer@3boxes.com', password: 'demo123' },
-    }
-    const demo = demoAccounts[role]
+  // Fill demo credentials (environment-aware)
+  const credentials = getDemoCredentials()
+  const envLabel = getEnvironmentLabel()
+  const fillDemo = (role: DemoRole) => {
+    const demo = credentials[role]
     if (demo) {
       setLoginEmail(demo.email)
       setLoginPassword(demo.password)
-      toast.info(`Demo credentials filled for ${role.replace('_', ' ')}`)
+      toast.info(`Credentials filled for ${demo.label}`)
     }
   }
 
@@ -400,18 +394,11 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                         <Sparkles className="h-3.5 w-3.5 text-[#16a34a]" /> Try any role instantly:
                       </p>
                       <div className="grid grid-cols-2 gap-2">
-                        {[
-                          { role: 'JOB_SEEKER', label: 'Job Seeker', icon: Users },
-                          { role: 'CORPORATE', label: 'Corporate', icon: Building2 },
-                          { role: 'RECRUITER', label: 'Recruiter', icon: UserCheck },
-                          { role: 'SUPER_ADMIN', label: 'Super Admin', icon: Shield },
-                          { role: 'HR_MANAGER', label: 'HR Manager', icon: Users },
-                          { role: 'INTERVIEWER', label: 'Interviewer', icon: UserCheck },
-                        ].map((demo) => (
-                          <button key={demo.role} onClick={() => fillDemo(demo.role)}
+                        {Object.entries(credentials).map(([role, cred]) => (
+                          <button key={role} onClick={() => fillDemo(role as DemoRole)}
                             className="flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-all hover:shadow-sm border border-transparent hover:border-gray-200 bg-white">
-                            <demo.icon className="h-3.5 w-3.5 shrink-0 text-[#16a34a]" />
-                            <span className="text-xs font-medium text-gray-700 truncate">{demo.label}</span>
+                            <Lock className="h-3.5 w-3.5 shrink-0 text-[#16a34a]" />
+                            <span className="text-xs font-medium text-gray-700 truncate">{cred.label}: {cred.email}</span>
                           </button>
                         ))}
                       </div>
@@ -1539,7 +1526,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
           </div>
           <div className="border-t border-gray-700/50 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
             <span>&copy; 2025 3 Boxes Jobs. All rights reserved. Powered by AI.</span>
-            <span>Demo: seeker@3boxes.com / demo123</span>
+            <span>{envLabel}: {credentials.ADMIN.email} / demo123</span>
           </div>
         </div>
       </footer>

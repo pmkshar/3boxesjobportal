@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAuthStore } from '@/lib/store'
+import { getDemoCredentials, getEnvironmentLabel, type DemoRole } from '@/lib/demo-credentials'
 import { toast } from 'sonner'
 import {
   Briefcase, Users, UserCheck, Mail, Lock, User, Building2, ChevronRight,
@@ -153,21 +154,14 @@ export function IntegratedLoginPage() {
     }
   }
 
-  const fillDemo = (role: string) => {
-    const demoAccounts: Record<string, { email: string; password: string }> = {
-      JOB_SEEKER: { email: 'seeker@3boxes.com', password: 'demo123' },
-      CORPORATE: { email: 'corp@3boxes.com', password: 'demo123' },
-      RECRUITER: { email: 'recruiter@3boxes.com', password: 'demo123' },
-      SUPER_ADMIN: { email: 'superadmin@3boxes.com', password: 'demo123' },
-      ADMIN: { email: 'admin@3boxes.com', password: 'demo123' },
-      HR_MANAGER: { email: 'hr@3boxes.com', password: 'demo123' },
-      INTERVIEWER: { email: 'interviewer@3boxes.com', password: 'demo123' },
-    }
-    const demo = demoAccounts[role]
+  const credentials = getDemoCredentials()
+  const envLabel = getEnvironmentLabel()
+  const fillDemo = (role: DemoRole) => {
+    const demo = credentials[role]
     if (demo) {
       setLoginEmail(demo.email)
       setLoginPassword(demo.password)
-      toast.info(`Demo credentials filled for ${role.replace('_', ' ')}`)
+      toast.info(`Credentials filled for ${demo.label}`)
     }
   }
 
@@ -456,22 +450,15 @@ export function IntegratedLoginPage() {
                       Try any role instantly:
                     </p>
                     <div className="grid grid-cols-2 gap-2">
-                      {[
-                        { role: 'JOB_SEEKER', label: 'Job Seeker', icon: Users, email: 'seeker@3boxes.com' },
-                        { role: 'CORPORATE', label: 'Corporate', icon: Building2, email: 'corp@3boxes.com' },
-                        { role: 'RECRUITER', label: 'Recruiter', icon: UserCheck, email: 'recruiter@3boxes.com' },
-                        { role: 'SUPER_ADMIN', label: 'Super Admin', icon: Shield, email: 'superadmin@3boxes.com' },
-                        { role: 'HR_MANAGER', label: 'HR Manager', icon: Users, email: 'hr@3boxes.com' },
-                        { role: 'INTERVIEWER', label: 'Interviewer', icon: UserCheck, email: 'interviewer@3boxes.com' },
-                      ].map((demo) => (
+                      {Object.entries(credentials).map(([role, cred]) => (
                         <button
-                          key={demo.role}
-                          onClick={() => fillDemo(demo.role)}
+                          key={role}
+                          onClick={() => fillDemo(role as DemoRole)}
                           className="flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-all duration-200 hover:shadow-sm border border-transparent hover:border-gray-200"
                           style={{ backgroundColor: 'white' }}
                         >
-                          <demo.icon className="h-3.5 w-3.5 shrink-0" style={{ color: CG[600] }} />
-                          <span className="text-xs font-medium text-gray-700 truncate">{demo.label}</span>
+                          <Lock className="h-3.5 w-3.5 shrink-0" style={{ color: CG[600] }} />
+                          <span className="text-xs font-medium text-gray-700 truncate">{cred.label}: {cred.email}</span>
                         </button>
                       ))}
                     </div>
