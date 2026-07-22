@@ -973,11 +973,12 @@ seedMemoryData()
 
 export const memoryStore = {
   // Check if Prisma DB is available (with timeout to prevent hanging on Vercel)
-  // On Vercel (VERCEL env var set), skip Prisma entirely — SQLite doesn't work there
+  // On Vercel (VERCEL env var set), skip Prisma entirely for SQLite — SQLite doesn't work there
+  // But allow Prisma when Neon PostgreSQL is configured (it works in serverless)
   async isDbAvailable(): Promise<boolean> {
-    // If Turso is configured, always use Prisma (even on Vercel) — Turso works in serverless
-    const hasTurso = process.env.TURSO_AUTH_TOKEN && process.env.DATABASE_URL?.startsWith('libsql://')
-    if (hasTurso) {
+    // If Neon PostgreSQL is configured, always use Prisma (even on Vercel) — PostgreSQL works in serverless
+    const hasNeon = process.env.DATABASE_URL?.startsWith('postgresql://')
+    if (hasNeon) {
       if (_dbAvailable) return true
       try {
         const dbModule = await import('./db') as any

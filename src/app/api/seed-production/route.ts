@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server'
 /**
  * Production Seed Endpoint
  *
- * This endpoint seeds the Turso production database with initial data.
- * It should be called ONCE after setting up a new Turso database for production.
+ * This endpoint seeds the Neon PostgreSQL production database with initial data.
+ * It should be called ONCE after setting up a new Neon database for production.
  *
  * Usage: POST https://3boxesjobs.com/api/seed-production
  *
@@ -12,11 +12,11 @@ import { NextResponse } from 'next/server'
  * to prevent accidental re-seeding in production.
  */
 export async function POST() {
-  // Only allow seeding in production (Turso) environment
-  const isProduction = process.env.TURSO_AUTH_TOKEN && process.env.DATABASE_URL?.startsWith('libsql://')
+  // Only allow seeding in production (Neon PostgreSQL) environment
+  const isProduction = process.env.DATABASE_URL?.startsWith('postgresql://')
   if (!isProduction) {
     return NextResponse.json(
-      { error: 'This endpoint is only for production (Turso) environments. Use /api/seed for demo.' },
+      { error: 'This endpoint is only for production (Neon PostgreSQL) environments. Use /api/seed for demo.' },
       { status: 403 }
     )
   }
@@ -216,7 +216,7 @@ export async function POST() {
   } catch (error) {
     console.error('Production seed error:', error)
     return NextResponse.json(
-      { error: 'Production seed failed. Check Turso database configuration.', details: String(error) },
+      { error: 'Production seed failed. Check Neon PostgreSQL database configuration.', details: String(error) },
       { status: 500 }
     )
   }

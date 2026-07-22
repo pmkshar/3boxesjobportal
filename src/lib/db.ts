@@ -1,6 +1,4 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaLibSql } from '@prisma/adapter-libsql'
-import { createClient } from '@libsql/client'
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
@@ -8,29 +6,16 @@ const globalForPrisma = globalThis as unknown as {
 
 // ─── Database Setup ────────────────────────────────────────────
 // Demo (SQLite file) : DATABASE_URL=file:./db/custom.db  (ephemeral on Vercel, auto-seeds)
-// Production (Turso) : DATABASE_URL=libsql://...turso.io  (persistent cloud DB)
+// Production (Neon)  : DATABASE_URL=postgresql://...neon.tech  (persistent cloud PostgreSQL)
 //
-// When TURSO_AUTH_TOKEN is set, we use the Turso adapter for persistent cloud storage.
+// When DATABASE_URL starts with "postgresql://", we use Neon PostgreSQL (production).
 // Otherwise, we fall back to regular SQLite (for local dev and demo environment).
 
 function createPrismaClient(): PrismaClient {
   const databaseUrl = process.env.DATABASE_URL || 'file:./db/custom.db'
-  const tursoAuthToken = process.env.TURSO_AUTH_TOKEN
 
-  // If Turso auth token is provided → use Turso (production/persistent)
-  if (tursoAuthToken && databaseUrl.startsWith('libsql://')) {
-    const libsql = createClient({
-      url: databaseUrl,
-      authToken: tursoAuthToken,
-    })
-    const adapter = new PrismaLibSql(libsql)
-    return new PrismaClient({
-      adapter,
-      log: process.env.NODE_ENV === 'development' ? ['query'] : [],
-    })
-  }
-
-  // Otherwise → regular SQLite (demo/local, ephemeral on Vercel)
+  // Regular PrismaClient works with both SQLite and PostgreSQL
+  // No special adapter needed — Neon PostgreSQL connects via standard Prisma
   return new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query'] : [],
   })
@@ -41,14 +26,14 @@ export const db = globalForPrisma.prisma ?? createPrismaClient()
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
 
 // Auto-seed mechanism: ensures demo data exists on Vercel (ephemeral filesystem)
-// Only seeds in DEMO mode (SQLite, no Turso token). Production (Turso) is seeded manually.
+// Only seeds in DEMO mode (SQLite). Production (Neon PostgreSQL) is seeded manually via /api/seed-production.
 let seedPromise: Promise<void> | null = null
 
 export async function ensureSeedData() {
   if (seedPromise) return seedPromise
 
-  // Skip auto-seeding in production (Turso) — production data is managed manually
-  const isProduction = process.env.TURSO_AUTH_TOKEN && process.env.DATABASE_URL?.startsWith('libsql://')
+  // Skip auto-seeding in production (Neon PostgreSQL) — production data is managed manually
+  const isProduction = process.env.DATABASE_URL?.startsWith('postgresql://')
   if (isProduction) {
     seedPromise = Promise.resolve()
     return seedPromise
