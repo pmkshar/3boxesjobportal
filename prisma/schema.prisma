@@ -14,6 +14,9 @@ enum UserRole {
   CORPORATE
   RECRUITER
   ADMIN
+  SUPER_ADMIN
+  HR_MANAGER
+  INTERVIEWER
 }
 
 model User {
