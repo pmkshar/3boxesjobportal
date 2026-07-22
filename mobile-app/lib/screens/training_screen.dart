@@ -12,7 +12,7 @@ class TrainingScreen extends StatefulWidget {
 
 class _TrainingScreenState extends State<TrainingScreen> {
   static const Color _primaryColor = Color(0xFF00C853);
-  static const String _marqaTrainersUrl = 'https://marqaitrainers.vercel.app';
+  static const String _marqaicoursesUrl = 'https://marqaicourses.com';
 
   String _selectedCategory = 'All';
   String _searchQuery = '';
@@ -21,126 +21,124 @@ class _TrainingScreenState extends State<TrainingScreen> {
 
   final List<String> _categories = [
     'All',
-    'Development',
-    'Design',
-    'Marketing',
+    'Programming',
     'Data Science',
-    'Business',
+    'Soft Skills',
   ];
 
-  // Demo data with Marqa Trainers linked courses
-  final List<Map<String, dynamic>> _demoCourses = [
+  // Courses from marqaicourses.com
+  final List<Map<String, dynamic>> _marqaiCourses = [
     {
-      'id': '1',
-      'title': 'Full-Stack Web Development',
-      'provider': 'Marqa Trainers',
-      'category': 'Development',
-      'duration': '12 weeks',
-      'rating': 4.8,
-      'price': 0,
-      'isFree': true,
-      'icon': Icons.code,
-      'color': Color(0xFF2196F3),
-      'url': '$_marqaTrainersUrl/courses/full-stack-web-development',
-      'description': 'Master full-stack development with hands-on projects covering React, Node.js, databases, and deployment.',
-    },
-    {
-      'id': '2',
-      'title': 'UI/UX Design Masterclass',
-      'provider': 'Marqa Trainers',
-      'category': 'Design',
-      'duration': '8 weeks',
-      'rating': 4.6,
-      'price': 0,
-      'isFree': true,
-      'icon': Icons.palette,
-      'color': Color(0xFFE91E63),
-      'url': '$_marqaTrainersUrl/courses/ui-ux-design',
-      'description': 'Learn user-centered design principles, Figma, prototyping, and design systems from industry experts.',
-    },
-    {
-      'id': '3',
-      'title': 'Digital Marketing Strategy',
-      'provider': 'Marqa Trainers',
-      'category': 'Marketing',
-      'duration': '6 weeks',
-      'rating': 4.3,
-      'price': 0,
-      'isFree': true,
-      'icon': Icons.campaign,
-      'color': Color(0xFFFF9800),
-      'url': '$_marqaTrainersUrl/courses/digital-marketing',
-      'description': 'Comprehensive digital marketing covering SEO, SEM, social media, content marketing, and analytics.',
-    },
-    {
-      'id': '4',
-      'title': 'Data Science with Python',
-      'provider': 'Marqa Trainers',
+      'id': 'ai-machine-learning',
+      'title': 'AI & Machine Learning',
       'category': 'Data Science',
-      'duration': '10 weeks',
+      'level': 'All Levels',
       'rating': 4.9,
-      'price': 0,
-      'isFree': true,
-      'icon': Icons.analytics,
-      'color': Color(0xFF9C27B0),
-      'url': '$_marqaTrainersUrl/courses/data-science-python',
-      'description': 'Learn data analysis, machine learning, and visualization using Python, Pandas, and Scikit-learn.',
-    },
-    {
-      'id': '5',
-      'title': 'Business Analytics Fundamentals',
-      'provider': 'Marqa Trainers',
-      'category': 'Business',
-      'duration': '5 weeks',
-      'rating': 4.4,
-      'price': 0,
-      'isFree': true,
-      'icon': Icons.business_center,
-      'color': Color(0xFF607D8B),
-      'url': '$_marqaTrainersUrl/courses/business-analytics',
-      'description': 'Learn business intelligence, KPI frameworks, and data-driven decision making.',
-    },
-    {
-      'id': '6',
-      'title': 'Mobile App Development with Flutter',
-      'provider': 'Marqa Trainers',
-      'category': 'Development',
-      'duration': '9 weeks',
-      'rating': 4.7,
-      'price': 0,
-      'isFree': true,
-      'icon': Icons.phone_android,
-      'color': Color(0xFF00BCD4),
-      'url': '$_marqaTrainersUrl/courses/flutter-development',
-      'description': 'Build cross-platform mobile apps with Flutter and Dart. Covers state management, APIs, and deployment.',
-    },
-    {
-      'id': '7',
-      'title': 'Graphic Design for Beginners',
-      'provider': 'Marqa Trainers',
-      'category': 'Design',
-      'duration': '4 weeks',
-      'rating': 4.2,
-      'price': 0,
-      'isFree': true,
-      'icon': Icons.brush,
-      'color': Color(0xFFFF5722),
-      'url': '$_marqaTrainersUrl/courses/graphic-design',
-      'description': 'Master the fundamentals of graphic design including typography, color theory, and layout principles.',
-    },
-    {
-      'id': '8',
-      'title': 'Machine Learning A-Z',
-      'provider': 'Marqa Trainers',
-      'category': 'Data Science',
-      'duration': '14 weeks',
-      'rating': 4.8,
-      'price': 0,
-      'isFree': true,
+      'price': '₹16,616.50',
+      'isFree': false,
       'icon': Icons.psychology,
-      'color': Color(0xFF3F51B5),
-      'url': '$_marqaTrainersUrl/courses/machine-learning',
-      'description': 'Complete machine learning course covering supervised/unsupervised learning, deep learning, and NLP.',
+      'color': Color(0xFF2196F3),
+      'duration': '40 hours',
+      'description': 'Master AI and Machine Learning with step-wise lessons, AI voice tutoring, graded quizzes, and video walkthroughs. Covers neural networks, deep learning, NLP, computer vision, and model deployment.',
+      'skills': ['Python', 'TensorFlow', 'Deep Learning', 'NLP'],
+    },
+    {
+      'id': 'fullstack-java-development',
+      'title': 'Full Stack Java Development',
+      'category': 'Programming',
+      'level': 'Intermediate',
+      'rating': 4.8,
+      'price': '₹14,946.50',
+      'isFree': false,
+      'icon': Icons.code,
+      'color': Color(0xFF009688),
+      'duration': '48 hours',
+      'description': 'Build end-to-end web applications with Java, Spring Boot, Hibernate, and React. Learn REST API design, microservices architecture, and deployment with AI voice tutoring.',
+      'skills': ['Java', 'Spring Boot', 'Microservices', 'React'],
+    },
+    {
+      'id': 'dotnet-fullstack-development',
+      'title': '.NET Full Stack Development',
+      'category': 'Programming',
+      'level': 'Intermediate',
+      'rating': 4.8,
+      'price': '₹14,946.50',
+      'isFree': false,
+      'icon': Icons.bar_chart,
+      'color': Color(0xFF9C27B0),
+      'duration': '45 hours',
+      'description': 'Master full-stack development with .NET, C#, ASP.NET Core, and Azure. Build enterprise-grade applications with step-wise lessons and AI voice tutoring.',
+      'skills': ['C#', 'ASP.NET Core', 'Azure', 'SQL Server'],
+    },
+    {
+      'id': 'mobile-app-development',
+      'title': 'Mobile App Development',
+      'category': 'Programming',
+      'level': 'Intermediate',
+      'rating': 4.7,
+      'price': '₹14,111.50',
+      'isFree': false,
+      'icon': Icons.phone_android,
+      'color': Color(0xFFFF9800),
+      'duration': '36 hours',
+      'description': 'Build cross-platform mobile applications with React Native. Covers iOS & Android deployment, state management, native modules, and app store publishing.',
+      'skills': ['React Native', 'TypeScript', 'iOS', 'Android'],
+    },
+    {
+      'id': 'flutter-development',
+      'title': 'Flutter Development',
+      'category': 'Programming',
+      'level': 'All Levels',
+      'rating': 4.8,
+      'price': '₹13,276.50',
+      'isFree': false,
+      'icon': Icons.flash_on,
+      'color': Color(0xFF00BCD4),
+      'duration': '32 hours',
+      'description': 'Build beautiful cross-platform apps with Flutter and Dart. Learn state management, REST APIs, native integrations, and deployment with AI voice tutoring.',
+      'skills': ['Flutter', 'Dart', 'Firebase', 'REST API'],
+    },
+    {
+      'id': 'python-programming',
+      'title': 'Python Programming — Beginner to Advanced',
+      'category': 'Programming',
+      'level': 'All Levels',
+      'rating': 4.9,
+      'price': '₹12,441.50',
+      'isFree': false,
+      'icon': Icons.emoji_events,
+      'color': Color(0xFF4CAF50),
+      'duration': '35 hours',
+      'description': 'Comprehensive Python course from fundamentals to advanced concepts. Covers data structures, OOP, web development with Django/Flask, and automation.',
+      'skills': ['Python', 'Django', 'Flask', 'Automation'],
+    },
+    {
+      'id': 'soft-skills-communication',
+      'title': 'Soft Skills & Communication',
+      'category': 'Soft Skills',
+      'level': 'All Levels',
+      'rating': 4.8,
+      'price': '₹8,266.50',
+      'isFree': false,
+      'icon': Icons.people,
+      'color': Color(0xFFE91E63),
+      'duration': '20 hours',
+      'description': 'Develop essential workplace communication, leadership, presentation, and collaboration skills. Learn interview techniques and professional networking.',
+      'skills': ['Communication', 'Leadership', 'Presentation', 'Networking'],
+    },
+    {
+      'id': '3boxes-developers-curated',
+      'title': '3Boxes Developers Curated Course',
+      'category': 'Programming',
+      'level': 'Intermediate',
+      'rating': 4.9,
+      'price': 'FREE',
+      'isFree': true,
+      'icon': Icons.star,
+      'color': Color(0xFF00C853),
+      'duration': '30 hours',
+      'description': 'Exclusive curated course for 3Boxes platform developers. Covers the full tech stack, best practices, deployment workflows, and integration patterns. Free for 3Boxes developers.',
+      'skills': ['React', 'Node.js', 'Next.js', 'PostgreSQL'],
     },
   ];
 
@@ -161,13 +159,13 @@ class _TrainingScreenState extends State<TrainingScreen> {
         });
       } else {
         setState(() {
-          _courses = _demoCourses;
+          _courses = _marqaiCourses;
           _isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
-        _courses = _demoCourses;
+        _courses = _marqaiCourses;
         _isLoading = false;
       });
     }
@@ -178,7 +176,7 @@ class _TrainingScreenState extends State<TrainingScreen> {
       final matchesCategory = _selectedCategory == 'All' || course['category'] == _selectedCategory;
       final matchesSearch = _searchQuery.isEmpty ||
           (course['title'] as String).toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          (course['provider'] as String).toLowerCase().contains(_searchQuery.toLowerCase());
+          (course['description'] as String).toLowerCase().contains(_searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     }).toList();
   }
@@ -196,22 +194,17 @@ class _TrainingScreenState extends State<TrainingScreen> {
     }
   }
 
-  void _openCourse(Map<String, dynamic> course) {
-    final url = course['url'] as String? ?? _marqaTrainersUrl;
-    // Open in WebView within the app
+  void _openMarqAIcourses() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => WebViewScreen(url: url, title: course['title'] as String? ?? 'Course'),
+        builder: (_) => const WebViewScreen(url: _marqaicoursesUrl, title: 'MarqAI Courses'),
       ),
     );
   }
 
-  void _openMarqaTrainers() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => const WebViewScreen(url: _marqaTrainersUrl, title: 'Marqa Trainers'),
-      ),
-    );
+  void _openCourse(Map<String, dynamic> course) {
+    // All courses redirect to marqaicourses.com
+    _openMarqAIcourses();
   }
 
   Widget _buildRatingStars(double rating) {
@@ -221,7 +214,7 @@ class _TrainingScreenState extends State<TrainingScreen> {
         for (int i = 1; i <= 5; i++)
           Icon(
             i <= rating.floor() ? Icons.star : i - 0.5 <= rating ? Icons.star_half : Icons.star_border,
-            size: 16,
+            size: 14,
             color: Colors.amber,
           ),
         const SizedBox(width: 4),
@@ -233,6 +226,8 @@ class _TrainingScreenState extends State<TrainingScreen> {
   Widget _buildCourseCard(Map<String, dynamic> course) {
     final IconData icon = course['icon'] as IconData? ?? Icons.school;
     final Color color = course['color'] as Color? ?? _primaryColor;
+    final bool isFree = course['isFree'] as bool? ?? false;
+    final String price = course['price'] as String? ?? '';
 
     return Card(
       elevation: 2,
@@ -247,51 +242,90 @@ class _TrainingScreenState extends State<TrainingScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 80,
-                height: 80,
+                width: 72,
+                height: 72,
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, color: color, size: 36),
+                child: Icon(icon, color: color, size: 32),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(course['title'] as String, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis),
+                    Text(
+                      course['title'] as String,
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(Icons.school, size: 14, color: _primaryColor),
-                        const SizedBox(width: 4),
-                        Text(course['provider'] as String, style: TextStyle(fontSize: 13, color: _primaryColor, fontWeight: FontWeight.w600)),
+                        Icon(Icons.school, size: 13, color: _primaryColor),
+                        const SizedBox(width: 3),
+                        Text(
+                          'MarqAI Courses',
+                          style: TextStyle(fontSize: 12, color: _primaryColor, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: isFree ? _primaryColor.withOpacity(0.1) : Colors.grey[100],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            isFree ? 'FREE' : price,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: isFree ? _primaryColor : Colors.grey[700],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(Icons.schedule, size: 14, color: Colors.grey[500]),
-                        const SizedBox(width: 4),
-                        Text(course['duration'] as String, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
-                        const SizedBox(width: 12),
+                        Icon(Icons.schedule, size: 13, color: Colors.grey[500]),
+                        const SizedBox(width: 3),
+                        Text(course['duration'] as String, style: TextStyle(fontSize: 11, color: Colors.grey[600])),
+                        const SizedBox(width: 10),
                         _buildRatingStars(course['rating'] as double),
                       ],
                     ),
+                    if (course['level'] != null) ...[
+                      const SizedBox(height: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          course['level'] as String,
+                          style: TextStyle(fontSize: 10, color: Colors.grey[600], fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 8),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         onPressed: () => _openCourse(course),
-                        icon: const Icon(Icons.open_in_browser, size: 16),
-                        label: const Text('Open Course'),
+                        icon: const Icon(Icons.open_in_browser, size: 14),
+                        label: const Text('View on MarqAI Courses'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _primaryColor,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           elevation: 0,
+                          textStyle: const TextStyle(fontSize: 12),
                         ),
                       ),
                     ),
@@ -319,7 +353,7 @@ class _TrainingScreenState extends State<TrainingScreen> {
       ),
       body: Column(
         children: [
-          // Marqa Trainers Banner - opens WebView
+          // MarqAI Courses Banner - opens WebView
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
@@ -327,7 +361,7 @@ class _TrainingScreenState extends State<TrainingScreen> {
               gradient: LinearGradient(colors: [Color(0xFF00C853), Color(0xFF00E676)]),
             ),
             child: InkWell(
-              onTap: _openMarqaTrainers,
+              onTap: _openMarqAIcourses,
               child: Row(
                 children: [
                   Container(
@@ -340,9 +374,9 @@ class _TrainingScreenState extends State<TrainingScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Marqa Trainers', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                        Text('MarqAI Courses', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                         SizedBox(height: 2),
-                        Text('Browse all courses & certifications', style: TextStyle(color: Colors.white70, fontSize: 13)),
+                        Text('AI Voice Tutor · 5+ Languages · Verified Certs', style: TextStyle(color: Colors.white70, fontSize: 12)),
                       ],
                     ),
                   ),
@@ -406,10 +440,10 @@ class _TrainingScreenState extends State<TrainingScreen> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
             child: Row(
               children: [
-                Text('${filtered.length} course${filtered.length != 1 ? 's' : ''} found',
+                Text('${filtered.length} course${filtered.length != 1 ? 's' : ''} from marqaicourses.com',
                     style: TextStyle(fontSize: 13, color: Colors.grey[600], fontWeight: FontWeight.w500)),
                 const Spacer(),
-                Text('Powered by Marqa Trainers', style: TextStyle(fontSize: 11, color: _primaryColor, fontWeight: FontWeight.w600)),
+                Text('Powered by MarqAI', style: TextStyle(fontSize: 11, color: _primaryColor, fontWeight: FontWeight.w600)),
               ],
             ),
           ),
@@ -427,9 +461,9 @@ class _TrainingScreenState extends State<TrainingScreen> {
                             Text('No courses found', style: TextStyle(fontSize: 16, color: Colors.grey[500])),
                             const SizedBox(height: 12),
                             ElevatedButton(
-                              onPressed: _openMarqaTrainers,
+                              onPressed: _openMarqAIcourses,
                               style: ElevatedButton.styleFrom(backgroundColor: _primaryColor),
-                              child: const Text('Browse Marqa Trainers', style: TextStyle(color: Colors.white)),
+                              child: const Text('Browse MarqAI Courses', style: TextStyle(color: Colors.white)),
                             ),
                           ],
                         ),
@@ -439,8 +473,27 @@ class _TrainingScreenState extends State<TrainingScreen> {
                         onRefresh: _loadCourses,
                         child: ListView.builder(
                           padding: const EdgeInsets.only(bottom: 16),
-                          itemCount: filtered.length,
-                          itemBuilder: (context, index) => _buildCourseCard(filtered[index]),
+                          itemCount: filtered.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == filtered.length) {
+                              // Bottom CTA
+                              return Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: OutlinedButton.icon(
+                                  onPressed: _openMarqAIcourses,
+                                  icon: const Icon(Icons.open_in_browser, size: 18),
+                                  label: const Text('Browse all courses on marqaicourses.com'),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: _primaryColor,
+                                    side: const BorderSide(color: _primaryColor),
+                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                  ),
+                                ),
+                              );
+                            }
+                            return _buildCourseCard(filtered[index]);
+                          },
                         ),
                       ),
           ),
