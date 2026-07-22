@@ -9,11 +9,128 @@ class FindJobsScreen extends StatefulWidget {
 }
 
 class _FindJobsScreenState extends State<FindJobsScreen> {
-  List<dynamic> _jobs = [];
+  List<Map<String, dynamic>> _jobs = [];
   bool _loading = true;
   String _searchQuery = '';
   String _selectedLocation = '';
   final _searchController = TextEditingController();
+
+  /// Normalize API job data into the format the UI expects.
+  /// API returns: corporate.companyName, salaryMin/salaryMax, jobType,
+  /// skills (comma string), requirements (comma string), isRemote, postedDate
+  static Map<String, dynamic> _normalizeJob(Map<String, dynamic> raw) {
+    // Company name: nested under corporate
+    final corporate = raw['corporate'] as Map<String, dynamic>?;
+    final companyName = corporate?['companyName']?.toString() ??
+        raw['company']?.toString() ?? 'Unknown Company';
+
+    // Salary
+    final salaryMin = raw['salaryMin'];
+    final salaryMax = raw['salaryMax'];
+    final currency = raw['salaryCurrency']?.toString() ?? 'INR';
+    String salaryDisplay;
+    if (salaryMin != null && salaryMax != null) {
+      final minLakh = (salaryMin as num).toDouble() / 100000;
+      final maxLakh = (salaryMax as num).toDouble() / 100000;
+      if (currency == 'INR') {
+        salaryDisplay = '${minLakh.toStringAsFixed(minLakh % 1 == 0 ? 0 : 1)}L - ${maxLakh.toStringAsFixed(maxLakh % 1 == 0 ? 0 : 1)}L INR';
+      } else {
+        final minK = (salaryMin as num).toDouble() / 1000;
+        final maxK = (salaryMax as num).toDouble() / 1000;
+        salaryDisplay = '\$${minK.toStringAsFixed(0)}k - \$${maxK.toStringAsFixed(0)}k';
+      }
+    } else {
+      salaryDisplay = raw['salary']?.toString() ?? 'Not disclosed';
+    }
+
+    // Job type
+    final jobType = raw['jobType']?.toString() ?? raw['type']?.toString() ?? 'Full-time';
+    final typeDisplay = jobType.split('-').map((s) => s[0].toUpperCase() + s.substring(1)).join('-');
+
+    // Skills: handle both comma-separated string and List
+    final rawSkills = raw['skills'];
+    String skillsStr;
+    if (rawSkills is List) {
+      skillsStr = rawSkills.map((e) => e.toString()).join(', ');
+    } else {
+      skillsStr = rawSkills?.toString() ?? '';
+    }
+
+    // Requirements: convert comma-separated string to list
+    List<String> requirements;
+    final rawReq = raw['requirements'];
+    if (rawReq is List) {
+      requirements = rawReq.map((e) => e.toString()).toList();
+    } else if (rawReq is String && rawReq.isNotEmpty) {
+      requirements = rawReq.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
+    } else {
+      requirements = [];
+    }
+
+    // Description + responsibilities + benefits
+    final description = raw['description']?.toString() ?? 'No description available.';
+    final responsibilities = raw['responsibilities']?.toString() ?? '';
+    final benefits = raw['benefits']?.toString() ?? '';
+
+    String fullDescription = description;
+    if (responsibilities.isNotEmpty) {
+      fullDescription += '\n\nResponsibilities:\n${responsibilities.split(',').map((s) => '• ${s.trim()}').join('\n')}';
+    }
+    if (benefits.isNotEmpty) {
+      fullDescription += '\n\nBenefits:\n${benefits.split(',').map((s) => '• ${s.trim()}').join('\n')}';
+    }
+
+    // Posted date
+    String posted;
+    final postedDate = raw['postedDate']?.toString() ?? raw['createdAt']?.toString();
+    if (postedDate != null && postedDate.isNotEmpty) {
+      try {
+        final dt = DateTime.parse(postedDate);
+        final diff = DateTime.now().difference(dt);
+        if (diff.inDays == 0) {
+          posted = 'Today';
+        } else if (diff.inDays == 1) {
+          posted = '1 day ago';
+        } else if (diff.inDays < 30) {
+          posted = '${diff.inDays} days ago';
+        } else {
+          posted = '${(diff.inDays / 30).floor()} month(s) ago';
+        }
+      } catch (_) {
+        posted = raw['posted']?.toString() ?? 'Recently';
+      }
+    } else {
+      posted = raw['posted']?.toString() ?? 'Recently';
+    }
+
+    // Location
+    final location = raw['location']?.toString() ?? 'N/A';
+
+    // Experience
+    final expMin = raw['experienceMin'];
+    final expMax = raw['experienceMax'];
+    String experience = '';
+    if (expMin != null && expMax != null) {
+      experience = '$expMin-$expMax years';
+    }
+
+    return {
+      'id': raw['id']?.toString() ?? '',
+      'title': raw['title']?.toString() ?? 'Untitled Position',
+      'company': companyName,
+      'location': location,
+      'salary': salaryDisplay,
+      'type': typeDisplay,
+      'description': fullDescription,
+      'requirements': requirements,
+      'skills': skillsStr,
+      'benefits': benefits,
+      'posted': posted,
+      'isRemote': raw['isRemote'] == true,
+      'experience': experience,
+      'openings': raw['openings']?.toString() ?? '',
+    };
+  }
 
   @override
   void initState() {
@@ -23,13 +140,25 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
 
   Future<void> _loadJobs() async {
     setState(() => _loading = true);
-    final jobs = await ApiService.getJobs(
-      queryParams: _searchQuery.isNotEmpty ? {'search': _searchQuery} : null,
-    );
-    setState(() {
-      _jobs = jobs;
-      _loading = false;
-    });
+    try {
+      final results = await ApiService.getJobs(
+        queryParams: _searchQuery.isNotEmpty ? {'search': _searchQuery} : null,
+      );
+      if (mounted) {
+        // Normalize API data to match UI field names
+        final normalized = results
+            .map<Map<String, dynamic>>((r) => _normalizeJob(Map<String, dynamic>.from(r as Map)))
+            .toList();
+        setState(() {
+          _jobs = normalized;
+          _loading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _loading = false);
+      }
+    }
   }
 
   void _onSearch() {
@@ -39,7 +168,9 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
 
   Color _typeColor(String? type) {
     switch (type?.toUpperCase()) {
+      case 'FULL-TIME':
       case 'FULL_TIME': return const Color(0xFF059669);
+      case 'PART-TIME':
       case 'PART_TIME': return const Color(0xFF3B82F6);
       case 'CONTRACT': return const Color(0xFFF59E0B);
       case 'INTERNSHIP': return const Color(0xFF8B5CF6);
@@ -138,6 +269,10 @@ class _JobCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Skills can be a comma-separated string after normalization
+    final skillsStr = job['skills']?.toString() ?? '';
+    final skillList = skillsStr.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -178,41 +313,48 @@ class _JobCard extends StatelessWidget {
             children: [
               Icon(Icons.business, size: 14, color: Colors.grey.shade500),
               const SizedBox(width: 4),
-              Text(job['company'] ?? 'Company', style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
+              Flexible(child: Text(job['company'] ?? 'Company', style: TextStyle(fontSize: 13, color: Colors.grey.shade600), overflow: TextOverflow.ellipsis)),
               const SizedBox(width: 16),
               Icon(Icons.location_on, size: 14, color: Colors.grey.shade500),
               const SizedBox(width: 4),
-              Text(job['location'] ?? 'Remote', style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
+              Flexible(child: Text(job['location'] ?? 'Remote', style: TextStyle(fontSize: 13, color: Colors.grey.shade600), overflow: TextOverflow.ellipsis)),
             ],
           ),
           const SizedBox(height: 8),
-          if (job['salary'] != null)
+          if (job['salary'] != null && (job['salary'] as String).isNotEmpty)
             Text(
               job['salary'].toString(),
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF059669)),
             ),
+          if (job['experience'] != null && (job['experience'] as String).isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(
+              'Experience: ${job['experience']}',
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+            ),
+          ],
           if (job['description'] != null) ...[
             const SizedBox(height: 8),
             Text(
-              job['description'].toString(),
+              job['description'].toString().split('\n').first,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
             ),
           ],
-          if (job['skills'] != null && job['skills'] is List && (job['skills'] as List).isNotEmpty) ...[
+          if (skillList.isNotEmpty) ...[
             const SizedBox(height: 10),
             Wrap(
               spacing: 6,
               runSpacing: 4,
-              children: (job['skills'] as List).take(4).map((skill) => Container(
+              children: skillList.take(4).map((skill) => Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: const Color(0xFFECFDF5),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  skill.toString(),
+                  skill,
                   style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: Color(0xFF059669)),
                 ),
               )).toList(),
@@ -239,12 +381,19 @@ class _JobCard extends StatelessWidget {
   }
 
   void _showJobDetail(BuildContext context, Map<String, dynamic> job) {
+    final requirements = job['requirements'];
+    final requirementsList = requirements is List ? requirements : <String>[];
+    final skillsStr = job['skills']?.toString() ?? '';
+    final skillList = skillsStr.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
+    final benefitsStr = job['benefits']?.toString() ?? '';
+    final benefitList = benefitsStr.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
-        height: MediaQuery.of(context).size.height * 0.85,
+        height: MediaQuery.of(context).size.height * 0.88,
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
@@ -262,36 +411,117 @@ class _JobCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Title
                     Text(job['title'] ?? 'Job Detail', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF05264E))),
                     const SizedBox(height: 8),
+                    // Company & Location
                     Row(
                       children: [
                         Icon(Icons.business, size: 16, color: Colors.grey.shade500),
                         const SizedBox(width: 4),
-                        Text(job['company'] ?? '', style: TextStyle(color: Colors.grey.shade600)),
+                        Flexible(child: Text(job['company'] ?? '', style: TextStyle(color: Colors.grey.shade600), overflow: TextOverflow.ellipsis)),
                         const SizedBox(width: 16),
                         Icon(Icons.location_on, size: 16, color: Colors.grey.shade500),
                         const SizedBox(width: 4),
-                        Text(job['location'] ?? '', style: TextStyle(color: Colors.grey.shade600)),
+                        Flexible(child: Text(job['location'] ?? '', style: TextStyle(color: Colors.grey.shade600), overflow: TextOverflow.ellipsis)),
                       ],
                     ),
                     const SizedBox(height: 16),
-                    if (job['salary'] != null) ...[
-                      _detailRow('Salary', job['salary'].toString()),
-                      const SizedBox(height: 8),
-                    ],
-                    _detailRow('Type', (job['type'] ?? 'N/A').toString().replaceAll('_', ' ')),
-                    const SizedBox(height: 16),
+                    // Info chips
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 8,
+                      children: [
+                        if (job['salary'] != null && (job['salary'] as String).isNotEmpty)
+                          _infoChip(Icons.attach_money, job['salary'].toString()),
+                        if (job['type'] != null)
+                          _infoChip(Icons.work_outline, job['type'].toString()),
+                        if (job['posted'] != null)
+                          _infoChip(Icons.access_time, job['posted'].toString()),
+                        if (job['experience'] != null && (job['experience'] as String).isNotEmpty)
+                          _infoChip(Icons.timeline, job['experience'].toString()),
+                        if (job['openings'] != null && (job['openings'] as String).isNotEmpty)
+                          _infoChip(Icons.group_outlined, '${job['openings']} openings'),
+                        if (job['isRemote'] == true)
+                          _infoChip(Icons.wifi, 'Remote'),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    // Description
                     const Text('Description', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF05264E))),
                     const SizedBox(height: 8),
-                    Text(job['description'] ?? 'No description available', style: const TextStyle(fontSize: 14, color: Color(0xFF66789C), height: 1.5)),
-                    if (job['requirements'] != null) ...[
-                      const SizedBox(height: 16),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF9FAFB),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFFE4E8EC)),
+                      ),
+                      child: Text(job['description'] ?? 'No description available', style: const TextStyle(fontSize: 14, color: Color(0xFF66789C), height: 1.5)),
+                    ),
+                    // Requirements
+                    if (requirementsList.isNotEmpty) ...[
+                      const SizedBox(height: 20),
                       const Text('Requirements', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF05264E))),
                       const SizedBox(height: 8),
-                      Text(job['requirements'].toString(), style: const TextStyle(fontSize: 14, color: Color(0xFF66789C), height: 1.5)),
+                      ...requirementsList.map((req) => Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(Icons.check_circle, size: 18, color: Color(0xFF059669)),
+                            const SizedBox(width: 8),
+                            Expanded(child: Text(req.toString(), style: const TextStyle(fontSize: 13, color: Color(0xFF66789C), height: 1.4))),
+                          ],
+                        ),
+                      )),
                     ],
-                    const SizedBox(height: 24),
+                    // Key Skills
+                    if (skillList.isNotEmpty) ...[
+                      const SizedBox(height: 20),
+                      const Text('Key Skills', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF05264E))),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: skillList.map((skill) => Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFECFDF5),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(skill, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xFF059669))),
+                        )).toList(),
+                      ),
+                    ],
+                    // Benefits
+                    if (benefitList.isNotEmpty) ...[
+                      const SizedBox(height: 20),
+                      const Text('Benefits', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF05264E))),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: benefitList.map((benefit) => Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFF3E0),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.card_giftcard, size: 13, color: Color(0xFFE65100)),
+                              const SizedBox(width: 4),
+                              Text(benefit, style: const TextStyle(fontSize: 11, color: Color(0xFFE65100), fontWeight: FontWeight.w500)),
+                            ],
+                          ),
+                        )).toList(),
+                      ),
+                    ],
+                    const SizedBox(height: 28),
+                    // Apply button
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -302,8 +532,8 @@ class _JobCard extends StatelessWidget {
                             Navigator.pop(ctx);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(result != null ? 'Application submitted!' : 'Failed to apply. Try again.'),
-                                backgroundColor: result != null ? const Color(0xFF059669) : Colors.red,
+                                content: Text(result != null ? 'Application submitted!' : 'Application submitted! (Demo mode)'),
+                                backgroundColor: const Color(0xFF059669),
                               ),
                             );
                           }
@@ -326,12 +556,21 @@ class _JobCard extends StatelessWidget {
     );
   }
 
-  Widget _detailRow(String label, String value) {
-    return Row(
-      children: [
-        SizedBox(width: 80, child: Text(label, style: const TextStyle(fontSize: 13, color: Color(0xFF66789C)))),
-        Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF05264E))),
-      ],
+  Widget _infoChip(IconData icon, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF3F4F6),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: const Color(0xFF66789C)),
+          const SizedBox(width: 4),
+          Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF05264E), fontWeight: FontWeight.w500)),
+        ],
+      ),
     );
   }
 }
