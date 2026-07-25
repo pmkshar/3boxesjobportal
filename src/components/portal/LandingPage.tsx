@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { HeroIllustration, JobMatchIllustration, ResumeIllustration, InterviewIllustration, SkillsIllustration, GrowthIllustration, CollabIllustration } from './Illustrations'
 import { useAuthStore } from '@/lib/store'
-import { getDemoCredentials, getEnvironmentLabel, type DemoRole } from '@/lib/demo-credentials'
+import { getDemoCredentials, getEnvironmentLabel, isDemoEnvironment, type DemoRole } from '@/lib/demo-credentials'
 import { toast } from 'sonner'
 import {
   Briefcase, Brain, FileText, Users, BarChart3, GraduationCap,
@@ -258,10 +258,12 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
     }
   }
 
-  // Fill demo credentials (environment-aware)
+  // Fill demo credentials (environment-aware) — only on demo site
   const credentials = getDemoCredentials()
   const envLabel = getEnvironmentLabel()
+  const showDemo = isDemoEnvironment()
   const fillDemo = (role: DemoRole) => {
+    if (!credentials) return
     const demo = credentials[role]
     if (demo) {
       setLoginEmail(demo.email)
@@ -382,13 +384,14 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                       )}
                     </Button>
 
-                    {/* Divider */}
+                    {/* Demo quick-fill — only on demo site */}
+                    {showDemo && credentials && (
+                    <>
                     <div className="relative my-4">
                       <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
                       <div className="relative flex justify-center text-xs"><span className="bg-white px-3 text-gray-400">Quick Demo Access</span></div>
                     </div>
 
-                    {/* Demo accounts */}
                     <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-4 space-y-2">
                       <p className="text-xs font-semibold text-gray-600 mb-3 flex items-center gap-1.5">
                         <Sparkles className="h-3.5 w-3.5 text-[#16a34a]" /> Try any role instantly:
@@ -404,6 +407,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                       </div>
                       <p className="text-[10px] text-gray-400 mt-1 flex items-center gap-1"><Lock className="h-3 w-3" /> Password: demo123</p>
                     </div>
+                    </>
+                    )}
 
                     <div className="text-center text-sm text-gray-500 mt-4">
                       Don&apos;t have an account?{' '}
@@ -1526,7 +1531,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
           </div>
           <div className="border-t border-gray-700/50 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
             <span>&copy; 2025 3 Boxes Jobs. All rights reserved. Powered by AI.</span>
-            <span>{envLabel}: {credentials.ADMIN.email} / demo123</span>
+            {/* Demo credentials in footer — only on demo site */}
+            {showDemo && credentials && <span>{envLabel}: {credentials.ADMIN.email} / demo123</span>}
           </div>
         </div>
       </footer>

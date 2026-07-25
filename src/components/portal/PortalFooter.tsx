@@ -2,12 +2,13 @@
 
 import { Shield } from 'lucide-react'
 import { ThreeBoxesLogo3D } from './LandingPage'
-import { getDemoCredentials, getEnvironmentLabel } from '@/lib/demo-credentials'
+import { getDemoCredentials, getEnvironmentLabel, isDemoEnvironment } from '@/lib/demo-credentials'
 import Link from 'next/link'
 
 export function PortalFooter() {
   const credentials = getDemoCredentials()
   const envLabel = getEnvironmentLabel()
+  const showDemo = isDemoEnvironment()
   return (
     <footer className="bg-[#0d3320] text-gray-400 py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -57,7 +58,8 @@ export function PortalFooter() {
         </div>
         <div className="border-t border-gray-700/50 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
           <span>&copy; 2025 3 Boxes Jobs. All rights reserved. Powered by AI.</span>
-          <span>{envLabel}: {credentials.ADMIN.email} / {credentials.ADMIN.password}</span>
+          {/* Demo credentials in footer — only on demo site */}
+          {showDemo && credentials && <span>{envLabel}: {credentials.ADMIN.email} / {credentials.ADMIN.password}</span>}
         </div>
       </div>
     </footer>

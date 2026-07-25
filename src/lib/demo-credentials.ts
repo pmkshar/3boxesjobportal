@@ -35,20 +35,27 @@ const PRODUCTION_CREDENTIALS: Record<DemoRole, DemoCredential> = {
   INTERVIEWER: { email: 'interviewer@3boxesjobs.com', password: 'demo123', label: 'Interviewer' },
 }
 
-export function getDemoCredentials(): Record<DemoRole, DemoCredential> {
+export function getDemoCredentials(): Record<DemoRole, DemoCredential> | null {
   const env = process.env.NEXT_PUBLIC_APP_ENV || 'demo'
+  // Production site: NO demo credentials shown — live data only
   if (env === 'production') {
-    return PRODUCTION_CREDENTIALS
+    return null
   }
+  // Demo site: show demo credentials for easy testing
   return DEMO_CREDENTIALS
 }
 
-export function getDemoCredential(role: DemoRole): DemoCredential {
-  return getDemoCredentials()[role]
+export function getDemoCredential(role: DemoRole): DemoCredential | null {
+  const creds = getDemoCredentials()
+  return creds ? creds[role] : null
 }
 
 export function isDemoEnvironment(): boolean {
   return (process.env.NEXT_PUBLIC_APP_ENV || 'demo') !== 'production'
+}
+
+export function isProductionEnvironment(): boolean {
+  return (process.env.NEXT_PUBLIC_APP_ENV || 'demo') === 'production'
 }
 
 export function getEnvironmentLabel(): string {

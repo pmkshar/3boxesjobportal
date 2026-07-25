@@ -10,7 +10,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAuthStore } from '@/lib/store'
 import { toast } from 'sonner'
-import { getDemoCredentials, getEnvironmentLabel, type DemoRole } from '@/lib/demo-credentials'
+import { getDemoCredentials, getEnvironmentLabel, isDemoEnvironment, type DemoRole } from '@/lib/demo-credentials'
 import { Briefcase, Users, UserCheck, Mail, Lock, User, Building2, ChevronRight } from 'lucide-react'
 
 interface AuthDialogProps {
@@ -45,6 +45,7 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
   const { login } = useAuthStore()
   const credentials = useMemo(() => getDemoCredentials(), [])
   const envLabel = useMemo(() => getEnvironmentLabel(), [])
+  const showDemo = isDemoEnvironment()
 
   // Login form
   const [loginEmail, setLoginEmail] = useState('')
@@ -195,6 +196,8 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
               {loading ? 'Signing in...' : 'Sign In'} <ChevronRight className="ml-1 h-4 w-4" />
             </Button>
 
+            {/* Demo quick-fill — only shown on demo site, NOT on production */}
+            {showDemo && credentials && (
             <div className="bg-[#16a34a]/5 rounded-lg p-3 text-sm">
               <p className="font-medium text-[#16a34a] mb-2">Quick {envLabel} Access:</p>
               <div className="space-y-1.5">
@@ -209,6 +212,7 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
               </div>
               <p className="text-[#16a34a]/70 mt-1">Password: demo123</p>
             </div>
+            )}
           </TabsContent>
 
           <TabsContent value="register" className="space-y-4 mt-4">
