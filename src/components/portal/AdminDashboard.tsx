@@ -223,7 +223,7 @@ function RoleBadge({ role }: { role: UserRole }) {
   const colors: Record<string, string> = {
     SUPER_ADMIN: '#DC2626',
     ADMIN: '#EA580C',
-    CORPORATE: '#059669',
+    CORPORATE: '#045a06',
     RECRUITER: '#2563EB',
     JOB_SEEKER: '#7C3AED',
     HR_MANAGER: '#0D9488',
@@ -240,7 +240,7 @@ function RoleBadge({ role }: { role: UserRole }) {
 
 function StatusBadge({ status }: { status: string }) {
   const cfg: Record<string, { bg: string; text: string; icon: any }> = {
-    active: { bg: '#ECFDF5', text: '#059669', icon: CheckCircle2 },
+    active: { bg: '#f0faf2', text: '#045a06', icon: CheckCircle2 },
     inactive: { bg: '#F3F4F6', text: '#6B7280', icon: XCircle },
     suspended: { bg: '#FEF2F2', text: '#DC2626', icon: AlertTriangle },
   }
@@ -454,7 +454,7 @@ export function AdminDashboard() {
     const counts: Record<string, number> = {}
     users.forEach(u => { counts[u.role] = (counts[u.role] || 0) + 1 })
     const colors: Record<string, string> = {
-      SUPER_ADMIN: '#DC2626', ADMIN: '#EA580C', CORPORATE: '#059669',
+      SUPER_ADMIN: '#DC2626', ADMIN: '#EA580C', CORPORATE: '#045a06',
       RECRUITER: '#2563EB', JOB_SEEKER: '#7C3AED', HR_MANAGER: '#0D9488', INTERVIEWER: '#D97706',
     }
     return Object.entries(counts).map(([role, count]) => ({
@@ -579,12 +579,12 @@ export function AdminDashboard() {
     <div className="space-y-6">
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-        <StatCard title="Total Users" value={users.length} icon={Users} change="+12%" changeDir="up" color="#059669" />
+        <StatCard title="Total Users" value={users.length} icon={Users} change="+12%" changeDir="up" color="#045a06" />
         <StatCard title="Active Sessions" value={342} icon={Activity} change="+8%" changeDir="up" color="#2563EB" />
         <StatCard title="Jobs Posted" value={1247} icon={Briefcase} change="+23%" changeDir="up" color="#EA580C" />
         <StatCard title="Applications" value={5834} icon={ClipboardList} change="+15%" changeDir="up" color="#7C3AED" />
         <StatCard title="Interviews" value={891} icon={UserCheck} change="+5%" changeDir="up" color="#0D9488" />
-        <StatCard title="System Health" value="99.9%" icon={Server} change="Stable" changeDir="up" color="#059669" />
+        <StatCard title="System Health" value="99.9%" icon={Server} change="Stable" changeDir="up" color="#045a06" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -598,7 +598,7 @@ export function AdminDashboard() {
           <CardContent className="space-y-3 max-h-96 overflow-y-auto pr-2">
             {auditLog.slice(0, 8).map((entry) => {
               const typeColors: Record<string, string> = {
-                create: '#059669', update: '#2563EB', delete: '#DC2626', login: '#7C3AED', config: '#EA580C',
+                create: '#045a06', update: '#2563EB', delete: '#DC2626', login: '#7C3AED', config: '#EA580C',
               }
               return (
                 <div key={entry.id} className="flex items-start gap-3 p-3 rounded-lg bg-[#F9FAFB] hover:bg-[#F3F4F6] transition-colors">
@@ -641,7 +641,7 @@ export function AdminDashboard() {
       {/* System Health Quick View */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'API Uptime', value: '99.97%', icon: Globe, color: '#059669' },
+          { label: 'API Uptime', value: '99.97%', icon: Globe, color: '#045a06' },
           { label: 'DB Response', value: '12ms', icon: Database, color: '#2563EB' },
           { label: 'Error Rate', value: '0.03%', icon: AlertTriangle, color: '#DC2626' },
           { label: 'Active Workers', value: '4/4', icon: Monitor, color: '#0D9488' },
@@ -754,7 +754,7 @@ export function AdminDashboard() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1">
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-[#66789C] hover:text-[#059669]"
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-[#66789C] hover:text-[#045a06]"
                           onClick={() => setViewingUser(u)} title="View">
                           <Eye className="h-3.5 w-3.5" />
                         </Button>
@@ -1765,7 +1765,7 @@ export function AdminDashboard() {
               <TableBody>
                 {filteredAudit.map(entry => {
                   const typeColors: Record<string, { bg: string; text: string }> = {
-                    create: { bg: '#ECFDF5', text: '#059669' },
+                    create: { bg: '#f0faf2', text: '#045a06' },
                     update: { bg: '#EFF6FF', text: '#2563EB' },
                     delete: { bg: '#FEF2F2', text: '#DC2626' },
                     login: { bg: '#F5F3FF', text: '#7C3AED' },

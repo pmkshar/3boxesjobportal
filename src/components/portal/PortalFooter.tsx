@@ -10,15 +10,15 @@ export function PortalFooter() {
   const envLabel = getEnvironmentLabel()
   const showDemo = isDemoEnvironment()
   return (
-    <footer className="bg-[#0d3320] text-gray-400 py-10">
+    <footer className="bg-[#030b03] text-gray-400 py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
               <ThreeBoxesLogo3D size={36} />
               <div>
-                <span className="text-lg font-extrabold text-white">3 Boxes <span className="text-green-400">Jobs</span></span>
-                <p className="text-[10px] text-green-400/60 uppercase tracking-wider">Skills · Resume · Career</p>
+                <span className="text-lg font-extrabold text-white">3 Boxes <span className="text-[#fa7903]">Jobs</span></span>
+                <p className="text-[10px] text-[#fa7903]/60 uppercase tracking-wider">Skills · Resume · Career</p>
               </div>
             </div>
             <p className="text-sm leading-relaxed max-w-sm">India&apos;s first AI-powered career platform with smart resume building, AI mock interviews, skill auto-updates, and intelligent job matching. The three boxes represent the complete career journey.</p>

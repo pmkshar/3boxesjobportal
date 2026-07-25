@@ -32,7 +32,7 @@ export default function Home() {
   // Show a branded loading state until hydration completes
   if (!hydrated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#166534] via-[#15803d] to-[#22c55e]">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#023303] via-[#034604] to-[#22c55e]">
         <div className="text-center">
           <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mx-auto mb-3 animate-pulse">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

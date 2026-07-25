@@ -624,7 +624,7 @@ export function AiInterviewView() {
 
   const getRecommendationStyle = (rec: string) => {
     switch (rec) {
-      case 'Strong Hire': return { bg: '#D1FAE5', text: '#065F46', icon: <ThumbsUp className="h-4 w-4" /> }
+      case 'Strong Hire': return { bg: '#d1e8d5', text: '#045a06', icon: <ThumbsUp className="h-4 w-4" /> }
       case 'Hire': return { bg: theme.primaryLight, text: theme.primary, icon: <CheckCircle2 className="h-4 w-4" /> }
       case 'No-Hire': return { bg: '#FEE2E2', text: '#991B1B', icon: <ThumbsDown className="h-4 w-4" /> }
       default: return { bg: '#F3F4F6', text: '#374151', icon: <Minus className="h-4 w-4" /> }
@@ -662,7 +662,7 @@ export function AiInterviewView() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: 'Total Sessions', value: dashboardStats.totalInterviews, icon: ListChecks, color: theme.primary },
-          { label: 'Completed', value: dashboardStats.completed, icon: CheckCircle2, color: '#10B981' },
+          { label: 'Completed', value: dashboardStats.completed, icon: CheckCircle2, color: '#fa7903' },
           { label: 'Avg. Score', value: `${dashboardStats.avgScore}%`, icon: TrendingUp, color: '#F59E0B' },
           { label: 'Top Score', value: `${dashboardStats.topScore}%`, icon: Award, color: '#8B5CF6' },
         ].map((stat) => (

@@ -17,19 +17,32 @@ import {
 } from 'lucide-react'
 import { HeroIllustration, JobMatchIllustration, ResumeIllustration, InterviewIllustration, SkillsIllustration, GrowthIllustration } from './Illustrations'
 
-// Company Green Color Palette
+// Company Brand Color Palette (from Logo - Green + Orange)
 const CG = {
-  50: '#f0fdf4',
-  100: '#dcfce7',
-  200: '#bbf7d0',
-  300: '#86efac',
-  400: '#4ade80',
-  500: '#22c55e',
-  600: '#16a34a',
-  700: '#15803d',
-  800: '#166534',
-  900: '#14532d',
-  dark: '#0d3320',
+  50: '#f0faf2',
+  100: '#d1e8d5',
+  200: '#a3d1aa',
+  300: '#6db879',
+  400: '#3a9a48',
+  500: '#1a7c25',
+  600: '#045a06',
+  700: '#034604',
+  800: '#023303',
+  900: '#030b03',
+  dark: '#030b03',
+}
+// Brand Accent Orange (from Logo)
+const CA = {
+  50: '#fff7ed',
+  100: '#ffedd5',
+  200: '#fed7aa',
+  300: '#fdba74',
+  400: '#fb923c',
+  500: '#f97316',
+  600: '#ea580c',
+  700: '#fa7903',
+  800: '#c2410c',
+  900: '#9a3412',
 }
 
 const roles = [
@@ -501,7 +514,7 @@ export function IntegratedLoginPage() {
                           key={role.value}
                           className={`cursor-pointer transition-all duration-200 ${
                             selectedRole === role.value
-                              ? 'border-2 bg-green-50/50 shadow-sm'
+                              ? 'border-2 bg-[#f0faf2]/50 shadow-sm'
                               : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
                           }`}
                           style={{

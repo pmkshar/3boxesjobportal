@@ -46,7 +46,7 @@ export function Navbar() {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <ThreeBoxesLogo size={32} />
-              <span className="text-lg font-bold text-[#05264E]">3 Boxes <span style={{ color: theme.primary }}>Jobs</span></span>
+              <span className="text-lg font-bold text-[#05264E]">3 Boxes <span style={{ color: theme.accent || '#fa7903' }}>Jobs</span></span>
             </div>
             {isAuthenticated && user && (
               <Badge className="hidden sm:inline-flex text-[10px] font-semibold border-0 rounded-full px-3 py-0.5"

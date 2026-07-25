@@ -303,10 +303,10 @@ function ComputerIcon() {
 function BankIcon() {
   return (
     <svg width="40" height="40" viewBox="0 0 40 40" fill="none" className="flex-shrink-0">
-      <rect x="4" y="4" width="32" height="32" rx="8" fill="#ECFDF5"/>
-      <path d="M12 24h16M12 20h16M12 16h16" stroke="#10B981" strokeWidth="2" strokeLinecap="round"/>
-      <circle cx="20" cy="12" r="2" fill="#10B981"/>
-      <path d="M14 28v-4M20 28v-4M26 28v-4" stroke="#10B981" strokeWidth="2" strokeLinecap="round"/>
+      <rect x="4" y="4" width="32" height="32" rx="8" fill="#f0faf2"/>
+      <path d="M12 24h16M12 20h16M12 16h16" stroke="#fa7903" strokeWidth="2" strokeLinecap="round"/>
+      <circle cx="20" cy="12" r="2" fill="#fa7903"/>
+      <path d="M14 28v-4M20 28v-4M26 28v-4" stroke="#fa7903" strokeWidth="2" strokeLinecap="round"/>
     </svg>
   )
 }
@@ -369,7 +369,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
 
   const statCards = [
     { label: 'Interview Schedules', value: stats?.interviewsCompleted || 0, change: '+25%', up: true, icon: ComputerIcon, color: 'var(--theme-primary)', bg: 'var(--theme-primary-light)' },
-    { label: 'Applied Jobs', value: stats?.totalApplications || 0, change: '+5%', up: true, icon: BankIcon, color: '#10B981', bg: '#ECFDF5' },
+    { label: 'Applied Jobs', value: stats?.totalApplications || 0, change: '+5%', up: true, icon: BankIcon, color: '#fa7903', bg: '#f0faf2' },
     { label: 'Task Bids Won', value: stats?.trainingsCompleted || 0, change: '+12%', up: true, icon: LampIcon, color: '#F59E0B', bg: '#FFFBEB' },
     { label: 'Application Sent', value: stats?.totalApplications || 0, change: '+5%', up: true, icon: HeadphoneIcon, color: '#8B5CF6', bg: '#F5F3FF' },
     { label: 'Profile Viewed', value: 165, change: '+15%', up: true, icon: LookIcon, color: '#06B6D4', bg: '#ECFEFF' },
@@ -443,7 +443,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
         {[
           { id: 'interview' as View, icon: Brain, label: 'AI Interview', color: 'bg-purple-50 text-purple-700 border-purple-200' },
           { id: 'resume' as View, icon: FileText, label: 'CV Manager', color: 'bg-blue-50 text-blue-700 border-blue-200' },
-          { id: 'tracker' as View, icon: FileCheck, label: 'Applications Tracker', color: 'bg-green-50 text-green-700 border-green-200' },
+          { id: 'tracker' as View, icon: FileCheck, label: 'Applications Tracker', color: 'bg-[#f0faf2] text-green-700 border-[#d1e8d5]' },
           { id: 'ai-buddy' as View, icon: Bot, label: 'AI Buddy', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
           { id: 'skill-gap' as View, icon: Target, label: 'Skill Gap', color: 'bg-amber-50 text-amber-700 border-amber-200' },
           { id: 'job-fit' as View, icon: Target, label: 'Job Fit', color: 'bg-teal-50 text-teal-700 border-teal-200' },

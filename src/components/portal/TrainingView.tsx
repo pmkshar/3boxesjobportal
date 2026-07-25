@@ -121,7 +121,7 @@ export function TrainingView() {
       {/* MarqAI Courses Banner */}
       <Card className="bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-200">
         <CardContent className="p-4 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#16a34a] to-[#15803d] flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#045a06] to-[#034604] flex items-center justify-center flex-shrink-0">
             <GraduationCap className="h-6 w-6 text-white" />
           </div>
           <div className="flex-1 min-w-0">
@@ -129,7 +129,7 @@ export function TrainingView() {
             <p className="text-xs text-emerald-600 mt-0.5">AI voice tutoring in 5+ Indian languages, graded quizzes, video walkthroughs & verified certificates</p>
           </div>
           <a href={MARQAICOURSES_URL} target="_blank" rel="noopener noreferrer">
-            <Button size="sm" className="bg-[#16a34a] hover:bg-[#15803d] text-white font-semibold rounded-lg text-xs">
+            <Button size="sm" className="bg-[#045a06] hover:bg-[#034604] text-white font-semibold rounded-lg text-xs">
               <ExternalLink className="h-3 w-3 mr-1" /> Visit Site
             </Button>
           </a>
@@ -199,7 +199,7 @@ export function TrainingView() {
 
                     {/* MarqAI Courses link */}
                     <a href={MARQAICOURSES_URL} target="_blank" rel="noopener noreferrer" className="mt-auto">
-                      <Button size="sm" className="w-full bg-[#16a34a] hover:bg-[#15803d] text-white font-semibold rounded-lg text-xs">
+                      <Button size="sm" className="w-full bg-[#045a06] hover:bg-[#034604] text-white font-semibold rounded-lg text-xs">
                         <ExternalLink className="h-3 w-3 mr-1" /> View on MarqAI Courses
                       </Button>
                     </a>
@@ -213,7 +213,7 @@ export function TrainingView() {
 
       {/* Bottom link to marqaicourses.com */}
       <div className="text-center pt-4">
-        <a href={MARQAICOURSES_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-[#16a34a] hover:text-[#15803d] font-semibold text-sm">
+        <a href={MARQAICOURSES_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-[#045a06] hover:text-[#034604] font-semibold text-sm">
           <GraduationCap className="h-4 w-4" /> Browse all courses on marqaicourses.com <ExternalLink className="h-3 w-3" />
         </a>
       </div>
