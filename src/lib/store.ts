@@ -11,17 +11,23 @@ interface AuthUser {
   avatar?: string
   phone?: string
   location?: string
+  twoFactorEnabled?: boolean
 }
 
 interface AuthState {
   user: AuthUser | null
   token: string | null
+  refreshToken: string | null
   isAuthenticated: boolean
   isLoading: boolean
-  login: (user: AuthUser, token: string) => void
+  requires2FA: boolean
+  tempToken: string | null
+  login: (user: AuthUser, token: string, refreshToken?: string) => void
   logout: () => void
   updateUser: (user: Partial<AuthUser>) => void
   setLoading: (loading: boolean) => void
+  setRequires2FA: (tempToken: string) => void
+  clear2FAState: () => void
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -29,28 +35,34 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       token: null,
+      refreshToken: null,
       isAuthenticated: false,
       isLoading: false,
-      login: (user, token) =>
-        set({ user, token, isAuthenticated: true, isLoading: false }),
+      requires2FA: false,
+      tempToken: null,
+      login: (user, token, refreshToken) =>
+        set({ user, token, refreshToken, isAuthenticated: true, isLoading: false, requires2FA: false, tempToken: null }),
       logout: () =>
-        set({ user: null, token: null, isAuthenticated: false, isLoading: false }),
+        set({ user: null, token: null, refreshToken: null, isAuthenticated: false, isLoading: false, requires2FA: false, tempToken: null }),
       updateUser: (userData) =>
         set((state) => ({
           user: state.user ? { ...state.user, ...userData } : null,
         })),
       setLoading: (isLoading) => set({ isLoading }),
+      setRequires2FA: (tempToken) =>
+        set({ requires2FA: true, tempToken, isAuthenticated: false, isLoading: false }),
+      clear2FAState: () =>
+        set({ requires2FA: false, tempToken: null }),
     }),
     {
       name: '3boxes-auth',
       partialize: (state) => ({
         user: state.user,
         token: state.token,
+        refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
       }),
-      // Prevent Zustand from rehydrating during SSR/hydration.
-      // We manually rehydrate on the client after the first render
-      // to avoid React Error #310 (hooks mismatch).
+      // Prevent Zustand from rehydrating during SSR/hydration
       skipHydration: true,
     }
   )

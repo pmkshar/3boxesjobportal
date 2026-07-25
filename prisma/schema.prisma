@@ -34,6 +34,15 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  // ─── Security Fields ──────────────────────────────────────
+  twoFactorEnabled Boolean  @default(false)
+  twoFactorSecret  String?  // TOTP secret (encrypted)
+  twoFactorVerified Boolean @default(false) // confirmed by user entering first OTP
+  failedLoginAttempts Int   @default(0)
+  lockedUntil      DateTime? // account lockout timestamp
+  lastLoginAt      DateTime?
+  passwordChangedAt DateTime?
+
   // Relations
   jobSeekerProfile    JobSeekerProfile?
   corporateProfile    CorporateProfile?

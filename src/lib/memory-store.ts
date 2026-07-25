@@ -15,7 +15,7 @@
  * this is acceptable. For production, switch to Turso/Neon Postgres.
  */
 
-import { hashPassword, verifyPassword, generateToken } from './auth'
+import { hashPassword, verifyPasswordSmart, hashPasswordLegacy, verifyPasswordLegacy, generateTokenLegacy } from './auth'
 
 // Types
 interface UserRecord {
@@ -23,7 +23,7 @@ interface UserRecord {
   email: string
   name: string
   password: string
-  role: 'JOB_SEEKER' | 'CORPORATE' | 'RECRUITER' | 'ADMIN'
+  role: 'JOB_SEEKER' | 'CORPORATE' | 'RECRUITER' | 'ADMIN' | 'SUPER_ADMIN' | 'HR_MANAGER' | 'INTERVIEWER'
   avatar?: string
   phone?: string
   location?: string
@@ -35,6 +35,14 @@ interface UserRecord {
   jobSeekerProfile?: any
   corporateProfile?: any
   recruiterProfile?: any
+  // ─── Security Fields ────────────────────────────────────
+  twoFactorEnabled?: boolean
+  twoFactorSecret?: string | null
+  twoFactorVerified?: boolean
+  failedLoginAttempts?: number
+  lockedUntil?: string | null
+  lastLoginAt?: string | null
+  passwordChangedAt?: string | null
 }
 
 interface JobRecord {
@@ -100,8 +108,10 @@ function genId(): string {
 }
 
 // Seed demo data into memory store
+// Uses SHA-256 (legacy) for seed data since it must be synchronous during module init
+// bcrypt is used for new registrations (async)
 function seedMemoryData() {
-  const demoPassword = hashPassword('demo123')
+  const demoPassword = hashPasswordLegacy('demo123')
 
   _users = [
     {
@@ -1025,10 +1035,10 @@ export const memoryStore = {
         await ensureSeedData()
         const user = await db.user.findUnique({ where: { email } })
         if (!user) return { error: 'Invalid email or password', status: 401 }
-        if (!verifyPassword(password, user.password)) return { error: 'Invalid email or password', status: 401 }
+        if (!(await verifyPasswordSmart(password, user.password))) return { error: 'Invalid email or password', status: 401 }
         if (!user.isActive) return { error: 'Account is deactivated', status: 403 }
 
-        const token = generateToken()
+        const token = generateTokenLegacy()
         let profile = null
         try {
           switch (user.role) {
@@ -1055,10 +1065,10 @@ export const memoryStore = {
     // Fallback to memory store
     const user = _users.find(u => u.email === email)
     if (!user) return { error: 'Invalid email or password', status: 401 }
-    if (!verifyPassword(password, user.password)) return { error: 'Invalid email or password', status: 401 }
+    if (!(await verifyPasswordSmart(password, user.password))) return { error: 'Invalid email or password', status: 401 }
     if (!user.isActive) return { error: 'Account is deactivated', status: 403 }
 
-    const token = generateToken()
+    const token = generateTokenLegacy()
     let profile = null
     switch (user.role) {
       case 'JOB_SEEKER': profile = user.jobSeekerProfile || null; break
@@ -1096,7 +1106,7 @@ export const memoryStore = {
         const existing = await db.user.findUnique({ where: { email: data.email } })
         if (existing) return { error: 'Email already registered', status: 409 }
 
-        const hashedPassword = hashPassword(data.password)
+        const hashedPassword = await hashPassword(data.password)
         const user = await db.user.create({
           data: {
             email: data.email,
@@ -1146,7 +1156,7 @@ export const memoryStore = {
     const existing = _users.find(u => u.email === data.email)
     if (existing) return { error: 'Email already registered', status: 409 }
 
-    const hashedPassword = hashPassword(data.password)
+    const hashedPassword = await hashPassword(data.password)
     const id = genId()
     const newUser: UserRecord = {
       id,
@@ -1372,6 +1382,38 @@ export const memoryStore = {
         ...user,
         profile: user.jobSeekerProfile || user.corporateProfile || user.recruiterProfile || null,
       },
+    }
+  },
+
+  // ─── Update User (for 2FA, lockout, security fields) ──────────
+
+  async updateUser(userId: string, data: Record<string, any>) {
+    // Try Prisma first
+    if (await this.isDbAvailable()) {
+      try {
+        const { db } = await import('./db')
+        // Convert string dates to Date objects for Prisma
+        const prismaData: Record<string, any> = {}
+        for (const [key, value] of Object.entries(data)) {
+          if (key === 'lockedUntil' || key === 'lastLoginAt' || key === 'passwordChangedAt') {
+            prismaData[key] = value ? new Date(value) : null
+          } else if (key === 'twoFactorSecret' && value === null) {
+            prismaData[key] = null
+          } else {
+            prismaData[key] = value
+          }
+        }
+        await db.user.update({ where: { id: userId }, data: prismaData })
+      } catch (error) {
+        console.error('Prisma updateUser failed:', error)
+        _dbAvailable = false
+      }
+    }
+
+    // Always update memory store too (for fallback)
+    const idx = _users.findIndex(u => u.id === userId)
+    if (idx >= 0) {
+      _users[idx] = { ..._users[idx], ...data, updatedAt: new Date().toISOString() }
     }
   },
 
@@ -1776,7 +1818,7 @@ export const memoryStore = {
 
         // Create user account
         const userId = genId()
-        const hashedPw = hashPassword(defaultPassword)
+        const hashedPw = hashPasswordLegacy(defaultPassword)
         const newUser: UserRecord = {
           id: userId,
           email: candidate.email,

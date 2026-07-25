@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -11,7 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuthStore } from '@/lib/store'
 import { toast } from 'sonner'
 import { getDemoCredentials, getEnvironmentLabel, isDemoEnvironment, type DemoRole } from '@/lib/demo-credentials'
-import { Briefcase, Users, UserCheck, Mail, Lock, User, Building2, ChevronRight } from 'lucide-react'
+import { validatePasswordStrength } from '@/lib/auth'
+import { Briefcase, Users, UserCheck, Mail, Lock, User, Building2, ChevronRight, Shield, Smartphone } from 'lucide-react'
 
 interface AuthDialogProps {
   open: boolean
@@ -42,7 +43,7 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
   const [tab, setTab] = useState(defaultTab)
   const [loading, setLoading] = useState(false)
   const [selectedRole, setSelectedRole] = useState<string>('JOB_SEEKER')
-  const { login } = useAuthStore()
+  const { login, setRequires2FA, clear2FAState, requires2FA, tempToken } = useAuthStore()
   const credentials = useMemo(() => getDemoCredentials(), [])
   const envLabel = useMemo(() => getEnvironmentLabel(), [])
   const showDemo = isDemoEnvironment()
@@ -52,6 +53,9 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
   const [loginPassword, setLoginPassword] = useState('')
   const [loginError, setLoginError] = useState<string | null>(null)
 
+  // 2FA OTP form
+  const [otpDigits, setOtpDigits] = useState(['', '', '', '', '', ''])
+
   // Register form
   const [regName, setRegName] = useState('')
   const [regEmail, setRegEmail] = useState('')
@@ -60,6 +64,44 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
   const [regIndustry, setRegIndustry] = useState('')
   const [regCompanySize, setRegCompanySize] = useState('')
   const [regSpecialization, setRegSpecialization] = useState('')
+  const [passwordStrength, setPasswordStrength] = useState<{ score: number; strength: string; errors: string[] } | null>(null)
+
+  // Clear 2FA state when dialog closes
+  useEffect(() => {
+    if (!open) {
+      clear2FAState()
+      setOtpDigits(['', '', '', '', '', ''])
+      setLoginError(null)
+    }
+  }, [open])
+
+  // Handle OTP input change
+  const handleOtpChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return // Only digits
+    const newDigits = [...otpDigits]
+    newDigits[index] = value.slice(-1) // Only last digit
+    setOtpDigits(newDigits)
+
+    // Auto-focus next input
+    if (value && index < 5) {
+      const nextInput = document.getElementById(`otp-${index + 1}`)
+      if (nextInput) nextInput.focus()
+    }
+  };
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === 'Backspace' && !otpDigits[index] && index > 0) {
+      const prevInput = document.getElementById(`otp-${index - 1}`)
+      if (prevInput) prevInput.focus()
+    }
+  }
+
+  // Password strength checker for registration
+  const checkPassword = (pwd: string) => {
+    if (!pwd) { setPasswordStrength(null); return }
+    const result = validatePasswordStrength(pwd)
+    setPasswordStrength({ score: result.score, strength: result.strength, errors: result.errors })
+  }
 
   const handleLogin = async () => {
     if (!loginEmail || !loginPassword) {
@@ -77,19 +119,63 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
       })
       const data = await res.json()
       if (res.ok) {
-        login(data.user, data.token)
+        // Check if 2FA is required
+        if (data.requires2FA) {
+          setRequires2FA(data.tempToken)
+          toast.info('Enter the 6-digit code from your authenticator app')
+          return
+        }
+        login(data.user, data.token, data.refreshToken)
         toast.success(`Welcome back, ${data.user.name}!`)
         onSuccess?.()
         onClose()
       } else {
         const errorMsg = data.error || 'Login failed'
+        // Show password strength warning if provided
+        if (data.warning) {
+          toast.warning(data.warning)
+        }
         setLoginError(errorMsg)
         toast.error(errorMsg)
       }
     } catch {
-      const errorMsg = 'Network error. Please try again.'
-      setLoginError(errorMsg)
-      toast.error(errorMsg)
+      setLoginError('Network error. Please try again.')
+      toast.error('Network error. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Handle 2FA OTP submission
+  const handle2FAVerification = async () => {
+    const otp = otpDigits.join('')
+    if (otp.length !== 6) {
+      setLoginError('Please enter the complete 6-digit code')
+      toast.error('Please enter the complete 6-digit code')
+      return
+    }
+    setLoading(true)
+    setLoginError(null)
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tempToken, otp }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        login(data.user, data.token, data.refreshToken)
+        toast.success(`Welcome back, ${data.user.name}! 2FA verified ✓`)
+        onSuccess?.()
+        onClose()
+      } else {
+        setLoginError(data.error || 'Invalid OTP code')
+        toast.error(data.error || 'Invalid OTP code')
+        setOtpDigits(['', '', '', '', '', '']) // Reset OTP inputs
+      }
+    } catch {
+      setLoginError('Network error. Please try again.')
+      toast.error('Network error. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -98,6 +184,12 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
   const handleRegister = async () => {
     if (!regName || !regEmail || !regPassword) {
       toast.error('Please fill in all required fields')
+      return
+    }
+    // Validate password strength
+    const pwdCheck = validatePasswordStrength(regPassword)
+    if (!pwdCheck.isValid) {
+      toast.error(`Password too weak: ${pwdCheck.errors[0]}`)
       return
     }
     if (selectedRole === 'CORPORATE' && !regCompany) {
@@ -128,7 +220,12 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
         setLoginEmail(regEmail)
         setLoginPassword(regPassword)
       } else {
-        toast.error(data.error || 'Registration failed')
+        const errorMsg = data.error || 'Registration failed'
+        if (data.passwordErrors) {
+          toast.error(`${errorMsg}: ${data.passwordErrors.join(', ')}`)
+        } else {
+          toast.error(errorMsg)
+        }
       }
     } catch {
       toast.error('Network error. Please try again.')
@@ -138,6 +235,7 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
   }
 
   const fillDemo = (role: DemoRole) => {
+    if (!credentials) return
     const demo = credentials[role]
     if (demo) {
       setLoginEmail(demo.email)
@@ -145,6 +243,81 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
       setLoginError(null)
       toast.info(`Credentials filled for ${demo.label}`)
     }
+  }
+
+  // Password strength color
+  const getStrengthColor = (strength: string) => {
+    const colors: Record<string, string> = {
+      'weak': 'bg-red-500',
+      'fair': 'bg-orange-500',
+      'good': 'bg-yellow-500',
+      'strong': 'bg-green-500',
+      'very-strong': 'bg-emerald-500',
+    }
+    return colors[strength] || 'bg-gray-300'
+  }
+
+  // 2FA View (shown after successful password check when 2FA is enabled)
+  if (requires2FA) {
+    return (
+      <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+        <DialogContent className="sm:max-w-[420px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <div className="w-8 h-8 rounded-lg bg-[#16a34a]/10 flex items-center justify-center">
+                <Shield className="h-4 w-4 text-[#16a34a]" />
+              </div>
+              Two-Factor Authentication
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 mt-2">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-700">
+              <div className="flex items-center gap-2 mb-1">
+                <Smartphone className="h-4 w-4" />
+                <span className="font-medium">Enter your authenticator code</span>
+              </div>
+              <p className="text-blue-600">Open your authenticator app (Google Authenticator, Authy, 1Password) and enter the 6-digit verification code.</p>
+            </div>
+
+            {/* OTP Input */}
+            <div className="flex justify-center gap-2">
+              {otpDigits.map((digit, index) => (
+                <Input
+                  key={index}
+                  id={`otp-${index}`}
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={1}
+                  value={digit}
+                  onChange={(e) => handleOtpChange(index, e.target.value)}
+                  onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                  className="w-10 h-12 text-center text-lg font-bold border-2 focus:border-[#16a34a] rounded-lg"
+                  autoFocus={index === 0}
+                />
+              ))}
+            </div>
+
+            {loginError && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-2.5 text-sm text-red-600">
+                {loginError}
+              </div>
+            )}
+
+            <Button className="w-full bg-[#16a34a] hover:bg-[#15803d]" onClick={handle2FAVerification} disabled={loading}>
+              {loading ? 'Verifying...' : 'Verify & Sign In'} <ChevronRight className="ml-1 h-4 w-4" />
+            </Button>
+
+            <button
+              onClick={() => { clear2FAState(); setLoginError(null); }}
+              className="text-sm text-gray-500 hover:text-gray-700 w-full text-center"
+            >
+              ← Back to email/password login
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    )
   }
 
   return (
@@ -255,9 +428,25 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
                 <Label htmlFor="reg-password">Password *</Label>
                 <div className="relative mt-1">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input id="reg-password" type="password" placeholder="Min 6 characters" value={regPassword}
-                    onChange={(e) => setRegPassword(e.target.value)} className="pl-9" />
+                  <Input id="reg-password" type="password" placeholder="Min 8 chars, uppercase, number, special" value={regPassword}
+                    onChange={(e) => { setRegPassword(e.target.value); checkPassword(e.target.value) }} className="pl-9" />
                 </div>
+                {/* Password strength indicator */}
+                {passwordStrength && (
+                  <div className="mt-2">
+                    <div className="flex gap-1 mb-1">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <div key={i} className={`h-1.5 w-full rounded-full ${i <= passwordStrength.score ? getStrengthColor(passwordStrength.strength) : 'bg-gray-200'}`} />
+                      ))}
+                    </div>
+                    <p className={`text-xs font-medium ${passwordStrength.strength === 'strong' || passwordStrength.strength === 'very-strong' ? 'text-green-600' : passwordStrength.strength === 'weak' ? 'text-red-600' : 'text-orange-600'}`}>
+                      Password strength: {passwordStrength.strength.replace('-', ' ')}
+                    </p>
+                    {passwordStrength.errors.length > 0 && (
+                      <p className="text-xs text-red-500 mt-0.5">{passwordStrength.errors[0]}</p>
+                    )}
+                  </div>
+                )}
               </div>
 
               {selectedRole === 'CORPORATE' && (
