@@ -59,3 +59,25 @@ Work Log:
 Stage Summary:
 - DNS appears to already be working for both root and www subdomain
 - If user encounters GoDaddy CNAME @ error, recommend using A record: A @ 76.76.21.21 instead of CNAME @ cname.vercel-dns.com
+---
+Task ID: 1
+Agent: Main Agent
+Task: Fix client-side error on www.3boxesjobs.com + Remove demo credentials from production
+
+Work Log:
+- Investigated client-side error: Root cause was Zustand `persist` middleware causing hydration mismatch (SSR defaults to `isAuthenticated: false`, client reads `true` from localStorage)
+- Added hydration guard to `page.tsx` — shows branded loading state until Zustand rehydrates from localStorage
+- Modified `demo-credentials.ts`: `getDemoCredentials()` returns `null` on production (`NEXT_PUBLIC_APP_ENV=production`)
+- Updated AuthDialog.tsx: Demo quick-fill section hidden on production
+- Updated LandingPage.tsx: Demo access section + footer credentials hidden on production
+- Updated PortalNavbar.tsx: Demo accounts section hidden on production
+- Updated PortalFooter.tsx: Demo credentials in footer hidden on production
+- Seeded Neon PostgreSQL database: confirmed 7 users, 4 jobs, 2 courses
+- Verified admin login works: admin@3boxesjobs.com / demo123 → returns ADMIN role
+- Deployed to both Vercel projects (production + demo) via git push
+
+Stage Summary:
+- Client-side error FIXED: hydration guard prevents SSR/client mismatch
+- Demo credentials REMOVED from production (3boxesjobs.com), kept on demo (3boxesjobportal.vercel.app)
+- Neon PostgreSQL database is fully seeded and operational
+- Both deployments are READY on Vercel
