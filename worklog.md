@@ -81,3 +81,22 @@ Stage Summary:
 - Demo credentials REMOVED from production (3boxesjobs.com), kept on demo (3boxesjobportal.vercel.app)
 - Neon PostgreSQL database is fully seeded and operational
 - Both deployments are READY on Vercel
+---
+Task ID: 2
+Agent: Main Agent
+Task: Fix React Error #310 (Rendered more hooks than during the previous render) on production site
+
+Work Log:
+- Identified the true root cause: React Minified Error #310 caused by Zustand persist hydration race condition
+- Previous fix had useAuthStore() hook AFTER early return, violating React Rules of Hooks
+- Added skipHydration: true to Zustand persist config in store.ts to prevent automatic SSR rehydration
+- Added manual rehydrate via useAuthStore.persist.rehydrate() in page.tsx useEffect
+- Moved all hooks (useAuthStore, useState) to unconditional top-level calls before any conditional returns
+- Deployed to both Vercel projects, verified via browser test
+
+Stage Summary:
+- Production site (3boxesjobs.com) is now fully functional — no client-side errors
+- Login dialog works, page loads correctly, no error messages
+- Demo credentials are NOT shown on production (correct)
+- Demo site (3boxesjobportal.vercel.app) still works with demo credentials
+- Neon PostgreSQL database seeded: 7 users, 4 jobs, 2 courses
