@@ -139,3 +139,29 @@ Stage Summary:
 - All admin dashboard tabs verified working: Dashboard, User Management, Candidates, Roles & Access, Settings
 - Zero JS errors captured during entire test session
 - Full codebase scan confirms no other missing import issues
+---
+Task ID: 5
+Agent: Main Agent
+Task: Add comprehensive security system — 2FA, bcrypt, JWT, rate limiting, account lockout, password validation
+
+Work Log:
+- Installed bcryptjs, otplib, jose, qrcode packages
+- Rewrote auth.ts: bcrypt password hashing (12 salt rounds) + JWT tokens (24h access, 7d refresh) + TOTP 2FA + password strength validation + account lockout
+- Created rate-limiter.ts: IP-based rate limiting (10 attempts per 15 min window)
+- Updated Prisma schema: added twoFactorEnabled, twoFactorSecret, twoFactorVerified, failedLoginAttempts, lockedUntil, lastLoginAt, passwordChangedAt fields to User model
+- Created 3 API routes: /api/auth/2fa/setup (generate secret + QR), /api/auth/2fa/verify-setup (confirm OTP), /api/auth/2fa/disable (turn off 2FA)
+- Rewrote login API: Step 1 = email/password → Step 2 = OTP (if 2FA enabled), rate limiting, account lockout
+- Updated register API: password strength validation (min 8 chars, uppercase, number, special char)
+- Updated AuthDialog: 2FA OTP verification step with 6-digit input, password strength meter on registration
+- Updated Zustand store: added requires2FA, tempToken, refreshToken, setRequires2FA/clear2FAState actions
+- Updated memory-store: added 2FA/security fields to UserRecord, updateUser method, async bcrypt hashing
+- Deployed to both Vercel projects
+
+Stage Summary:
+- Both sites deployed with full security system
+- JWT tokens verified working (proper expiry, refresh tokens)
+- bcrypt hashing verified (legacy SHA-256 backward compatible)
+- 2FA setup endpoint verified (secret + QR code generation)
+- Password validation verified (weak passwords rejected with detailed feedback)
+- Rate limiting and account lockout active
+- Production: 3boxesjobs.com | Demo: 3boxesjobportal.vercel.app
