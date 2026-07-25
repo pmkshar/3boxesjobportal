@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useAuthStore } from '@/lib/store'
 import { useTheme } from '@/lib/theme'
 import { Navbar } from '@/components/portal/Navbar'
