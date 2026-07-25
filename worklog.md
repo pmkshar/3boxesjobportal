@@ -121,3 +121,21 @@ Stage Summary:
 - Production site (3boxesjobs.com) now fully functional — login, dashboard, everything works
 - Demo site (3boxesjobportal.vercel.app) also fixed
 - No "Quick Demo Access" on production (correctly hidden)
+---
+Task ID: 4
+Agent: Main Agent
+Task: Fix Candidates tab crash - missing MapPin icon import
+
+Work Log:
+- User reported Candidates tab in Admin Dashboard crashed with client-side error
+- Identified root cause: MapPin icon used in Candidates view (line 961) but NOT imported from lucide-react
+- Same type of bug as the missing useEffect import — missing import causes ReferenceError at runtime
+- Added MapPin to the lucide-react import statement in AdminDashboard.tsx
+- Also ran comprehensive scan of ALL 82 .tsx files for missing imports — no other crash-causing issues found
+- Deployed to both Vercel projects, verified via browser test
+
+Stage Summary:
+- Candidates tab now works correctly on production (3boxesjobs.com)
+- All admin dashboard tabs verified working: Dashboard, User Management, Candidates, Roles & Access, Settings
+- Zero JS errors captured during entire test session
+- Full codebase scan confirms no other missing import issues
