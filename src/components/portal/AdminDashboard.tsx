@@ -33,7 +33,7 @@ import {
   Lock, Mail, Clock, AlertTriangle, ArrowUpRight, ArrowDownRight,
   PieChart, BarChart3, Save, RotateCcw, Upload, Zap, Thermometer,
   Timer, BookOpen, Award, Layers, Globe, Bell, ShieldCheck, Key,
-  Monitor, Database, GraduationCap,
+  Monitor, Database, GraduationCap, MapPin,
 } from 'lucide-react'
 import type { UserRole } from '@/lib/store'
 import { AIAgentDashboard } from '@/components/portal/AIAgentDashboard'
