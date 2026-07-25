@@ -48,6 +48,10 @@ export const useAuthStore = create<AuthState>()(
         token: state.token,
         isAuthenticated: state.isAuthenticated,
       }),
+      // Prevent Zustand from rehydrating during SSR/hydration.
+      // We manually rehydrate on the client after the first render
+      // to avoid React Error #310 (hooks mismatch).
+      skipHydration: true,
     }
   )
 )

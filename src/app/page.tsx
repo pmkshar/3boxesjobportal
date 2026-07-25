@@ -10,19 +10,26 @@ import { RecruiterDashboard } from '@/components/portal/RecruiterDashboard'
 import { AdminDashboard } from '@/components/portal/AdminDashboard'
 
 /**
- * Hydration guard: Zustand persist reads from localStorage on the client,
- * but on the server it defaults to null values. This mismatch causes
- * Next.js to throw a client-side exception. We wait for hydration to
- * complete before rendering any store-dependent content.
+ * Hydration guard: Zustand persist with skipHydration prevents
+ * automatic rehydration during SSR. We manually rehydrate on the
+ * client after the first render to avoid React Error #310
+ * ("Rendered more hooks than during the previous render").
+ *
+ * ALL hooks must be called unconditionally at the top level —
+ * never after conditional returns (React Rules of Hooks).
  */
 export default function Home() {
+  // ALL hooks called unconditionally at the top level — BEFORE any conditional returns
+  const { user, isAuthenticated } = useAuthStore()
   const [hydrated, setHydrated] = useState(false)
 
   useEffect(() => {
+    // Manually rehydrate Zustand persist store from localStorage on the client
+    useAuthStore.persist.rehydrate()
     setHydrated(true)
   }, [])
 
-  // Show a loading state until hydration completes to avoid mismatch
+  // Show a branded loading state until hydration completes
   if (!hydrated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#166534] via-[#15803d] to-[#22c55e]">
@@ -37,8 +44,6 @@ export default function Home() {
       </div>
     )
   }
-
-  const { user, isAuthenticated } = useAuthStore()
 
   // Not authenticated: show public home page with navbar/footer
   if (!isAuthenticated || !user) {
