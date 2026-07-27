@@ -181,7 +181,7 @@ export function RecruiterDashboard() {
                 <Home className="h-3.5 w-3.5" />
                 <span className="hover:text-[var(--theme-primary)] cursor-pointer">Home</span>
                 <ChevronRight className="h-3 w-3" />
-                <span className="text-[#05264E] font-medium capitalize">{activeView === 'search' ? 'Find Candidates' : activeView}</span>
+                <span className="text-[#0f172a] font-medium capitalize">{activeView === 'search' ? 'Find Candidates' : activeView}</span>
               </div>
             </div>
           </div>
@@ -198,7 +198,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
 
   const statCards = [
     { label: 'Placements', value: '12', change: '+18%', up: true, icon: Target, color: '#06B6D4', bg: '#ECFEFF' },
-    { label: 'Active Searches', value: '5', change: '+10%', up: true, icon: Search, color: '#fa7903', bg: '#f0faf2' },
+    { label: 'Active Searches', value: '5', change: '+10%', up: true, icon: Search, color: '#fc7e0b', bg: '#f0f8f0' },
     { label: 'In Pipeline', value: '28', change: '+35%', up: true, icon: Users, color: '#F59E0B', bg: '#FFFBEB' },
     { label: 'Interviews', value: '8', change: '-5%', up: false, icon: Calendar, color: '#8B5CF6', bg: '#F5F3FF' },
   ]
@@ -214,7 +214,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
   const pipelineStages = [
     { name: 'Sourced', count: 45, color: '#3B82F6' },
     { name: 'Screening', count: 32, color: '#06B6D4' },
-    { name: 'Shortlisted', count: 18, color: '#fa7903' },
+    { name: 'Shortlisted', count: 18, color: '#fc7e0b' },
     { name: 'Interview', count: 12, color: '#F59E0B' },
     { name: 'Offer', count: 5, color: '#8B5CF6' },
     { name: 'Hired', count: 3, color: '#EF4444' },
@@ -260,7 +260,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-[10px] uppercase tracking-wider text-[#66789C] font-medium">{s.label}</p>
-                <p className="text-2xl font-bold text-[#05264E] mt-1">{s.value}</p>
+                <p className="text-2xl font-bold text-[#0f172a] mt-1">{s.value}</p>
               </div>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: s.bg }}>
                 <s.icon className="h-5 w-5" style={{ color: s.color }} />
@@ -282,7 +282,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
           {/* Placement Stats Chart */}
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-semibold text-[#05264E]">Placement Stats</h3>
+              <h3 className="text-base font-semibold text-[#0f172a]">Placement Stats</h3>
               <Badge variant="outline" className="text-[10px] text-[#66789C] border-[#E4E8EC]">Monthly</Badge>
             </div>
             <div className="relative h-56">
@@ -298,7 +298,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
                     <div className="relative w-full max-w-[32px]">
                       <div className="w-full rounded-t-md transition-all duration-500 hover:opacity-80 cursor-pointer"
                         style={{ height: `${(v / maxVal) * 100}%`, background: `linear-gradient(180deg, ${theme.primary} 0%, ${theme.primaryRing} 100%)` }} />
-                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#05264E] text-white text-[9px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#021303] text-white text-[9px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                         {v} placed
                       </div>
                     </div>
@@ -314,7 +314,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
           {/* Recent Candidates */}
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-semibold text-[#05264E]">Recent Candidates</h3>
+              <h3 className="text-base font-semibold text-[#0f172a]">Recent Candidates</h3>
               <Button variant="ghost" size="sm" className="text-[var(--theme-primary)] text-xs font-medium hover:bg-[var(--theme-primary-light)]"
                 onClick={() => onNavigate('search')}>
                 Find More <ChevronRight className="h-3 w-3 ml-1" />
@@ -332,7 +332,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
                       {c.available && <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white" />}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-semibold text-[#05264E]">{c.name}</h4>
+                      <h4 className="text-sm font-semibold text-[#0f172a]">{c.name}</h4>
                       <p className="text-[10px] text-[#66789C]">{c.role}</p>
                       <div className="flex items-center gap-1 mt-0.5">
                         <Badge variant="outline" className="text-[9px] h-4 px-1 border-[#E4E8EC] text-[#66789C]">{c.skills.split(',')[0]}</Badge>
@@ -359,7 +359,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
           {/* Pipeline Overview */}
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-semibold text-[#05264E]">Pipeline Overview</h3>
+              <h3 className="text-base font-semibold text-[#0f172a]">Pipeline Overview</h3>
               <Button variant="ghost" size="sm" className="text-[var(--theme-primary)] text-xs"
                 onClick={() => onNavigate('pipeline')}>View</Button>
             </div>
@@ -369,9 +369,9 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: stage.color }} />
-                      <span className="text-xs font-medium text-[#05264E] group-hover:text-[var(--theme-primary)] transition-colors">{stage.name}</span>
+                      <span className="text-xs font-medium text-[#0f172a] group-hover:text-[var(--theme-primary)] transition-colors">{stage.name}</span>
                     </div>
-                    <span className="text-xs font-semibold text-[#05264E]">{stage.count}</span>
+                    <span className="text-xs font-semibold text-[#0f172a]">{stage.count}</span>
                   </div>
                   <div className="w-full bg-[#F0F2F5] rounded-full h-2 ml-4">
                     <div className="h-2 rounded-full transition-all duration-300" style={{ width: `${(stage.count / 45) * 100}%`, backgroundColor: stage.color }} />
@@ -381,23 +381,23 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
             </div>
             <div className="mt-4 pt-3 border-t border-[#F0F2F5] flex items-center justify-between">
               <span className="text-xs text-[#66789C]">Total in pipeline</span>
-              <span className="text-sm font-bold text-[#05264E]">{pipelineStages.reduce((a, s) => a + s.count, 0)}</span>
+              <span className="text-sm font-bold text-[#0f172a]">{pipelineStages.reduce((a, s) => a + s.count, 0)}</span>
             </div>
           </div>
 
           {/* Quick Actions */}
           <div className="panel p-5">
-            <h3 className="text-base font-semibold text-[#05264E] mb-4">Quick Actions</h3>
+            <h3 className="text-base font-semibold text-[#0f172a] mb-4">Quick Actions</h3>
             <div className="space-y-2">
               <Button className="w-full justify-start bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white text-xs h-9 rounded-lg"
                 onClick={() => onNavigate('search')}>
                 <Search className="h-3.5 w-3.5 mr-2" /> Find Candidates
               </Button>
-              <Button variant="outline" className="w-full justify-start text-xs h-9 rounded-lg border-[#E4E8EC] text-[#05264E] hover:bg-[#F9FAFB]"
+              <Button variant="outline" className="w-full justify-start text-xs h-9 rounded-lg border-[#E4E8EC] text-[#0f172a] hover:bg-[#F9FAFB]"
                 onClick={() => onNavigate('pipeline')}>
                 <Target className="h-3.5 w-3.5 mr-2" /> View Pipeline
               </Button>
-              <Button variant="outline" className="w-full justify-start text-xs h-9 rounded-lg border-[#E4E8EC] text-[#05264E] hover:bg-[#F9FAFB]"
+              <Button variant="outline" className="w-full justify-start text-xs h-9 rounded-lg border-[#E4E8EC] text-[#0f172a] hover:bg-[#F9FAFB]"
                 onClick={() => onNavigate('interviews')}>
                 <Calendar className="h-3.5 w-3.5 mr-2" /> Schedule Interview
               </Button>
@@ -469,7 +469,7 @@ function CandidateSearch() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-[#05264E]">Find Candidates</h2>
+      <h2 className="text-xl font-bold text-[#0f172a]">Find Candidates</h2>
 
       {/* Search bar - JobBox style */}
       <div className="panel p-5">
@@ -513,7 +513,7 @@ function CandidateSearch() {
                     {(cand.name || 'C').split(' ').map((n: string) => n[0]).join('')}
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[#05264E]">{cand.name}</h3>
+                    <h3 className="font-semibold text-[#0f172a]">{cand.name}</h3>
                     <p className="text-xs text-[#66789C]">{cand.role} &bull; {cand.exp || 'N/A'}</p>
                     <div className="flex items-center gap-1 mt-1">
                       <MapPin className="h-3 w-3 text-[#66789C]" />
@@ -555,7 +555,7 @@ function PipelineView() {
   const stages = [
     { name: 'Sourced', count: 45, color: theme.primary, bg: theme.primaryLight, candidates: ['Rahul S.', 'Priya M.', 'Karthik I.'] },
     { name: 'Screening', count: 32, color: '#06B6D4', bg: '#ECFEFF', candidates: ['Sneha R.', 'Arun K.'] },
-    { name: 'Shortlisted', count: 18, color: '#fa7903', bg: '#f0faf2', candidates: ['Deepa N.', 'Vijay S.'] },
+    { name: 'Shortlisted', count: 18, color: '#fc7e0b', bg: '#f0f8f0', candidates: ['Deepa N.', 'Vijay S.'] },
     { name: 'Interview', count: 12, color: '#F59E0B', bg: '#FFFBEB', candidates: ['Meera K.'] },
     { name: 'Offer', count: 5, color: '#8B5CF6', bg: '#F5F3FF', candidates: ['Sanjay P.'] },
     { name: 'Hired', count: 3, color: '#EF4444', bg: '#FEF2F2', candidates: ['Amit J.'] },
@@ -564,7 +564,7 @@ function PipelineView() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-[#05264E]">Pipeline</h2>
+        <h2 className="text-xl font-bold text-[#0f172a]">Pipeline</h2>
         <Badge variant="outline" className="text-xs border-[#E4E8EC] text-[#66789C]">{stages.reduce((a, s) => a + s.count, 0)} total candidates</Badge>
       </div>
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
@@ -572,16 +572,16 @@ function PipelineView() {
           <div key={stage.name} className="panel p-4">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: stage.color }} />
-              <h3 className="text-xs font-semibold text-[#05264E]">{stage.name}</h3>
+              <h3 className="text-xs font-semibold text-[#0f172a]">{stage.name}</h3>
             </div>
-            <p className="text-2xl font-bold text-[#05264E] mb-3">{stage.count}</p>
+            <p className="text-2xl font-bold text-[#0f172a] mb-3">{stage.count}</p>
             <div className="space-y-1.5">
               {stage.candidates.map((c) => (
                 <div key={c} className="flex items-center gap-2 px-2 py-1.5 rounded-lg text-[10px]" style={{ backgroundColor: stage.bg }}>
                   <div className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[8px] font-medium" style={{ backgroundColor: stage.color }}>
                     {c.split(' ').map(n => n[0]).join('')}
                   </div>
-                  <span className="text-[#05264E] font-medium">{c}</span>
+                  <span className="text-[#0f172a] font-medium">{c}</span>
                 </div>
               ))}
             </div>
@@ -603,7 +603,7 @@ function InterviewsView() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-[#05264E]">Interviews</h2>
+        <h2 className="text-xl font-bold text-[#0f172a]">Interviews</h2>
         <Button size="sm" className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white text-xs rounded-lg">
           <Plus className="h-3.5 w-3.5 mr-1" /> Schedule Interview
         </Button>
@@ -625,7 +625,7 @@ function InterviewsView() {
                     <Calendar className="h-5 w-5 text-[var(--theme-primary)]" style={{ color: theme.primary }} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[#05264E]">{intv.candidate}</h3>
+                    <h3 className="font-semibold text-[#0f172a]">{intv.candidate}</h3>
                     <p className="text-[10px] text-[#66789C]">{intv.role} &bull; {intv.company}</p>
                   </div>
                 </div>
@@ -650,19 +650,19 @@ function InterviewsView() {
 function RecruiterAnalytics() {
   const statCards = [
     { label: 'Total Placements', value: '150', icon: Target, color: '#06B6D4', bg: '#ECFEFF' },
-    { label: 'This Month', value: '12', icon: TrendingUp, color: '#fa7903', bg: '#f0faf2' },
+    { label: 'This Month', value: '12', icon: TrendingUp, color: '#fc7e0b', bg: '#f0f8f0' },
     { label: 'Avg Time to Hire', value: '14 days', icon: Clock, color: '#F59E0B', bg: '#FFFBEB' },
     { label: 'Offer Accept Rate', value: '85%', icon: Award, color: '#8B5CF6', bg: '#F5F3FF' },
   ]
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-[#05264E]">Analytics</h2>
+      <h2 className="text-xl font-bold text-[#0f172a]">Analytics</h2>
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
         {statCards.map(s => (
           <div key={s.label} className="stat-card-hover bg-white rounded-xl p-4 border border-[#E4E8EC]">
             <div className="flex items-center justify-between">
-              <div><p className="text-[10px] uppercase tracking-wider text-[#66789C] font-medium">{s.label}</p><p className="text-2xl font-bold text-[#05264E] mt-1">{s.value}</p></div>
+              <div><p className="text-[10px] uppercase tracking-wider text-[#66789C] font-medium">{s.label}</p><p className="text-2xl font-bold text-[#0f172a] mt-1">{s.value}</p></div>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: s.bg }}>
                 <s.icon className="h-5 w-5" style={{ color: s.color }} />
               </div>
@@ -685,7 +685,7 @@ function RecruiterProfile() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-4">
-      <h2 className="text-xl font-bold text-[#05264E]">My Profile</h2>
+      <h2 className="text-xl font-bold text-[#0f172a]">My Profile</h2>
       <Card className="border-[#E4E8EC]"><CardContent className="p-5 space-y-4">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-xl flex items-center justify-center text-white text-2xl font-bold"
@@ -693,7 +693,7 @@ function RecruiterProfile() {
             {user?.name?.split(' ').map(n => n[0]).join('') || 'R'}
           </div>
           <div>
-            <h3 className="text-lg font-bold text-[#05264E]">{user?.name}</h3>
+            <h3 className="text-lg font-bold text-[#0f172a]">{user?.name}</h3>
             <p className="text-sm text-[#66789C]">Recruiter &bull; {profile.specialization || 'IT & Software'}</p>
           </div>
         </div>
@@ -709,10 +709,10 @@ function RecruiterProfile() {
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <div><Label className="text-[#05264E] font-medium">Specialization</Label><Input value={profile.specialization || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, specialization: e.target.value})} /></div>
-          <div><Label className="text-[#05264E] font-medium">Years Experience</Label><Input value={profile.yearsExperience || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, yearsExperience: e.target.value})} /></div>
+          <div><Label className="text-[#0f172a] font-medium">Specialization</Label><Input value={profile.specialization || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, specialization: e.target.value})} /></div>
+          <div><Label className="text-[#0f172a] font-medium">Years Experience</Label><Input value={profile.yearsExperience || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, yearsExperience: e.target.value})} /></div>
         </div>
-        <div><Label className="text-[#05264E] font-medium">Certifications</Label><Input value={profile.certifications || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" /></div>
+        <div><Label className="text-[#0f172a] font-medium">Certifications</Label><Input value={profile.certifications || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" /></div>
         <Button className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white font-semibold rounded-lg h-10">Save Profile</Button>
       </CardContent></Card>
     </div>

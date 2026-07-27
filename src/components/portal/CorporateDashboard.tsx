@@ -233,7 +233,7 @@ export function CorporateDashboard() {
                 <Home className="h-3.5 w-3.5" />
                 <span className="hover:text-[var(--theme-primary)] cursor-pointer">Home</span>
                 <ChevronRight className="h-3 w-3" />
-                <span className="text-[#05264E] font-medium capitalize">{activeView === 'post-job' ? 'Post Job' : activeView === 'my-jobs' ? 'My Jobs' : activeView}</span>
+                <span className="text-[#0f172a] font-medium capitalize">{activeView === 'post-job' ? 'Post Job' : activeView === 'my-jobs' ? 'My Jobs' : activeView}</span>
               </div>
             </div>
           </div>
@@ -250,7 +250,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
 
   const statCards = [
     { label: 'Total Jobs', value: stats.totalJobs, change: '+12%', up: true, icon: Briefcase, color: '#3B82F6', bg: '#EFF6FF' },
-    { label: 'Active Jobs', value: stats.activeJobs, change: '+8%', up: true, icon: Target, color: '#fa7903', bg: '#f0faf2' },
+    { label: 'Active Jobs', value: stats.activeJobs, change: '+8%', up: true, icon: Target, color: '#fc7e0b', bg: '#f0f8f0' },
     { label: 'Applications', value: stats.totalApplications, change: '+25%', up: true, icon: FileCheck, color: '#F59E0B', bg: '#FFFBEB' },
     { label: 'Shortlisted', value: stats.shortlisted, change: '-3%', up: false, icon: Users, color: '#8B5CF6', bg: '#F5F3FF' },
   ]
@@ -300,7 +300,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-[10px] uppercase tracking-wider text-[#66789C] font-medium">{s.label}</p>
-                <p className="text-2xl font-bold text-[#05264E] mt-1">{s.value.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-[#0f172a] mt-1">{s.value.toLocaleString()}</p>
               </div>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: s.bg }}>
                 <s.icon className="h-5 w-5" style={{ color: s.color }} />
@@ -322,7 +322,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
           {/* Application Stats Chart */}
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-semibold text-[#05264E]">Application Stats</h3>
+              <h3 className="text-base font-semibold text-[#0f172a]">Application Stats</h3>
               <Badge variant="outline" className="text-[10px] text-[#66789C] border-[#E4E8EC]">Monthly</Badge>
             </div>
             <div className="relative h-56">
@@ -338,7 +338,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
                     <div className="relative w-full max-w-[32px]">
                       <div className="w-full rounded-t-md transition-all duration-500 hover:opacity-80 cursor-pointer"
                         style={{ height: `${(v / maxVal) * 100}%`, background: `linear-gradient(180deg, ${theme.primary} 0%, ${theme.primaryRing} 100%)` }} />
-                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#05264E] text-white text-[9px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#021303] text-white text-[9px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                         {v} apps
                       </div>
                     </div>
@@ -354,7 +354,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
           {/* Recent Jobs */}
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-semibold text-[#05264E]">My Jobs</h3>
+              <h3 className="text-base font-semibold text-[#0f172a]">My Jobs</h3>
               <Button variant="ghost" size="sm" className="text-[var(--theme-primary)] text-xs font-medium hover:bg-[var(--theme-primary-light)]"
                 onClick={() => onNavigate('my-jobs')}>
                 View All <ChevronRight className="h-3 w-3 ml-1" />
@@ -378,7 +378,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
                         <Briefcase className="h-5 w-5 text-[var(--theme-primary)]" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h4 className="text-sm font-semibold text-[#05264E] truncate">{job.title}</h4>
+                        <h4 className="text-sm font-semibold text-[#0f172a] truncate">{job.title}</h4>
                         <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                           <span className="text-[10px] text-[#66789C] flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{job.location || 'Remote'}</span>
                           <span className="text-[10px] text-[#66789C] flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />{new Date(job.postedDate).toLocaleDateString()}</span>
@@ -401,7 +401,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
           {/* Recent Applicants */}
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-semibold text-[#05264E]">Recent Applicants</h3>
+              <h3 className="text-base font-semibold text-[#0f172a]">Recent Applicants</h3>
               <Button variant="ghost" size="sm" className="text-[var(--theme-primary)] text-xs"
                 onClick={() => onNavigate('applications')}>View All</Button>
             </div>
@@ -412,13 +412,13 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
                     {a.avatar}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-semibold text-[#05264E]">{a.name}</h4>
+                    <h4 className="text-sm font-semibold text-[#0f172a]">{a.name}</h4>
                     <p className="text-[10px] text-[#66789C]">{a.role}</p>
                   </div>
                   <div className="flex flex-col items-end gap-0.5">
                     <Badge variant="outline" className={`text-[9px] h-4 px-1.5 border-0 font-medium ${
                       a.status === 'New' ? 'bg-[var(--theme-primary-light)] text-[var(--theme-primary)]' :
-                      a.status === 'Shortlisted' ? 'bg-[#f0faf2] text-[#fa7903]' :
+                      a.status === 'Shortlisted' ? 'bg-[#f0f8f0] text-[#fc7e0b]' :
                       a.status === 'Interview' ? 'bg-[#FFFBEB] text-[#F59E0B]' :
                       'bg-[#F0F2F5] text-[#66789C]'
                     }`}>{a.status}</Badge>
@@ -431,21 +431,21 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
 
           {/* Quick Actions */}
           <div className="panel p-5">
-            <h3 className="text-base font-semibold text-[#05264E] mb-4">Quick Actions</h3>
+            <h3 className="text-base font-semibold text-[#0f172a] mb-4">Quick Actions</h3>
             <div className="space-y-2">
               <Button className="w-full justify-start bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white text-xs h-9 rounded-lg"
                 onClick={() => onNavigate('post-job')}>
                 <Plus className="h-3.5 w-3.5 mr-2" /> Post New Job
               </Button>
-              <Button variant="outline" className="w-full justify-start text-xs h-9 rounded-lg border-[#E4E8EC] text-[#05264E] hover:bg-[#F9FAFB]"
+              <Button variant="outline" className="w-full justify-start text-xs h-9 rounded-lg border-[#E4E8EC] text-[#0f172a] hover:bg-[#F9FAFB]"
                 onClick={() => onNavigate('applications')}>
                 <FileCheck className="h-3.5 w-3.5 mr-2" /> Review Applications
               </Button>
-              <Button variant="outline" className="w-full justify-start text-xs h-9 rounded-lg border-[#E4E8EC] text-[#05264E] hover:bg-[#F9FAFB]"
+              <Button variant="outline" className="w-full justify-start text-xs h-9 rounded-lg border-[#E4E8EC] text-[#0f172a] hover:bg-[#F9FAFB]"
                 onClick={() => onNavigate('analytics')}>
                 <BarChart3 className="h-3.5 w-3.5 mr-2" /> View Analytics
               </Button>
-              <Button variant="outline" className="w-full justify-start text-xs h-9 rounded-lg border-[#E4E8EC] text-[#05264E] hover:bg-[#F9FAFB]"
+              <Button variant="outline" className="w-full justify-start text-xs h-9 rounded-lg border-[#E4E8EC] text-[#0f172a] hover:bg-[#F9FAFB]"
                 onClick={() => onNavigate('profile')}>
                 <Building2 className="h-3.5 w-3.5 mr-2" /> Company Profile
               </Button>
@@ -524,32 +524,32 @@ function PostJobForm({ onPosted }: { onPosted: () => void }) {
   return (
     <div className="max-w-2xl mx-auto space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-[#05264E]">Post New Job</h2>
+        <h2 className="text-xl font-bold text-[#0f172a]">Post New Job</h2>
         <Badge variant="outline" className="text-[10px] border-[#E4E8EC] text-[#66789C]">Fill all required fields</Badge>
       </div>
       <Card className="border-[#E4E8EC]"><CardContent className="p-5 space-y-4">
-        <div><Label className="text-[#05264E] font-medium">Title *</Label><Input placeholder="e.g., Senior React Developer" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)] focus:ring-[var(--theme-primary-ring)]" /></div>
-        <div><Label className="text-[#05264E] font-medium">Description *</Label><Textarea placeholder="Describe the role..." value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={5} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)] focus:ring-[var(--theme-primary-ring)]" /></div>
-        <div><Label className="text-[#05264E] font-medium">Requirements</Label><Textarea placeholder="Required skills and qualifications..." value={form.requirements} onChange={(e) => setForm({ ...form, requirements: e.target.value })} rows={3} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)] focus:ring-[var(--theme-primary-ring)]" /></div>
+        <div><Label className="text-[#0f172a] font-medium">Title *</Label><Input placeholder="e.g., Senior React Developer" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)] focus:ring-[var(--theme-primary-ring)]" /></div>
+        <div><Label className="text-[#0f172a] font-medium">Description *</Label><Textarea placeholder="Describe the role..." value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={5} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)] focus:ring-[var(--theme-primary-ring)]" /></div>
+        <div><Label className="text-[#0f172a] font-medium">Requirements</Label><Textarea placeholder="Required skills and qualifications..." value={form.requirements} onChange={(e) => setForm({ ...form, requirements: e.target.value })} rows={3} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)] focus:ring-[var(--theme-primary-ring)]" /></div>
         <div className="grid grid-cols-2 gap-3">
-          <div><Label className="text-[#05264E] font-medium">Min Salary (LPA)</Label><Input placeholder="12" value={form.salaryMin} onChange={(e) => setForm({ ...form, salaryMin: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
-          <div><Label className="text-[#05264E] font-medium">Max Salary (LPA)</Label><Input placeholder="20" value={form.salaryMax} onChange={(e) => setForm({ ...form, salaryMax: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
+          <div><Label className="text-[#0f172a] font-medium">Min Salary (LPA)</Label><Input placeholder="12" value={form.salaryMin} onChange={(e) => setForm({ ...form, salaryMin: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
+          <div><Label className="text-[#0f172a] font-medium">Max Salary (LPA)</Label><Input placeholder="20" value={form.salaryMax} onChange={(e) => setForm({ ...form, salaryMax: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
         </div>
         <div className="grid grid-cols-3 gap-3">
-          <div><Label className="text-[#05264E] font-medium">Job Type</Label>
+          <div><Label className="text-[#0f172a] font-medium">Job Type</Label>
             <select value={form.jobType} onChange={(e) => setForm({ ...form, jobType: e.target.value })} className="mt-1 w-full border border-[#E4E8EC] rounded-md px-2 py-1.5 text-sm focus:border-[var(--theme-primary)] focus:ring-1 focus:ring-[var(--theme-primary-ring)]">
               <option value="full-time">Full Time</option><option value="part-time">Part Time</option><option value="contract">Contract</option><option value="remote">Remote</option>
             </select>
           </div>
-          <div><Label className="text-[#05264E] font-medium">Min Exp (yrs)</Label><Input placeholder="3" value={form.experienceMin} onChange={(e) => setForm({ ...form, experienceMin: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
-          <div><Label className="text-[#05264E] font-medium">Max Exp (yrs)</Label><Input placeholder="7" value={form.experienceMax} onChange={(e) => setForm({ ...form, experienceMax: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
+          <div><Label className="text-[#0f172a] font-medium">Min Exp (yrs)</Label><Input placeholder="3" value={form.experienceMin} onChange={(e) => setForm({ ...form, experienceMin: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
+          <div><Label className="text-[#0f172a] font-medium">Max Exp (yrs)</Label><Input placeholder="7" value={form.experienceMax} onChange={(e) => setForm({ ...form, experienceMax: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
         </div>
-        <div><Label className="text-[#05264E] font-medium">Location</Label><Input placeholder="Bangalore, India" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
-        <div><Label className="text-[#05264E] font-medium">Required Skills (comma-separated)</Label><Input placeholder="React, TypeScript, Node.js" value={form.skills} onChange={(e) => setForm({ ...form, skills: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
-        <div><Label className="text-[#05264E] font-medium">Benefits</Label><Input placeholder="Health insurance, Stock options, Remote work" value={form.benefits} onChange={(e) => setForm({ ...form, benefits: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
+        <div><Label className="text-[#0f172a] font-medium">Location</Label><Input placeholder="Bangalore, India" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
+        <div><Label className="text-[#0f172a] font-medium">Required Skills (comma-separated)</Label><Input placeholder="React, TypeScript, Node.js" value={form.skills} onChange={(e) => setForm({ ...form, skills: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
+        <div><Label className="text-[#0f172a] font-medium">Benefits</Label><Input placeholder="Health insurance, Stock options, Remote work" value={form.benefits} onChange={(e) => setForm({ ...form, benefits: e.target.value })} className="mt-1 border-[#E4E8EC]" /></div>
         <div className="flex items-center gap-2">
           <input type="checkbox" checked={form.isRemote} onChange={(e) => setForm({ ...form, isRemote: e.target.checked })} className="rounded border-[#E4E8EC] accent-[var(--theme-primary)]" />
-          <Label className="text-[#05264E]">Remote Friendly</Label>
+          <Label className="text-[#0f172a]">Remote Friendly</Label>
         </div>
         <Button className="w-full bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white font-semibold rounded-lg h-10" onClick={handleSubmit} disabled={loading}>
           {loading ? 'Posting...' : 'Post Job'} <ChevronRight className="ml-1 h-4 w-4" />
@@ -565,7 +565,7 @@ function MyJobsList({ jobs, onRefresh }: { jobs: any[]; onRefresh: () => void })
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-[#05264E]">My Jobs ({jobs.length})</h2>
+        <h2 className="text-xl font-bold text-[#0f172a]">My Jobs ({jobs.length})</h2>
         <Button size="sm" className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white text-xs rounded-lg" onClick={onRefresh}>
           Refresh
         </Button>
@@ -585,7 +585,7 @@ function MyJobsList({ jobs, onRefresh }: { jobs: any[]; onRefresh: () => void })
                     <Briefcase className="h-5 w-5 text-[var(--theme-primary)]" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[#05264E]">{job.title}</h3>
+                    <h3 className="font-semibold text-[#0f172a]">{job.title}</h3>
                     <div className="flex gap-3 mt-1 text-xs text-[#66789C]">
                       <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{job.location || 'Remote'}</span>
                       <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{new Date(job.postedDate).toLocaleDateString()}</span>
@@ -637,7 +637,7 @@ function CorpApplications() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-[#05264E]">Applications</h2>
+      <h2 className="text-xl font-bold text-[#0f172a]">Applications</h2>
       {loading ? (
         <div className="animate-pulse space-y-3">{Array.from({length:3}).map((_,i) => (
           <div key={i} className="bg-white rounded-xl p-4 border border-[#E4E8EC]"><div className="h-16 bg-[#F0F2F5] rounded"/></div>
@@ -654,7 +654,7 @@ function CorpApplications() {
                     {(app.user?.name || 'C').split(' ').map((n: string) => n[0]).join('')}
                   </div>
                   <div>
-                    <p className="font-semibold text-sm text-[#05264E]">{app.user?.name || 'Candidate'}</p>
+                    <p className="font-semibold text-sm text-[#0f172a]">{app.user?.name || 'Candidate'}</p>
                     <p className="text-[10px] text-[#66789C]">AI Match: {app.aiMatchScore || 'N/A'}%</p>
                   </div>
                 </div>
@@ -689,26 +689,26 @@ function CompanyProfile() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-4">
-      <h2 className="text-xl font-bold text-[#05264E]">Company Profile</h2>
+      <h2 className="text-xl font-bold text-[#0f172a]">Company Profile</h2>
       <Card className="border-[#E4E8EC]"><CardContent className="p-5 space-y-4">
         <div className="flex items-center gap-4 mb-4">
           <div className="w-16 h-16 rounded-xl flex items-center justify-center text-white text-2xl font-bold" style={{ background: theme.gradient }}>
             {(profile.companyName || 'C')[0]}
           </div>
           <div>
-            <h3 className="text-lg font-bold text-[#05264E]">{profile.companyName || 'Company Name'}</h3>
+            <h3 className="text-lg font-bold text-[#0f172a]">{profile.companyName || 'Company Name'}</h3>
             <p className="text-sm text-[#66789C]">{profile.industry || 'Industry'} • {profile.companySize || 'Size'}</p>
           </div>
         </div>
         <Separator className="bg-[#F0F2F5]" />
-        <div><Label className="text-[#05264E] font-medium">Company Name</Label><Input value={profile.companyName || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, companyName: e.target.value})} /></div>
+        <div><Label className="text-[#0f172a] font-medium">Company Name</Label><Input value={profile.companyName || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, companyName: e.target.value})} /></div>
         <div className="grid grid-cols-2 gap-3">
-          <div><Label className="text-[#05264E] font-medium">Industry</Label><Input value={profile.industry || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, industry: e.target.value})} /></div>
-          <div><Label className="text-[#05264E] font-medium">Company Size</Label><Input value={profile.companySize || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, companySize: e.target.value})} /></div>
+          <div><Label className="text-[#0f172a] font-medium">Industry</Label><Input value={profile.industry || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, industry: e.target.value})} /></div>
+          <div><Label className="text-[#0f172a] font-medium">Company Size</Label><Input value={profile.companySize || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, companySize: e.target.value})} /></div>
         </div>
-        <div><Label className="text-[#05264E] font-medium">Website</Label><Input value={profile.website || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" /></div>
-        <div><Label className="text-[#05264E] font-medium">Description</Label><Textarea value={profile.description || ''} rows={4} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, description: e.target.value})} /></div>
-        <div><Label className="text-[#05264E] font-medium">Location</Label><Input value={profile.location || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" /></div>
+        <div><Label className="text-[#0f172a] font-medium">Website</Label><Input value={profile.website || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" /></div>
+        <div><Label className="text-[#0f172a] font-medium">Description</Label><Textarea value={profile.description || ''} rows={4} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" onChange={(e) => setProfile({...profile, description: e.target.value})} /></div>
+        <div><Label className="text-[#0f172a] font-medium">Location</Label><Input value={profile.location || ''} className="mt-1 border-[#E4E8EC] focus:border-[var(--theme-primary)]" /></div>
         <Button className="bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white font-semibold rounded-lg h-10">Save Profile</Button>
       </CardContent></Card>
     </div>
@@ -757,7 +757,7 @@ function FindCandidates() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-[#05264E]">Find Candidates</h2>
+        <h2 className="text-xl font-bold text-[#0f172a]">Find Candidates</h2>
         <Badge variant="outline" className="text-xs border-[var(--theme-primary)] text-[var(--theme-primary)]">{candidates.length} candidates</Badge>
       </div>
 
@@ -799,11 +799,11 @@ function FindCandidates() {
                     {c.name?.charAt(0)?.toUpperCase() || '?'}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-[#05264E]">{c.name}</p>
+                    <p className="text-sm font-semibold text-[#0f172a]">{c.name}</p>
                     <p className="text-xs text-[#66789C]">{c.headline || c.currentRole || 'Job Seeker'}</p>
                   </div>
                 </div>
-                <Badge variant="outline" className="text-[10px] border-[#fa7903] text-[#fa7903] h-5">{c.experienceYears || 0} yrs</Badge>
+                <Badge variant="outline" className="text-[10px] border-[#fc7e0b] text-[#fc7e0b] h-5">{c.experienceYears || 0} yrs</Badge>
               </div>
               {c.currentCompany && <p className="text-xs text-[#66789C] mt-2"><Building2 className="h-3 w-3 inline mr-1" />{c.currentCompany}</p>}
               {c.skills && (
@@ -827,7 +827,7 @@ function FindCandidates() {
       <Dialog open={!!selectedCandidate} onOpenChange={() => setSelectedCandidate(null)}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-[#05264E]">{selectedCandidate?.name}</DialogTitle>
+            <DialogTitle className="text-[#0f172a]">{selectedCandidate?.name}</DialogTitle>
           </DialogHeader>
           {selectedCandidate && (
             <div className="space-y-4">
@@ -836,18 +836,18 @@ function FindCandidates() {
                   {selectedCandidate.name?.charAt(0)?.toUpperCase()}
                 </div>
                 <div>
-                  <p className="font-semibold text-[#05264E]">{selectedCandidate.headline || selectedCandidate.currentRole || 'Job Seeker'}</p>
+                  <p className="font-semibold text-[#0f172a]">{selectedCandidate.headline || selectedCandidate.currentRole || 'Job Seeker'}</p>
                   {selectedCandidate.currentCompany && <p className="text-sm text-[#66789C]">{selectedCandidate.currentCompany}</p>}
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3 text-sm">
-                {selectedCandidate.email && <div><span className="text-[#66789C]">Email:</span> <span className="text-[#05264E]">{selectedCandidate.email}</span></div>}
-                {selectedCandidate.phone && <div><span className="text-[#66789C]">Phone:</span> <span className="text-[#05264E]">{selectedCandidate.phone}</span></div>}
-                {selectedCandidate.location && <div><span className="text-[#66789C]">Location:</span> <span className="text-[#05264E]">{selectedCandidate.location}</span></div>}
-                {selectedCandidate.experienceYears > 0 && <div><span className="text-[#66789C]">Experience:</span> <span className="text-[#05264E]">{selectedCandidate.experienceYears} years</span></div>}
-                {selectedCandidate.education && <div><span className="text-[#66789C]">Education:</span> <span className="text-[#05264E]">{selectedCandidate.education}</span></div>}
-                {selectedCandidate.availability && <div><span className="text-[#66789C]">Availability:</span> <span className="text-[#05264E]">{selectedCandidate.availability}</span></div>}
-                {selectedCandidate.jobType && <div><span className="text-[#66789C]">Job Type:</span> <span className="text-[#05264E]">{selectedCandidate.jobType}</span></div>}
+                {selectedCandidate.email && <div><span className="text-[#66789C]">Email:</span> <span className="text-[#0f172a]">{selectedCandidate.email}</span></div>}
+                {selectedCandidate.phone && <div><span className="text-[#66789C]">Phone:</span> <span className="text-[#0f172a]">{selectedCandidate.phone}</span></div>}
+                {selectedCandidate.location && <div><span className="text-[#66789C]">Location:</span> <span className="text-[#0f172a]">{selectedCandidate.location}</span></div>}
+                {selectedCandidate.experienceYears > 0 && <div><span className="text-[#66789C]">Experience:</span> <span className="text-[#0f172a]">{selectedCandidate.experienceYears} years</span></div>}
+                {selectedCandidate.education && <div><span className="text-[#66789C]">Education:</span> <span className="text-[#0f172a]">{selectedCandidate.education}</span></div>}
+                {selectedCandidate.availability && <div><span className="text-[#66789C]">Availability:</span> <span className="text-[#0f172a]">{selectedCandidate.availability}</span></div>}
+                {selectedCandidate.jobType && <div><span className="text-[#66789C]">Job Type:</span> <span className="text-[#0f172a]">{selectedCandidate.jobType}</span></div>}
                 {selectedCandidate.linkededInUrl && <div className="col-span-2"><span className="text-[#66789C]">LinkedIn:</span> <a href={selectedCandidate.linkededInUrl} target="_blank" className="text-[var(--theme-primary)] hover:underline ml-1">{selectedCandidate.linkededInUrl}</a></div>}
               </div>
               {selectedCandidate.skills && (
@@ -863,7 +863,7 @@ function FindCandidates() {
               {selectedCandidate.bio && (
                 <div>
                   <p className="text-sm text-[#66789C] mb-1">About</p>
-                  <p className="text-sm text-[#05264E]">{selectedCandidate.bio}</p>
+                  <p className="text-sm text-[#0f172a]">{selectedCandidate.bio}</p>
                 </div>
               )}
             </div>
@@ -877,19 +877,19 @@ function FindCandidates() {
 function CorpAnalytics({ stats, jobs }: { stats: any; jobs: any[] }) {
   const statCards = [
     { label: 'Total Jobs', value: stats.totalJobs, icon: Briefcase, color: '#3B82F6', bg: '#EFF6FF' },
-    { label: 'Active Jobs', value: stats.activeJobs, icon: Target, color: '#fa7903', bg: '#f0faf2' },
+    { label: 'Active Jobs', value: stats.activeJobs, icon: Target, color: '#fc7e0b', bg: '#f0f8f0' },
     { label: 'Applications', value: stats.totalApplications, icon: FileCheck, color: '#F59E0B', bg: '#FFFBEB' },
     { label: 'Shortlisted', value: stats.shortlisted, icon: Users, color: '#8B5CF6', bg: '#F5F3FF' },
   ]
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-[#05264E]">Analytics</h2>
+      <h2 className="text-xl font-bold text-[#0f172a]">Analytics</h2>
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
         {statCards.map(s => (
           <div key={s.label} className="stat-card-hover bg-white rounded-xl p-4 border border-[#E4E8EC]">
             <div className="flex items-center justify-between">
-              <div><p className="text-[10px] uppercase tracking-wider text-[#66789C] font-medium">{s.label}</p><p className="text-2xl font-bold text-[#05264E] mt-1">{s.value}</p></div>
+              <div><p className="text-[10px] uppercase tracking-wider text-[#66789C] font-medium">{s.label}</p><p className="text-2xl font-bold text-[#0f172a] mt-1">{s.value}</p></div>
               <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: s.bg }}>
                 <s.icon className="h-5 w-5" style={{ color: s.color }} />
               </div>
@@ -898,14 +898,14 @@ function CorpAnalytics({ stats, jobs }: { stats: any; jobs: any[] }) {
         ))}
       </div>
       <div className="panel p-5">
-        <h3 className="text-base font-semibold text-[#05264E] mb-4">Job Performance</h3>
+        <h3 className="text-base font-semibold text-[#0f172a] mb-4">Job Performance</h3>
         {jobs.length === 0 ? <p className="text-sm text-[#66789C]">No data available</p> : (
           <div className="space-y-3">
             {jobs.map((job, idx) => (
               <div key={job.id} className={`flex items-center justify-between py-3 ${idx < jobs.length - 1 ? 'border-b border-[#F0F2F5]' : ''}`}>
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-[var(--theme-primary-light)] flex items-center justify-center"><Briefcase className="h-4 w-4 text-[var(--theme-primary)]" /></div>
-                  <span className="text-sm font-medium text-[#05264E]">{job.title}</span>
+                  <span className="text-sm font-medium text-[#0f172a]">{job.title}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-xs text-[#66789C]">{job.applications?.length || 0} applications</span>

@@ -20,8 +20,8 @@ import {
 
 // Green color palette (3 Boxes brand)
 const S = {
-  primary: '#045a06',
-  primaryHover: '#034604',
+  primary: '#056022',
+  primaryHover: '#044d1a',
   accent: '#f9ab00',
   success: '#34a853',
   danger: '#d93025',
@@ -34,7 +34,7 @@ const S = {
 
 // Company color palette for avatars
 const companyColors = [
-  'bg-[#045a06]', 'bg-[#34a853]', 'bg-[#f9ab00]', 'bg-[#d93025]',
+  'bg-[#056022]', 'bg-[#34a853]', 'bg-[#f9ab00]', 'bg-[#d93025]',
   'bg-[#7c66ff]', 'bg-[#a55fff]', 'bg-[#00cc9a]', 'bg-[#2869fe]',
 ]
 
@@ -191,7 +191,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
     return (
       <div className="fixed inset-0 z-50 bg-white overflow-y-auto">
         {/* Sticky top action bar */}
-        <div className="sticky top-0 z-10 bg-gradient-to-r from-[#045a06] to-[#034604] py-3 px-4 sm:px-6 shadow-lg">
+        <div className="sticky top-0 z-10 bg-gradient-to-r from-[#056022] to-[#044d1a] py-3 px-4 sm:px-6 shadow-lg">
           <div className="max-w-5xl mx-auto flex items-center gap-3">
             <button onClick={() => { setSelectedJob(null); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className="flex items-center gap-2 text-white/90 hover:text-white text-sm transition-colors group bg-white/10 hover:bg-white/20 rounded-lg px-3 py-2">
               <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back to Jobs
@@ -207,7 +207,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
         </div>
 
         {/* Job Header - Green banner */}
-        <div className="relative bg-gradient-to-r from-[#045a06] to-[#034604] pb-8 pt-4 px-4 sm:px-6 overflow-hidden">
+        <div className="relative bg-gradient-to-r from-[#056022] to-[#044d1a] pb-8 pt-4 px-4 sm:px-6 overflow-hidden">
           <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'}} />
           <div className="max-w-5xl mx-auto relative z-10">
             <div className="flex flex-col sm:flex-row items-start gap-4">
@@ -258,7 +258,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                     <ul className="space-y-2.5">
                       {selectedJob.responsibilities.split('\n').filter((l: string) => l.trim()).map((line: string, i: number) => (
                         <li key={i} className="flex items-start gap-2.5 text-[#5f6368] text-[15px] leading-[22px]">
-                          <CheckCircle2 className="h-5 w-5 text-[#045a06] flex-shrink-0 mt-0.5" />
+                          <CheckCircle2 className="h-5 w-5 text-[#056022] flex-shrink-0 mt-0.5" />
                           <span>{line.replace(/^[-•*]\s*/, '')}</span>
                         </li>
                       ))}
@@ -274,7 +274,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                     <ul className="space-y-2.5">
                       {selectedJob.requirements.split('\n').filter((l: string) => l.trim()).map((line: string, i: number) => (
                         <li key={i} className="flex items-start gap-2.5 text-[#5f6368] text-[15px] leading-[22px]">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#045a06] flex-shrink-0 mt-2" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#056022] flex-shrink-0 mt-2" />
                           <span>{line.replace(/^[-•*]\s*/, '')}</span>
                         </li>
                       ))}
@@ -287,10 +287,10 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                 <CardContent className="p-6">
                   <h3 className="font-semibold text-[#202124] text-lg mb-4">Share This Job</h3>
                   <div className="flex gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#045a06] text-white text-sm font-medium hover:opacity-90 transition-opacity">
+                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#056022] text-white text-sm font-medium hover:opacity-90 transition-opacity">
                       <Facebook className="h-4 w-4" /> Facebook
                     </button>
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#034604] text-white text-sm font-medium hover:opacity-90 transition-opacity">
+                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#044d1a] text-white text-sm font-medium hover:opacity-90 transition-opacity">
                       <Twitter className="h-4 w-4" /> Twitter
                     </button>
                     <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#22c55e] text-white text-sm font-medium hover:opacity-90 transition-opacity">
@@ -317,15 +317,15 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                               {getCompanyInitial(job.corporate?.companyName)}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-medium text-[#202124] text-sm group-hover:text-[#045a06] transition-colors truncate">{job.title}</h4>
+                              <h4 className="font-medium text-[#202124] text-sm group-hover:text-[#056022] transition-colors truncate">{job.title}</h4>
                               <div className="flex items-center gap-3 text-xs text-[#5f6368] mt-0.5">
                                 <span className="flex items-center gap-1"><Building2 className="h-3 w-3" /> {job.corporate?.companyName}</span>
                                 <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.location || 'Remote'}</span>
-                                <span className="font-medium text-[#045a06]">{formatSalary(job.salaryMin, job.salaryMax)}</span>
+                                <span className="font-medium text-[#056022]">{formatSalary(job.salaryMin, job.salaryMax)}</span>
                               </div>
                             </div>
                             <div className="flex flex-wrap gap-1 flex-shrink-0">
-                              <Badge className="bg-[rgba(22,163,74,0.15)] text-[#045a06] border-0 text-[11px] rounded-full px-3">{job.jobType}</Badge>
+                              <Badge className="bg-[rgba(22,163,74,0.15)] text-[#056022] border-0 text-[11px] rounded-full px-3">{job.jobType}</Badge>
                               {job.isRemote && <Badge className="bg-[rgba(52,168,83,0.15)] text-[#34a853] border-0 text-[11px] rounded-full px-3">Remote</Badge>}
                             </div>
                           </div>
@@ -344,12 +344,12 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                   <h4 className="font-semibold text-[#202124] mb-4">Job Overview</h4>
                   <div className="space-y-4">
                     {[
-                      { icon: CalendarDays, label: 'Date Posted', value: selectedJob.postedDate ? timeAgo(selectedJob.postedDate) : 'Recently', color: 'text-[#045a06]' },
+                      { icon: CalendarDays, label: 'Date Posted', value: selectedJob.postedDate ? timeAgo(selectedJob.postedDate) : 'Recently', color: 'text-[#056022]' },
                       { icon: Clock, label: 'Expiration', value: selectedJob.closingDate ? timeAgo(selectedJob.closingDate) : '30 days left', color: 'text-[#d93025]' },
                       { icon: MapPin, label: 'Location', value: selectedJob.location || 'Remote', color: 'text-[#34a853]' },
-                      { icon: Briefcase, label: 'Job Title', value: selectedJob.title, color: 'text-[#045a06]' },
+                      { icon: Briefcase, label: 'Job Title', value: selectedJob.title, color: 'text-[#056022]' },
                       { icon: Clock, label: 'Hours', value: selectedJob.jobType === 'part-time' ? 'Part Time' : 'Full Time', color: 'text-[#f9ab00]' },
-                      { icon: Star, label: 'Rate', value: selectedJob.jobType || 'Full Time', color: 'text-[#045a06]' },
+                      { icon: Star, label: 'Rate', value: selectedJob.jobType || 'Full Time', color: 'text-[#056022]' },
                       { icon: IndianRupee, label: 'Salary', value: formatSalary(selectedJob.salaryMin, selectedJob.salaryMax), color: 'text-[#34a853]' },
                     ].map((item, i) => (
                       <div key={i} className="flex items-center gap-3">
@@ -372,7 +372,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                     <h4 className="font-semibold text-[#202124] mb-4">Job Skills</h4>
                     <div className="flex flex-wrap gap-2">
                       {selectedJob.skills.split(',').map((s: string) => (
-                        <Badge key={s.trim()} className="bg-[#f5f7fc] text-[#5f6368] border border-[#ecedf2] hover:bg-[#f0faf2] hover:text-[#045a06] rounded-md px-3 py-1.5 text-sm font-normal transition-colors cursor-pointer">
+                        <Badge key={s.trim()} className="bg-[#f5f7fc] text-[#5f6368] border border-[#ecedf2] hover:bg-[#f0f8f0] hover:text-[#056022] rounded-md px-3 py-1.5 text-sm font-normal transition-colors cursor-pointer">
                           {s.trim()}
                         </Badge>
                       ))}
@@ -390,7 +390,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                     </div>
                     <div>
                       <p className="font-semibold text-[#202124]">{selectedJob.corporate?.companyName}</p>
-                      <button className="text-sm text-[#045a06] hover:underline">View company profile</button>
+                      <button className="text-sm text-[#056022] hover:underline">View company profile</button>
                     </div>
                   </div>
                   <div className="space-y-3">
@@ -409,16 +409,16 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                       </div>
                     ))}
                     <div className="flex items-center gap-2 pt-2">
-                      <button className="w-8 h-8 rounded-full bg-[#045a06] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Facebook className="h-3.5 w-3.5" /></button>
-                      <button className="w-8 h-8 rounded-full bg-[#034604] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Twitter className="h-3.5 w-3.5" /></button>
+                      <button className="w-8 h-8 rounded-full bg-[#056022] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Facebook className="h-3.5 w-3.5" /></button>
+                      <button className="w-8 h-8 rounded-full bg-[#044d1a] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Twitter className="h-3.5 w-3.5" /></button>
                       <button className="w-8 h-8 rounded-full bg-[#22c55e] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Linkedin className="h-3.5 w-3.5" /></button>
-                      <button className="w-8 h-8 rounded-full bg-[#045a06] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Globe className="h-3.5 w-3.5" /></button>
+                      <button className="w-8 h-8 rounded-full bg-[#056022] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Globe className="h-3.5 w-3.5" /></button>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-[#ecedf2] bg-gradient-to-br from-[#045a06] to-[#034604]">
+              <Card className="border-[#ecedf2] bg-gradient-to-br from-[#056022] to-[#044d1a]">
                 <CardContent className="p-5 text-center">
                   <h4 className="font-semibold text-white mb-2">Interested in this job?</h4>
                   <p className="text-white/70 text-sm mb-4">Apply now and get a response within 48 hours</p>
@@ -442,7 +442,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
   return (
     <div className={embedded ? "bg-[#f5f7fc]" : "min-h-screen bg-[#f5f7fc]"}>
       {/* ===== TOP BANNER (JobHub style) ===== */}
-      <div className="bg-gradient-to-r from-[#045a06] to-[#034604] relative overflow-hidden -mx-4 lg:-mx-8 -mt-4 lg:-mt-8 rounded-xl">
+      <div className="bg-gradient-to-r from-[#056022] to-[#044d1a] relative overflow-hidden -mx-4 lg:-mx-8 -mt-4 lg:-mt-8 rounded-xl">
         <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v22H20v-1.5zM0 22v2h20v-2H0zm0 4v2h20v-2H0zm0 4v2h20v-2H0zm0 4v2h20v-2H0z\' fill=\'%23ffffff\' fill-opacity=\'0.15\' fill-rule=\'evenodd\'/%3E%3C/svg%3E")'}} />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-6">
           {/* Heading */}
@@ -471,7 +471,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                     placeholder="Job title, keyword, or company"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="pl-9 h-11 bg-[#f5f7fc] border-[#ecedf2] focus:border-[#045a06] focus:bg-white text-sm rounded-lg"
+                    className="pl-9 h-11 bg-[#f5f7fc] border-[#ecedf2] focus:border-[#056022] focus:bg-white text-sm rounded-lg"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         if (search.trim()) addSearchTag(search.trim())
@@ -484,7 +484,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                 {searchTags.length > 0 && (
                   <div className="flex flex-wrap items-center gap-1.5 mt-2">
                     {searchTags.map(tag => (
-                      <span key={tag} className="inline-flex items-center gap-1 bg-[#045a06]/10 text-[#045a06] text-xs font-medium px-2.5 py-1 rounded-md">
+                      <span key={tag} className="inline-flex items-center gap-1 bg-[#056022]/10 text-[#056022] text-xs font-medium px-2.5 py-1 rounded-md">
                         {tag}
                         <button onClick={() => removeSearchTag(tag)} className="hover:text-[#d93025] transition-colors">
                           <X className="h-3 w-3" />
@@ -553,7 +553,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
 
               {/* Find Now Button */}
               <div className="w-full lg:w-auto">
-                <Button onClick={() => { if (search.trim()) addSearchTag(search.trim()); loadJobs() }} className="w-full lg:w-auto bg-[#045a06] hover:bg-[#034604] h-11 px-8 font-semibold shadow-md rounded-lg">
+                <Button onClick={() => { if (search.trim()) addSearchTag(search.trim()); loadJobs() }} className="w-full lg:w-auto bg-[#056022] hover:bg-[#044d1a] h-11 px-8 font-semibold shadow-md rounded-lg">
                   Find Now
                 </Button>
               </div>
@@ -574,7 +574,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
               className="lg:hidden w-full flex items-center justify-between bg-white rounded-xl p-4 shadow-sm mb-4"
             >
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="h-4 w-4 text-[#045a06]" />
+                <SlidersHorizontal className="h-4 w-4 text-[#056022]" />
                 <span className="font-medium text-sm text-[#202124]">Filters</span>
               </div>
               <ChevronDown className={`h-4 w-4 text-[#5f6368] transition-transform ${showMobileFilter ? 'rotate-180' : ''}`} />
@@ -583,7 +583,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
             <div className={`space-y-5 ${showMobileFilter ? 'block' : 'hidden'} lg:block lg:sticky lg:top-24`}>
 
               {/* Job Reminder Widget */}
-              <Card className="border-0 shadow-sm bg-gradient-to-br from-[#045a06] to-[#034604]">
+              <Card className="border-0 shadow-sm bg-gradient-to-br from-[#056022] to-[#044d1a]">
                 <CardContent className="p-5">
                   <div className="flex items-center gap-2 mb-2">
                     <Zap className="h-5 w-5 text-[#f9ab00]" />
@@ -609,7 +609,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                       placeholder="City, state, or country"
                       value={location}
                       onChange={(e) => setLocation(e.target.value)}
-                      className="pl-9 h-9 bg-[#f5f7fc] border-[#ecedf2] text-sm focus:border-[#045a06] rounded-lg"
+                      className="pl-9 h-9 bg-[#f5f7fc] border-[#ecedf2] text-sm focus:border-[#056022] rounded-lg"
                       onKeyDown={(e) => e.key === 'Enter' && loadJobs()}
                     />
                   </div>
@@ -665,7 +665,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                             name="jobType"
                             checked={jobType === type.value || (!jobType && type.value === 'all')}
                             onChange={() => setJobType(type.value)}
-                            className="w-4 h-4 accent-[#045a06]"
+                            className="w-4 h-4 accent-[#056022]"
                           />
                           <span className="text-sm text-[#5f6368] group-hover:text-[#202124] transition-colors">{type.label}</span>
                         </div>
@@ -695,7 +695,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                           name="experience"
                           checked={experience === exp.value}
                           onChange={() => setExperience(exp.value)}
-                          className="w-4 h-4 accent-[#045a06]"
+                          className="w-4 h-4 accent-[#056022]"
                         />
                         <span className="text-sm text-[#5f6368] group-hover:text-[#202124] transition-colors">{exp.label}</span>
                       </label>
@@ -711,7 +711,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                   <div className="flex flex-wrap gap-2">
                     {['React', 'Node.js', 'Python', 'AWS', 'Java', 'SQL', 'TypeScript', 'Docker', 'Kubernetes', 'ML', 'Data Science', 'DevOps'].map(tag => (
                       <Badge key={tag} onClick={() => { addSearchTag(tag); setSearch(prev => prev ? `${prev} ${tag}` : tag) }}
-                        className="text-xs bg-[#f5f7fc] text-[#5f6368] border border-[#ecedf2] hover:bg-[#f0faf2] hover:text-[#045a06] hover:border-[#045a06]/30 rounded-lg px-2.5 py-1 cursor-pointer transition-all font-normal">
+                        className="text-xs bg-[#f5f7fc] text-[#5f6368] border border-[#ecedf2] hover:bg-[#f0f8f0] hover:text-[#056022] hover:border-[#056022]/30 rounded-lg px-2.5 py-1 cursor-pointer transition-all font-normal">
                         {tag}
                       </Badge>
                     ))}
@@ -753,10 +753,10 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                 </div>
                 {/* View Toggle (Grid / List) */}
                 <div className="flex items-center bg-[#f5f7fc] rounded-lg p-0.5">
-                  <button onClick={() => setViewMode('grid')} className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-[#045a06]' : 'text-[#5f6368] hover:text-[#202124]'}`}>
+                  <button onClick={() => setViewMode('grid')} className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-[#056022]' : 'text-[#5f6368] hover:text-[#202124]'}`}>
                     <LayoutGrid className="h-4 w-4" />
                   </button>
-                  <button onClick={() => setViewMode('list')} className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-[#045a06]' : 'text-[#5f6368] hover:text-[#202124]'}`}>
+                  <button onClick={() => setViewMode('list')} className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-[#056022]' : 'text-[#5f6368] hover:text-[#202124]'}`}>
                     <List className="h-4 w-4" />
                   </button>
                 </div>
@@ -784,7 +784,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                 <Briefcase className="h-16 w-16 mx-auto mb-4 text-[#ecedf2]" />
                 <p className="text-xl font-semibold text-[#202124]">No jobs found</p>
                 <p className="text-sm text-[#5f6368] mt-1">Try adjusting your search criteria</p>
-                <Button variant="outline" className="mt-4 border-[#045a06] text-[#045a06] hover:bg-[#f0faf2]" onClick={clearFilters}>
+                <Button variant="outline" className="mt-4 border-[#056022] text-[#056022] hover:bg-[#f0f8f0]" onClick={clearFilters}>
                   Clear all filters
                 </Button>
               </div>
@@ -845,30 +845,30 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                         </div>
 
                         {/* Job Title */}
-                        <h5 className="font-semibold text-[#202124] text-[15px] leading-snug group-hover:text-[#045a06] transition-colors line-clamp-2 mb-2.5">
+                        <h5 className="font-semibold text-[#202124] text-[15px] leading-snug group-hover:text-[#056022] transition-colors line-clamp-2 mb-2.5">
                           {job.title}
                         </h5>
 
                         {/* Time + Location row */}
                         <div className="flex items-center gap-3 text-xs text-[#5f6368] mb-4">
                           <span className="flex items-center gap-1">
-                            <Clock className="h-3.5 w-3.5 text-[#045a06]" />
+                            <Clock className="h-3.5 w-3.5 text-[#056022]" />
                             {job.postedDate ? timeAgo(job.postedDate) : 'Recently'}
                           </span>
                           <span className="flex items-center gap-1">
-                            <MapPin className="h-3.5 w-3.5 text-[#045a06]" />
+                            <MapPin className="h-3.5 w-3.5 text-[#056022]" />
                             {job.location || 'Remote'}
                           </span>
                         </div>
 
                         {/* Bottom: Salary + Shield + Chevron (JobHub style) */}
                         <div className="flex items-center justify-between pt-3.5 border-t border-[#ecedf2]">
-                          <span className="font-semibold text-[#045a06] text-sm">
+                          <span className="font-semibold text-[#056022] text-sm">
                             {formatSalary(job.salaryMin, job.salaryMax)}
                           </span>
                           <div className="flex items-center gap-2">
-                            <ShieldCheck className="h-4 w-4 text-[#045a06]" />
-                            <ChevronRight className="h-4 w-4 text-[#5f6368] group-hover:text-[#045a06] group-hover:translate-x-0.5 transition-all" />
+                            <ShieldCheck className="h-4 w-4 text-[#056022]" />
+                            <ChevronRight className="h-4 w-4 text-[#5f6368] group-hover:text-[#056022] group-hover:translate-x-0.5 transition-all" />
                           </div>
                         </div>
                       </div>
@@ -912,12 +912,12 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                                   {job.jobType || 'Full Time'}
                                 </Badge>
                                 {job.isRemote && (
-                                  <Badge className="bg-[rgba(22,163,74,0.15)] text-[#045a06] border-0 text-[10px] rounded-md px-2 py-0">
+                                  <Badge className="bg-[rgba(22,163,74,0.15)] text-[#056022] border-0 text-[10px] rounded-md px-2 py-0">
                                     Remote
                                   </Badge>
                                 )}
                               </div>
-                              <h5 className="font-semibold text-[#202124] text-[15px] group-hover:text-[#045a06] transition-colors truncate">
+                              <h5 className="font-semibold text-[#202124] text-[15px] group-hover:text-[#056022] transition-colors truncate">
                                 {job.title}
                               </h5>
                               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#5f6368] mt-1.5">
@@ -940,7 +940,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                               {job.skills && (
                                 <div className="flex flex-wrap gap-1.5 mt-2.5">
                                   {job.skills.split(',').slice(0, 4).map((s: string) => (
-                                    <Badge key={s.trim()} className="text-[10px] px-2 py-0.5 bg-[rgba(22,163,74,0.1)] text-[#045a06] border-0 rounded-md font-normal">{s.trim()}</Badge>
+                                    <Badge key={s.trim()} className="text-[10px] px-2 py-0.5 bg-[rgba(22,163,74,0.1)] text-[#056022] border-0 rounded-md font-normal">{s.trim()}</Badge>
                                   ))}
                                   {job.skills.split(',').length > 4 && (
                                     <Badge className="text-[10px] px-2 py-0.5 bg-[#f5f7fc] text-[#5f6368] border-0 rounded-md font-normal">+{job.skills.split(',').length - 4}</Badge>
@@ -951,13 +951,13 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
 
                             {/* Right side: Salary + actions */}
                             <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                              <span className="font-semibold text-[#045a06] text-sm whitespace-nowrap">
+                              <span className="font-semibold text-[#056022] text-sm whitespace-nowrap">
                                 {formatSalary(job.salaryMin, job.salaryMax)}
                               </span>
                               <div className="flex items-center gap-1.5">
-                                <ShieldCheck className="h-4 w-4 text-[#045a06]" />
+                                <ShieldCheck className="h-4 w-4 text-[#056022]" />
                                 <button onClick={(e) => toggleSave(job.id, e)} className="p-1 rounded-md hover:bg-[#f5f7fc] transition-colors">
-                                  <Bookmark className={`h-4 w-4 ${savedJobs.has(job.id) ? 'fill-[#045a06] text-[#045a06]' : 'text-[#ecedf2]'}`} />
+                                  <Bookmark className={`h-4 w-4 ${savedJobs.has(job.id) ? 'fill-[#056022] text-[#056022]' : 'text-[#ecedf2]'}`} />
                                 </button>
                               </div>
                             </div>
@@ -985,7 +985,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                     const pageNum = i + 1
                     return (
                       <Button key={pageNum} variant={page === pageNum ? 'default' : 'outline'} size="sm"
-                        className={`w-9 h-9 rounded-lg ${page === pageNum ? 'bg-[#045a06] hover:bg-[#034604] text-white' : 'border-[#ecedf2] text-[#5f6368] hover:text-[#202124]'}`}
+                        className={`w-9 h-9 rounded-lg ${page === pageNum ? 'bg-[#056022] hover:bg-[#044d1a] text-white' : 'border-[#ecedf2] text-[#5f6368] hover:text-[#202124]'}`}
                         onClick={() => setPage(pageNum)}>
                         {pageNum}
                       </Button>

@@ -222,8 +222,8 @@ function RoleBadge({ role }: { role: UserRole }) {
   const { theme } = useTheme()
   const colors: Record<string, string> = {
     SUPER_ADMIN: '#DC2626',
-    ADMIN: '#EA580C',
-    CORPORATE: '#045a06',
+    ADMIN: '#ea5703',
+    CORPORATE: '#056022',
     RECRUITER: '#2563EB',
     JOB_SEEKER: '#7C3AED',
     HR_MANAGER: '#0D9488',
@@ -240,7 +240,7 @@ function RoleBadge({ role }: { role: UserRole }) {
 
 function StatusBadge({ status }: { status: string }) {
   const cfg: Record<string, { bg: string; text: string; icon: any }> = {
-    active: { bg: '#f0faf2', text: '#045a06', icon: CheckCircle2 },
+    active: { bg: '#f0f8f0', text: '#056022', icon: CheckCircle2 },
     inactive: { bg: '#F3F4F6', text: '#6B7280', icon: XCircle },
     suspended: { bg: '#FEF2F2', text: '#DC2626', icon: AlertTriangle },
   }
@@ -264,7 +264,7 @@ function StatCard({ title, value, icon: Icon, change, changeDir, color }: {
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs font-medium text-[#66789C] uppercase tracking-wide">{title}</p>
-            <p className="text-2xl font-bold text-[#05264E] mt-1">{value}</p>
+            <p className="text-2xl font-bold text-[#0f172a] mt-1">{value}</p>
             {change && (
               <div className="flex items-center gap-1 mt-1.5">
                 {changeDir === 'up' ? <ArrowUpRight className="h-3 w-3 text-emerald-500" /> : <ArrowDownRight className="h-3 w-3 text-red-500" />}
@@ -304,7 +304,7 @@ function PieChartVisual({ data }: { data: { label: string; value: number; color:
       <div className="relative w-32 h-32 rounded-full flex-shrink-0" style={{ background: conicGradient }}>
         <div className="absolute inset-4 bg-white rounded-full flex items-center justify-center">
           <div className="text-center">
-            <p className="text-lg font-bold text-[#05264E]">{total}</p>
+            <p className="text-lg font-bold text-[#0f172a]">{total}</p>
             <p className="text-[9px] text-[#66789C]">Total</p>
           </div>
         </div>
@@ -313,7 +313,7 @@ function PieChartVisual({ data }: { data: { label: string; value: number; color:
         {data.map((d) => (
           <div key={d.label} className="flex items-center gap-2 text-sm">
             <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: d.color }} />
-            <span className="text-[#05264E] font-medium">{d.label}</span>
+            <span className="text-[#0f172a] font-medium">{d.label}</span>
             <span className="text-[#66789C] text-xs ml-auto">{d.value}</span>
             <span className="text-[10px] text-[#66789C]">({Math.round((d.value / total) * 100)}%)</span>
           </div>
@@ -454,7 +454,7 @@ export function AdminDashboard() {
     const counts: Record<string, number> = {}
     users.forEach(u => { counts[u.role] = (counts[u.role] || 0) + 1 })
     const colors: Record<string, string> = {
-      SUPER_ADMIN: '#DC2626', ADMIN: '#EA580C', CORPORATE: '#045a06',
+      SUPER_ADMIN: '#DC2626', ADMIN: '#ea5703', CORPORATE: '#056022',
       RECRUITER: '#2563EB', JOB_SEEKER: '#7C3AED', HR_MANAGER: '#0D9488', INTERVIEWER: '#D97706',
     }
     return Object.entries(counts).map(([role, count]) => ({
@@ -579,26 +579,26 @@ export function AdminDashboard() {
     <div className="space-y-6">
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-        <StatCard title="Total Users" value={users.length} icon={Users} change="+12%" changeDir="up" color="#045a06" />
+        <StatCard title="Total Users" value={users.length} icon={Users} change="+12%" changeDir="up" color="#056022" />
         <StatCard title="Active Sessions" value={342} icon={Activity} change="+8%" changeDir="up" color="#2563EB" />
-        <StatCard title="Jobs Posted" value={1247} icon={Briefcase} change="+23%" changeDir="up" color="#EA580C" />
+        <StatCard title="Jobs Posted" value={1247} icon={Briefcase} change="+23%" changeDir="up" color="#ea5703" />
         <StatCard title="Applications" value={5834} icon={ClipboardList} change="+15%" changeDir="up" color="#7C3AED" />
         <StatCard title="Interviews" value={891} icon={UserCheck} change="+5%" changeDir="up" color="#0D9488" />
-        <StatCard title="System Health" value="99.9%" icon={Server} change="Stable" changeDir="up" color="#045a06" />
+        <StatCard title="System Health" value="99.9%" icon={Server} change="Stable" changeDir="up" color="#056022" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Activity */}
         <Card className="lg:col-span-2 border-[#E4E8EC]">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-semibold text-[#05264E] flex items-center gap-2">
+            <CardTitle className="text-base font-semibold text-[#0f172a] flex items-center gap-2">
               <Activity className="h-4 w-4" style={{ color: theme.primary }} /> Recent Activity
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 max-h-96 overflow-y-auto pr-2">
             {auditLog.slice(0, 8).map((entry) => {
               const typeColors: Record<string, string> = {
-                create: '#045a06', update: '#2563EB', delete: '#DC2626', login: '#7C3AED', config: '#EA580C',
+                create: '#056022', update: '#2563EB', delete: '#DC2626', login: '#7C3AED', config: '#ea5703',
               }
               return (
                 <div key={entry.id} className="flex items-start gap-3 p-3 rounded-lg bg-[#F9FAFB] hover:bg-[#F3F4F6] transition-colors">
@@ -611,7 +611,7 @@ export function AdminDashboard() {
                      <Settings className="h-4 w-4" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-[#05264E]">
+                    <p className="text-sm text-[#0f172a]">
                       <span className="font-semibold">{entry.user}</span> {entry.action}
                     </p>
                     <p className="text-xs text-[#66789C] truncate">{entry.target}</p>
@@ -628,7 +628,7 @@ export function AdminDashboard() {
         {/* User Distribution */}
         <Card className="border-[#E4E8EC]">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-semibold text-[#05264E] flex items-center gap-2">
+            <CardTitle className="text-base font-semibold text-[#0f172a] flex items-center gap-2">
               <PieChart className="h-4 w-4" style={{ color: theme.primary }} /> Users by Role
             </CardTitle>
           </CardHeader>
@@ -641,7 +641,7 @@ export function AdminDashboard() {
       {/* System Health Quick View */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'API Uptime', value: '99.97%', icon: Globe, color: '#045a06' },
+          { label: 'API Uptime', value: '99.97%', icon: Globe, color: '#056022' },
           { label: 'DB Response', value: '12ms', icon: Database, color: '#2563EB' },
           { label: 'Error Rate', value: '0.03%', icon: AlertTriangle, color: '#DC2626' },
           { label: 'Active Workers', value: '4/4', icon: Monitor, color: '#0D9488' },
@@ -654,7 +654,7 @@ export function AdminDashboard() {
               </div>
               <div>
                 <p className="text-xs text-[#66789C]">{item.label}</p>
-                <p className="text-sm font-bold text-[#05264E]">{item.value}</p>
+                <p className="text-sm font-bold text-[#0f172a]">{item.value}</p>
               </div>
             </CardContent>
           </Card>
@@ -669,7 +669,7 @@ export function AdminDashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-[#05264E]">User Management</h2>
+          <h2 className="text-lg font-semibold text-[#0f172a]">User Management</h2>
           <p className="text-sm text-[#66789C]">{users.length} total users · {users.filter(u => u.status === 'active').length} active</p>
         </div>
         <Button className="text-white text-sm rounded-lg"
@@ -741,7 +741,7 @@ export function AdminDashboard() {
                           </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0">
-                          <p className="text-sm font-medium text-[#05264E] truncate">{u.name}</p>
+                          <p className="text-sm font-medium text-[#0f172a] truncate">{u.name}</p>
                           <p className="text-[11px] text-[#66789C] truncate">{u.email}</p>
                         </div>
                       </div>
@@ -754,7 +754,7 @@ export function AdminDashboard() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1">
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-[#66789C] hover:text-[#045a06]"
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-[#66789C] hover:text-[#056022]"
                           onClick={() => setViewingUser(u)} title="View">
                           <Eye className="h-3.5 w-3.5" />
                         </Button>
@@ -791,25 +791,25 @@ export function AdminDashboard() {
       <Dialog open={userDialogOpen} onOpenChange={setUserDialogOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-[#05264E]">{editingUser ? 'Edit User' : 'Create New User'}</DialogTitle>
+            <DialogTitle className="text-[#0f172a]">{editingUser ? 'Edit User' : 'Create New User'}</DialogTitle>
             <DialogDescription className="text-[#66789C]">
               {editingUser ? 'Update user details and role assignment.' : 'Add a new user to the portal and assign their role.'}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-[#05264E]">Full Name</Label>
+              <Label className="text-sm font-medium text-[#0f172a]">Full Name</Label>
               <Input value={userForm.name} onChange={e => setUserForm(p => ({ ...p, name: e.target.value }))}
                 placeholder="Enter full name" className="h-9 text-sm" />
             </div>
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-[#05264E]">Email</Label>
+              <Label className="text-sm font-medium text-[#0f172a]">Email</Label>
               <Input type="email" value={userForm.email} onChange={e => setUserForm(p => ({ ...p, email: e.target.value }))}
                 placeholder="Enter email address" className="h-9 text-sm" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-[#05264E]">Role</Label>
+                <Label className="text-sm font-medium text-[#0f172a]">Role</Label>
                 <Select value={userForm.role} onValueChange={v => setUserForm(p => ({ ...p, role: v as UserRole }))}>
                   <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -818,7 +818,7 @@ export function AdminDashboard() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-[#05264E]">Status</Label>
+                <Label className="text-sm font-medium text-[#0f172a]">Status</Label>
                 <Select value={userForm.status} onValueChange={v => setUserForm(p => ({ ...p, status: v as ManagedUser['status'] }))}>
                   <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -830,7 +830,7 @@ export function AdminDashboard() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-sm font-medium text-[#05264E]">Department</Label>
+              <Label className="text-sm font-medium text-[#0f172a]">Department</Label>
               <Input value={userForm.department} onChange={e => setUserForm(p => ({ ...p, department: e.target.value }))}
                 placeholder="Enter department (optional)" className="h-9 text-sm" />
             </div>
@@ -851,7 +851,7 @@ export function AdminDashboard() {
       <Dialog open={!!viewingUser} onOpenChange={() => setViewingUser(null)}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-[#05264E]">User Details</DialogTitle>
+            <DialogTitle className="text-[#0f172a]">User Details</DialogTitle>
           </DialogHeader>
           {viewingUser && (
             <div className="space-y-4 py-2">
@@ -863,7 +863,7 @@ export function AdminDashboard() {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-lg font-semibold text-[#05264E]">{viewingUser.name}</p>
+                  <p className="text-lg font-semibold text-[#0f172a]">{viewingUser.name}</p>
                   <p className="text-sm text-[#66789C]">{viewingUser.email}</p>
                   <div className="flex items-center gap-2 mt-1">
                     <RoleBadge role={viewingUser.role} />
@@ -873,15 +873,15 @@ export function AdminDashboard() {
               </div>
               <Separator />
               <div className="grid grid-cols-2 gap-4">
-                <div><p className="text-xs text-[#66789C]">Department</p><p className="text-sm font-medium text-[#05264E]">{viewingUser.department || 'N/A'}</p></div>
-                <div><p className="text-xs text-[#66789C]">Created</p><p className="text-sm font-medium text-[#05264E]">{new Date(viewingUser.createdAt).toLocaleDateString()}</p></div>
-                <div><p className="text-xs text-[#66789C]">Last Login</p><p className="text-sm font-medium text-[#05264E]">{viewingUser.lastLogin === '-' ? 'Never' : new Date(viewingUser.lastLogin).toLocaleString()}</p></div>
-                <div><p className="text-xs text-[#66789C]">User ID</p><p className="text-sm font-medium text-[#05264E] font-mono">#{viewingUser.id}</p></div>
-                {(viewingUser as any).phone && <div><p className="text-xs text-[#66789C]">Phone</p><p className="text-sm font-medium text-[#05264E]">{(viewingUser as any).phone}</p></div>}
-                {(viewingUser as any).location && <div><p className="text-xs text-[#66789C]">Location</p><p className="text-sm font-medium text-[#05264E]">{(viewingUser as any).location}</p></div>}
-                {(viewingUser as any).headline && <div className="col-span-2"><p className="text-xs text-[#66789C]">Headline</p><p className="text-sm font-medium text-[#05264E]">{(viewingUser as any).headline}</p></div>}
-                {(viewingUser as any).experienceYears > 0 && <div><p className="text-xs text-[#66789C]">Experience</p><p className="text-sm font-medium text-[#05264E]">{(viewingUser as any).experienceYears} years</p></div>}
-                {(viewingUser as any).education && <div><p className="text-xs text-[#66789C]">Education</p><p className="text-sm font-medium text-[#05264E]">{(viewingUser as any).education}</p></div>}
+                <div><p className="text-xs text-[#66789C]">Department</p><p className="text-sm font-medium text-[#0f172a]">{viewingUser.department || 'N/A'}</p></div>
+                <div><p className="text-xs text-[#66789C]">Created</p><p className="text-sm font-medium text-[#0f172a]">{new Date(viewingUser.createdAt).toLocaleDateString()}</p></div>
+                <div><p className="text-xs text-[#66789C]">Last Login</p><p className="text-sm font-medium text-[#0f172a]">{viewingUser.lastLogin === '-' ? 'Never' : new Date(viewingUser.lastLogin).toLocaleString()}</p></div>
+                <div><p className="text-xs text-[#66789C]">User ID</p><p className="text-sm font-medium text-[#0f172a] font-mono">#{viewingUser.id}</p></div>
+                {(viewingUser as any).phone && <div><p className="text-xs text-[#66789C]">Phone</p><p className="text-sm font-medium text-[#0f172a]">{(viewingUser as any).phone}</p></div>}
+                {(viewingUser as any).location && <div><p className="text-xs text-[#66789C]">Location</p><p className="text-sm font-medium text-[#0f172a]">{(viewingUser as any).location}</p></div>}
+                {(viewingUser as any).headline && <div className="col-span-2"><p className="text-xs text-[#66789C]">Headline</p><p className="text-sm font-medium text-[#0f172a]">{(viewingUser as any).headline}</p></div>}
+                {(viewingUser as any).experienceYears > 0 && <div><p className="text-xs text-[#66789C]">Experience</p><p className="text-sm font-medium text-[#0f172a]">{(viewingUser as any).experienceYears} years</p></div>}
+                {(viewingUser as any).education && <div><p className="text-xs text-[#66789C]">Education</p><p className="text-sm font-medium text-[#0f172a]">{(viewingUser as any).education}</p></div>}
               </div>
               {(viewingUser as any).skills && (
                 <div>
@@ -914,7 +914,7 @@ export function AdminDashboard() {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-[#05264E]">Candidates</h2>
+          <h2 className="text-lg font-semibold text-[#0f172a]">Candidates</h2>
           <p className="text-sm text-[#66789C]">{candidateUsers.length} total candidates · {candidateUsers.filter(c => c.status === 'active').length} active</p>
         </div>
         <Button className="text-white text-sm rounded-lg"
@@ -943,7 +943,7 @@ export function AdminDashboard() {
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-semibold text-[#05264E]">{c.name}</p>
+                    <p className="text-sm font-semibold text-[#0f172a]">{c.name}</p>
                     <p className="text-[11px] text-[#66789C]">{(c as any).headline || c.email}</p>
                   </div>
                 </div>
@@ -979,7 +979,7 @@ export function AdminDashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-[#05264E]">Role & Access Management</h2>
+          <h2 className="text-lg font-semibold text-[#0f172a]">Role & Access Management</h2>
           <p className="text-sm text-[#66789C]">{roles.length} roles configured · {roles.filter(r => r.isDefault).length} default · {roles.filter(r => !r.isDefault).length} custom</p>
         </div>
         <Dialog open={roleDialogOpen} onOpenChange={setRoleDialogOpen}>
@@ -993,22 +993,22 @@ export function AdminDashboard() {
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle className="text-[#05264E]">Create Custom Role</DialogTitle>
+              <DialogTitle className="text-[#0f172a]">Create Custom Role</DialogTitle>
               <DialogDescription className="text-[#66789C]">Define a new role with custom permissions.</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-2">
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-[#05264E]">Role Name (internal)</Label>
+                <Label className="text-sm font-medium text-[#0f172a]">Role Name (internal)</Label>
                 <Input value={newRoleName} onChange={e => setNewRoleName(e.target.value)}
                   placeholder="e.g., SENIOR_RECRUITER" className="h-9 text-sm" />
               </div>
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-[#05264E]">Display Label</Label>
+                <Label className="text-sm font-medium text-[#0f172a]">Display Label</Label>
                 <Input value={newRoleLabel} onChange={e => setNewRoleLabel(e.target.value)}
                   placeholder="e.g., Senior Recruiter" className="h-9 text-sm" />
               </div>
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-[#05264E]">Access Level Preset</Label>
+                <Label className="text-sm font-medium text-[#0f172a]">Access Level Preset</Label>
                 <Select value={rolePreset} onValueChange={v => setRolePreset(v as 'full' | 'readonly' | 'none')}>
                   <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -1082,7 +1082,7 @@ export function AdminDashboard() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-base font-semibold text-[#05264E]">
+                <CardTitle className="text-base font-semibold text-[#0f172a]">
                   Permission Matrix — {selectedRole.label}
                 </CardTitle>
                 <CardDescription className="text-xs text-[#66789C] mt-0.5">
@@ -1112,7 +1112,7 @@ export function AdminDashboard() {
                     const rolePerms = selectedRole.permissions[mod.module] || []
                     return (
                       <TableRow key={mod.module} className="hover:bg-[#F9FAFB]">
-                        <TableCell className="text-sm font-medium text-[#05264E] capitalize sticky left-0 bg-white z-10">
+                        <TableCell className="text-sm font-medium text-[#0f172a] capitalize sticky left-0 bg-white z-10">
                           <div className="flex items-center gap-2">
                             {mod.module === 'dashboard' && <LayoutDashboard className="h-3.5 w-3.5 text-[#66789C]" />}
                             {mod.module === 'jobs' && <Briefcase className="h-3.5 w-3.5 text-[#66789C]" />}
@@ -1159,7 +1159,7 @@ export function AdminDashboard() {
       {/* Assign Roles to Users Quick View */}
       <Card className="border-[#E4E8EC]">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base font-semibold text-[#05264E] flex items-center gap-2">
+          <CardTitle className="text-base font-semibold text-[#0f172a] flex items-center gap-2">
             <Key className="h-4 w-4" style={{ color: theme.primary }} /> Role Assignments
           </CardTitle>
           <CardDescription className="text-xs text-[#66789C]">Quick overview of users per role</CardDescription>
@@ -1173,7 +1173,7 @@ export function AdminDashboard() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <Shield className="h-4 w-4" style={{ color: theme.primary }} />
-                      <span className="text-sm font-medium text-[#05264E]">{r.label}</span>
+                      <span className="text-sm font-medium text-[#0f172a]">{r.label}</span>
                     </div>
                     <Badge className="text-[10px] border-0 bg-[#F3F4F6] text-[#66789C]">{usersInRole.length}</Badge>
                   </div>
@@ -1209,7 +1209,7 @@ export function AdminDashboard() {
   const renderInterviewConfig = () => (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-[#05264E]">AI Interview Configuration</h2>
+        <h2 className="text-lg font-semibold text-[#0f172a]">AI Interview Configuration</h2>
         <p className="text-sm text-[#66789C]">Configure AI interview parameters, scoring, and model settings.</p>
       </div>
 
@@ -1235,7 +1235,7 @@ export function AdminDashboard() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-base font-semibold text-[#05264E]">Question Categories & Weights</CardTitle>
+                  <CardTitle className="text-base font-semibold text-[#0f172a]">Question Categories & Weights</CardTitle>
                   <CardDescription className="text-xs text-[#66789C] mt-0.5">
                     Total weight: {interviewConfig.categories.reduce((s, c) => s + c.weight, 0)}%
                     {interviewConfig.categories.reduce((s, c) => s + c.weight, 0) !== 100 && (
@@ -1301,7 +1301,7 @@ export function AdminDashboard() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-base font-semibold text-[#05264E]">Scoring Rubrics</CardTitle>
+                  <CardTitle className="text-base font-semibold text-[#0f172a]">Scoring Rubrics</CardTitle>
                   <CardDescription className="text-xs text-[#66789C] mt-0.5">
                     Define scoring criteria for each competency (1-{interviewConfig.scoring[0]?.maxScore || 10})
                   </CardDescription>
@@ -1357,13 +1357,13 @@ export function AdminDashboard() {
         <TabsContent value="duration">
           <Card className="border-[#E4E8EC]">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-semibold text-[#05264E]">Interview Duration Limits</CardTitle>
+              <CardTitle className="text-base font-semibold text-[#0f172a]">Interview Duration Limits</CardTitle>
               <CardDescription className="text-xs text-[#66789C] mt-0.5">Set time boundaries for AI interview sessions.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-[#05264E] flex items-center gap-1.5">
+                  <Label className="text-sm font-medium text-[#0f172a] flex items-center gap-1.5">
                     <Clock className="h-4 w-4 text-[#66789C]" /> Minimum (min)
                   </Label>
                   <Input type="number" value={interviewConfig.duration.min}
@@ -1373,7 +1373,7 @@ export function AdminDashboard() {
                     className="h-9 text-sm" min={5} max={120} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-[#05264E] flex items-center gap-1.5">
+                  <Label className="text-sm font-medium text-[#0f172a] flex items-center gap-1.5">
                     <Timer className="h-4 w-4 text-[#66789C]" /> Default (min)
                   </Label>
                   <Input type="number" value={interviewConfig.duration.default}
@@ -1383,7 +1383,7 @@ export function AdminDashboard() {
                     className="h-9 text-sm" min={5} max={120} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-[#05264E] flex items-center gap-1.5">
+                  <Label className="text-sm font-medium text-[#0f172a] flex items-center gap-1.5">
                     <Clock className="h-4 w-4 text-[#66789C]" /> Maximum (min)
                   </Label>
                   <Input type="number" value={interviewConfig.duration.max}
@@ -1394,7 +1394,7 @@ export function AdminDashboard() {
                 </div>
               </div>
               <div className="p-4 rounded-lg bg-[#F9FAFB] border border-[#E4E8EC]">
-                <p className="text-sm text-[#05264E] font-medium">Current Configuration</p>
+                <p className="text-sm text-[#0f172a] font-medium">Current Configuration</p>
                 <p className="text-xs text-[#66789C] mt-1">
                   Interviews will last between <span className="font-semibold">{interviewConfig.duration.min}</span> and{' '}
                   <span className="font-semibold">{interviewConfig.duration.max}</span> minutes,
@@ -1409,13 +1409,13 @@ export function AdminDashboard() {
         <TabsContent value="model">
           <Card className="border-[#E4E8EC]">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-semibold text-[#05264E]">AI Model Settings</CardTitle>
+              <CardTitle className="text-base font-semibold text-[#0f172a]">AI Model Settings</CardTitle>
               <CardDescription className="text-xs text-[#66789C] mt-0.5">Configure the AI provider and model parameters.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-[#05264E]">AI Provider</Label>
+                  <Label className="text-sm font-medium text-[#0f172a]">AI Provider</Label>
                   <Select value={interviewConfig.aiModel.provider}
                     onValueChange={v => setInterviewConfig(prev => ({
                       ...prev, aiModel: { ...prev.aiModel, provider: v },
@@ -1430,7 +1430,7 @@ export function AdminDashboard() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-[#05264E]">Model</Label>
+                  <Label className="text-sm font-medium text-[#0f172a]">Model</Label>
                   <Select value={interviewConfig.aiModel.model}
                     onValueChange={v => setInterviewConfig(prev => ({
                       ...prev, aiModel: { ...prev.aiModel, model: v },
@@ -1464,7 +1464,7 @@ export function AdminDashboard() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-[#05264E] flex items-center gap-1.5">
+                <Label className="text-sm font-medium text-[#0f172a] flex items-center gap-1.5">
                   <Thermometer className="h-4 w-4 text-[#66789C]" />
                   Temperature: {interviewConfig.aiModel.temperature}
                 </Label>
@@ -1494,7 +1494,7 @@ export function AdminDashboard() {
   const renderSettings = () => (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-[#05264E]">System Settings</h2>
+        <h2 className="text-lg font-semibold text-[#0f172a]">System Settings</h2>
         <p className="text-sm text-[#66789C]">Manage portal configuration, notifications, and security policies.</p>
       </div>
 
@@ -1515,22 +1515,22 @@ export function AdminDashboard() {
         <TabsContent value="general">
           <Card className="border-[#E4E8EC]">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-semibold text-[#05264E]">General Portal Settings</CardTitle>
+              <CardTitle className="text-base font-semibold text-[#0f172a]">General Portal Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-[#05264E]">Portal Name</Label>
+                  <Label className="text-sm font-medium text-[#0f172a]">Portal Name</Label>
                   <Input value={generalSettings.portalName} onChange={e => setGeneralSettings(p => ({ ...p, portalName: e.target.value }))}
                     className="h-9 text-sm" />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-[#05264E]">Support Email</Label>
+                  <Label className="text-sm font-medium text-[#0f172a]">Support Email</Label>
                   <Input type="email" value={generalSettings.supportEmail} onChange={e => setGeneralSettings(p => ({ ...p, supportEmail: e.target.value }))}
                     className="h-9 text-sm" />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-[#05264E]">Default Language</Label>
+                  <Label className="text-sm font-medium text-[#0f172a]">Default Language</Label>
                   <Select value={generalSettings.defaultLanguage} onValueChange={v => setGeneralSettings(p => ({ ...p, defaultLanguage: v }))}>
                     <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
                     <SelectContent>
@@ -1543,14 +1543,14 @@ export function AdminDashboard() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-[#05264E]">Max Upload Size (MB)</Label>
+                  <Label className="text-sm font-medium text-[#0f172a]">Max Upload Size (MB)</Label>
                   <Input type="number" value={generalSettings.maxUploadSize} onChange={e => setGeneralSettings(p => ({ ...p, maxUploadSize: Number(e.target.value) }))}
                     className="h-9 text-sm" min={1} max={100} />
                 </div>
               </div>
               <div className="flex items-center justify-between p-3 rounded-lg border border-[#E4E8EC] bg-[#F9FAFB]">
                 <div>
-                  <p className="text-sm font-medium text-[#05264E]">Maintenance Mode</p>
+                  <p className="text-sm font-medium text-[#0f172a]">Maintenance Mode</p>
                   <p className="text-xs text-[#66789C]">Temporarily disable the portal for users</p>
                 </div>
                 <Switch checked={generalSettings.maintenanceMode}
@@ -1571,7 +1571,7 @@ export function AdminDashboard() {
         <TabsContent value="email">
           <Card className="border-[#E4E8EC]">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-semibold text-[#05264E]">Email Notification Settings</CardTitle>
+              <CardTitle className="text-base font-semibold text-[#0f172a]">Email Notification Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {[
@@ -1589,7 +1589,7 @@ export function AdminDashboard() {
                       <Bell className="h-4 w-4" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-[#05264E]">{item.label}</p>
+                      <p className="text-sm font-medium text-[#0f172a]">{item.label}</p>
                       <p className="text-xs text-[#66789C]">{item.desc}</p>
                     </div>
                   </div>
@@ -1612,22 +1612,22 @@ export function AdminDashboard() {
         <TabsContent value="security">
           <Card className="border-[#E4E8EC]">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-semibold text-[#05264E]">Security Settings</CardTitle>
+              <CardTitle className="text-base font-semibold text-[#0f172a]">Security Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <h3 className="text-sm font-semibold text-[#05264E] flex items-center gap-2 mb-3">
+                <h3 className="text-sm font-semibold text-[#0f172a] flex items-center gap-2 mb-3">
                   <ShieldCheck className="h-4 w-4" style={{ color: theme.primary }} /> Password Policy
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-sm text-[#05264E]">Minimum Password Length</Label>
+                    <Label className="text-sm text-[#0f172a]">Minimum Password Length</Label>
                     <Input type="number" value={securitySettings.minPasswordLength}
                       onChange={e => setSecuritySettings(p => ({ ...p, minPasswordLength: Number(e.target.value) }))}
                       className="h-9 text-sm" min={6} max={32} />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-sm text-[#05264E]">Max Login Attempts</Label>
+                    <Label className="text-sm text-[#0f172a]">Max Login Attempts</Label>
                     <Input type="number" value={securitySettings.maxLoginAttempts}
                       onChange={e => setSecuritySettings(p => ({ ...p, maxLoginAttempts: Number(e.target.value) }))}
                       className="h-9 text-sm" min={3} max={10} />
@@ -1643,7 +1643,7 @@ export function AdminDashboard() {
                       <Checkbox checked={securitySettings[item.key]}
                         onCheckedChange={v => setSecuritySettings(p => ({ ...p, [item.key]: v }))}
                         className="data-[state=checked]:bg-[var(--theme-primary)] data-[state=checked]:border-[var(--theme-primary)]" />
-                      <Label className="text-sm text-[#05264E]">{item.label}</Label>
+                      <Label className="text-sm text-[#0f172a]">{item.label}</Label>
                     </div>
                   ))}
                 </div>
@@ -1652,11 +1652,11 @@ export function AdminDashboard() {
               <Separator />
 
               <div>
-                <h3 className="text-sm font-semibold text-[#05264E] flex items-center gap-2 mb-3">
+                <h3 className="text-sm font-semibold text-[#0f172a] flex items-center gap-2 mb-3">
                   <Clock className="h-4 w-4" style={{ color: theme.primary }} /> Session Management
                 </h3>
                 <div className="space-y-2">
-                  <Label className="text-sm text-[#05264E]">Session Timeout (minutes)</Label>
+                  <Label className="text-sm text-[#0f172a]">Session Timeout (minutes)</Label>
                   <Input type="number" value={securitySettings.sessionTimeout}
                     onChange={e => setSecuritySettings(p => ({ ...p, sessionTimeout: Number(e.target.value) }))}
                     className="h-9 text-sm w-32" min={5} max={480} />
@@ -1666,12 +1666,12 @@ export function AdminDashboard() {
               <Separator />
 
               <div>
-                <h3 className="text-sm font-semibold text-[#05264E] flex items-center gap-2 mb-3">
+                <h3 className="text-sm font-semibold text-[#0f172a] flex items-center gap-2 mb-3">
                   <Key className="h-4 w-4" style={{ color: theme.primary }} /> Two-Factor Authentication
                 </h3>
                 <div className="flex items-center justify-between p-3 rounded-lg border border-[#E4E8EC] bg-[#F9FAFB]">
                   <div>
-                    <p className="text-sm font-medium text-[#05264E]">Enable 2FA for all users</p>
+                    <p className="text-sm font-medium text-[#0f172a]">Enable 2FA for all users</p>
                     <p className="text-xs text-[#66789C]">Require two-factor authentication on login</p>
                   </div>
                   <Switch checked={securitySettings.twoFactorAuth}
@@ -1680,7 +1680,7 @@ export function AdminDashboard() {
               </div>
 
               <div>
-                <Label className="text-sm text-[#05264E]">IP Whitelist (one per line)</Label>
+                <Label className="text-sm text-[#0f172a]">IP Whitelist (one per line)</Label>
                 <Textarea value={securitySettings.ipWhitelist}
                   onChange={e => setSecuritySettings(p => ({ ...p, ipWhitelist: e.target.value }))}
                   placeholder="192.168.1.0/24&#10;10.0.0.1"
@@ -1706,7 +1706,7 @@ export function AdminDashboard() {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-[#05264E]">Audit Logs</h2>
+          <h2 className="text-lg font-semibold text-[#0f172a]">Audit Logs</h2>
           <p className="text-sm text-[#66789C]">{filteredAudit.length} log entries</p>
         </div>
         <Button variant="outline" className="text-sm rounded-lg" onClick={exportAudit}>
@@ -1765,11 +1765,11 @@ export function AdminDashboard() {
               <TableBody>
                 {filteredAudit.map(entry => {
                   const typeColors: Record<string, { bg: string; text: string }> = {
-                    create: { bg: '#f0faf2', text: '#045a06' },
+                    create: { bg: '#f0f8f0', text: '#056022' },
                     update: { bg: '#EFF6FF', text: '#2563EB' },
                     delete: { bg: '#FEF2F2', text: '#DC2626' },
                     login: { bg: '#F5F3FF', text: '#7C3AED' },
-                    config: { bg: '#FFF7ED', text: '#EA580C' },
+                    config: { bg: '#FFF7ED', text: '#ea5703' },
                   }
                   const tc = typeColors[entry.type] || typeColors.update
                   return (
@@ -1777,8 +1777,8 @@ export function AdminDashboard() {
                       <TableCell className="text-xs text-[#66789C] whitespace-nowrap">
                         {new Date(entry.timestamp).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </TableCell>
-                      <TableCell className="text-sm font-medium text-[#05264E]">{entry.user}</TableCell>
-                      <TableCell className="text-sm text-[#05264E]">{entry.action}</TableCell>
+                      <TableCell className="text-sm font-medium text-[#0f172a]">{entry.user}</TableCell>
+                      <TableCell className="text-sm text-[#0f172a]">{entry.action}</TableCell>
                       <TableCell className="text-sm text-[#66789C] hidden md:table-cell truncate max-w-[200px]">{entry.target}</TableCell>
                       <TableCell>
                         <Badge className="text-[10px] border-0 rounded-full px-2 py-0.5 capitalize"
@@ -1959,7 +1959,7 @@ export function AdminDashboard() {
                 <Home className="h-3.5 w-3.5" />
                 <span className="hover:text-[var(--theme-primary)] cursor-pointer">Home</span>
                 <ChevronRight className="h-3 w-3" />
-                <span className="text-[#05264E] font-medium">{viewLabels[activeView]}</span>
+                <span className="text-[#0f172a] font-medium">{viewLabels[activeView]}</span>
               </div>
               <div className="hidden sm:flex items-center gap-2 text-xs text-[#66789C]">
                 <Calendar className="h-3.5 w-3.5" />

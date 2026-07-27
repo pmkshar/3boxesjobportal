@@ -14,7 +14,7 @@ const statusColors: Record<string, string> = {
   INTERVIEW_SCHEDULED: 'bg-indigo-100 text-indigo-700',
   INTERVIEWED: 'bg-cyan-100 text-cyan-700',
   OFFERED: 'bg-emerald-100 text-emerald-700',
-  HIRED: 'bg-[#d1e8d5] text-green-800',
+  HIRED: 'bg-[#d8ecd8] text-green-800',
   REJECTED: 'bg-red-100 text-red-700',
   WITHDRAWN: 'bg-gray-100 text-gray-600',
 }

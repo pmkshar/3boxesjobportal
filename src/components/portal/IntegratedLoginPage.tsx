@@ -19,28 +19,28 @@ import { HeroIllustration, JobMatchIllustration, ResumeIllustration, InterviewIl
 
 // Company Brand Color Palette (from Logo - Green + Orange)
 const CG = {
-  50: '#f0faf2',
-  100: '#d1e8d5',
-  200: '#a3d1aa',
-  300: '#6db879',
-  400: '#3a9a48',
-  500: '#1a7c25',
-  600: '#045a06',
-  700: '#034604',
-  800: '#023303',
-  900: '#030b03',
-  dark: '#030b03',
+  50: '#f0f8f0',
+  100: '#d8ecd8',
+  200: '#b0d9b5',
+  300: '#7ec07e',
+  400: '#3a9a3a',
+  500: '#1e7d1e',
+  600: '#056022',
+  700: '#044d1a',
+  800: '#024217',
+  900: '#013b0b',
+  dark: '#0f172a',
 }
 // Brand Accent Orange (from Logo)
 const CA = {
-  50: '#fff7ed',
-  100: '#ffedd5',
-  200: '#fed7aa',
-  300: '#fdba74',
-  400: '#fb923c',
-  500: '#f97316',
-  600: '#ea580c',
-  700: '#fa7903',
+  50: '#fff8eb',
+  100: '#ffecc8',
+  200: '#ffd699',
+  300: '#fdba64',
+  400: '#fda01a',
+  500: '#fc7e0b',
+  600: '#f76305',
+  700: '#ea5703',
   800: '#c2410c',
   900: '#9a3412',
 }
@@ -514,7 +514,7 @@ export function IntegratedLoginPage() {
                           key={role.value}
                           className={`cursor-pointer transition-all duration-200 ${
                             selectedRole === role.value
-                              ? 'border-2 bg-[#f0faf2]/50 shadow-sm'
+                              ? 'border-2 bg-[#f0f8f0]/50 shadow-sm'
                               : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
                           }`}
                           style={{

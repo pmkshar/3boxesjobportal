@@ -14,7 +14,7 @@ import {
   PieChart, Pie, Cell, LineChart, Line, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
 } from 'recharts'
 
-const COLORS = ['#045a06', '#0d9488', '#0891b2', '#d97706', '#7c3aed', '#e11d48', '#ea580c']
+const COLORS = ['#056022', '#0d9488', '#0891b2', '#d97706', '#7c3aed', '#e11d48', '#ea5703']
 
 export function AnalyticsView() {
   const { user } = useAuthStore()
@@ -124,7 +124,7 @@ export function AnalyticsView() {
                   <XAxis dataKey="skill" tick={{ fontSize: 10 }} />
                   <YAxis tick={{ fontSize: 10 }} />
                   <Tooltip />
-                  <Bar dataKey="level" fill="#045a06" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="level" fill="#056022" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -160,7 +160,7 @@ export function AnalyticsView() {
                   <XAxis dataKey="date" tick={{ fontSize: 10 }} />
                   <YAxis tick={{ fontSize: 10 }} />
                   <Tooltip />
-                  <Line type="monotone" dataKey="overall" stroke="#045a06" strokeWidth={2} name="Overall" />
+                  <Line type="monotone" dataKey="overall" stroke="#056022" strokeWidth={2} name="Overall" />
                   <Line type="monotone" dataKey="communication" stroke="#0d9488" strokeWidth={1} strokeDasharray="4 4" name="Communication" />
                   <Line type="monotone" dataKey="technical" stroke="#0891b2" strokeWidth={1} strokeDasharray="4 4" name="Technical" />
                 </LineChart>
@@ -179,7 +179,7 @@ export function AnalyticsView() {
                   <PolarGrid />
                   <PolarAngleAxis dataKey="skill" tick={{ fontSize: 10 }} />
                   <PolarRadiusAxis tick={{ fontSize: 8 }} />
-                  <Radar name="Skills" dataKey="level" stroke="#045a06" fill="#045a06" fillOpacity={0.2} />
+                  <Radar name="Skills" dataKey="level" stroke="#056022" fill="#056022" fillOpacity={0.2} />
                 </RadarChart>
               </ResponsiveContainer>
             </CardContent>

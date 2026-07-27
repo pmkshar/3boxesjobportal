@@ -34,7 +34,7 @@ export function ThemeSwitcher() {
         side="right"
         className="w-56 p-3 border-[var(--theme-primary-light)] shadow-xl rounded-xl"
       >
-        <p className="text-sm font-semibold text-[#05264E] mb-3">Choose Theme Color</p>
+        <p className="text-sm font-semibold text-[#0f172a] mb-3">Choose Theme Color</p>
         <div className="grid grid-cols-2 gap-2">
           {themeKeys.map((key) => {
             const t = themes[key]
@@ -58,7 +58,7 @@ export function ThemeSwitcher() {
                 />
                 <span
                   className={`text-xs font-medium ${
-                    isActive ? 'text-[var(--theme-primary)]' : 'text-[#05264E]'
+                    isActive ? 'text-[var(--theme-primary)]' : 'text-[#0f172a]'
                   }`}
                 >
                   {t.name}

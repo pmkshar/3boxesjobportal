@@ -272,7 +272,7 @@ export function JobSeekerDashboard() {
                 <Home className="h-3.5 w-3.5" />
                 <span className="hover:text-[var(--theme-primary)] cursor-pointer">Home</span>
                 <ChevronRight className="h-3 w-3" />
-                <span className="text-[#05264E] font-medium capitalize">{activeView === 'jobs' ? 'Find Jobs' : activeView === 'resume' ? 'CV Manager' : activeView === 'interview' ? 'AI Interview' : activeView === 'skill-gap' ? 'Skill Gap' : activeView === 'job-fit' ? 'Job Fit' : activeView === 'tracker' ? 'Tracker' : activeView === 'ai-buddy' ? 'AI Buddy' : activeView}</span>
+                <span className="text-[#0f172a] font-medium capitalize">{activeView === 'jobs' ? 'Find Jobs' : activeView === 'resume' ? 'CV Manager' : activeView === 'interview' ? 'AI Interview' : activeView === 'skill-gap' ? 'Skill Gap' : activeView === 'job-fit' ? 'Job Fit' : activeView === 'tracker' ? 'Tracker' : activeView === 'ai-buddy' ? 'AI Buddy' : activeView}</span>
               </div>
               <div className="hidden sm:flex items-center gap-2 text-xs text-[#66789C]">
                 <Calendar className="h-3.5 w-3.5" />
@@ -303,10 +303,10 @@ function ComputerIcon() {
 function BankIcon() {
   return (
     <svg width="40" height="40" viewBox="0 0 40 40" fill="none" className="flex-shrink-0">
-      <rect x="4" y="4" width="32" height="32" rx="8" fill="#f0faf2"/>
-      <path d="M12 24h16M12 20h16M12 16h16" stroke="#fa7903" strokeWidth="2" strokeLinecap="round"/>
-      <circle cx="20" cy="12" r="2" fill="#fa7903"/>
-      <path d="M14 28v-4M20 28v-4M26 28v-4" stroke="#fa7903" strokeWidth="2" strokeLinecap="round"/>
+      <rect x="4" y="4" width="32" height="32" rx="8" fill="#f0f8f0"/>
+      <path d="M12 24h16M12 20h16M12 16h16" stroke="#fc7e0b" strokeWidth="2" strokeLinecap="round"/>
+      <circle cx="20" cy="12" r="2" fill="#fc7e0b"/>
+      <path d="M14 28v-4M20 28v-4M26 28v-4" stroke="#fc7e0b" strokeWidth="2" strokeLinecap="round"/>
     </svg>
   )
 }
@@ -369,7 +369,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
 
   const statCards = [
     { label: 'Interview Schedules', value: stats?.interviewsCompleted || 0, change: '+25%', up: true, icon: ComputerIcon, color: 'var(--theme-primary)', bg: 'var(--theme-primary-light)' },
-    { label: 'Applied Jobs', value: stats?.totalApplications || 0, change: '+5%', up: true, icon: BankIcon, color: '#fa7903', bg: '#f0faf2' },
+    { label: 'Applied Jobs', value: stats?.totalApplications || 0, change: '+5%', up: true, icon: BankIcon, color: '#fc7e0b', bg: '#f0f8f0' },
     { label: 'Task Bids Won', value: stats?.trainingsCompleted || 0, change: '+12%', up: true, icon: LampIcon, color: '#F59E0B', bg: '#FFFBEB' },
     { label: 'Application Sent', value: stats?.totalApplications || 0, change: '+5%', up: true, icon: HeadphoneIcon, color: '#8B5CF6', bg: '#F5F3FF' },
     { label: 'Profile Viewed', value: 165, change: '+15%', up: true, icon: LookIcon, color: '#06B6D4', bg: '#ECFEFF' },
@@ -423,7 +423,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
           <h1 className="text-2xl lg:text-3xl font-bold">Welcome back, {user?.name?.split(' ')[0]}! 👋</h1>
           <p className="text-[#A3B8D0] mt-2 text-sm lg:text-base">Here&apos;s what&apos;s happening with your job search today.</p>
           <div className="flex flex-wrap gap-3 mt-4">
-            <Button size="sm" className="bg-white text-[#05264E] hover:bg-gray-100 font-semibold text-xs rounded-lg px-4 h-9"
+            <Button size="sm" className="bg-white text-[#0f172a] hover:bg-gray-100 font-semibold text-xs rounded-lg px-4 h-9"
               onClick={() => onNavigate('jobs')}>
               <Search className="h-3.5 w-3.5 mr-1.5" /> Find Jobs
             </Button>
@@ -443,7 +443,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
         {[
           { id: 'interview' as View, icon: Brain, label: 'AI Interview', color: 'bg-purple-50 text-purple-700 border-purple-200' },
           { id: 'resume' as View, icon: FileText, label: 'CV Manager', color: 'bg-blue-50 text-blue-700 border-blue-200' },
-          { id: 'tracker' as View, icon: FileCheck, label: 'Applications Tracker', color: 'bg-[#f0faf2] text-green-700 border-[#d1e8d5]' },
+          { id: 'tracker' as View, icon: FileCheck, label: 'Applications Tracker', color: 'bg-[#f0f8f0] text-green-700 border-[#d8ecd8]' },
           { id: 'ai-buddy' as View, icon: Bot, label: 'AI Buddy', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
           { id: 'skill-gap' as View, icon: Target, label: 'Skill Gap', color: 'bg-amber-50 text-amber-700 border-amber-200' },
           { id: 'job-fit' as View, icon: Target, label: 'Job Fit', color: 'bg-teal-50 text-teal-700 border-teal-200' },
@@ -478,7 +478,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-[10px] uppercase tracking-wider text-[#66789C] font-medium">{s.label}</p>
-                  <p className="text-2xl font-bold text-[#05264E] mt-1">{typeof s.value === 'number' ? s.value.toLocaleString() : s.value}</p>
+                  <p className="text-2xl font-bold text-[#0f172a] mt-1">{typeof s.value === 'number' ? s.value.toLocaleString() : s.value}</p>
                 </div>
                 {IconComp ? <IconComp /> : (
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: s.bg }}>
@@ -507,7 +507,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
           {/* Vacancy Stats Chart - JobBox style with real chart */}
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-semibold text-[#05264E]">Vacancy Stats</h3>
+              <h3 className="text-base font-semibold text-[#0f172a]">Vacancy Stats</h3>
               <div className="flex items-center gap-2">
                 <Badge variant="outline" className="text-[10px] text-[#66789C] border-[#E4E8EC]">Monthly</Badge>
               </div>
@@ -534,7 +534,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
                         style={{ height: `${(v / maxVal) * 100}%`, background: 'linear-gradient(180deg, var(--theme-primary) 0%, var(--theme-primary-ring) 100%)' }}
                       />
                       {/* Tooltip on hover */}
-                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#05264E] text-white text-[9px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#021303] text-white text-[9px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                         {v} vacancies
                       </div>
                     </div>
@@ -564,7 +564,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
           {/* Latest Jobs - JobBox card style */}
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-semibold text-[#05264E]">Latest Jobs</h3>
+              <h3 className="text-base font-semibold text-[#0f172a]">Latest Jobs</h3>
               <Button variant="ghost" size="sm" className="text-[var(--theme-primary)] text-xs font-medium hover:bg-[var(--theme-primary-light)]"
                 onClick={() => onNavigate('jobs')}>
                 View All <ChevronRight className="h-3 w-3 ml-1" />
@@ -584,7 +584,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
                       <Briefcase className="h-5 w-5 text-[var(--theme-primary)]" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-semibold text-[#05264E] truncate group-hover:text-[var(--theme-primary)] transition-colors">{job.title}</h4>
+                      <h4 className="text-sm font-semibold text-[#0f172a] truncate group-hover:text-[var(--theme-primary)] transition-colors">{job.title}</h4>
                       <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                         <Badge variant="secondary" className="text-[10px] h-4 px-1.5 bg-[var(--theme-primary-light)] text-[var(--theme-primary)] border-0 font-medium">{job.jobType}</Badge>
                         <span className="text-[10px] text-[#66789C] flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />Just now</span>
@@ -600,7 +600,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
                       ))}
                     </div>
                     {/* Salary */}
-                    <span className="text-sm font-bold text-[#05264E] whitespace-nowrap">{formatSalary(job.salaryMin, job.salaryMax)}</span>
+                    <span className="text-sm font-bold text-[#0f172a] whitespace-nowrap">{formatSalary(job.salaryMin, job.salaryMax)}</span>
                   </div>
                 </div>
               ))}
@@ -613,7 +613,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
           {/* Top Candidates - JobBox style */}
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-semibold text-[#05264E]">Top Candidates</h3>
+              <h3 className="text-base font-semibold text-[#0f172a]">Top Candidates</h3>
               <Button variant="ghost" size="sm" className="text-[var(--theme-primary)] text-xs">View All</Button>
             </div>
             <div className="space-y-0">
@@ -626,7 +626,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
                     {c.online && <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-semibold text-[#05264E]">{c.name}</h4>
+                    <h4 className="text-sm font-semibold text-[#0f172a]">{c.name}</h4>
                     <p className="text-[10px] text-[#66789C]">{c.role}</p>
                     <div className="flex items-center gap-1 mt-0.5">
                       <MapPin className="h-2.5 w-2.5 text-[#66789C]" />
@@ -649,13 +649,13 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
           {/* Search Queries - JobBox style */}
           <div className="panel p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-semibold text-[#05264E]">Queries by Search</h3>
+              <h3 className="text-base font-semibold text-[#0f172a]">Queries by Search</h3>
             </div>
             <div className="space-y-3">
               {searchQueries.map((q) => (
                 <div key={q.term} className="group cursor-pointer">
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-medium text-[#05264E] group-hover:text-[var(--theme-primary)] transition-colors">{q.term}</span>
+                    <span className="text-xs font-medium text-[#0f172a] group-hover:text-[var(--theme-primary)] transition-colors">{q.term}</span>
                     <span className="text-xs text-[#66789C]">{q.count.toLocaleString()}</span>
                   </div>
                   <div className="w-full bg-[#F0F2F5] rounded-full h-2">

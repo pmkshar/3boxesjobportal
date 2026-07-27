@@ -46,7 +46,7 @@ export function Navbar() {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <ThreeBoxesLogo size={32} />
-              <span className="text-lg font-bold text-[#05264E]">3 Boxes <span style={{ color: theme.accent || '#fa7903' }}>Jobs</span></span>
+              <span className="text-lg font-bold text-[#0f172a]">3 Boxes <span style={{ color: theme.accent || '#fc7e0b' }}>Jobs</span></span>
             </div>
             {isAuthenticated && user && (
               <Badge className="hidden sm:inline-flex text-[10px] font-semibold border-0 rounded-full px-3 py-0.5"
@@ -123,7 +123,7 @@ export function Navbar() {
                       </AvatarFallback>
                     </Avatar>
                     <div className="hidden sm:block text-left">
-                      <p className="text-sm font-semibold text-[#05264E] leading-tight">{user.name}</p>
+                      <p className="text-sm font-semibold text-[#0f172a] leading-tight">{user.name}</p>
                       <p className="text-[10px] text-[#66789C] leading-tight">{roleLabel}</p>
                     </div>
                     <ChevronDown className="h-3 w-3 text-[#66789C] hidden sm:block" />
@@ -131,13 +131,13 @@ export function Navbar() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-52 mt-1 border-[#E4E8EC] shadow-lg rounded-xl">
                   <div className="px-3 py-2 border-b border-[#F0F2F5]">
-                    <p className="text-sm font-semibold text-[#05264E]">{user.name}</p>
+                    <p className="text-sm font-semibold text-[#0f172a]">{user.name}</p>
                     <p className="text-xs text-[#66789C]">{user.email}</p>
                   </div>
-                  <DropdownMenuItem className="text-sm text-[#05264E] focus:bg-[#F9FAFB] focus:text-[#05264E]">
+                  <DropdownMenuItem className="text-sm text-[#0f172a] focus:bg-[#F9FAFB] focus:text-[#0f172a]">
                     <User className="mr-2 h-4 w-4 text-[#66789C]" /> Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="text-sm text-[#05264E] focus:bg-[#F9FAFB] focus:text-[#05264E]">
+                  <DropdownMenuItem className="text-sm text-[#0f172a] focus:bg-[#F9FAFB] focus:text-[#0f172a]">
                     <Settings className="mr-2 h-4 w-4 text-[#66789C]" /> Settings
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-[#F0F2F5]" />
@@ -149,8 +149,8 @@ export function Navbar() {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" className="text-[#05264E] hover:bg-[var(--theme-primary-light)] font-medium text-sm"
-                style={{ color: '#05264E' }}
+              <Button variant="ghost" size="sm" className="text-[#0f172a] hover:bg-[var(--theme-primary-light)] font-medium text-sm"
+                style={{ color: '#0f172a' }}
                 onClick={() => { setAuthTab('login'); setAuthOpen(true) }}>
                 Login
               </Button>

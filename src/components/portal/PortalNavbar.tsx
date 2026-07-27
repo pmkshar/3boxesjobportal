@@ -94,15 +94,15 @@ export function PortalNavbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-[#023303] shadow-lg">
+      <nav className="sticky top-0 z-50 bg-[#024217] shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
               <Link href="/" className="flex items-center gap-3">
                 <ThreeBoxesLogo3D size={44} />
                 <div className="flex flex-col">
-                  <span className="text-xl font-extrabold text-white leading-tight tracking-tight">3 Boxes <span className="text-[#fa7903]">Jobs</span></span>
-                  <span className="text-[10px] text-[#a3d1aa]/70 leading-tight tracking-wider uppercase font-medium">Skills · Resume · Career</span>
+                  <span className="text-xl font-extrabold text-white leading-tight tracking-tight">3 Boxes <span className="text-[#fc7e0b]">Jobs</span></span>
+                  <span className="text-[10px] text-[#b0d9b5]/70 leading-tight tracking-wider uppercase font-medium">Skills · Resume · Career</span>
                 </div>
               </Link>
               <div className="hidden lg:flex items-center gap-1 text-sm">
@@ -113,7 +113,7 @@ export function PortalNavbar() {
                     className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
                       isActive(link.href)
                         ? 'bg-white/15 text-white'
-                        : 'text-[#d1e8d5]/90 hover:text-white hover:bg-white/10'
+                        : 'text-[#d8ecd8]/90 hover:text-white hover:bg-white/10'
                     }`}
                   >
                     {link.label}
@@ -128,17 +128,17 @@ export function PortalNavbar() {
                     {user.role === 'JOB_SEEKER' ? 'Job Seeker' : user.role === 'CORPORATE' ? 'Employer' : 'Admin'}
                   </Badge>
                   <Link href="/">
-                    <Button className="bg-[#fa7903] hover:bg-[#ea580c] text-white font-bold shadow-md text-sm">
+                    <Button className="bg-[#fc7e0b] hover:bg-[#ea5703] text-white font-bold shadow-md text-sm">
                       Dashboard
                     </Button>
                   </Link>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" className="text-[#d1e8d5] hover:text-white hover:bg-white/10" onClick={openLogin}>
+                  <Button variant="ghost" className="text-[#d8ecd8] hover:text-white hover:bg-white/10" onClick={openLogin}>
                     Login
                   </Button>
-                  <Button className="bg-[#fa7903] hover:bg-[#ea580c] text-white font-bold shadow-md" onClick={openRegister}>
+                  <Button className="bg-[#fc7e0b] hover:bg-[#ea5703] text-white font-bold shadow-md" onClick={openRegister}>
                     Register Free
                   </Button>
                 </div>
@@ -165,7 +165,7 @@ export function PortalNavbar() {
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                       isActive(link.href)
                         ? 'bg-white/15 text-white'
-                        : 'text-[#d1e8d5]/90 hover:text-white hover:bg-white/10'
+                        : 'text-[#d8ecd8]/90 hover:text-white hover:bg-white/10'
                     }`}
                   >
                     {link.label}
@@ -192,8 +192,8 @@ export function PortalNavbar() {
             <div className="w-full max-w-md bg-white shadow-2xl overflow-y-auto flex flex-col">
               <div className="sticky top-0 bg-white z-10 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#045a06]/10 flex items-center justify-center">
-                    <Briefcase className="h-4 w-4 text-[#045a06]" />
+                  <div className="w-8 h-8 rounded-lg bg-[#056022]/10 flex items-center justify-center">
+                    <Briefcase className="h-4 w-4 text-[#056022]" />
                   </div>
                   <span className="font-bold text-gray-900">{authView === 'login' ? 'Sign In' : 'Create Account'}</span>
                 </div>
@@ -219,7 +219,7 @@ export function PortalNavbar() {
                     <div>
                       <div className="flex items-center justify-between">
                         <Label className="text-sm font-medium text-gray-700">Password</Label>
-                        <button className="text-xs font-medium text-[#045a06] hover:underline">Forgot password?</button>
+                        <button className="text-xs font-medium text-[#056022] hover:underline">Forgot password?</button>
                       </div>
                       <div className="relative mt-1.5">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -228,14 +228,14 @@ export function PortalNavbar() {
                           onKeyDown={(e) => e.key === 'Enter' && handleLogin()} />
                       </div>
                     </div>
-                    <Button className="w-full h-11 bg-[#045a06] hover:bg-[#034604] text-white font-semibold rounded-xl text-sm" disabled={loginLoading} onClick={handleLogin}>
+                    <Button className="w-full h-11 bg-[#056022] hover:bg-[#044d1a] text-white font-semibold rounded-xl text-sm" disabled={loginLoading} onClick={handleLogin}>
                       {loginLoading ? 'Signing In...' : 'Sign In'}
                     </Button>
-                    <p className="text-sm text-gray-500 text-center">Don&apos;t have an account? <button className="text-[#045a06] font-semibold hover:underline" onClick={openRegister}>Register Free</button></p>
+                    <p className="text-sm text-gray-500 text-center">Don&apos;t have an account? <button className="text-[#056022] font-semibold hover:underline" onClick={openRegister}>Register Free</button></p>
                     {/* Demo accounts — only on demo site */}
                     {showDemo && credentials && (
-                    <div className="bg-[#f0faf2] rounded-xl p-3 text-xs text-gray-600">
-                      <p className="font-semibold text-[#045a06] mb-1">{envLabel} Accounts:</p>
+                    <div className="bg-[#f0f8f0] rounded-xl p-3 text-xs text-gray-600">
+                      <p className="font-semibold text-[#056022] mb-1">{envLabel} Accounts:</p>
                       {Object.entries(credentials).slice(0, 4).map(([role, cred]) => (
                         <p key={role}>{cred.label}: {cred.email} / {cred.password}</p>
                       ))}
@@ -281,7 +281,7 @@ export function PortalNavbar() {
                         ].map((role) => (
                           <button key={role.value} onClick={() => setRegRole(role.value)}
                             className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 text-sm font-medium transition-all ${
-                              regRole === role.value ? 'border-[#045a06] bg-[#f0faf2] text-[#045a06]' : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                              regRole === role.value ? 'border-[#056022] bg-[#f0f8f0] text-[#056022]' : 'border-gray-200 text-gray-600 hover:border-gray-300'
                             }`}>
                             <role.icon className="h-4 w-4" />
                             {role.label}
@@ -289,10 +289,10 @@ export function PortalNavbar() {
                         ))}
                       </div>
                     </div>
-                    <Button className="w-full h-11 bg-[#045a06] hover:bg-[#034604] text-white font-semibold rounded-xl text-sm" disabled={regLoading} onClick={handleRegister}>
+                    <Button className="w-full h-11 bg-[#056022] hover:bg-[#044d1a] text-white font-semibold rounded-xl text-sm" disabled={regLoading} onClick={handleRegister}>
                       {regLoading ? 'Creating Account...' : 'Create Free Account'}
                     </Button>
-                    <p className="text-sm text-gray-500 text-center">Already have an account? <button className="text-[#045a06] font-semibold hover:underline" onClick={openLogin}>Sign In</button></p>
+                    <p className="text-sm text-gray-500 text-center">Already have an account? <button className="text-[#056022] font-semibold hover:underline" onClick={openLogin}>Sign In</button></p>
                   </div>
                 )}
               </div>
