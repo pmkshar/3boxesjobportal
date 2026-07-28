@@ -290,10 +290,10 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       {/* ===== NAVBAR ===== */}
       <nav className="sticky top-0 z-50 bg-[#024217] shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-20">
             <div className="flex items-center gap-8">
               <div className="flex items-center">
-                <ThreeBoxesLogo3D size={200} className="h-[56px] sm:h-[72px] lg:h-[80px] w-auto" />
+                <ThreeBoxesLogo3D size={300} className="h-[60px] sm:h-[80px] lg:h-[96px] w-auto" />
               </div>
               <div className="hidden lg:flex items-center gap-5 text-sm text-[#d8ecd8]/90">
                 <a href="#jobs" className="hover:text-white font-medium transition-colors">Find Jobs</a>
@@ -609,7 +609,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
               <img
                 src="/logo.png"
                 alt="3BOXESJOBS - Find Opportunity. Build Tomorrow."
-                className="h-[100px] sm:h-[140px] lg:h-[200px] w-auto mx-auto"
+                className="h-[60px] sm:h-[100px] lg:h-[140px] w-auto mx-auto"
                 style={{ objectFit: 'contain', maxWidth: '100%' }}
               />
             </motion.div>
@@ -1510,7 +1510,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
             <div className="lg:col-span-2">
               <div className="mb-4">
-                <ThreeBoxesLogo3D size={300} className="h-[100px] sm:h-[120px] lg:h-[140px] w-auto" />
+                <ThreeBoxesLogo3D size={400} className="h-[80px] sm:h-[100px] lg:h-[120px] w-auto" />
               </div>
               <p className="text-sm leading-relaxed max-w-sm">India&apos;s first AI-powered career platform with smart resume building, AI mock interviews, skill auto-updates, and intelligent job matching. The three boxes represent the complete career journey.</p>
               <div className="mt-4 flex items-center gap-2 text-xs text-gray-500">
@@ -1562,8 +1562,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
 // ===== 3D LOGO COMPONENT =====
 export function ThreeBoxesLogo3D({ size = 44, className = '' }: { size?: number; className?: string }) {
   // Logo PNG contains full brand (icon + 3BOXESJOBS text + tagline) with transparent background
-  // Aspect ratio ≈ 1.78:1 (1672x941)
-  const height = Math.round(size * 0.56)
+  // Aspect ratio ≈ 3.18:1 (572x180)
+  const height = Math.round(size * 0.315)
   return (
     <img
       src="/logo.png"
