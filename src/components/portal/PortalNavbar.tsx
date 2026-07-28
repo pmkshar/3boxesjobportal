@@ -96,27 +96,28 @@ export function PortalNavbar() {
     <>
       <nav className="sticky top-0 z-50 bg-white shadow-sm border-b-2 border-[#024217]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <div className="flex items-center gap-8">
-              <Link href="/" className="flex items-center">
-                <ThreeBoxesLogo3D size={300} className="h-[60px] sm:h-[80px] lg:h-[96px] w-auto" />
-              </Link>
-              <div className="hidden lg:flex items-center gap-1 text-sm">
-                {navLinks.map(link => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
-                      isActive(link.href)
-                        ? 'bg-[#024217]/15 text-[#024217]'
-                        : 'text-[#056022]/80 hover:text-[#024217] hover:bg-[#024217]/10'
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
+          <div className="flex items-center justify-between h-16">
+            {/* Left: Logo */}
+            <Link href="/" className="flex items-center flex-shrink-0">
+              <ThreeBoxesLogo3D size={200} className="h-[44px] sm:h-[52px] lg:h-[56px] w-auto" />
+            </Link>
+            {/* Center: Navigation links */}
+            <div className="hidden lg:flex items-center gap-1 text-sm">
+              {navLinks.map(link => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
+                    isActive(link.href)
+                      ? 'bg-[#024217]/15 text-[#024217]'
+                      : 'text-[#056022]/80 hover:text-[#024217] hover:bg-[#024217]/10'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
+            {/* Right: Auth buttons */}
             <div className="flex items-center gap-3">
               {isAuthenticated && user ? (
                 <div className="flex items-center gap-3">

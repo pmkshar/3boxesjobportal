@@ -290,18 +290,19 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       {/* ===== NAVBAR ===== */}
       <nav className="sticky top-0 z-50 bg-white shadow-sm border-b-2 border-[#024217]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <div className="flex items-center gap-8">
-              <div className="flex items-center">
-                <ThreeBoxesLogo3D size={300} className="h-[60px] sm:h-[80px] lg:h-[96px] w-auto" />
-              </div>
-              <div className="hidden lg:flex items-center gap-5 text-sm text-[#056022]/80">
-                <a href="#jobs" className="hover:text-[#024217] font-medium transition-colors">Find Jobs</a>
-                <a href="#companies" className="hover:text-[#024217] font-medium transition-colors">Companies</a>
-                <a href="#ai-features" className="hover:text-[#024217] font-medium transition-colors">AI Features</a>
-                <a href="#training" className="hover:text-[#024217] font-medium transition-colors">Training</a>
-              </div>
+          <div className="flex items-center justify-between h-16">
+            {/* Left: Logo */}
+            <div className="flex items-center flex-shrink-0">
+              <ThreeBoxesLogo3D size={200} className="h-[44px] sm:h-[52px] lg:h-[56px] w-auto" />
             </div>
+            {/* Center: Navigation links */}
+            <div className="hidden lg:flex items-center gap-6 text-sm text-[#056022]/80">
+              <a href="#jobs" className="hover:text-[#024217] font-medium transition-colors">Find Jobs</a>
+              <a href="#companies" className="hover:text-[#024217] font-medium transition-colors">Companies</a>
+              <a href="#ai-features" className="hover:text-[#024217] font-medium transition-colors">AI Features</a>
+              <a href="#training" className="hover:text-[#024217] font-medium transition-colors">Training</a>
+            </div>
+            {/* Right: Auth buttons */}
             <div className="flex items-center gap-3">
               <Button variant="ghost" className="text-[#056022] hover:text-[#024217] hover:bg-[#024217]/10" onClick={openLogin}>
                 Login
