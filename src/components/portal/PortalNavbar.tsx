@@ -94,7 +94,7 @@ export function PortalNavbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-[#024217] shadow-lg">
+      <nav className="sticky top-0 z-50 bg-white shadow-md border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <div className="flex items-center gap-8">
@@ -108,8 +108,8 @@ export function PortalNavbar() {
                     href={link.href}
                     className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
                       isActive(link.href)
-                        ? 'bg-white/15 text-white'
-                        : 'text-[#d8ecd8]/90 hover:text-white hover:bg-white/10'
+                        ? 'bg-[#024217]/15 text-[#024217]'
+                        : 'text-[#056022]/80 hover:text-[#024217] hover:bg-[#024217]/10'
                     }`}
                   >
                     {link.label}
@@ -120,28 +120,28 @@ export function PortalNavbar() {
             <div className="flex items-center gap-3">
               {isAuthenticated && user ? (
                 <div className="flex items-center gap-3">
-                  <Badge className="bg-white/15 text-white border-0 rounded-full px-3 py-0.5 text-xs font-medium">
+                  <Badge className="bg-[#024217]/15 text-[#024217] border-0 rounded-full px-3 py-0.5 text-xs font-medium">
                     {user.role === 'JOB_SEEKER' ? 'Job Seeker' : user.role === 'CORPORATE' ? 'Employer' : 'Admin'}
                   </Badge>
                   <Link href="/">
-                    <Button className="bg-[#fc7e0b] hover:bg-[#ea5703] text-white font-bold shadow-md text-sm">
+                    <Button className="bg-[#024217] hover:bg-[#044d1a] text-white font-bold shadow-md text-sm">
                       Dashboard
                     </Button>
                   </Link>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" className="text-[#d8ecd8] hover:text-white hover:bg-white/10" onClick={openLogin}>
+                  <Button variant="ghost" className="text-[#056022] hover:text-[#024217] hover:bg-[#024217]/10" onClick={openLogin}>
                     Login
                   </Button>
-                  <Button className="bg-[#fc7e0b] hover:bg-[#ea5703] text-white font-bold shadow-md" onClick={openRegister}>
+                  <Button className="bg-[#024217] hover:bg-[#044d1a] text-white font-bold shadow-md" onClick={openRegister}>
                     Register Free
                   </Button>
                 </div>
               )}
               {/* Mobile menu toggle */}
               <button
-                className="lg:hidden text-white p-2"
+                className="lg:hidden text-[#024217] p-2"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 <Menu className="h-5 w-5" />
@@ -151,7 +151,7 @@ export function PortalNavbar() {
 
           {/* Mobile menu */}
           {mobileMenuOpen && (
-            <div className="lg:hidden pb-4 border-t border-white/10 mt-2 pt-3">
+            <div className="lg:hidden pb-4 border-t border-gray-200 mt-2 pt-3">
               <div className="flex flex-col gap-1">
                 {navLinks.map(link => (
                   <Link
@@ -160,8 +160,8 @@ export function PortalNavbar() {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                       isActive(link.href)
-                        ? 'bg-white/15 text-white'
-                        : 'text-[#d8ecd8]/90 hover:text-white hover:bg-white/10'
+                        ? 'bg-[#024217]/15 text-[#024217]'
+                        : 'text-[#056022]/80 hover:text-[#024217] hover:bg-[#024217]/10'
                     }`}
                   >
                     {link.label}

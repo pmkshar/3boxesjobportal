@@ -288,25 +288,25 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
   return (
     <div className="min-h-screen bg-white overflow-x-hidden">
       {/* ===== NAVBAR ===== */}
-      <nav className="sticky top-0 z-50 bg-[#024217] shadow-lg">
+      <nav className="sticky top-0 z-50 bg-white shadow-md border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <div className="flex items-center gap-8">
               <div className="flex items-center">
                 <ThreeBoxesLogo3D size={300} className="h-[60px] sm:h-[80px] lg:h-[96px] w-auto" />
               </div>
-              <div className="hidden lg:flex items-center gap-5 text-sm text-[#d8ecd8]/90">
-                <a href="#jobs" className="hover:text-white font-medium transition-colors">Find Jobs</a>
-                <a href="#companies" className="hover:text-white font-medium transition-colors">Companies</a>
-                <a href="#ai-features" className="hover:text-white font-medium transition-colors">AI Features</a>
-                <a href="#training" className="hover:text-white font-medium transition-colors">Training</a>
+              <div className="hidden lg:flex items-center gap-5 text-sm text-[#056022]/80">
+                <a href="#jobs" className="hover:text-[#024217] font-medium transition-colors">Find Jobs</a>
+                <a href="#companies" className="hover:text-[#024217] font-medium transition-colors">Companies</a>
+                <a href="#ai-features" className="hover:text-[#024217] font-medium transition-colors">AI Features</a>
+                <a href="#training" className="hover:text-[#024217] font-medium transition-colors">Training</a>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Button variant="ghost" className="text-[#d8ecd8] hover:text-white hover:bg-white/10" onClick={openLogin}>
+              <Button variant="ghost" className="text-[#056022] hover:text-[#024217] hover:bg-[#024217]/10" onClick={openLogin}>
                 Login
               </Button>
-              <Button className="bg-[#fc7e0b] hover:bg-[#ea5703] text-white font-bold shadow-md" onClick={openRegister}>
+              <Button className="bg-[#024217] hover:bg-[#044d1a] text-white font-bold shadow-md" onClick={openRegister}>
                 Register Free
               </Button>
             </div>
