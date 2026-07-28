@@ -137,7 +137,7 @@ export function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#024217]">
       {/* ===== HERO SECTION ===== */}
       <section className="relative bg-gradient-to-br from-[#024217] via-[#044d1a] via-40% to-[#22c55e] pb-36 pt-10 overflow-hidden">
         {/* Animated gradient overlay */}
