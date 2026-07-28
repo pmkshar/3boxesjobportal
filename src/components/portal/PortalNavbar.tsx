@@ -99,7 +99,7 @@ export function PortalNavbar() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
               <Link href="/" className="flex items-center">
-                <ThreeBoxesLogo3D size={160} className="h-[52px] sm:h-[64px] lg:h-[72px] w-auto" />
+                <ThreeBoxesLogo3D size={200} className="h-[56px] sm:h-[72px] lg:h-[80px] w-auto" />
               </Link>
               <div className="hidden lg:flex items-center gap-1 text-sm">
                 {navLinks.map(link => (

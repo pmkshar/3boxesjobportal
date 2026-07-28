@@ -212,7 +212,7 @@ export function IntegratedLoginPage() {
             transition={{ duration: 0.6 }}
           >
             <div className="mb-2">
-              <ThreeBoxesLogo3D size={260} className="h-[80px] sm:h-[100px] lg:h-[130px] w-auto" />
+              <ThreeBoxesLogo3D size={300} className="h-[90px] sm:h-[110px] lg:h-[140px] w-auto" />
             </div>
           </motion.div>
 

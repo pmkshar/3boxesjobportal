@@ -15,7 +15,7 @@ export function PortalFooter() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-2">
             <div className="mb-4">
-              <ThreeBoxesLogo3D size={260} className="h-[80px] sm:h-[100px] lg:h-[120px] w-auto" />
+              <ThreeBoxesLogo3D size={300} className="h-[100px] sm:h-[120px] lg:h-[140px] w-auto" />
             </div>
             <p className="text-sm leading-relaxed max-w-sm">India&apos;s first AI-powered career platform with smart resume building, AI mock interviews, skill auto-updates, and intelligent job matching. The three boxes represent the complete career journey.</p>
             <div className="mt-4 flex items-center gap-2 text-xs text-gray-500">
