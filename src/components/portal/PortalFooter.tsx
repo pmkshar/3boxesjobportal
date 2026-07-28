@@ -10,7 +10,7 @@ export function PortalFooter() {
   const envLabel = getEnvironmentLabel()
   const showDemo = isDemoEnvironment()
   return (
-    <footer className="bg-[#021303] text-gray-400 py-10">
+    <footer className="bg-[#0a2e0a] text-gray-400 py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-2">

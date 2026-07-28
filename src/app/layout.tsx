@@ -19,7 +19,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: "#024217",
+  themeColor: "#1f8f15",
 };
 
 export const metadata: Metadata = {
@@ -65,7 +65,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="msapplication-TileColor" content="#024217" />
+        <meta name="msapplication-TileColor" content="#1f8f15" />
         <meta name="msapplication-tap-highlight" content="no" />
       </head>
       <body

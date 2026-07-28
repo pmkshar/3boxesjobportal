@@ -7,11 +7,11 @@ export type ThemeColor = 'green' | 'blue' | 'purple' | 'orange' | 'red' | 'teal'
 interface ThemeConfig {
   name: string
   color: ThemeColor
-  primary: string        // Main brand color (e.g., #024217)
-  primaryHover: string   // Darker version for hover (e.g., #044d1a)
-  primaryLight: string   // Very light bg tint (e.g., #f0f8f0)
-  primaryMedium: string  // Medium tint for badges/bg (e.g., #d8ecd8)
-  primaryRing: string    // Ring/focus color (e.g., #1e7d1e)
+  primary: string        // Main brand color (e.g., #1f8f15)
+  primaryHover: string   // Darker version for hover (e.g., #2d7a28)
+  primaryLight: string   // Very light bg tint (e.g., #e8f5e9)
+  primaryMedium: string  // Medium tint for badges/bg (e.g., #c8e6c9)
+  primaryRing: string    // Ring/focus color (e.g., #49A842)
   sidebar: string        // Sidebar background (dark)
   sidebarHover: string   // Sidebar item hover
   sidebarActive: string  // Sidebar active indicator
@@ -27,16 +27,16 @@ export const themes: Record<ThemeColor, ThemeConfig> = {
   green: {
     name: '3Boxes Green',
     color: 'green',
-    primary: '#024217',
-    primaryHover: '#044d1a',
-    primaryLight: '#f0f8f0',
-    primaryMedium: '#d8ecd8',
-    primaryRing: '#1e7d1e',
+    primary: '#1f8f15',
+    primaryHover: '#2d7a28',
+    primaryLight: '#e8f5e9',
+    primaryMedium: '#c8e6c9',
+    primaryRing: '#49A842',
     sidebar: '#0f172a',
-    sidebarHover: '#024217',
+    sidebarHover: '#1f8f15',
     sidebarActive: '#fc7e0b',
-    gradient: 'linear-gradient(135deg, #024217 0%, #fc7e0b 100%)',
-    swatch: '#024217',
+    gradient: 'linear-gradient(135deg, #1f8f15 0%, #fc7e0b 100%)',
+    swatch: '#1f8f15',
     accent: '#fc7e0b',
     accentHover: '#ea5703',
     accentLight: '#fff8eb',
@@ -79,9 +79,9 @@ export const themes: Record<ThemeColor, ThemeConfig> = {
     primaryMedium: '#fed7aa',
     primaryRing: '#fdba64',
     sidebar: '#0f172a',
-    sidebarHover: '#024217',
+    sidebarHover: '#1f8f15',
     sidebarActive: '#fc7e0b',
-    gradient: 'linear-gradient(135deg, #fc7e0b 0%, #024217 100%)',
+    gradient: 'linear-gradient(135deg, #fc7e0b 0%, #1f8f15 100%)',
     swatch: '#fc7e0b',
   },
   red: {

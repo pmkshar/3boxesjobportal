@@ -303,7 +303,7 @@ function ComputerIcon() {
 function BankIcon() {
   return (
     <svg width="40" height="40" viewBox="0 0 40 40" fill="none" className="flex-shrink-0">
-      <rect x="4" y="4" width="32" height="32" rx="8" fill="#f0f8f0"/>
+      <rect x="4" y="4" width="32" height="32" rx="8" fill="#e8f5e9"/>
       <path d="M12 24h16M12 20h16M12 16h16" stroke="#fc7e0b" strokeWidth="2" strokeLinecap="round"/>
       <circle cx="20" cy="12" r="2" fill="#fc7e0b"/>
       <path d="M14 28v-4M20 28v-4M26 28v-4" stroke="#fc7e0b" strokeWidth="2" strokeLinecap="round"/>
@@ -369,7 +369,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
 
   const statCards = [
     { label: 'Interview Schedules', value: stats?.interviewsCompleted || 0, change: '+25%', up: true, icon: ComputerIcon, color: 'var(--theme-primary)', bg: 'var(--theme-primary-light)' },
-    { label: 'Applied Jobs', value: stats?.totalApplications || 0, change: '+5%', up: true, icon: BankIcon, color: '#fc7e0b', bg: '#f0f8f0' },
+    { label: 'Applied Jobs', value: stats?.totalApplications || 0, change: '+5%', up: true, icon: BankIcon, color: '#fc7e0b', bg: '#e8f5e9' },
     { label: 'Task Bids Won', value: stats?.trainingsCompleted || 0, change: '+12%', up: true, icon: LampIcon, color: '#F59E0B', bg: '#FFFBEB' },
     { label: 'Application Sent', value: stats?.totalApplications || 0, change: '+5%', up: true, icon: HeadphoneIcon, color: '#8B5CF6', bg: '#F5F3FF' },
     { label: 'Profile Viewed', value: 165, change: '+15%', up: true, icon: LookIcon, color: '#06B6D4', bg: '#ECFEFF' },
@@ -443,7 +443,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
         {[
           { id: 'interview' as View, icon: Brain, label: 'AI Interview', color: 'bg-purple-50 text-purple-700 border-purple-200' },
           { id: 'resume' as View, icon: FileText, label: 'CV Manager', color: 'bg-blue-50 text-blue-700 border-blue-200' },
-          { id: 'tracker' as View, icon: FileCheck, label: 'Applications Tracker', color: 'bg-[#f0f8f0] text-green-700 border-[#d8ecd8]' },
+          { id: 'tracker' as View, icon: FileCheck, label: 'Applications Tracker', color: 'bg-[#e8f5e9] text-green-700 border-[#c8e6c9]' },
           { id: 'ai-buddy' as View, icon: Bot, label: 'AI Buddy', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
           { id: 'skill-gap' as View, icon: Target, label: 'Skill Gap', color: 'bg-amber-50 text-amber-700 border-amber-200' },
           { id: 'job-fit' as View, icon: Target, label: 'Job Fit', color: 'bg-teal-50 text-teal-700 border-teal-200' },
@@ -534,7 +534,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
                         style={{ height: `${(v / maxVal) * 100}%`, background: 'linear-gradient(180deg, var(--theme-primary) 0%, var(--theme-primary-ring) 100%)' }}
                       />
                       {/* Tooltip on hover */}
-                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#021303] text-white text-[9px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#0a2e0a] text-white text-[9px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                         {v} vacancies
                       </div>
                     </div>

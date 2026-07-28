@@ -624,7 +624,7 @@ export function AiInterviewView() {
 
   const getRecommendationStyle = (rec: string) => {
     switch (rec) {
-      case 'Strong Hire': return { bg: '#d8ecd8', text: '#024217', icon: <ThumbsUp className="h-4 w-4" /> }
+      case 'Strong Hire': return { bg: '#c8e6c9', text: '#1f8f15', icon: <ThumbsUp className="h-4 w-4" /> }
       case 'Hire': return { bg: theme.primaryLight, text: theme.primary, icon: <CheckCircle2 className="h-4 w-4" /> }
       case 'No-Hire': return { bg: '#FEE2E2', text: '#991B1B', icon: <ThumbsDown className="h-4 w-4" /> }
       default: return { bg: '#F3F4F6', text: '#374151', icon: <Minus className="h-4 w-4" /> }

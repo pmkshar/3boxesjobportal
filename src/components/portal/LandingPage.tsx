@@ -25,16 +25,16 @@ import {
 
 // Company Brand Color Palette (from Logo - Green + Orange)
 const CG = {
-  50: '#f0f8f0',
-  100: '#d8ecd8',
-  200: '#b0d9b5',
+  50: '#e8f5e9',
+  100: '#c8e6c9',
+  200: '#a5d6a7',
   300: '#7ec07e',
-  400: '#3a9a3a',
-  500: '#1e7d1e',
-  600: '#024217',
-  700: '#044d1a',
-  800: '#024217',
-  900: '#013b0b',
+  400: '#49A842',
+  500: '#49A842',
+  600: '#1f8f15',
+  700: '#2d7a28',
+  800: '#1f8f15',
+  900: '#0d5a0a',
   dark: '#0f172a',
 }
 // Brand Accent Orange (from Logo)
@@ -52,11 +52,11 @@ const CA = {
 }
 
 const jobCategoriesConfig = [
-  { icon: Code, label: 'IT & Software', keywords: ['React', 'Node', 'Python', 'TypeScript', 'AWS', 'Docker', 'Software', 'Developer', 'Engineer'], color: 'bg-[#f0f8f0] text-green-700 border-[#d8ecd8]' },
+  { icon: Code, label: 'IT & Software', keywords: ['React', 'Node', 'Python', 'TypeScript', 'AWS', 'Docker', 'Software', 'Developer', 'Engineer'], color: 'bg-[#e8f5e9] text-green-700 border-[#c8e6c9]' },
   { icon: Briefcase, label: 'Banking & Finance', keywords: ['Finance', 'Banking', 'Account'], color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
   { icon: Heart, label: 'Healthcare', keywords: ['Health', 'Medical', 'Pharma'], color: 'bg-teal-50 text-teal-700 border-teal-200' },
   { icon: GraduationCap, label: 'Education', keywords: ['Education', 'Teaching', 'Training'], color: 'bg-lime-50 text-lime-700 border-lime-200' },
-  { icon: Laptop, label: 'Marketing', keywords: ['Marketing', 'SEO', 'Content', 'Digital'], color: 'bg-[#f0f8f0] text-green-700 border-[#d8ecd8]' },
+  { icon: Laptop, label: 'Marketing', keywords: ['Marketing', 'SEO', 'Content', 'Digital'], color: 'bg-[#e8f5e9] text-green-700 border-[#c8e6c9]' },
   { icon: Building2, label: 'Manufacturing', keywords: ['Manufacturing', 'Production', 'Supply'], color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
   { icon: Globe, label: 'BPO & Call Centre', keywords: ['BPO', 'Call Centre', 'Support'], color: 'bg-teal-50 text-teal-700 border-teal-200' },
   { icon: TrendingUp, label: 'Sales', keywords: ['Sales', 'Business Development'], color: 'bg-lime-50 text-lime-700 border-lime-200' },
@@ -195,7 +195,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
   const getCompanyInitial = (name?: string) => name ? name.charAt(0).toUpperCase() : 'C'
 
   const companyColors = [
-    'bg-[#024217]', 'bg-[#34a853]', 'bg-[#f9ab00]', 'bg-[#d93025]',
+    'bg-[#1f8f15]', 'bg-[#34a853]', 'bg-[#f9ab00]', 'bg-[#d93025]',
     'bg-[#7c66ff]', 'bg-[#a55fff]', 'bg-[#00cc9a]', 'bg-[#2869fe]',
   ]
 
@@ -287,28 +287,28 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
   }
 
   return (
-    <div className="min-h-screen bg-[#024217] overflow-x-hidden">
+    <div className="min-h-screen bg-[#1f8f15] overflow-x-hidden">
       {/* ===== NAVBAR ===== */}
-      <nav className="sticky top-0 z-50 bg-white shadow-sm border-b-2 border-[#024217]/10">
+      <nav className="sticky top-0 z-50 bg-white shadow-sm border-b-2 border-[#1f8f15]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-24">
             {/* Left: Logo */}
             <div className="flex items-center flex-shrink-0">
-              <ThreeBoxesLogo3D size={300} className="h-[92px] sm:h-[96px] lg:h-[96px] w-auto" />
+              <ThreeBoxesLogo3D size={300} className="h-[88px] w-auto" />
             </div>
             {/* Center: Navigation links */}
-            <div className="hidden lg:flex items-center gap-6 text-sm text-[#024217]/80">
-              <a href="#jobs" className="hover:text-[#024217] font-medium transition-colors">Find Jobs</a>
-              <a href="#companies" className="hover:text-[#024217] font-medium transition-colors">Companies</a>
-              <a href="#ai-features" className="hover:text-[#024217] font-medium transition-colors">AI Features</a>
-              <a href="#training" className="hover:text-[#024217] font-medium transition-colors">Training</a>
+            <div className="hidden lg:flex items-center gap-6 text-sm text-[#1f8f15]/80">
+              <a href="#jobs" className="hover:text-[#1f8f15] font-medium transition-colors">Find Jobs</a>
+              <a href="#companies" className="hover:text-[#1f8f15] font-medium transition-colors">Companies</a>
+              <a href="#ai-features" className="hover:text-[#1f8f15] font-medium transition-colors">AI Features</a>
+              <a href="#training" className="hover:text-[#1f8f15] font-medium transition-colors">Training</a>
             </div>
             {/* Right: Auth buttons */}
             <div className="flex items-center gap-3">
-              <Button variant="ghost" className="text-[#024217] hover:text-[#024217] hover:bg-[#024217]/10" onClick={openLogin}>
+              <Button variant="ghost" className="text-[#1f8f15] hover:text-[#1f8f15] hover:bg-[#1f8f15]/10" onClick={openLogin}>
                 Login
               </Button>
-              <Button className="bg-[#024217] hover:bg-[#044d1a] text-white font-bold shadow-md" onClick={openRegister}>
+              <Button className="bg-[#1f8f15] hover:bg-[#2d7a28] text-white font-bold shadow-md" onClick={openRegister}>
                 Register Free
               </Button>
             </div>
@@ -339,8 +339,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
               {/* Panel Header */}
               <div className="sticky top-0 bg-white z-10 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#024217]/10 flex items-center justify-center">
-                    <Briefcase className="h-4 w-4 text-[#024217]" />
+                  <div className="w-8 h-8 rounded-lg bg-[#1f8f15]/10 flex items-center justify-center">
+                    <Briefcase className="h-4 w-4 text-[#1f8f15]" />
                   </div>
                   <span className="font-bold text-gray-900">
                     {authView === 'login' ? 'Sign In' : 'Create Account'}
@@ -373,7 +373,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                     <div>
                       <div className="flex items-center justify-between">
                         <Label className="text-sm font-medium text-gray-700">Password</Label>
-                        <button className="text-xs font-medium text-[#024217] hover:underline">Forgot password?</button>
+                        <button className="text-xs font-medium text-[#1f8f15] hover:underline">Forgot password?</button>
                       </div>
                       <div className="relative mt-1.5">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -383,7 +383,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                       </div>
                     </div>
 
-                    <Button className="w-full h-11 bg-[#024217] hover:bg-[#044d1a] text-white font-semibold rounded-xl text-sm"
+                    <Button className="w-full h-11 bg-[#1f8f15] hover:bg-[#2d7a28] text-white font-semibold rounded-xl text-sm"
                       onClick={handleLogin} disabled={loginLoading}>
                       {loginLoading ? (
                         <span className="flex items-center gap-2">
@@ -405,13 +405,13 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
 
                     <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-4 space-y-2">
                       <p className="text-xs font-semibold text-gray-600 mb-3 flex items-center gap-1.5">
-                        <Sparkles className="h-3.5 w-3.5 text-[#024217]" /> Try any role instantly:
+                        <Sparkles className="h-3.5 w-3.5 text-[#1f8f15]" /> Try any role instantly:
                       </p>
                       <div className="grid grid-cols-2 gap-2">
                         {Object.entries(credentials).map(([role, cred]) => (
                           <button key={role} onClick={() => fillDemo(role as DemoRole)}
                             className="flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-all hover:shadow-sm border border-transparent hover:border-gray-200 bg-white">
-                            <Lock className="h-3.5 w-3.5 shrink-0 text-[#024217]" />
+                            <Lock className="h-3.5 w-3.5 shrink-0 text-[#1f8f15]" />
                             <span className="text-xs font-medium text-gray-700 truncate">{cred.label}: {cred.email}</span>
                           </button>
                         ))}
@@ -423,7 +423,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
 
                     <div className="text-center text-sm text-gray-500 mt-4">
                       Don&apos;t have an account?{' '}
-                      <button onClick={() => setAuthView('register')} className="font-semibold text-[#024217] hover:underline">Sign up free</button>
+                      <button onClick={() => setAuthView('register')} className="font-semibold text-[#1f8f15] hover:underline">Sign up free</button>
                     </div>
                   </div>
                 ) : (
@@ -446,12 +446,12 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                           { value: 'INTERVIEWER', label: 'Interviewer', icon: UserCheck },
                         ].map((role) => (
                           <Card key={role.value}
-                            className={`cursor-pointer transition-all ${regRole === role.value ? 'border-2 bg-[#f0f8f0]/50 shadow-sm' : 'border-gray-200 hover:border-gray-300'}`}
+                            className={`cursor-pointer transition-all ${regRole === role.value ? 'border-2 bg-[#e8f5e9]/50 shadow-sm' : 'border-gray-200 hover:border-gray-300'}`}
                             style={{ borderColor: regRole === role.value ? '#22c55e' : undefined }}
                             onClick={() => setRegRole(role.value)}>
                             <CardContent className="p-3 text-center">
-                              <role.icon className={`h-5 w-5 mx-auto mb-1 ${regRole === role.value ? 'text-[#024217]' : 'text-gray-400'}`} />
-                              <div className={`text-xs font-medium ${regRole === role.value ? 'text-[#024217]' : 'text-gray-600'}`}>{role.label}</div>
+                              <role.icon className={`h-5 w-5 mx-auto mb-1 ${regRole === role.value ? 'text-[#1f8f15]' : 'text-gray-400'}`} />
+                              <div className={`text-xs font-medium ${regRole === role.value ? 'text-[#1f8f15]' : 'text-gray-600'}`}>{role.label}</div>
                             </CardContent>
                           </Card>
                         ))}
@@ -531,7 +531,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                       </div>
                     )}
 
-                    <Button className="w-full h-11 bg-[#024217] hover:bg-[#044d1a] text-white font-semibold rounded-xl text-sm"
+                    <Button className="w-full h-11 bg-[#1f8f15] hover:bg-[#2d7a28] text-white font-semibold rounded-xl text-sm"
                       onClick={handleRegister} disabled={regLoading}>
                       {regLoading ? (
                         <span className="flex items-center gap-2">
@@ -549,7 +549,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
 
                     <div className="text-center text-sm text-gray-500">
                       Already have an account?{' '}
-                      <button onClick={() => setAuthView('login')} className="font-semibold text-[#024217] hover:underline">Sign in</button>
+                      <button onClick={() => setAuthView('login')} className="font-semibold text-[#1f8f15] hover:underline">Sign in</button>
                     </div>
                   </div>
                 )}
@@ -560,7 +560,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       </AnimatePresence>
 
       {/* ===== HERO SECTION ===== */}
-      <section className="relative bg-gradient-to-br from-[#024217] via-[#044d1a] to-[#22c55e] pb-20 sm:pb-28 pt-6 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[#1f8f15] via-[#2d7a28] to-[#22c55e] pb-20 sm:pb-28 pt-6 overflow-hidden">
         {/* Floating infographic shapes */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <FloatingShape className="top-[8%] left-[5%]" icon="resume" delay={0} />
@@ -595,8 +595,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                 initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.4 }}
                 className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 mb-5"
               >
-                <Sparkles className="h-4 w-4 text-[#3a9a3a]" />
-                <span className="text-sm text-[#d8ecd8] font-medium">India&apos;s #1 AI-Powered Job Portal</span>
+                <Sparkles className="h-4 w-4 text-[#49A842]" />
+                <span className="text-sm text-[#c8e6c9] font-medium">India&apos;s #1 AI-Powered Job Portal</span>
               </motion.div>
               <motion.h1
                 initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}
@@ -604,14 +604,14 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
               >
                 Find Your Dream Job with{' '}
                 <span className="relative inline-block">
-                  <span className="text-[#3a9a3a]">AI-Powered</span>
-                  <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 120 8" fill="none"><path d="M2 6C20 2 50 2 60 4C70 6 100 3 118 2" stroke="#86efac" strokeWidth="2.5" strokeLinecap="round" opacity="0.6"/></svg>
+                  <span className="text-[#49A842]">AI-Powered</span>
+                  <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 120 8" fill="none"><path d="M2 6C20 2 50 2 60 4C70 6 100 3 118 2" stroke="#7dd87d" strokeWidth="2.5" strokeLinecap="round" opacity="0.6"/></svg>
                 </span>{' '}
                 Precision
               </motion.h1>
               <motion.p
                 initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}
-                className="mt-4 text-base sm:text-lg text-[#d8ecd8]/80 max-w-xl"
+                className="mt-4 text-base sm:text-lg text-[#c8e6c9]/80 max-w-xl"
               >
                 Smart resumes, AI mock interviews, skill auto-updates & intelligent job matching — your complete career platform
               </motion.p>
@@ -652,7 +652,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                         className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
                       />
                     </div>
-                    <Button className="h-12 px-8 bg-[#024217] hover:bg-[#044d1a] text-white font-semibold text-base rounded-xl whitespace-nowrap shadow-md"
+                    <Button className="h-12 px-8 bg-[#1f8f15] hover:bg-[#2d7a28] text-white font-semibold text-base rounded-xl whitespace-nowrap shadow-md"
                       onClick={handleSearch}>
                       <Search className="h-5 w-5 mr-2" /> {searching ? 'Searching...' : 'Search'}
                     </Button>
@@ -680,9 +680,9 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                   { label: 'AI Interviews', value: '1,000+', icon: Brain },
                 ].map(stat => (
                   <div key={stat.label} className="text-center flex flex-col items-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-5 py-3 min-w-[120px]">
-                    <stat.icon className="h-5 w-5 text-[#3a9a3a] mb-1" />
+                    <stat.icon className="h-5 w-5 text-[#49A842] mb-1" />
                     <div className="text-xl sm:text-2xl font-extrabold text-white">{stat.value}</div>
-                    <div className="text-xs sm:text-sm text-[#b0d9b5]/70">{stat.label}</div>
+                    <div className="text-xs sm:text-sm text-[#a5d6a7]/70">{stat.label}</div>
                   </div>
                 ))}
               </motion.div>
@@ -695,7 +695,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
             >
               <div className="relative">
                 {/* Decorative background circles */}
-                <div className="absolute -top-8 -left-8 w-72 h-72 bg-[#3a9a3a]/20 rounded-full blur-3xl" />
+                <div className="absolute -top-8 -left-8 w-72 h-72 bg-[#49A842]/20 rounded-full blur-3xl" />
                 <div className="absolute -bottom-8 -right-8 w-64 h-64 bg-[#f9ab00]/10 rounded-full blur-3xl" />
 
                 {/* Main image with rounded frame */}
@@ -709,12 +709,12 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                     priority
                   />
                   {/* Gradient overlay at bottom */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#024217]/80 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1f8f15]/80 via-transparent to-transparent" />
                   {/* Floating badge on image */}
                   <div className="absolute bottom-6 left-6 right-6">
                     <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-[#024217] flex items-center justify-center flex-shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-[#1f8f15] flex items-center justify-center flex-shrink-0">
                           <CheckCircle2 className="h-5 w-5 text-white" />
                         </div>
                         <div>
@@ -750,8 +750,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                   className="absolute -bottom-4 -left-4 bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-white/20"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#024217]/15 flex items-center justify-center">
-                      <Brain className="h-5 w-5 text-[#024217]" />
+                    <div className="w-10 h-10 rounded-xl bg-[#1f8f15]/15 flex items-center justify-center">
+                      <Brain className="h-5 w-5 text-[#1f8f15]" />
                     </div>
                     <div>
                       <p className="text-sm font-bold text-gray-900">AI Mock Interviews</p>
@@ -773,11 +773,11 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       </section>
 
       {/* ===== JOB CATEGORIES ===== */}
-      <section id="jobs" className="py-12 bg-[#013b0b]">
+      <section id="jobs" className="py-12 bg-[#0d5a0a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">Browse Jobs by Category</h2>
-            <Button variant="ghost" className="text-[#024217] text-sm font-semibold">
+            <Button variant="ghost" className="text-[#1f8f15] text-sm font-semibold">
               View All <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
@@ -798,7 +798,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                     onClick={() => { setSearchSkill(cat.keywords[0]); handleSearch() }}>
                     <CardContent className="p-4 flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
-                        <cat.icon className="h-5 w-5 text-[#024217]" />
+                        <cat.icon className="h-5 w-5 text-[#1f8f15]" />
                       </div>
                       <div className="min-w-0">
                         <p className="font-semibold text-sm text-gray-900 truncate">{cat.label}</p>
@@ -815,11 +815,11 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
 
       {/* ===== SEARCH RESULTS (shown after search) - TILES VIEW ===== */}
       {showSearchResults && (
-        <section className="py-12 bg-[#024217]">
+        <section className="py-12 bg-[#1f8f15]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">
-                Search Results {searchResults.length > 0 && <span className="text-[#024217]">({searchResults.length})</span>}
+                Search Results {searchResults.length > 0 && <span className="text-[#1f8f15]">({searchResults.length})</span>}
               </h2>
               <Button variant="ghost" className="text-gray-500 text-sm" onClick={() => { setShowSearchResults(false); setSelectedJob(null) }}>
                 <X className="h-4 w-4 mr-1" /> Clear
@@ -841,7 +841,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {searchResults.map((job: any, i: number) => (
                   <motion.div key={job.id} initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: i * 0.04 }}>
-                    <Card className={`hover:shadow-lg transition-all cursor-pointer border-gray-100 group ${selectedJob?.id === job.id ? 'ring-[#024217] border-[#024217]' : 'hover:border-emerald-200'}`}
+                    <Card className={`hover:shadow-lg transition-all cursor-pointer border-gray-100 group ${selectedJob?.id === job.id ? 'ring-[#1f8f15] border-[#1f8f15]' : 'hover:border-emerald-200'}`}
                       onClick={() => setSelectedJob(job)}>
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3 mb-3">
@@ -849,7 +849,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                             {getCompanyInitial(job.corporate?.companyName)}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-bold text-gray-900 text-sm leading-tight group-hover:text-[#024217] transition-colors line-clamp-2">{job.title}</h3>
+                            <h3 className="font-bold text-gray-900 text-sm leading-tight group-hover:text-[#1f8f15] transition-colors line-clamp-2">{job.title}</h3>
                             <p className="text-xs text-gray-500 mt-0.5 truncate">{job.corporate?.companyName}</p>
                           </div>
                         </div>
@@ -861,7 +861,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                           </div>
                           <div className="flex items-center gap-1.5 text-xs text-gray-600">
                             <IndianRupee className="h-3 w-3 text-gray-400 flex-shrink-0" />
-                            <span className="font-medium text-[#024217]">{formatSalary(job.salaryMin, job.salaryMax)}</span>
+                            <span className="font-medium text-[#1f8f15]">{formatSalary(job.salaryMin, job.salaryMax)}</span>
                           </div>
                           {job.experienceMin && (
                             <div className="flex items-center gap-1.5 text-xs text-gray-600">
@@ -884,7 +884,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                         </div>
                         <div className="flex items-center justify-between pt-2 border-t border-gray-50">
                           <Badge variant="outline" className="text-[10px] text-gray-500 border-gray-200">{job.jobType || 'Full Time'}</Badge>
-                          <span className="text-xs font-medium text-[#024217] flex items-center gap-0.5 group-hover:text-emerald-700">
+                          <span className="text-xs font-medium text-[#1f8f15] flex items-center gap-0.5 group-hover:text-emerald-700">
                             View <ChevronRight className="h-3 w-3" />
                           </span>
                         </div>
@@ -899,14 +899,14 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       )}
 
       {/* ===== FEATURED JOBS (dynamic from API) - JobHub Card Style ===== */}
-      <section id="jobs" className="py-16 bg-[#013b0b]">
+      <section id="jobs" className="py-16 bg-[#0d5a0a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
             <div>
               <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">Featured Jobs</h2>
               <p className="text-sm text-gray-500 mt-1">Hand-picked jobs for you</p>
             </div>
-            <Button variant="ghost" className="text-[#024217] text-sm font-semibold" onClick={isAuthenticated ? undefined : openLogin}>
+            <Button variant="ghost" className="text-[#1f8f15] text-sm font-semibold" onClick={isAuthenticated ? undefined : openLogin}>
               View All <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
@@ -962,24 +962,24 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                             {job.jobType || 'Full Time'}
                           </Badge>
                         </div>
-                        <h5 className="font-semibold text-gray-900 text-sm leading-snug group-hover:text-[#024217] transition-colors line-clamp-2 mb-2">
+                        <h5 className="font-semibold text-gray-900 text-sm leading-snug group-hover:text-[#1f8f15] transition-colors line-clamp-2 mb-2">
                           {job.title}
                         </h5>
                         <div className="flex items-center gap-3 text-[11px] text-gray-500 mb-3">
                           <span className="flex items-center gap-1">
-                            <Clock className="h-3 w-3 text-[#024217]" />
+                            <Clock className="h-3 w-3 text-[#1f8f15]" />
                             {job.postedDate ? timeAgo(job.postedDate) : 'Recently'}
                           </span>
                           <span className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3 text-[#024217]" />
+                            <MapPin className="h-3 w-3 text-[#1f8f15]" />
                             {job.location || 'Remote'}
                           </span>
                         </div>
                         <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                          <span className="font-semibold text-[#024217] text-sm">
+                          <span className="font-semibold text-[#1f8f15] text-sm">
                             {formatSalary(job.salaryMin, job.salaryMax)}
                           </span>
-                          <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-[#024217] group-hover:translate-x-0.5 transition-all" />
+                          <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-[#1f8f15] group-hover:translate-x-0.5 transition-all" />
                         </div>
                       </div>
                     </CardContent>
@@ -995,7 +995,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       {selectedJob && (
         <div className="fixed inset-0 z-50 bg-white overflow-y-auto">
           {/* Sticky top action bar */}
-          <div className="sticky top-0 z-10 bg-gradient-to-r from-[#024217] to-[#044d1a] py-3 px-4 sm:px-6 shadow-lg">
+          <div className="sticky top-0 z-10 bg-gradient-to-r from-[#1f8f15] to-[#2d7a28] py-3 px-4 sm:px-6 shadow-lg">
             <div className="max-w-7xl mx-auto flex items-center gap-3">
               <button onClick={() => setSelectedJob(null)} className="flex items-center gap-2 text-white/90 hover:text-white text-sm transition-colors group bg-white/10 hover:bg-white/20 rounded-lg px-3 py-2">
                 <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" /> Back to Jobs
@@ -1013,7 +1013,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
           </div>
 
           {/* Hero Header - Green banner */}
-          <section className="relative bg-gradient-to-r from-[#024217] to-[#044d1a] pb-8 pt-4 overflow-hidden">
+          <section className="relative bg-gradient-to-r from-[#1f8f15] to-[#2d7a28] pb-8 pt-4 overflow-hidden">
             <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'}} />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
               <div className="flex flex-col sm:flex-row items-start gap-4">
@@ -1061,7 +1061,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                         <ul className="space-y-2.5">
                           {selectedJob.responsibilities.split('\n').filter((l: string) => l.trim()).map((line: string, i: number) => (
                             <li key={i} className="flex items-start gap-2.5 text-[#5f6368] text-[15px] leading-[22px]">
-                              <CheckCircle2 className="h-5 w-5 text-[#024217] flex-shrink-0 mt-0.5" />
+                              <CheckCircle2 className="h-5 w-5 text-[#1f8f15] flex-shrink-0 mt-0.5" />
                               <span>{line.replace(/^[-•*]\s*/, '')}</span>
                             </li>
                           ))}
@@ -1077,7 +1077,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                         <ul className="space-y-2.5">
                           {selectedJob.requirements.split('\n').filter((l: string) => l.trim()).map((line: string, i: number) => (
                             <li key={i} className="flex items-start gap-2.5 text-[#5f6368] text-[15px] leading-[22px]">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#024217] flex-shrink-0 mt-2" />
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#1f8f15] flex-shrink-0 mt-2" />
                               <span>{line.replace(/^[-•*]\s*/, '')}</span>
                             </li>
                           ))}
@@ -1091,8 +1091,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                     <CardContent className="p-6">
                       <h4 className="font-semibold text-[#202124] text-lg mb-4">Share This Job</h4>
                       <div className="flex gap-3">
-                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#024217] text-white text-sm font-medium hover:opacity-90 transition-opacity"><Facebook className="h-4 w-4" /> Facebook</button>
-                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#044d1a] text-white text-sm font-medium hover:opacity-90 transition-opacity"><Twitter className="h-4 w-4" /> Twitter</button>
+                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1f8f15] text-white text-sm font-medium hover:opacity-90 transition-opacity"><Facebook className="h-4 w-4" /> Facebook</button>
+                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#2d7a28] text-white text-sm font-medium hover:opacity-90 transition-opacity"><Twitter className="h-4 w-4" /> Twitter</button>
                         <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#22c55e] text-white text-sm font-medium hover:opacity-90 transition-opacity"><Linkedin className="h-4 w-4" /> LinkedIn</button>
                       </div>
                     </CardContent>
@@ -1107,10 +1107,10 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                       <h4 className="font-semibold text-[#202124] mb-4">Job Overview</h4>
                       <div className="space-y-4">
                         {[
-                          { icon: CalendarDays, label: 'Date Posted', value: selectedJob.postedDate ? timeAgo(selectedJob.postedDate) : 'Recently', color: 'text-[#024217]' },
+                          { icon: CalendarDays, label: 'Date Posted', value: selectedJob.postedDate ? timeAgo(selectedJob.postedDate) : 'Recently', color: 'text-[#1f8f15]' },
                           { icon: Clock, label: 'Expiration', value: '30 days left', color: 'text-[#d93025]' },
                           { icon: MapPin, label: 'Location', value: selectedJob.location || 'Remote', color: 'text-[#34a853]' },
-                          { icon: Briefcase, label: 'Job Title', value: selectedJob.title, color: 'text-[#024217]' },
+                          { icon: Briefcase, label: 'Job Title', value: selectedJob.title, color: 'text-[#1f8f15]' },
                           { icon: Clock, label: 'Hours', value: selectedJob.jobType === 'part-time' ? 'Part Time' : 'Full Time', color: 'text-[#f9ab00]' },
                           { icon: IndianRupee, label: 'Salary', value: formatSalary(selectedJob.salaryMin, selectedJob.salaryMax), color: 'text-[#34a853]' },
                         ].map((item, i) => (
@@ -1135,7 +1135,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                         <h4 className="font-semibold text-[#202124] mb-4">Job Skills</h4>
                         <div className="flex flex-wrap gap-2">
                           {selectedJob.skills.split(',').map((s: string) => (
-                            <Badge key={s.trim()} className="bg-[#f5f7fc] text-[#5f6368] border border-[#ecedf2] hover:bg-[#f0f8f0] hover:text-[#024217] rounded-md px-3 py-1.5 text-sm font-normal transition-colors">{s.trim()}</Badge>
+                            <Badge key={s.trim()} className="bg-[#f5f7fc] text-[#5f6368] border border-[#ecedf2] hover:bg-[#e8f5e9] hover:text-[#1f8f15] rounded-md px-3 py-1.5 text-sm font-normal transition-colors">{s.trim()}</Badge>
                           ))}
                         </div>
                       </CardContent>
@@ -1152,7 +1152,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                         </div>
                         <div>
                           <p className="font-semibold text-[#202124]">{selectedJob.corporate?.companyName}</p>
-                          <button className="text-sm text-[#024217] hover:underline">View company profile</button>
+                          <button className="text-sm text-[#1f8f15] hover:underline">View company profile</button>
                         </div>
                       </div>
                       <div className="space-y-3">
@@ -1170,17 +1170,17 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                           </div>
                         ))}
                         <div className="flex items-center gap-2 pt-2">
-                          <button className="w-8 h-8 rounded-full bg-[#024217] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Facebook className="h-3.5 w-3.5" /></button>
-                          <button className="w-8 h-8 rounded-full bg-[#044d1a] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Twitter className="h-3.5 w-3.5" /></button>
+                          <button className="w-8 h-8 rounded-full bg-[#1f8f15] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Facebook className="h-3.5 w-3.5" /></button>
+                          <button className="w-8 h-8 rounded-full bg-[#2d7a28] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Twitter className="h-3.5 w-3.5" /></button>
                           <button className="w-8 h-8 rounded-full bg-[#22c55e] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Linkedin className="h-3.5 w-3.5" /></button>
-                          <button className="w-8 h-8 rounded-full bg-[#024217] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Globe className="h-3.5 w-3.5" /></button>
+                          <button className="w-8 h-8 rounded-full bg-[#1f8f15] flex items-center justify-center text-white hover:opacity-80 transition-opacity"><Globe className="h-3.5 w-3.5" /></button>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
 
                   {/* Apply CTA Card */}
-                  <Card className="border-[#ecedf2] bg-gradient-to-br from-[#024217] to-[#044d1a]">
+                  <Card className="border-[#ecedf2] bg-gradient-to-br from-[#1f8f15] to-[#2d7a28]">
                     <CardContent className="p-5 text-center">
                       <h4 className="font-semibold text-white mb-2">Interested in this job?</h4>
                       <p className="text-white/70 text-sm mb-4">Apply now and get a response within 48 hours</p>
@@ -1201,12 +1201,12 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
         </div>
       )}
       {/* ===== CORPORATE PARTNERS — Scrolling Companies + Advantages Workflow ===== */}
-      <section id="companies" className="py-16 bg-[#013b0b] overflow-hidden">
+      <section id="companies" className="py-16 bg-[#0d5a0a] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <motion.div initial={{ y: 10, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }}>
-              <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Trusted By Top Employers</Badge>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Companies That <span className="text-[#024217]">Hire Through Us</span></h2>
+              <Badge className="bg-[#e8f5e9] text-[#1f8f15] border-[#c8e6c9] rounded-full px-4 py-1 text-xs font-semibold mb-3">Trusted By Top Employers</Badge>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Companies That <span className="text-[#1f8f15]">Hire Through Us</span></h2>
               <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">From startups to Fortune 500s — corporates trust 3 Boxes for AI-powered hiring that delivers better candidates faster.</p>
             </motion.div>
           </div>
@@ -1219,7 +1219,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
             <div className="overflow-hidden">
               <div className="flex gap-6 animate-marquee whitespace-nowrap">
                 {[...topCompanies, ...topCompanies, ...topCompanies].map((c, i) => (
-                  <div key={`${c.name}-${i}`} className="flex-shrink-0 w-[130px] h-[70px] flex items-center justify-center rounded-xl border border-gray-100 bg-gray-50 hover:border-[#024217]/30 hover:bg-[#f0f8f0] transition-all group">
+                  <div key={`${c.name}-${i}`} className="flex-shrink-0 w-[130px] h-[70px] flex items-center justify-center rounded-xl border border-gray-100 bg-gray-50 hover:border-[#1f8f15]/30 hover:bg-[#e8f5e9] transition-all group">
                     <div className="flex items-center gap-2">
                       <div className={`w-10 h-10 rounded-lg ${getCompanyColor(c.name)} flex items-center justify-center text-white font-bold text-sm group-hover:scale-110 transition-transform`}>
                         {c.logo}
@@ -1233,7 +1233,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
 
           {/* Corporate Advantages - Infographic Workflow */}
           <div className="mt-4">
-            <h3 className="text-xl font-bold text-gray-900 text-center mb-8">Why Corporates Choose <span className="text-[#024217]">3 Boxes</span></h3>
+            <h3 className="text-xl font-bold text-gray-900 text-center mb-8">Why Corporates Choose <span className="text-[#1f8f15]">3 Boxes</span></h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 {
@@ -1241,14 +1241,14 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                   icon: Building2,
                   title: 'Post Jobs Instantly',
                   desc: 'Create job postings in minutes with AI-assisted job description generation. Reach thousands of qualified candidates immediately across our platform.',
-                  color: 'from-[#024217] to-[#044d1a]',
+                  color: 'from-[#1f8f15] to-[#2d7a28]',
                 },
                 {
                   step: '02',
                   icon: Target,
                   title: 'AI Smart Matching',
                   desc: 'Our AI engine analyzes skills, experience, and cultural fit to match you with the most relevant candidates — no more sifting through hundreds of irrelevant resumes.',
-                  color: 'from-[#34a853] to-[#024217]',
+                  color: 'from-[#34a853] to-[#1f8f15]',
                 },
                 {
                   step: '03',
@@ -1262,7 +1262,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                   icon: BarChart3,
                   title: 'Analytics Dashboard',
                   desc: 'Real-time hiring analytics — track application funnels, time-to-hire, candidate quality scores, and ROI on your job postings with actionable insights.',
-                  color: 'from-[#044d1a] to-[#024217]',
+                  color: 'from-[#2d7a28] to-[#1f8f15]',
                 },
               ].map((item, i) => (
                 <motion.div key={item.step}
@@ -1276,8 +1276,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                   {i < 3 && (
                     <div className="hidden lg:block absolute top-12 -right-3 w-6">
                       <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
-                        <path d="M0 6L8 6L12 2L16 6L24 6" stroke="#024217" strokeWidth="2" strokeLinecap="round" opacity="0.3" />
-                        <circle cx="24" cy="6" r="2" fill="#024217" opacity="0.3" />
+                        <path d="M0 6L8 6L12 2L16 6L24 6" stroke="#1f8f15" strokeWidth="2" strokeLinecap="round" opacity="0.3" />
+                        <circle cx="24" cy="6" r="2" fill="#1f8f15" opacity="0.3" />
                       </svg>
                     </div>
                   )}
@@ -1288,8 +1288,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                         {item.step}
                       </div>
                       {/* Icon */}
-                      <div className="w-10 h-10 rounded-lg bg-[#f0f8f0] flex items-center justify-center mb-3">
-                        <item.icon className="h-5 w-5 text-[#024217]" />
+                      <div className="w-10 h-10 rounded-lg bg-[#e8f5e9] flex items-center justify-center mb-3">
+                        <item.icon className="h-5 w-5 text-[#1f8f15]" />
                       </div>
                       <h4 className="font-bold text-gray-900 text-base mb-2">{item.title}</h4>
                       <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
@@ -1301,7 +1301,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
 
             {/* Corporate CTA */}
             <div className="text-center mt-10">
-              <Button className="bg-[#024217] hover:bg-[#044d1a] text-white font-semibold px-8 h-12 text-base rounded-xl shadow-md" onClick={openRegister}>
+              <Button className="bg-[#1f8f15] hover:bg-[#2d7a28] text-white font-semibold px-8 h-12 text-base rounded-xl shadow-md" onClick={openRegister}>
                 <Building2 className="h-5 w-5 mr-2" /> Register Your Company
               </Button>
               <p className="text-xs text-gray-400 mt-2">Free to post. Pay only when you hire.</p>
@@ -1311,12 +1311,12 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       </section>
 
       {/* ===== AI FEATURES — Portal Features + Infographic Workflow ===== */}
-      <section id="ai-features" className="py-16 bg-[#024217]">
+      <section id="ai-features" className="py-16 bg-[#1f8f15]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <motion.div initial={{ y: 10, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }}>
-              <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">AI-Powered Platform</Badge>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Built-In <span className="text-[#024217]">AI Features</span> for Every User</h2>
+              <Badge className="bg-[#e8f5e9] text-[#1f8f15] border-[#c8e6c9] rounded-full px-4 py-1 text-xs font-semibold mb-3">AI-Powered Platform</Badge>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Built-In <span className="text-[#1f8f15]">AI Features</span> for Every User</h2>
               <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">Not just a job board — 3 Boxes is an intelligent career platform with AI tools designed for job seekers, recruiters, HR managers, and interviewers.</p>
             </motion.div>
           </div>
@@ -1326,11 +1326,11 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
             {/* Job Seekers */}
             <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0 }} viewport={{ once: true }}>
               <Card className="border-0 shadow-sm h-full overflow-hidden">
-                <div className="bg-gradient-to-br from-[#024217] to-[#044d1a] p-6 text-center relative">
+                <div className="bg-gradient-to-br from-[#1f8f15] to-[#2d7a28] p-6 text-center relative">
                   <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
                   <Users className="h-8 w-8 text-white mx-auto mb-2" />
                   <h3 className="text-lg font-bold text-white">For Job Seekers</h3>
-                  <p className="text-[#d8ecd8]/80 text-xs mt-1">Smart tools to land your dream job</p>
+                  <p className="text-[#c8e6c9]/80 text-xs mt-1">Smart tools to land your dream job</p>
                 </div>
                 <CardContent className="p-5 space-y-4">
                   {[
@@ -1340,8 +1340,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                     { icon: Zap, title: 'Skill Auto-Update', desc: 'Complete a training course and your skills automatically update across your profile and all resumes.' },
                   ].map((feature, i) => (
                     <div key={i} className="flex gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-[#f0f8f0] flex items-center justify-center flex-shrink-0">
-                        <feature.icon className="h-4 w-4 text-[#024217]" />
+                      <div className="w-9 h-9 rounded-lg bg-[#e8f5e9] flex items-center justify-center flex-shrink-0">
+                        <feature.icon className="h-4 w-4 text-[#1f8f15]" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-gray-900 text-sm">{feature.title}</h4>
@@ -1386,11 +1386,11 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
             {/* Interviewers & Admins */}
             <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} viewport={{ once: true }}>
               <Card className="border-0 shadow-sm h-full overflow-hidden">
-                <div className="bg-gradient-to-br from-[#044d1a] to-[#024217] p-6 text-center relative">
+                <div className="bg-gradient-to-br from-[#2d7a28] to-[#1f8f15] p-6 text-center relative">
                   <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
                   <Shield className="h-8 w-8 text-white mx-auto mb-2" />
                   <h3 className="text-lg font-bold text-white">For Interviewers & Admins</h3>
-                  <p className="text-[#d8ecd8]/80 text-xs mt-1">Streamlined evaluation tools</p>
+                  <p className="text-[#c8e6c9]/80 text-xs mt-1">Streamlined evaluation tools</p>
                 </div>
                 <CardContent className="p-5 space-y-4">
                   {[
@@ -1400,8 +1400,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                     { icon: Award, title: 'Quality Scoring', desc: 'AI generates candidate quality scores combining resume data, interview performance, and skill assessments.' },
                   ].map((feature, i) => (
                     <div key={i} className="flex gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-[#f0f8f0] flex items-center justify-center flex-shrink-0">
-                        <feature.icon className="h-4 w-4 text-[#024217]" />
+                      <div className="w-9 h-9 rounded-lg bg-[#e8f5e9] flex items-center justify-center flex-shrink-0">
+                        <feature.icon className="h-4 w-4 text-[#1f8f15]" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-gray-900 text-sm">{feature.title}</h4>
@@ -1416,14 +1416,14 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
 
           {/* AI Workflow Infographic */}
           <div className="mt-12">
-            <h3 className="text-xl font-bold text-gray-900 text-center mb-8">How <span className="text-[#024217]">AI</span> Powers Your Hiring Journey</h3>
+            <h3 className="text-xl font-bold text-gray-900 text-center mb-8">How <span className="text-[#1f8f15]">AI</span> Powers Your Hiring Journey</h3>
             <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-0">
               {[
-                { icon: FileText, label: 'AI Resume Scan', desc: 'Instant parsing & scoring', color: 'bg-[#024217]' },
+                { icon: FileText, label: 'AI Resume Scan', desc: 'Instant parsing & scoring', color: 'bg-[#1f8f15]' },
                 { icon: Target, label: 'Smart Matching', desc: 'Skill-fit algorithms', color: 'bg-[#34a853]' },
                 { icon: Brain, label: 'AI Interview', desc: 'Automated screening', color: 'bg-[#f9ab00]' },
-                { icon: BarChart3, label: 'Quality Score', desc: 'Data-driven ranking', color: 'bg-[#044d1a]' },
-                { icon: CheckCircle2, label: 'Hire the Best', desc: 'Confident decisions', color: 'bg-[#024217]' },
+                { icon: BarChart3, label: 'Quality Score', desc: 'Data-driven ranking', color: 'bg-[#2d7a28]' },
+                { icon: CheckCircle2, label: 'Hire the Best', desc: 'Confident decisions', color: 'bg-[#1f8f15]' },
               ].map((step, i) => (
                 <motion.div key={step.label} className="flex items-center"
                   initial={{ x: -20, opacity: 0 }}
@@ -1441,8 +1441,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                   {i < 4 && (
                     <div className="hidden lg:flex items-center mx-2">
                       <svg width="40" height="12" viewBox="0 0 40 12" fill="none">
-                        <path d="M0 6L12 6L16 2L20 6L24 2L28 6L40 6" stroke="#024217" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
-                        <circle cx="40" cy="6" r="3" fill="#024217" opacity="0.4" />
+                        <path d="M0 6L12 6L16 2L20 6L24 2L28 6L40 6" stroke="#1f8f15" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
+                        <circle cx="40" cy="6" r="3" fill="#1f8f15" opacity="0.4" />
                       </svg>
                     </div>
                   )}
@@ -1454,17 +1454,17 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       </section>
 
       {/* ===== TRAINING MODULE — Linked to MarqAI Trainers ===== */}
-      <section id="training" className="py-16 bg-[#024217]">
+      <section id="training" className="py-16 bg-[#1f8f15]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left - Training Info */}
             <motion.div initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} viewport={{ once: true }}>
-              <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Upskill & Get Hired Faster</Badge>
+              <Badge className="bg-[#e8f5e9] text-[#1f8f15] border-[#c8e6c9] rounded-full px-4 py-1 text-xs font-semibold mb-3">Upskill & Get Hired Faster</Badge>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight">
-                Training That <span className="text-[#024217]">Auto-Updates</span> Your Profile
+                Training That <span className="text-[#1f8f15]">Auto-Updates</span> Your Profile
               </h2>
               <p className="text-gray-500 mt-4 text-sm leading-relaxed">
-                Our integrated training portal — <a href="https://marqaitrainers.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-[#024217] font-semibold hover:underline">MarqAI Trainers</a> — offers industry-aligned courses designed to bridge the skill gap. Every course you complete automatically updates your skills across your 3 Boxes profile and resume, making you more visible to employers.
+                Our integrated training portal — <a href="https://marqaitrainers.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-[#1f8f15] font-semibold hover:underline">MarqAI Trainers</a> — offers industry-aligned courses designed to bridge the skill gap. Every course you complete automatically updates your skills across your 3 Boxes profile and resume, making you more visible to employers.
               </p>
 
               {/* Benefits */}
@@ -1477,8 +1477,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                   { icon: Brain, title: 'AI-Recommended Courses', desc: 'Our AI analyzes your profile and career goals to recommend the exact courses that will maximize your career growth.' },
                 ].map((benefit, i) => (
                   <div key={i} className="flex gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-[#f0f8f0] flex items-center justify-center flex-shrink-0">
-                      <benefit.icon className="h-5 w-5 text-[#024217]" />
+                    <div className="w-10 h-10 rounded-lg bg-[#e8f5e9] flex items-center justify-center flex-shrink-0">
+                      <benefit.icon className="h-5 w-5 text-[#1f8f15]" />
                     </div>
                     <div>
                       <h4 className="font-semibold text-gray-900 text-sm">{benefit.title}</h4>
@@ -1491,11 +1491,11 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
               {/* CTA Buttons */}
               <div className="mt-8 flex flex-wrap gap-3">
                 <a href="https://marqaitrainers.vercel.app/" target="_blank" rel="noopener noreferrer">
-                  <Button className="bg-[#024217] hover:bg-[#044d1a] text-white font-semibold px-6 h-11 rounded-xl shadow-md">
+                  <Button className="bg-[#1f8f15] hover:bg-[#2d7a28] text-white font-semibold px-6 h-11 rounded-xl shadow-md">
                     <GraduationCap className="h-5 w-5 mr-2" /> Explore Training Portal
                   </Button>
                 </a>
-                <Button variant="outline" className="border-[#024217] text-[#024217] hover:bg-[#f0f8f0] font-semibold px-6 h-11 rounded-xl" onClick={openRegister}>
+                <Button variant="outline" className="border-[#1f8f15] text-[#1f8f15] hover:bg-[#e8f5e9] font-semibold px-6 h-11 rounded-xl" onClick={openRegister}>
                   <Rocket className="h-5 w-5 mr-2" /> Sign Up Free
                 </Button>
               </div>
@@ -1506,21 +1506,21 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
               <Card className="border-0 shadow-lg overflow-hidden">
                 <CardContent className="p-0">
                   {/* Header */}
-                  <div className="bg-gradient-to-br from-[#024217] to-[#044d1a] p-6 text-center relative">
+                  <div className="bg-gradient-to-br from-[#1f8f15] to-[#2d7a28] p-6 text-center relative">
                     <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
                     <GraduationCap className="h-10 w-10 text-white mx-auto mb-2" />
                     <h3 className="text-lg font-bold text-white">Training → Profile → Job</h3>
-                    <p className="text-[#d8ecd8]/80 text-xs mt-1">See how training transforms your career journey</p>
+                    <p className="text-[#c8e6c9]/80 text-xs mt-1">See how training transforms your career journey</p>
                   </div>
 
                   {/* Workflow Steps */}
                   <div className="p-6 space-y-0">
                     {[
-                      { step: '1', icon: BookOpen, title: 'Enroll in a Course', desc: 'Choose from industry-aligned courses on MarqAI Trainers', color: 'bg-[#024217]', line: true },
+                      { step: '1', icon: BookOpen, title: 'Enroll in a Course', desc: 'Choose from industry-aligned courses on MarqAI Trainers', color: 'bg-[#1f8f15]', line: true },
                       { step: '2', icon: Cpu, title: 'Learn & Complete', desc: 'Interactive lessons with hands-on projects and assessments', color: 'bg-[#34a853]', line: true },
                       { step: '3', icon: Zap, title: 'Skills Auto-Update', desc: 'Your 3 Boxes profile & resume update automatically with new skills', color: 'bg-[#f9ab00]', line: true },
-                      { step: '4', icon: Target, title: 'Higher Match Scores', desc: 'AI re-calculates your job match scores — higher visibility to employers', color: 'bg-[#044d1a]', line: true },
-                      { step: '5', icon: Trophy, title: 'Get Interview Calls', desc: 'More matches = more interviews = faster hiring', color: 'bg-[#024217]', line: false },
+                      { step: '4', icon: Target, title: 'Higher Match Scores', desc: 'AI re-calculates your job match scores — higher visibility to employers', color: 'bg-[#2d7a28]', line: true },
+                      { step: '5', icon: Trophy, title: 'Get Interview Calls', desc: 'More matches = more interviews = faster hiring', color: 'bg-[#1f8f15]', line: false },
                     ].map((item, i) => (
                       <div key={i}>
                         <div className="flex items-center gap-4">
@@ -1531,7 +1531,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                              <item.icon className="h-4 w-4 text-[#024217]" />
+                              <item.icon className="h-4 w-4 text-[#1f8f15]" />
                               <h4 className="font-semibold text-gray-900 text-sm">{item.title}</h4>
                             </div>
                             <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
@@ -1539,7 +1539,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                         </div>
                         {item.line && (
                           <div className="flex ml-[22px] my-2">
-                            <div className="w-0.5 h-6 bg-gradient-to-b from-[#024217]/40 to-[#024217]/10" />
+                            <div className="w-0.5 h-6 bg-gradient-to-b from-[#1f8f15]/40 to-[#1f8f15]/10" />
                           </div>
                         )}
                       </div>
@@ -1553,7 +1553,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       </section>
 
       {/* ===== FOOTER ===== */}
-      <footer className="bg-[#021303] text-gray-400 py-10">
+      <footer className="bg-[#0a2e0a] text-gray-400 py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
             <div className="lg:col-span-2">

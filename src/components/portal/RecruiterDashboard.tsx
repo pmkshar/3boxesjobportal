@@ -198,7 +198,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
 
   const statCards = [
     { label: 'Placements', value: '12', change: '+18%', up: true, icon: Target, color: '#06B6D4', bg: '#ECFEFF' },
-    { label: 'Active Searches', value: '5', change: '+10%', up: true, icon: Search, color: '#fc7e0b', bg: '#f0f8f0' },
+    { label: 'Active Searches', value: '5', change: '+10%', up: true, icon: Search, color: '#fc7e0b', bg: '#e8f5e9' },
     { label: 'In Pipeline', value: '28', change: '+35%', up: true, icon: Users, color: '#F59E0B', bg: '#FFFBEB' },
     { label: 'Interviews', value: '8', change: '-5%', up: false, icon: Calendar, color: '#8B5CF6', bg: '#F5F3FF' },
   ]
@@ -298,7 +298,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
                     <div className="relative w-full max-w-[32px]">
                       <div className="w-full rounded-t-md transition-all duration-500 hover:opacity-80 cursor-pointer"
                         style={{ height: `${(v / maxVal) * 100}%`, background: `linear-gradient(180deg, ${theme.primary} 0%, ${theme.primaryRing} 100%)` }} />
-                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#021303] text-white text-[9px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#0a2e0a] text-white text-[9px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                         {v} placed
                       </div>
                     </div>
@@ -555,7 +555,7 @@ function PipelineView() {
   const stages = [
     { name: 'Sourced', count: 45, color: theme.primary, bg: theme.primaryLight, candidates: ['Rahul S.', 'Priya M.', 'Karthik I.'] },
     { name: 'Screening', count: 32, color: '#06B6D4', bg: '#ECFEFF', candidates: ['Sneha R.', 'Arun K.'] },
-    { name: 'Shortlisted', count: 18, color: '#fc7e0b', bg: '#f0f8f0', candidates: ['Deepa N.', 'Vijay S.'] },
+    { name: 'Shortlisted', count: 18, color: '#fc7e0b', bg: '#e8f5e9', candidates: ['Deepa N.', 'Vijay S.'] },
     { name: 'Interview', count: 12, color: '#F59E0B', bg: '#FFFBEB', candidates: ['Meera K.'] },
     { name: 'Offer', count: 5, color: '#8B5CF6', bg: '#F5F3FF', candidates: ['Sanjay P.'] },
     { name: 'Hired', count: 3, color: '#EF4444', bg: '#FEF2F2', candidates: ['Amit J.'] },
@@ -650,7 +650,7 @@ function InterviewsView() {
 function RecruiterAnalytics() {
   const statCards = [
     { label: 'Total Placements', value: '150', icon: Target, color: '#06B6D4', bg: '#ECFEFF' },
-    { label: 'This Month', value: '12', icon: TrendingUp, color: '#fc7e0b', bg: '#f0f8f0' },
+    { label: 'This Month', value: '12', icon: TrendingUp, color: '#fc7e0b', bg: '#e8f5e9' },
     { label: 'Avg Time to Hire', value: '14 days', icon: Clock, color: '#F59E0B', bg: '#FFFBEB' },
     { label: 'Offer Accept Rate', value: '85%', icon: Award, color: '#8B5CF6', bg: '#F5F3FF' },
   ]
