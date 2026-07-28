@@ -314,6 +314,15 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
         </div>
       </nav>
 
+      {/* ===== SMOOTH TRANSITION STRIP: white navbar → green hero ===== */}
+      <div className="relative h-16 bg-gradient-to-b from-white via-[#e8f5e9] to-[#024217] overflow-hidden">
+        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #024217 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+        {/* Decorative wave curve */}
+        <svg className="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 40" fill="none" preserveAspectRatio="none" style={{ height: '40px' }}>
+          <path d="M0 40V20C240 0 480 0 720 20C960 40 1200 40 1440 20V40H0Z" fill="#024217" />
+        </svg>
+      </div>
+
       {/* ===== INLINE AUTH PANEL (slides in from right) ===== */}
       <AnimatePresence>
         {authView !== 'none' && (
@@ -558,7 +567,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       </AnimatePresence>
 
       {/* ===== HERO SECTION ===== */}
-      <section className="relative bg-gradient-to-br from-[#024217] via-[#044d1a] to-[#22c55e] pb-36 pt-10 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[#024217] via-[#044d1a] to-[#22c55e] pb-36 overflow-hidden">
         {/* Floating infographic shapes */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <FloatingShape className="top-[8%] left-[5%]" icon="resume" delay={0} />
