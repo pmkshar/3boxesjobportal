@@ -20,16 +20,29 @@ import {
   Heart, Bell, User, Smartphone, Share, Play, Eye, Phone,
 } from 'lucide-react'
 
-// Job categories config
+// Dark green color palette
+const DG = {
+  900: '#013b0b',
+  800: '#024217',
+  700: '#044d1a',
+  600: '#03591e',
+  500: '#046622',
+  400: '#057326',
+  300: '#0a8a30',
+  200: '#22c55e',
+  100: '#3a9a3a',
+}
+
+// Job categories config - dark green themed
 const jobCategoriesConfig = [
-  { icon: Code, label: 'IT & Software', keywords: ['React', 'Node', 'Python', 'TypeScript', 'AWS', 'Docker'], color: 'bg-[#f0f8f0] text-green-700 border-[#d8ecd8]' },
-  { icon: IndianRupee, label: 'Banking & Finance', keywords: ['CA', 'CFA', 'Accounting', 'Banking', 'Investment'], color: 'bg-amber-50 text-amber-700 border-amber-200' },
-  { icon: Heart, label: 'Healthcare', keywords: ['Doctor', 'Nurse', 'Pharma', 'Medical', 'Clinical'], color: 'bg-red-50 text-red-700 border-red-200' },
-  { icon: PenTool, label: 'Marketing', keywords: ['SEO', 'Content', 'Social Media', 'Brand', 'Growth'], color: 'bg-purple-50 text-purple-700 border-purple-200' },
-  { icon: GraduationCap, label: 'Education', keywords: ['Teacher', 'Professor', 'Trainer', 'Curriculum'], color: 'bg-blue-50 text-blue-700 border-blue-200' },
-  { icon: TrendingUp, label: 'Sales', keywords: ['B2B', 'B2C', 'Enterprise', 'SaaS', 'Revenue'], color: 'bg-orange-50 text-orange-700 border-orange-200' },
-  { icon: Building2, label: 'Engineering', keywords: ['Civil', 'Mechanical', 'Electrical', 'Project Mgmt'], color: 'bg-teal-50 text-teal-700 border-teal-200' },
-  { icon: Cpu, label: 'Data Science', keywords: ['ML', 'AI', 'Analytics', 'Python', 'Statistics'], color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+  { icon: Code, label: 'IT & Software', keywords: ['React', 'Node', 'Python', 'TypeScript', 'AWS', 'Docker'], color: 'bg-[#044d1a] text-[#86efac] border-[#0a8a30]' },
+  { icon: IndianRupee, label: 'Banking & Finance', keywords: ['CA', 'CFA', 'Accounting', 'Banking', 'Investment'], color: 'bg-[#044d1a] text-amber-300 border-[#0a8a30]' },
+  { icon: Heart, label: 'Healthcare', keywords: ['Doctor', 'Nurse', 'Pharma', 'Medical', 'Clinical'], color: 'bg-[#044d1a] text-red-300 border-[#0a8a30]' },
+  { icon: PenTool, label: 'Marketing', keywords: ['SEO', 'Content', 'Social Media', 'Brand', 'Growth'], color: 'bg-[#044d1a] text-purple-300 border-[#0a8a30]' },
+  { icon: GraduationCap, label: 'Education', keywords: ['Teacher', 'Professor', 'Trainer', 'Curriculum'], color: 'bg-[#044d1a] text-blue-300 border-[#0a8a30]' },
+  { icon: TrendingUp, label: 'Sales', keywords: ['B2B', 'B2C', 'Enterprise', 'SaaS', 'Revenue'], color: 'bg-[#044d1a] text-orange-300 border-[#0a8a30]' },
+  { icon: Building2, label: 'Engineering', keywords: ['Civil', 'Mechanical', 'Electrical', 'Project Mgmt'], color: 'bg-[#044d1a] text-teal-300 border-[#0a8a30]' },
+  { icon: Cpu, label: 'Data Science', keywords: ['ML', 'AI', 'Analytics', 'Python', 'Statistics'], color: 'bg-[#044d1a] text-indigo-300 border-[#0a8a30]' },
 ]
 
 // Company colors
@@ -88,17 +101,17 @@ const testimonials = [
 // How it works steps
 const howItWorksSteps = [
   { step: '01', icon: FileText, title: 'Create Your Profile', desc: 'Sign up and build your AI-powered resume. Our smart builder auto-suggests skills, formats, and keywords that recruiters search for most.', color: 'from-[#024217] to-[#044d1a]' },
-  { step: '02', icon: Brain, title: 'AI Matches You to Jobs', desc: 'Our intelligent engine analyzes your skills, experience, and preferences to surface the most relevant opportunities — no endless scrolling needed.', color: 'from-[#34a853] to-[#024217]' },
-  { step: '03', icon: Target, title: 'Practice with AI Interviews', desc: 'Prepare with realistic AI mock interviews. Get instant feedback on communication, technical depth, and confidence before your real interview.', color: 'from-[#f9ab00] to-[#e9a000]' },
+  { step: '02', icon: Brain, title: 'AI Matches You to Jobs', desc: 'Our intelligent engine analyzes your skills, experience, and preferences to surface the most relevant opportunities — no endless scrolling needed.', color: 'from-[#044d1a] to-[#024217]' },
+  { step: '03', icon: Target, title: 'Practice with AI Interviews', desc: 'Prepare with realistic AI mock interviews. Get instant feedback on communication, technical depth, and confidence before your real interview.', color: 'from-[#03591e] to-[#044d1a]' },
   { step: '04', icon: Trophy, title: 'Get Hired Faster', desc: 'With AI-enhanced resumes, verified skills, and interview readiness, you stand out to employers and land your dream job significantly faster.', color: 'from-[#044d1a] to-[#024217]' },
 ]
 
 // Career journey steps
 const careerJourneySteps = [
   { icon: BookOpen, title: 'Learn & Upskill', desc: 'Industry-aligned courses that auto-update your profile with verified skills and certifications', color: 'bg-[#024217]' },
-  { icon: FileText, title: 'Build Smart Resume', desc: 'AI-powered resume builder that optimizes for ATS systems and highlights your strongest qualifications', color: 'bg-[#34a853]' },
-  { icon: Brain, title: 'Practice Interviews', desc: 'AI mock interviews with real-time feedback on communication, technical skills, and confidence levels', color: 'bg-[#f9ab00]' },
-  { icon: Target, title: 'Get Matched', desc: 'Intelligent job matching based on your complete profile — skills, experience, and career preferences', color: 'bg-[#044d1a]' },
+  { icon: FileText, title: 'Build Smart Resume', desc: 'AI-powered resume builder that optimizes for ATS systems and highlights your strongest qualifications', color: 'bg-[#044d1a]' },
+  { icon: Brain, title: 'Practice Interviews', desc: 'AI mock interviews with real-time feedback on communication, technical skills, and confidence levels', color: 'bg-[#03591e]' },
+  { icon: Target, title: 'Get Matched', desc: 'Intelligent job matching based on your complete profile — skills, experience, and career preferences', color: 'bg-[#046622]' },
   { icon: Trophy, title: 'Land Your Dream Job', desc: 'Stand out with AI-verified skills, polished resumes, and interview-ready confidence to get hired faster', color: 'bg-[#024217]' },
 ]
 
@@ -136,7 +149,6 @@ export function HomePage() {
     window.location.href = `/find-jobs?${params.toString()}`
   }
 
-  // Placeholder jobs for when no API data is available
   const placeholderJobs = [
     { id: 'p1', title: 'Senior React Developer', corporate: { companyName: 'Google' }, location: 'Bangalore', salaryMin: 200000, salaryMax: 400000, jobType: 'Full Time', isRemote: true, postedDate: new Date().toISOString() },
     { id: 'p2', title: 'Data Scientist', corporate: { companyName: 'Amazon' }, location: 'Hyderabad', salaryMin: 180000, salaryMax: 350000, jobType: 'Full Time', isRemote: false, postedDate: new Date().toISOString() },
@@ -154,30 +166,26 @@ export function HomePage() {
     <div className="min-h-screen bg-[#024217]">
       {/* ===== 1. HERO SECTION — SPLIT LAYOUT WITH HR IMAGE ===== */}
       <section className="relative bg-gradient-to-br from-[#024217] via-[#044d1a] to-[#024217] pb-20 sm:pb-28 pt-12 sm:pt-16 overflow-hidden">
-        {/* Animated gradient overlay */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
           <motion.div animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-20 left-[10%] w-20 h-20 rounded-full bg-[#3a9a3a]/10 blur-sm" />
-          <motion.div animate={{ y: [0, 15, 0], rotate: [0, -8, 0] }} transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-32 right-[15%] w-16 h-16 rounded-2xl bg-emerald-300/10 rotate-45 blur-sm" />
-          <motion.div animate={{ y: [0, -12, 0], x: [0, 8, 0] }} transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }} className="absolute bottom-40 left-[20%] w-24 h-24 rounded-full bg-teal-300/8 blur-md" />
-          <motion.div animate={{ y: [0, 18, 0], rotate: [0, 10, 0] }} transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }} className="absolute bottom-60 right-[8%] w-14 h-14 rounded-xl bg-lime-300/10 rotate-12 blur-sm" />
+          <motion.div animate={{ y: [0, 15, 0], rotate: [0, -8, 0] }} transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-32 right-[15%] w-16 h-16 rounded-2xl bg-[#3a9a3a]/10 rotate-45 blur-sm" />
+          <motion.div animate={{ y: [0, -12, 0], x: [0, 8, 0] }} transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }} className="absolute bottom-40 left-[20%] w-24 h-24 rounded-full bg-[#3a9a3a]/8 blur-md" />
+          <motion.div animate={{ y: [0, 18, 0], rotate: [0, 10, 0] }} transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }} className="absolute bottom-60 right-[8%] w-14 h-14 rounded-xl bg-[#3a9a3a]/10 rotate-12 blur-sm" />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             {/* Left: Text + Search */}
             <div>
-              {/* Hero heading */}
               <div className="mb-8">
-                <motion.div
-                  initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.4 }}
+                <motion.div initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.4 }}
                   className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-5 py-2 mb-6"
                 >
                   <Sparkles className="h-4 w-4 text-[#3a9a3a]" />
                   <span className="text-sm text-[#d8ecd8] font-medium">India&apos;s #1 AI-Powered Job Portal</span>
                 </motion.div>
-                <motion.h1
-                  initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}
+                <motion.h1 initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}
                   className="text-3xl sm:text-4xl lg:text-[3rem] font-extrabold text-white leading-tight"
                 >
                   Find Your Dream Job with{' '}
@@ -187,8 +195,7 @@ export function HomePage() {
                   </span>{' '}
                   Precision
                 </motion.h1>
-                <motion.p
-                  initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}
+                <motion.p initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}
                   className="mt-5 text-base sm:text-lg text-[#d8ecd8]/80 max-w-xl leading-relaxed"
                 >
                   Smart resumes, AI mock interviews, skill auto-updates & intelligent job matching — your complete career platform
@@ -196,40 +203,26 @@ export function HomePage() {
               </div>
 
               {/* Search Bar */}
-              <motion.div
-                initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}
-                className="mb-8"
-              >
+              <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} className="mb-8">
                 <div className="bg-white rounded-2xl shadow-2xl p-2 sm:p-3">
                   <div className="flex flex-col sm:flex-row gap-2">
                     <div className="flex-1 relative">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <Input
-                        placeholder="Skills, Designations, Companies"
-                        value={searchSkill}
-                        onChange={(e) => setSearchSkill(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                        className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
-                      />
+                      <Input placeholder="Skills, Designations, Companies" value={searchSkill}
+                        onChange={(e) => setSearchSkill(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                        className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl" />
                     </div>
                     <div className="flex-1 relative">
                       <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <Input
-                        placeholder="Location (City, State)"
-                        value={searchLocation}
-                        onChange={(e) => setSearchLocation(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                        className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
-                      />
+                      <Input placeholder="Location (City, State)" value={searchLocation}
+                        onChange={(e) => setSearchLocation(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                        className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl" />
                     </div>
                     <div className="sm:w-36 relative">
                       <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <Input
-                        placeholder="Experience"
-                        value={searchExp}
+                      <Input placeholder="Experience" value={searchExp}
                         onChange={(e) => setSearchExp(e.target.value)}
-                        className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
-                      />
+                        className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl" />
                     </div>
                     <Button className="h-12 px-8 bg-[#024217] hover:bg-[#044d1a] text-white font-semibold text-base rounded-xl whitespace-nowrap shadow-md"
                       onClick={handleSearch}>
@@ -237,8 +230,6 @@ export function HomePage() {
                     </Button>
                   </div>
                 </div>
-
-                {/* Popular search tags */}
                 <div className="mt-4 flex flex-wrap gap-2 justify-start">
                   {['React', 'Python', 'AWS', 'Data Science', 'DevOps', 'Product Manager', 'ML Engineer', 'Full Stack'].map(tag => (
                     <button key={tag} className="px-3 py-1.5 text-sm bg-white/15 text-white/90 rounded-full hover:bg-white/25 transition-colors border border-white/10"
@@ -250,8 +241,7 @@ export function HomePage() {
               </motion.div>
 
               {/* Stats */}
-              <motion.div
-                initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}
+              <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}
                 className="flex flex-wrap gap-4 sm:gap-6"
               >
                 {[
@@ -260,10 +250,7 @@ export function HomePage() {
                   { label: 'Candidates', value: '50,000+', icon: Users },
                   { label: 'AI Interviews', value: '1,000+', icon: Brain },
                 ].map(stat => (
-                  <motion.div
-                    key={stat.label}
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
+                  <motion.div key={stat.label} initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.7, duration: 0.5 }}
                     className="text-center flex flex-col items-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-5 py-3 min-w-[120px]"
                   >
@@ -276,29 +263,17 @@ export function HomePage() {
             </div>
 
             {/* Right: HR Professional Image */}
-            <motion.div
-              initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.4, duration: 0.6 }}
+            <motion.div initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.4, duration: 0.6 }}
               className="relative hidden lg:block"
             >
-              {/* Main image container */}
               <div className="relative">
-                {/* Decorative background circles */}
                 <div className="absolute -top-8 -left-8 w-72 h-72 bg-[#3a9a3a]/20 rounded-full blur-3xl" />
                 <div className="absolute -bottom-8 -right-8 w-64 h-64 bg-[#f9ab00]/10 rounded-full blur-3xl" />
-
-                {/* Main image with rounded frame */}
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-white/10">
-                  <Image
-                    src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=750&fit=crop&crop=face"
-                    alt="HR Professional"
-                    width={600}
-                    height={750}
-                    className="object-cover w-full h-[500px] lg:h-[550px]"
-                    priority
-                  />
-                  {/* Gradient overlay at bottom */}
+                  <Image src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=750&fit=crop&crop=face"
+                    alt="HR Professional" width={600} height={750}
+                    className="object-cover w-full h-[500px] lg:h-[550px]" priority />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#024217]/80 via-transparent to-transparent" />
-                  {/* Floating badge on image */}
                   <div className="absolute bottom-6 left-6 right-6">
                     <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
                       <div className="flex items-center gap-3">
@@ -313,88 +288,56 @@ export function HomePage() {
                     </div>
                   </div>
                 </div>
-
-                {/* Floating stats card - top right */}
-                <motion.div
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                   className="absolute -top-4 -right-4 bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-white/20"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#f9ab00]/15 flex items-center justify-center">
-                      <Trophy className="h-5 w-5 text-[#f9ab00]" />
-                    </div>
-                    <div>
-                      <p className="text-lg font-extrabold text-gray-900">94%</p>
-                      <p className="text-[10px] text-gray-500">Placement Rate</p>
-                    </div>
+                    <div className="w-10 h-10 rounded-xl bg-[#f9ab00]/15 flex items-center justify-center"><Trophy className="h-5 w-5 text-[#f9ab00]" /></div>
+                    <div><p className="text-lg font-extrabold text-gray-900">94%</p><p className="text-[10px] text-gray-500">Placement Rate</p></div>
                   </div>
                 </motion.div>
-
-                {/* Floating card - bottom right */}
-                <motion.div
-                  animate={{ y: [0, 8, 0] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
                   className="absolute -bottom-4 -left-4 bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-white/20"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#024217]/15 flex items-center justify-center">
-                      <Brain className="h-5 w-5 text-[#024217]" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-gray-900">AI Mock Interviews</p>
-                      <p className="text-[10px] text-gray-500">Real-time feedback</p>
-                    </div>
+                    <div className="w-10 h-10 rounded-xl bg-[#024217]/15 flex items-center justify-center"><Brain className="h-5 w-5 text-[#024217]" /></div>
+                    <div><p className="text-sm font-bold text-gray-900">AI Mock Interviews</p><p className="text-[10px] text-gray-500">Real-time feedback</p></div>
                   </div>
                 </motion.div>
               </div>
             </motion.div>
           </div>
         </div>
-
-        {/* Curved SVG bottom transitioning to white */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-            <path d="M0 80L60 70C120 60 240 40 360 32C480 24 600 28 720 34C840 40 960 48 1080 44C1200 40 1320 24 1380 16L1440 8V80H0Z" fill="white" />
-          </svg>
-        </div>
       </section>
 
-      {/* ===== 2. TOP COMPANIES HORIZONTAL SCROLL ===== */}
-      <section className="py-16 sm:py-20 bg-white relative overflow-hidden">
-        {/* Decorative background blobs */}
-        <div className="absolute top-10 right-0 w-72 h-72 bg-[#d8ecd8]/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-10 left-0 w-64 h-64 bg-amber-100/15 rounded-full blur-3xl pointer-events-none" />
+      {/* ===== 2. TOP COMPANIES — DARK GREEN ===== */}
+      <section className="py-16 sm:py-20 bg-[#013b0b] relative overflow-hidden">
+        <div className="absolute top-10 right-0 w-72 h-72 bg-[#044d1a]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-10 left-0 w-64 h-64 bg-[#024217]/30 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-10">
-            <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Trusted By Top Employers</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Top Companies <span className="bg-gradient-to-r from-[#024217] to-[#34a853] bg-clip-text text-transparent">Hiring</span></h2>
-            <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">From startups to Fortune 500s — top companies trust 3BOXESJOBS for AI-powered hiring</p>
+            <Badge className="bg-white/10 text-[#86efac] border-white/20 rounded-full px-4 py-1 text-xs font-semibold mb-3">Trusted By Top Employers</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Top Companies <span className="text-[#3a9a3a]">Hiring</span></h2>
+            <p className="text-[#d8ecd8]/60 mt-2 text-sm max-w-lg mx-auto">From startups to Fortune 500s — top companies trust 3BOXESJOBS for AI-powered hiring</p>
           </motion.div>
 
-          {/* Horizontal scrollable company cards */}
           <div className="relative">
-            <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+            <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#013b0b] to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#013b0b] to-transparent z-10 pointer-events-none" />
             <div className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
               <div className="flex gap-5">
                 {topCompanies.map((company, i) => (
-                  <motion.div
-                    key={company.name}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                    viewport={{ once: true }}
-                    className="flex-shrink-0"
+                  <motion.div key={company.name} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }} viewport={{ once: true }} className="flex-shrink-0"
                   >
-                    <Card className="border border-gray-100 hover:border-[#024217]/30 hover:shadow-lg transition-all cursor-pointer group min-w-[160px] bg-white/80 backdrop-blur-sm">
+                    <Card className="border border-white/10 hover:border-[#3a9a3a]/40 hover:shadow-lg hover:shadow-[#3a9a3a]/10 transition-all cursor-pointer group min-w-[160px] bg-[#044d1a]/50 backdrop-blur-sm">
                       <CardContent className="p-5 flex flex-col items-center gap-3">
                         <div className={`w-14 h-14 rounded-xl ${getCompanyColor(company.name)} flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-110 transition-transform`}>
                           {company.logo}
                         </div>
-                        <span className="font-semibold text-gray-800 text-sm">{company.name}</span>
-                        <Link href="/find-jobs" className="text-xs text-[#024217] font-semibold hover:underline flex items-center gap-1">
+                        <span className="font-semibold text-white text-sm">{company.name}</span>
+                        <Link href="/find-jobs" className="text-xs text-[#3a9a3a] font-semibold hover:underline flex items-center gap-1">
                           View Jobs <ArrowRight className="h-3 w-3" />
                         </Link>
                       </CardContent>
@@ -407,34 +350,32 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== 3. JOB CATEGORIES (Colorful Grid) ===== */}
-      <section className="py-16 sm:py-20 bg-gray-50 relative overflow-hidden">
-        {/* Decorative dots pattern */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.03]" style={{backgroundImage: 'radial-gradient(circle at 2px 2px, #024217 1px, transparent 0)', backgroundSize: '32px 32px'}} />
+      {/* ===== 3. JOB CATEGORIES — DARK GREEN ===== */}
+      <section className="py-16 sm:py-20 bg-[#024217] relative overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.03]" style={{backgroundImage: 'radial-gradient(circle at 2px 2px, #86efac 1px, transparent 0)', backgroundSize: '32px 32px'}} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-10">
-            <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Explore Opportunities</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Browse Jobs by <span className="bg-gradient-to-r from-[#024217] to-[#34a853] bg-clip-text text-transparent">Category</span></h2>
-            <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">Find the perfect role in your field — from tech to finance, healthcare to marketing</p>
+            <Badge className="bg-white/10 text-[#86efac] border-white/20 rounded-full px-4 py-1 text-xs font-semibold mb-3">Explore Opportunities</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Browse Jobs by <span className="text-[#3a9a3a]">Category</span></h2>
+            <p className="text-[#d8ecd8]/60 mt-2 text-sm max-w-lg mx-auto">Find the perfect role in your field — from tech to finance, healthcare to marketing</p>
           </motion.div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-5">
             {jobCategoriesConfig.map((cat, i) => (
-              <motion.div key={cat.label}
-                initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
+              <motion.div key={cat.label} initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
                 transition={{ delay: i * 0.07 }} viewport={{ once: true }}
               >
                 <Link href={`/find-jobs?search=${cat.keywords[0]}`}>
-                  <Card className={`border ${cat.color} hover:shadow-lg transition-all cursor-pointer group h-full hover:scale-[1.02]`}>
+                  <Card className={`border ${cat.color} hover:shadow-lg hover:shadow-[#3a9a3a]/10 transition-all cursor-pointer group h-full hover:scale-[1.02]`}>
                     <CardContent className="p-5 text-center">
-                      <div className="w-12 h-12 rounded-xl bg-white/60 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform shadow-sm">
+                      <div className="w-12 h-12 rounded-xl bg-[#024217]/60 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform shadow-sm">
                         <cat.icon className="h-6 w-6" />
                       </div>
                       <h3 className="font-bold text-sm mb-2">{cat.label}</h3>
                       <div className="flex flex-wrap gap-1 justify-center">
                         {cat.keywords.slice(0, 3).map(kw => (
-                          <span key={kw} className="text-[10px] bg-white/60 px-2 py-0.5 rounded-full font-medium">{kw}</span>
+                          <span key={kw} className="text-[10px] bg-[#024217]/60 px-2 py-0.5 rounded-full font-medium">{kw}</span>
                         ))}
                       </div>
                     </CardContent>
@@ -446,7 +387,7 @@ export function HomePage() {
 
           <div className="text-center mt-8">
             <Link href="/find-jobs">
-              <Button variant="outline" className="border-[#024217] text-[#024217] hover:bg-[#f0f8f0] font-semibold px-6 h-11 rounded-xl">
+              <Button className="bg-white/10 text-[#86efac] hover:bg-white/20 font-semibold px-6 h-11 rounded-xl border border-white/20">
                 View All Categories <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>
@@ -454,56 +395,47 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== 4. HOW IT WORKS (Timeline/Steps) ===== */}
-      <section className="py-16 sm:py-20 bg-white relative overflow-hidden">
-        {/* Decorative background */}
-        <div className="absolute top-0 right-0 w-72 h-72 bg-green-50/50 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-50/40 rounded-full blur-3xl pointer-events-none" />
+      {/* ===== 4. HOW IT WORKS — DARK GREEN ===== */}
+      <section className="py-16 sm:py-20 bg-[#013b0b] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-72 h-72 bg-[#044d1a]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#024217]/30 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-14">
-            <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Simple & Powerful</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">How <span className="bg-gradient-to-r from-[#024217] to-[#f9ab00] bg-clip-text text-transparent">3BOXESJOBS</span> Works</h2>
-            <p className="text-gray-500 mt-3 text-sm max-w-2xl mx-auto leading-relaxed">
+            <Badge className="bg-white/10 text-[#86efac] border-white/20 rounded-full px-4 py-1 text-xs font-semibold mb-3">Simple & Powerful</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">How <span className="text-[#3a9a3a]">3BOXESJOBS</span> Works</h2>
+            <p className="text-[#d8ecd8]/60 mt-3 text-sm max-w-2xl mx-auto leading-relaxed">
               In just four simple steps, transform your job search into an AI-powered journey that delivers real results faster
             </p>
           </motion.div>
 
-          {/* Horizontal Timeline */}
           <div className="relative">
-            {/* Connecting dotted line (desktop) */}
             <div className="hidden lg:block absolute top-[52px] left-[12%] right-[12%] z-0">
-              <div className="w-full border-t-2 border-dashed border-[#024217]/20" />
+              <div className="w-full border-t-2 border-dashed border-[#3a9a3a]/20" />
             </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
               {howItWorksSteps.map((step, i) => (
-                <motion.div key={step.step}
-                  initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: i * 0.15 }} viewport={{ once: true }}
-                  className="relative"
+                <motion.div key={step.step} initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ delay: i * 0.15 }} viewport={{ once: true }} className="relative"
                 >
-                  <Card className="border-0 shadow-sm hover:shadow-xl transition-all h-full text-center group bg-white hover:-translate-y-1">
+                  <Card className="border border-white/10 bg-[#044d1a]/40 backdrop-blur-sm hover:shadow-xl hover:shadow-[#3a9a3a]/10 transition-all h-full text-center group hover:-translate-y-1">
                     <CardContent className="p-6">
-                      {/* Numbered circle */}
                       <div className="flex justify-center mb-4">
-                        <div className={`w-[72px] h-[72px] rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center text-white font-extrabold text-2xl shadow-lg group-hover:scale-110 transition-transform ring-4 ring-white`}>
+                        <div className={`w-[72px] h-[72px] rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center text-white font-extrabold text-2xl shadow-lg group-hover:scale-110 transition-transform ring-4 ring-[#024217]`}>
                           {step.step}
                         </div>
                       </div>
-                      {/* Icon */}
-                      <div className="w-12 h-12 rounded-xl bg-[#f0f8f0] flex items-center justify-center mx-auto mb-3">
-                        <step.icon className="h-6 w-6 text-[#024217]" />
+                      <div className="w-12 h-12 rounded-xl bg-[#024217]/60 flex items-center justify-center mx-auto mb-3">
+                        <step.icon className="h-6 w-6 text-[#86efac]" />
                       </div>
-                      <h4 className="font-bold text-gray-900 text-base mb-2">{step.title}</h4>
-                      <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
+                      <h4 className="font-bold text-white text-base mb-2">{step.title}</h4>
+                      <p className="text-sm text-[#d8ecd8]/70 leading-relaxed">{step.desc}</p>
                     </CardContent>
                   </Card>
-                  {/* Arrow between cards (desktop) */}
                   {i < 3 && (
                     <div className="hidden lg:flex absolute top-[52px] -right-5 z-20">
-                      <div className="w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center">
-                        <ArrowRight className="h-4 w-4 text-[#024217]" />
+                      <div className="w-8 h-8 rounded-full bg-[#024217] shadow-md flex items-center justify-center border border-[#3a9a3a]/30">
+                        <ArrowRight className="h-4 w-4 text-[#86efac]" />
                       </div>
                     </div>
                   )}
@@ -514,46 +446,39 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== 5. AI FEATURES SHOWCASE WITH IMAGES ===== */}
-      <section className="py-16 sm:py-20 bg-gradient-to-b from-green-50/30 to-white relative overflow-hidden">
-        {/* Decorative blobs */}
-        <div className="absolute top-20 right-0 w-72 h-72 bg-[#d8ecd8]/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-10 left-0 w-64 h-64 bg-amber-100/10 rounded-full blur-3xl pointer-events-none" />
+      {/* ===== 5. AI FEATURES SHOWCASE WITH IMAGES — DARK GREEN ===== */}
+      <section className="py-16 sm:py-20 bg-[#024217] relative overflow-hidden">
+        <div className="absolute top-20 right-0 w-72 h-72 bg-[#044d1a]/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-10 left-0 w-64 h-64 bg-[#03591e]/20 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-12">
-            <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">AI-Powered Platform</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Powered by <span className="bg-gradient-to-r from-[#024217] to-[#f9ab00] bg-clip-text text-transparent">AI</span></h2>
-            <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">Not just a job board — an intelligent career platform with AI tools designed for every user</p>
+            <Badge className="bg-white/10 text-[#86efac] border-white/20 rounded-full px-4 py-1 text-xs font-semibold mb-3">AI-Powered Platform</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Powered by <span className="text-[#3a9a3a]">AI</span></h2>
+            <p className="text-[#d8ecd8]/60 mt-2 text-sm max-w-lg mx-auto">Not just a job board — an intelligent career platform with AI tools designed for every user</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* AI Resume Builder */}
             <motion.div initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0 }} viewport={{ once: true }}>
-              <Card className="border-0 shadow-lg hover:shadow-2xl transition-all h-full overflow-hidden group hover:-translate-y-2">
+              <Card className="border border-white/10 bg-[#044d1a]/40 backdrop-blur-sm hover:shadow-2xl hover:shadow-[#3a9a3a]/10 transition-all h-full overflow-hidden group hover:-translate-y-2">
                 <div className="relative h-[200px] overflow-hidden">
-                  <Image
-                    src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=250&fit=crop"
-                    alt="Resume Building"
-                    width={400}
-                    height={250}
-                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                  />
+                  <Image src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=250&fit=crop"
+                    alt="Resume Building" width={400} height={250}
+                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#024217] via-[#024217]/60 to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4">
-                    <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center mb-2">
-                      <FileText className="h-6 w-6 text-white" />
-                    </div>
+                    <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center mb-2"><FileText className="h-6 w-6 text-white" /></div>
                     <h3 className="text-xl font-bold text-white">AI Resume Builder</h3>
                     <p className="text-[#d8ecd8]/80 text-sm">Craft ATS-optimized resumes with AI</p>
                   </div>
                 </div>
                 <CardContent className="p-6">
-                  <p className="text-sm text-gray-600 leading-relaxed mb-5">
+                  <p className="text-sm text-[#d8ecd8]/70 leading-relaxed mb-5">
                     Auto-generate polished resumes with AI. Skills update automatically when you complete training courses. Stand out to every recruiter.
                   </p>
                   <Link href="/ai-features">
-                    <Button className="w-full bg-[#024217] hover:bg-[#044d1a] text-white font-semibold rounded-xl h-11">
+                    <Button className="w-full bg-[#024217] hover:bg-[#044d1a] text-white font-semibold rounded-xl h-11 border border-[#3a9a3a]/30">
                       Try Resume Builder <ArrowRight className="h-4 w-4 ml-2" />
                     </Button>
                   </Link>
@@ -563,30 +488,24 @@ export function HomePage() {
 
             {/* AI Mock Interviews */}
             <motion.div initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0.15 }} viewport={{ once: true }}>
-              <Card className="border-0 shadow-lg hover:shadow-2xl transition-all h-full overflow-hidden group hover:-translate-y-2">
+              <Card className="border border-white/10 bg-[#044d1a]/40 backdrop-blur-sm hover:shadow-2xl hover:shadow-[#3a9a3a]/10 transition-all h-full overflow-hidden group hover:-translate-y-2">
                 <div className="relative h-[200px] overflow-hidden">
-                  <Image
-                    src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=250&fit=crop"
-                    alt="AI Interview Practice"
-                    width={400}
-                    height={250}
-                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#2869fe] via-[#2869fe]/60 to-transparent" />
+                  <Image src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=250&fit=crop"
+                    alt="AI Interview Practice" width={400} height={250}
+                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#03591e] via-[#03591e]/60 to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4">
-                    <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center mb-2">
-                      <Brain className="h-6 w-6 text-white" />
-                    </div>
+                    <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center mb-2"><Brain className="h-6 w-6 text-white" /></div>
                     <h3 className="text-xl font-bold text-white">AI Mock Interviews</h3>
-                    <p className="text-blue-100/80 text-sm">Practice with real-time AI feedback</p>
+                    <p className="text-[#d8ecd8]/80 text-sm">Practice with real-time AI feedback</p>
                   </div>
                 </div>
                 <CardContent className="p-6">
-                  <p className="text-sm text-gray-600 leading-relaxed mb-5">
+                  <p className="text-sm text-[#d8ecd8]/70 leading-relaxed mb-5">
                     Practice interviews with AI and get instant feedback on communication, technical depth, and confidence. Be interview-ready every time.
                   </p>
                   <Link href="/ai-features">
-                    <Button className="w-full bg-[#2869fe] hover:bg-[#1a4fd4] text-white font-semibold rounded-xl h-11">
+                    <Button className="w-full bg-[#03591e] hover:bg-[#044d1a] text-white font-semibold rounded-xl h-11 border border-[#3a9a3a]/30">
                       Start Practicing <ArrowRight className="h-4 w-4 ml-2" />
                     </Button>
                   </Link>
@@ -596,30 +515,24 @@ export function HomePage() {
 
             {/* Smart Job Matching */}
             <motion.div initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} viewport={{ once: true }}>
-              <Card className="border-0 shadow-lg hover:shadow-2xl transition-all h-full overflow-hidden group hover:-translate-y-2">
+              <Card className="border border-white/10 bg-[#044d1a]/40 backdrop-blur-sm hover:shadow-2xl hover:shadow-[#3a9a3a]/10 transition-all h-full overflow-hidden group hover:-translate-y-2">
                 <div className="relative h-[200px] overflow-hidden">
-                  <Image
-                    src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&h=250&fit=crop"
-                    alt="Smart Job Matching"
-                    width={400}
-                    height={250}
-                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#fc7e0b] via-[#fc7e0b]/60 to-transparent" />
+                  <Image src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&h=250&fit=crop"
+                    alt="Smart Job Matching" width={400} height={250}
+                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#046622] via-[#046622]/60 to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4">
-                    <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center mb-2">
-                      <Target className="h-6 w-6 text-white" />
-                    </div>
+                    <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center mb-2"><Target className="h-6 w-6 text-white" /></div>
                     <h3 className="text-xl font-bold text-white">Smart Job Matching</h3>
-                    <p className="text-orange-100/80 text-sm">AI matches you to the perfect role</p>
+                    <p className="text-[#d8ecd8]/80 text-sm">AI matches you to the perfect role</p>
                   </div>
                 </div>
                 <CardContent className="p-6">
-                  <p className="text-sm text-gray-600 leading-relaxed mb-5">
+                  <p className="text-sm text-[#d8ecd8]/70 leading-relaxed mb-5">
                     AI calculates your match score with every job based on skills, experience, and career preferences. No more endless scrolling.
                   </p>
                   <Link href="/find-jobs">
-                    <Button className="w-full bg-[#fc7e0b] hover:bg-[#e06a00] text-white font-semibold rounded-xl h-11">
+                    <Button className="w-full bg-[#046622] hover:bg-[#03591e] text-white font-semibold rounded-xl h-11 border border-[#3a9a3a]/30">
                       Find Your Match <ArrowRight className="h-4 w-4 ml-2" />
                     </Button>
                   </Link>
@@ -630,58 +543,51 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== 6. CAREER JOURNEY (Horizontal Flow) ===== */}
-      <section className="py-16 sm:py-20 bg-white relative overflow-hidden">
-        {/* Decorative background */}
+      {/* ===== 6. CAREER JOURNEY — DARK GREEN ===== */}
+      <section className="py-16 sm:py-20 bg-[#013b0b] relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-10 left-1/4 w-64 h-64 bg-[#d8ecd8]/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-1/4 w-48 h-48 bg-amber-100/10 rounded-full blur-3xl" />
+          <div className="absolute top-10 left-1/4 w-64 h-64 bg-[#044d1a]/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-1/4 w-48 h-48 bg-[#024217]/20 rounded-full blur-3xl" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-14">
-            <Badge className="bg-amber-50 text-amber-600 border-amber-200 rounded-full px-4 py-1 text-xs font-semibold mb-3">Your Complete Career Path</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Your Career <span className="bg-gradient-to-r from-[#024217] to-[#f9ab00] bg-clip-text text-transparent">Journey</span></h2>
-            <p className="text-gray-500 mt-3 text-sm max-w-2xl mx-auto leading-relaxed">
+            <Badge className="bg-white/10 text-[#f9ab00] border-white/20 rounded-full px-4 py-1 text-xs font-semibold mb-3">Your Complete Career Path</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Your Career <span className="text-[#3a9a3a]">Journey</span></h2>
+            <p className="text-[#d8ecd8]/60 mt-3 text-sm max-w-2xl mx-auto leading-relaxed">
               Every step is interconnected — training updates skills, skills enhance your resume, your resume drives job matches, and interviews seal the deal
             </p>
           </motion.div>
 
-          {/* Horizontal flow with arrows */}
           <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-0">
             {careerJourneySteps.map((step, i) => (
-              <motion.div key={i}
-                initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }}
-                transition={{ delay: i * 0.15 }} viewport={{ once: true }}
-                className="flex items-center"
+              <motion.div key={i} initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }}
+                transition={{ delay: i * 0.15 }} viewport={{ once: true }} className="flex items-center"
               >
                 <div className="flex flex-col items-center text-center">
-                  {/* Step number badge */}
                   <div className="relative mb-3">
-                    <div className={`w-16 h-16 rounded-xl ${step.color} flex items-center justify-center text-white shadow-lg ring-4 ring-green-100/30 group-hover:scale-110 transition-transform`}>
+                    <div className={`w-16 h-16 rounded-xl ${step.color} flex items-center justify-center text-white shadow-lg ring-4 ring-[#024217] group-hover:scale-110 transition-transform`}>
                       <step.icon className="h-7 w-7" />
                     </div>
-                    <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-white shadow-md flex items-center justify-center">
-                      <span className="text-[10px] font-bold text-[#024217]">{i + 1}</span>
+                    <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#024217] shadow-md flex items-center justify-center border border-[#3a9a3a]/30">
+                      <span className="text-[10px] font-bold text-[#86efac]">{i + 1}</span>
                     </div>
                   </div>
-                  <h3 className="font-bold text-gray-900 text-sm mb-1">{step.title}</h3>
-                  <p className="text-xs text-gray-500 max-w-[140px] leading-relaxed">{step.desc}</p>
+                  <h3 className="font-bold text-white text-sm mb-1">{step.title}</h3>
+                  <p className="text-xs text-[#d8ecd8]/60 max-w-[140px] leading-relaxed">{step.desc}</p>
                 </div>
-                {/* Arrow connector */}
                 {i < careerJourneySteps.length - 1 && (
                   <div className="hidden lg:flex items-center mx-3 flex-shrink-0">
                     <div className="flex items-center">
-                      <div className="w-8 h-0.5 bg-gradient-to-r from-[#024217]/40 to-[#024217]/20" />
-                      <ArrowRight className="h-4 w-4 text-[#024217]/40" />
+                      <div className="w-8 h-0.5 bg-[#3a9a3a]/30" />
+                      <ArrowRight className="h-4 w-4 text-[#3a9a3a]/40" />
                     </div>
                   </div>
                 )}
-                {/* Mobile vertical connector */}
                 {i < careerJourneySteps.length - 1 && (
                   <div className="lg:hidden flex flex-col items-center my-1">
-                    <div className="w-0.5 h-4 bg-gradient-to-b from-[#024217]/30 to-transparent" />
-                    <ArrowRight className="h-4 w-4 text-[#024217]/40 rotate-90" />
+                    <div className="w-0.5 h-4 bg-[#3a9a3a]/30" />
+                    <ArrowRight className="h-4 w-4 text-[#3a9a3a]/40 rotate-90" />
                   </div>
                 )}
               </motion.div>
@@ -690,21 +596,20 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== 7. FEATURED JOBS (Card Grid) ===== */}
-      <section className="py-16 sm:py-20 bg-gradient-to-b from-gray-50 to-green-50/20 relative overflow-hidden">
-        {/* Decorative gradient orbs */}
-        <div className="absolute top-0 left-1/4 w-80 h-80 bg-[#d8ecd8]/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-100/8 rounded-full blur-3xl pointer-events-none" />
+      {/* ===== 7. FEATURED JOBS — DARK GREEN ===== */}
+      <section className="py-16 sm:py-20 bg-[#024217] relative overflow-hidden">
+        <div className="absolute top-0 left-1/4 w-80 h-80 bg-[#044d1a]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#03591e]/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="flex items-center justify-between mb-8">
             <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }}>
-              <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Hand-Picked Opportunities</Badge>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Featured <span className="bg-gradient-to-r from-[#024217] to-[#34a853] bg-clip-text text-transparent">Jobs</span></h2>
-              <p className="text-gray-500 text-sm mt-1">AI-matched opportunities for you</p>
+              <Badge className="bg-white/10 text-[#86efac] border-white/20 rounded-full px-4 py-1 text-xs font-semibold mb-3">Hand-Picked Opportunities</Badge>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Featured <span className="text-[#3a9a3a]">Jobs</span></h2>
+              <p className="text-[#d8ecd8]/60 text-sm mt-1">AI-matched opportunities for you</p>
             </motion.div>
             <Link href="/find-jobs">
-              <Button variant="outline" className="border-[#024217] text-[#024217] hover:bg-[#f0f8f0] font-semibold text-sm rounded-xl hidden sm:flex">
+              <Button className="bg-white/10 text-[#86efac] hover:bg-white/20 font-semibold text-sm rounded-xl border border-white/20 hidden sm:flex">
                 View All Jobs <ArrowRight className="h-4 w-4 ml-1" />
               </Button>
             </Link>
@@ -713,13 +618,13 @@ export function HomePage() {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {Array.from({ length: 8 }).map((_, i) => (
-                <Card key={i} className="animate-pulse border-0 shadow-sm">
+                <Card key={i} className="animate-pulse border border-white/10 bg-[#044d1a]/40">
                   <CardContent className="p-0">
-                    <div className="h-[120px] bg-gray-100 rounded-t-xl" />
+                    <div className="h-[120px] bg-[#044d1a]/60 rounded-t-xl" />
                     <div className="p-4 space-y-3">
-                      <div className="h-4 bg-gray-100 rounded w-3/4" />
-                      <div className="h-3 bg-gray-100 rounded w-1/2" />
-                      <div className="h-3 bg-gray-100 rounded w-2/3" />
+                      <div className="h-4 bg-[#044d1a]/60 rounded w-3/4" />
+                      <div className="h-3 bg-[#044d1a]/60 rounded w-1/2" />
+                      <div className="h-3 bg-[#044d1a]/60 rounded w-2/3" />
                     </div>
                   </CardContent>
                 </Card>
@@ -728,14 +633,12 @@ export function HomePage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {displayJobs.map((job: any, i: number) => (
-                <motion.div key={job.id || i}
-                  initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
+                <motion.div key={job.id || i} initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
                   transition={{ delay: i * 0.05 }} viewport={{ once: true }}
                 >
-                  <Card className="hover:-translate-y-1 transition-all duration-300 cursor-pointer group border-0 shadow-sm hover:shadow-xl overflow-hidden hover:border-l-4 hover:border-l-[#024217]"
+                  <Card className="hover:-translate-y-1 transition-all duration-300 cursor-pointer group border border-white/10 bg-[#044d1a]/40 backdrop-blur-sm hover:shadow-xl hover:shadow-[#3a9a3a]/10 overflow-hidden hover:border-l-4 hover:border-l-[#3a9a3a]"
                     onClick={() => { window.location.href = '/find-jobs' }}>
                     <CardContent className="p-0">
-                      {/* Card Top - Company Color Banner */}
                       <div className={`relative h-[120px] ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center overflow-hidden`}>
                         <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
                         <span className="text-4xl font-bold text-white/30 select-none">
@@ -754,22 +657,22 @@ export function HomePage() {
                             <div className={`w-8 h-8 rounded-lg ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-sm`}>
                               {getCompanyInitial(job.corporate?.companyName)}
                             </div>
-                            <span className="text-xs text-gray-500 truncate font-medium">{job.corporate?.companyName || 'Company'}</span>
+                            <span className="text-xs text-[#d8ecd8]/60 truncate font-medium">{job.corporate?.companyName || 'Company'}</span>
                           </div>
-                          <Badge className="bg-gray-50 text-gray-500 border-0 text-[10px] rounded-md px-2 py-0.5 font-medium capitalize flex-shrink-0">
+                          <Badge className="bg-[#024217]/60 text-[#d8ecd8]/60 border-0 text-[10px] rounded-md px-2 py-0.5 font-medium capitalize flex-shrink-0">
                             {job.jobType || 'Full Time'}
                           </Badge>
                         </div>
-                        <h5 className="font-semibold text-gray-900 text-sm leading-snug group-hover:text-[#024217] transition-colors line-clamp-2 mb-2">
+                        <h5 className="font-semibold text-white text-sm leading-snug group-hover:text-[#86efac] transition-colors line-clamp-2 mb-2">
                           {job.title}
                         </h5>
-                        <div className="flex items-center gap-3 text-[11px] text-gray-500 mb-3">
-                          <span className="flex items-center gap-1"><Clock className="h-3 w-3 text-[#024217]" /> {job.postedDate ? timeAgo(job.postedDate) : 'Recently'}</span>
-                          <span className="flex items-center gap-1"><MapPin className="h-3 w-3 text-[#024217]" /> {job.location || 'Remote'}</span>
+                        <div className="flex items-center gap-3 text-[11px] text-[#d8ecd8]/50 mb-3">
+                          <span className="flex items-center gap-1"><Clock className="h-3 w-3 text-[#3a9a3a]" /> {job.postedDate ? timeAgo(job.postedDate) : 'Recently'}</span>
+                          <span className="flex items-center gap-1"><MapPin className="h-3 w-3 text-[#3a9a3a]" /> {job.location || 'Remote'}</span>
                         </div>
-                        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                          <span className="font-semibold text-[#024217] text-sm">{formatSalary(job.salaryMin, job.salaryMax)}</span>
-                          <Shield className="h-4 w-4 text-[#024217]" />
+                        <div className="flex items-center justify-between pt-3 border-t border-white/10">
+                          <span className="font-semibold text-[#86efac] text-sm">{formatSalary(job.salaryMin, job.salaryMax)}</span>
+                          <Shield className="h-4 w-4 text-[#3a9a3a]" />
                         </div>
                       </div>
                     </CardContent>
@@ -781,7 +684,7 @@ export function HomePage() {
 
           <div className="text-center mt-8 sm:hidden">
             <Link href="/find-jobs">
-              <Button className="bg-[#024217] hover:bg-[#044d1a] text-white font-semibold px-8 h-11 rounded-xl shadow-md">
+              <Button className="bg-[#3a9a3a] hover:bg-[#0a8a30] text-white font-semibold px-8 h-11 rounded-xl shadow-md">
                 Browse All Jobs <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>
@@ -789,47 +692,41 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== 8. TESTIMONIALS (Cards) ===== */}
-      <section className="py-16 sm:py-20 bg-white relative overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute top-0 left-0 w-64 h-64 bg-purple-100/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-48 h-48 bg-amber-100/10 rounded-full blur-3xl pointer-events-none" />
+      {/* ===== 8. TESTIMONIALS — DARK GREEN ===== */}
+      <section className="py-16 sm:py-20 bg-[#013b0b] relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-64 h-64 bg-[#044d1a]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#024217]/20 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-12">
-            <Badge className="bg-amber-50 text-amber-600 border-amber-200 rounded-full px-4 py-1 text-xs font-semibold mb-3">What People Say</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">What Our <span className="bg-gradient-to-r from-[#024217] to-[#f9ab00] bg-clip-text text-transparent">Users</span> Say</h2>
-            <p className="text-gray-500 mt-3 text-sm max-w-lg mx-auto">Real stories from job seekers and employers who transformed their careers with 3BOXESJOBS</p>
+            <Badge className="bg-white/10 text-[#f9ab00] border-white/20 rounded-full px-4 py-1 text-xs font-semibold mb-3">What People Say</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">What Our <span className="text-[#3a9a3a]">Users</span> Say</h2>
+            <p className="text-[#d8ecd8]/60 mt-3 text-sm max-w-lg mx-auto">Real stories from job seekers and employers who transformed their careers with 3BOXESJOBS</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {testimonials.map((t, i) => (
-              <motion.div key={i}
-                initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
+              <motion.div key={i} initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
                 transition={{ delay: i * 0.1 }} viewport={{ once: true }}
               >
-                <Card className="border-0 shadow-sm hover:shadow-lg transition-all h-full hover:border-t-4 hover:border-t-amber-400 bg-white group hover:-translate-y-1">
+                <Card className="border border-white/10 bg-[#044d1a]/40 backdrop-blur-sm hover:shadow-lg hover:shadow-[#3a9a3a]/10 transition-all h-full hover:border-t-4 hover:border-t-[#f9ab00] group hover:-translate-y-1">
                   <CardContent className="p-6 relative">
-                    {/* Colorful quote mark */}
                     <div className="absolute top-3 right-4 select-none" aria-hidden="true">
-                      <span className="text-6xl font-serif leading-none bg-gradient-to-br from-[#024217] to-[#f9ab00] bg-clip-text text-transparent opacity-15">&ldquo;</span>
+                      <span className="text-6xl font-serif leading-none text-[#3a9a3a] opacity-15">&ldquo;</span>
                     </div>
-                    {/* Star rating */}
                     <div className="flex items-center gap-0.5 mb-4">
                       {Array.from({ length: t.rating }).map((_, j) => (
                         <Star key={j} className="h-4 w-4 fill-[#f9ab00] text-[#f9ab00]" />
                       ))}
                     </div>
-                    {/* Quote */}
-                    <p className="text-sm text-gray-600 leading-relaxed mb-5 relative z-10">&ldquo;{t.text}&rdquo;</p>
-                    {/* Avatar and info */}
-                    <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#024217] via-[#34a853] to-[#f9ab00] flex items-center justify-center text-white font-bold text-sm shadow-md ring-2 ring-white">
+                    <p className="text-sm text-[#d8ecd8]/70 leading-relaxed mb-5 relative z-10">&ldquo;{t.text}&rdquo;</p>
+                    <div className="flex items-center gap-3 pt-4 border-t border-white/10">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#3a9a3a] via-[#0a8a30] to-[#f9ab00] flex items-center justify-center text-white font-bold text-sm shadow-md ring-2 ring-[#024217]">
                         {t.avatar}
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
-                        <p className="text-xs text-gray-500">{t.role}</p>
+                        <p className="font-semibold text-white text-sm">{t.name}</p>
+                        <p className="text-xs text-[#d8ecd8]/50">{t.role}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -840,21 +737,17 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== 9. ENGAGE BANNER WITH HR IMAGE ===== */}
-      <section className="py-16 sm:py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
+      {/* ===== 9. CTA SECTION — DARK GREEN WITH HR IMAGE ===== */}
+      <section className="py-16 sm:py-20 bg-[#024217] relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }}>
-            <div className="bg-gradient-to-br from-[#024217] via-[#044d1a] to-[#024217] rounded-3xl overflow-hidden relative">
+            <div className="bg-gradient-to-br from-[#013b0b] via-[#044d1a] to-[#013b0b] rounded-3xl overflow-hidden relative border border-white/10">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                 {/* Left: CTA Text */}
                 <div className="p-10 sm:p-14 relative z-10">
-                  {/* Decorative background */}
                   <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
                     <motion.div animate={{ y: [0, -15, 0], rotate: [0, 180, 360] }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }} className="absolute top-10 right-10 w-12 h-12 rounded-full border-2 border-white/10" />
-                    <motion.div animate={{ y: [0, 12, 0], rotate: [0, -90, -180] }} transition={{ duration: 15, repeat: Infinity, ease: 'linear' }} className="absolute bottom-16 left-16 w-16 h-16 opacity-10">
-                      <svg viewBox="0 0 60 52" fill="white"><polygon points="30,0 60,26 30,52 0,26" /></svg>
-                    </motion.div>
                     <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
                     <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
                   </div>
@@ -871,7 +764,7 @@ export function HomePage() {
                     </p>
                     <div className="flex flex-wrap justify-start gap-4">
                       <Link href="/register">
-                        <Button className="bg-white text-[#024217] hover:bg-gray-50 font-bold px-8 h-12 text-base rounded-xl shadow-lg">
+                        <Button className="bg-white text-[#024217] hover:bg-gray-100 font-bold px-8 h-12 text-base rounded-xl shadow-lg">
                           <UserCheck className="h-5 w-5 mr-2" /> Register Free
                         </Button>
                       </Link>
@@ -881,20 +774,16 @@ export function HomePage() {
                         </Button>
                       </Link>
                     </div>
-                    <p className="text-xs text-[#b0d9b5]/60 mt-4">Free to join. No credit card required.</p>
+                    <p className="text-xs text-[#d8ecd8]/40 mt-4">Free to join. No credit card required.</p>
                   </div>
                 </div>
 
                 {/* Right: HR Image */}
                 <div className="relative hidden lg:block">
-                  <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#024217] z-10" />
-                  <Image
-                    src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=700&h=600&fit=crop"
-                    alt="Business Team"
-                    width={700}
-                    height={600}
-                    className="object-cover w-full h-full min-h-[400px]"
-                  />
+                  <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#013b0b] z-10" />
+                  <Image src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=700&h=600&fit=crop"
+                    alt="Business Team" width={700} height={600}
+                    className="object-cover w-full h-full min-h-[400px]" />
                 </div>
               </div>
             </div>

@@ -294,7 +294,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
           <div className="flex items-center justify-between h-24">
             {/* Left: Logo */}
             <div className="flex items-center flex-shrink-0">
-              <ThreeBoxesLogo3D size={300} className="h-[80px] sm:h-[92px] lg:h-[105px] w-auto" />
+              <ThreeBoxesLogo3D size={300} className="h-[85px] sm:h-[95px] lg:h-[110px] w-auto" />
             </div>
             {/* Center: Navigation links */}
             <div className="hidden lg:flex items-center gap-6 text-sm text-[#024217]/80">
@@ -773,7 +773,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       </section>
 
       {/* ===== JOB CATEGORIES ===== */}
-      <section id="jobs" className="py-12 bg-gray-50">
+      <section id="jobs" className="py-12 bg-[#013b0b]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">Browse Jobs by Category</h2>
@@ -815,7 +815,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
 
       {/* ===== SEARCH RESULTS (shown after search) - TILES VIEW ===== */}
       {showSearchResults && (
-        <section className="py-12 bg-white">
+        <section className="py-12 bg-[#024217]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">
@@ -899,7 +899,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       )}
 
       {/* ===== FEATURED JOBS (dynamic from API) - JobHub Card Style ===== */}
-      <section id="jobs" className="py-16 bg-[#f5f7fc]">
+      <section id="jobs" className="py-16 bg-[#013b0b]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -1201,7 +1201,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
         </div>
       )}
       {/* ===== CORPORATE PARTNERS — Scrolling Companies + Advantages Workflow ===== */}
-      <section id="companies" className="py-16 bg-white overflow-hidden">
+      <section id="companies" className="py-16 bg-[#013b0b] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <motion.div initial={{ y: 10, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }}>
@@ -1311,7 +1311,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       </section>
 
       {/* ===== AI FEATURES — Portal Features + Infographic Workflow ===== */}
-      <section id="ai-features" className="py-16 bg-[#f5f7fc]">
+      <section id="ai-features" className="py-16 bg-[#024217]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <motion.div initial={{ y: 10, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }}>
@@ -1454,7 +1454,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       </section>
 
       {/* ===== TRAINING MODULE — Linked to MarqAI Trainers ===== */}
-      <section id="training" className="py-16 bg-white">
+      <section id="training" className="py-16 bg-[#024217]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left - Training Info */}
