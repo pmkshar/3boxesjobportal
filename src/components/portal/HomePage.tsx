@@ -33,7 +33,7 @@ const DG = {
   100: '#3a9a3a',
 }
 
-// Job categories config - dark green themed
+// Job categories config - dark green themed for dark sections
 const jobCategoriesConfig = [
   { icon: Code, label: 'IT & Software', keywords: ['React', 'Node', 'Python', 'TypeScript', 'AWS', 'Docker'], color: 'bg-[#044d1a] text-[#86efac] border-[#0a8a30]' },
   { icon: IndianRupee, label: 'Banking & Finance', keywords: ['CA', 'CFA', 'Accounting', 'Banking', 'Investment'], color: 'bg-[#044d1a] text-amber-300 border-[#0a8a30]' },
@@ -163,8 +163,8 @@ export function HomePage() {
   const displayJobs = jobs.length > 0 ? jobs : placeholderJobs
 
   return (
-    <div className="min-h-screen bg-[#024217]">
-      {/* ===== 1. HERO SECTION — SPLIT LAYOUT WITH HR IMAGE ===== */}
+    <div className="min-h-screen">
+      {/* ===== 1. HERO SECTION — SPLIT LAYOUT WITH HR IMAGE (DARK GREEN) ===== */}
       <section className="relative bg-gradient-to-br from-[#024217] via-[#044d1a] to-[#024217] pb-20 sm:pb-28 pt-12 sm:pt-16 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
@@ -310,34 +310,34 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== 2. TOP COMPANIES — DARK GREEN ===== */}
-      <section className="py-16 sm:py-20 bg-[#013b0b] relative overflow-hidden">
-        <div className="absolute top-10 right-0 w-72 h-72 bg-[#044d1a]/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-10 left-0 w-64 h-64 bg-[#024217]/30 rounded-full blur-3xl pointer-events-none" />
+      {/* ===== 2. TOP COMPANIES — WHITE ===== */}
+      <section className="py-16 sm:py-20 bg-white relative overflow-hidden">
+        <div className="absolute top-10 right-0 w-72 h-72 bg-[#024217]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-10 left-0 w-64 h-64 bg-[#3a9a3a]/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-10">
-            <Badge className="bg-white/10 text-[#86efac] border-white/20 rounded-full px-4 py-1 text-xs font-semibold mb-3">Trusted By Top Employers</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Top Companies <span className="text-[#3a9a3a]">Hiring</span></h2>
-            <p className="text-[#d8ecd8]/60 mt-2 text-sm max-w-lg mx-auto">From startups to Fortune 500s — top companies trust 3BOXESJOBS for AI-powered hiring</p>
+            <Badge className="bg-[#024217]/10 text-[#024217] border-[#024217]/20 rounded-full px-4 py-1 text-xs font-semibold mb-3">Trusted By Top Employers</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Top Companies <span className="text-[#024217]">Hiring</span></h2>
+            <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">From startups to Fortune 500s — top companies trust 3BOXESJOBS for AI-powered hiring</p>
           </motion.div>
 
           <div className="relative">
-            <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#013b0b] to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#013b0b] to-transparent z-10 pointer-events-none" />
+            <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
             <div className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
               <div className="flex gap-5">
                 {topCompanies.map((company, i) => (
                   <motion.div key={company.name} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }} viewport={{ once: true }} className="flex-shrink-0"
                   >
-                    <Card className="border border-white/10 hover:border-[#3a9a3a]/40 hover:shadow-lg hover:shadow-[#3a9a3a]/10 transition-all cursor-pointer group min-w-[160px] bg-[#044d1a]/50 backdrop-blur-sm">
+                    <Card className="border border-gray-200 hover:border-[#024217]/40 hover:shadow-lg hover:shadow-[#024217]/10 transition-all cursor-pointer group min-w-[160px] bg-white">
                       <CardContent className="p-5 flex flex-col items-center gap-3">
                         <div className={`w-14 h-14 rounded-xl ${getCompanyColor(company.name)} flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-110 transition-transform`}>
                           {company.logo}
                         </div>
-                        <span className="font-semibold text-white text-sm">{company.name}</span>
-                        <Link href="/find-jobs" className="text-xs text-[#3a9a3a] font-semibold hover:underline flex items-center gap-1">
+                        <span className="font-semibold text-gray-900 text-sm">{company.name}</span>
+                        <Link href="/find-jobs" className="text-xs text-[#024217] font-semibold hover:underline flex items-center gap-1">
                           View Jobs <ArrowRight className="h-3 w-3" />
                         </Link>
                       </CardContent>
@@ -395,47 +395,47 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== 4. HOW IT WORKS — DARK GREEN ===== */}
-      <section className="py-16 sm:py-20 bg-[#013b0b] relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-72 h-72 bg-[#044d1a]/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#024217]/30 rounded-full blur-3xl pointer-events-none" />
+      {/* ===== 4. HOW IT WORKS — WHITE ===== */}
+      <section className="py-16 sm:py-20 bg-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-72 h-72 bg-[#024217]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#3a9a3a]/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-14">
-            <Badge className="bg-white/10 text-[#86efac] border-white/20 rounded-full px-4 py-1 text-xs font-semibold mb-3">Simple & Powerful</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">How <span className="text-[#3a9a3a]">3BOXESJOBS</span> Works</h2>
-            <p className="text-[#d8ecd8]/60 mt-3 text-sm max-w-2xl mx-auto leading-relaxed">
+            <Badge className="bg-[#024217]/10 text-[#024217] border-[#024217]/20 rounded-full px-4 py-1 text-xs font-semibold mb-3">Simple & Powerful</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">How <span className="text-[#024217]">3BOXESJOBS</span> Works</h2>
+            <p className="text-gray-500 mt-3 text-sm max-w-2xl mx-auto leading-relaxed">
               In just four simple steps, transform your job search into an AI-powered journey that delivers real results faster
             </p>
           </motion.div>
 
           <div className="relative">
             <div className="hidden lg:block absolute top-[52px] left-[12%] right-[12%] z-0">
-              <div className="w-full border-t-2 border-dashed border-[#3a9a3a]/20" />
+              <div className="w-full border-t-2 border-dashed border-[#024217]/15" />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
               {howItWorksSteps.map((step, i) => (
                 <motion.div key={step.step} initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
                   transition={{ delay: i * 0.15 }} viewport={{ once: true }} className="relative"
                 >
-                  <Card className="border border-white/10 bg-[#044d1a]/40 backdrop-blur-sm hover:shadow-xl hover:shadow-[#3a9a3a]/10 transition-all h-full text-center group hover:-translate-y-1">
+                  <Card className="border border-gray-200 bg-white hover:shadow-xl hover:shadow-[#024217]/10 transition-all h-full text-center group hover:-translate-y-1">
                     <CardContent className="p-6">
                       <div className="flex justify-center mb-4">
-                        <div className={`w-[72px] h-[72px] rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center text-white font-extrabold text-2xl shadow-lg group-hover:scale-110 transition-transform ring-4 ring-[#024217]`}>
+                        <div className={`w-[72px] h-[72px] rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center text-white font-extrabold text-2xl shadow-lg group-hover:scale-110 transition-transform ring-4 ring-[#024217]/10`}>
                           {step.step}
                         </div>
                       </div>
-                      <div className="w-12 h-12 rounded-xl bg-[#024217]/60 flex items-center justify-center mx-auto mb-3">
-                        <step.icon className="h-6 w-6 text-[#86efac]" />
+                      <div className="w-12 h-12 rounded-xl bg-[#024217]/10 flex items-center justify-center mx-auto mb-3">
+                        <step.icon className="h-6 w-6 text-[#024217]" />
                       </div>
-                      <h4 className="font-bold text-white text-base mb-2">{step.title}</h4>
-                      <p className="text-sm text-[#d8ecd8]/70 leading-relaxed">{step.desc}</p>
+                      <h4 className="font-bold text-gray-900 text-base mb-2">{step.title}</h4>
+                      <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
                     </CardContent>
                   </Card>
                   {i < 3 && (
                     <div className="hidden lg:flex absolute top-[52px] -right-5 z-20">
                       <div className="w-8 h-8 rounded-full bg-[#024217] shadow-md flex items-center justify-center border border-[#3a9a3a]/30">
-                        <ArrowRight className="h-4 w-4 text-[#86efac]" />
+                        <ArrowRight className="h-4 w-4 text-white" />
                       </div>
                     </div>
                   )}
@@ -543,18 +543,18 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== 6. CAREER JOURNEY — DARK GREEN ===== */}
-      <section className="py-16 sm:py-20 bg-[#013b0b] relative overflow-hidden">
+      {/* ===== 6. CAREER JOURNEY — WHITE ===== */}
+      <section className="py-16 sm:py-20 bg-white relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-10 left-1/4 w-64 h-64 bg-[#044d1a]/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-1/4 w-48 h-48 bg-[#024217]/20 rounded-full blur-3xl" />
+          <div className="absolute top-10 left-1/4 w-64 h-64 bg-[#024217]/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-1/4 w-48 h-48 bg-[#3a9a3a]/5 rounded-full blur-3xl" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-14">
-            <Badge className="bg-white/10 text-[#f9ab00] border-white/20 rounded-full px-4 py-1 text-xs font-semibold mb-3">Your Complete Career Path</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Your Career <span className="text-[#3a9a3a]">Journey</span></h2>
-            <p className="text-[#d8ecd8]/60 mt-3 text-sm max-w-2xl mx-auto leading-relaxed">
+            <Badge className="bg-[#f9ab00]/10 text-[#f9ab00] border-[#f9ab00]/20 rounded-full px-4 py-1 text-xs font-semibold mb-3">Your Complete Career Path</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Your Career <span className="text-[#024217]">Journey</span></h2>
+            <p className="text-gray-500 mt-3 text-sm max-w-2xl mx-auto leading-relaxed">
               Every step is interconnected — training updates skills, skills enhance your resume, your resume drives job matches, and interviews seal the deal
             </p>
           </motion.div>
@@ -566,28 +566,28 @@ export function HomePage() {
               >
                 <div className="flex flex-col items-center text-center">
                   <div className="relative mb-3">
-                    <div className={`w-16 h-16 rounded-xl ${step.color} flex items-center justify-center text-white shadow-lg ring-4 ring-[#024217] group-hover:scale-110 transition-transform`}>
+                    <div className={`w-16 h-16 rounded-xl ${step.color} flex items-center justify-center text-white shadow-lg ring-4 ring-[#024217]/10 group-hover:scale-110 transition-transform`}>
                       <step.icon className="h-7 w-7" />
                     </div>
                     <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#024217] shadow-md flex items-center justify-center border border-[#3a9a3a]/30">
-                      <span className="text-[10px] font-bold text-[#86efac]">{i + 1}</span>
+                      <span className="text-[10px] font-bold text-white">{i + 1}</span>
                     </div>
                   </div>
-                  <h3 className="font-bold text-white text-sm mb-1">{step.title}</h3>
-                  <p className="text-xs text-[#d8ecd8]/60 max-w-[140px] leading-relaxed">{step.desc}</p>
+                  <h3 className="font-bold text-gray-900 text-sm mb-1">{step.title}</h3>
+                  <p className="text-xs text-gray-500 max-w-[140px] leading-relaxed">{step.desc}</p>
                 </div>
                 {i < careerJourneySteps.length - 1 && (
                   <div className="hidden lg:flex items-center mx-3 flex-shrink-0">
                     <div className="flex items-center">
-                      <div className="w-8 h-0.5 bg-[#3a9a3a]/30" />
-                      <ArrowRight className="h-4 w-4 text-[#3a9a3a]/40" />
+                      <div className="w-8 h-0.5 bg-[#024217]/20" />
+                      <ArrowRight className="h-4 w-4 text-[#024217]/30" />
                     </div>
                   </div>
                 )}
                 {i < careerJourneySteps.length - 1 && (
                   <div className="lg:hidden flex flex-col items-center my-1">
-                    <div className="w-0.5 h-4 bg-[#3a9a3a]/30" />
-                    <ArrowRight className="h-4 w-4 text-[#3a9a3a]/40 rotate-90" />
+                    <div className="w-0.5 h-4 bg-[#024217]/20" />
+                    <ArrowRight className="h-4 w-4 text-[#024217]/30 rotate-90" />
                   </div>
                 )}
               </motion.div>
@@ -692,16 +692,16 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== 8. TESTIMONIALS — DARK GREEN ===== */}
-      <section className="py-16 sm:py-20 bg-[#013b0b] relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-64 h-64 bg-[#044d1a]/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#024217]/20 rounded-full blur-3xl pointer-events-none" />
+      {/* ===== 8. TESTIMONIALS — WHITE ===== */}
+      <section className="py-16 sm:py-20 bg-white relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-64 h-64 bg-[#024217]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#3a9a3a]/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-12">
-            <Badge className="bg-white/10 text-[#f9ab00] border-white/20 rounded-full px-4 py-1 text-xs font-semibold mb-3">What People Say</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">What Our <span className="text-[#3a9a3a]">Users</span> Say</h2>
-            <p className="text-[#d8ecd8]/60 mt-3 text-sm max-w-lg mx-auto">Real stories from job seekers and employers who transformed their careers with 3BOXESJOBS</p>
+            <Badge className="bg-[#f9ab00]/10 text-[#f9ab00] border-[#f9ab00]/20 rounded-full px-4 py-1 text-xs font-semibold mb-3">What People Say</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">What Our <span className="text-[#024217]">Users</span> Say</h2>
+            <p className="text-gray-500 mt-3 text-sm max-w-lg mx-auto">Real stories from job seekers and employers who transformed their careers with 3BOXESJOBS</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -709,24 +709,24 @@ export function HomePage() {
               <motion.div key={i} initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
                 transition={{ delay: i * 0.1 }} viewport={{ once: true }}
               >
-                <Card className="border border-white/10 bg-[#044d1a]/40 backdrop-blur-sm hover:shadow-lg hover:shadow-[#3a9a3a]/10 transition-all h-full hover:border-t-4 hover:border-t-[#f9ab00] group hover:-translate-y-1">
+                <Card className="border border-gray-200 bg-white hover:shadow-lg hover:shadow-[#024217]/10 transition-all h-full hover:border-t-4 hover:border-t-[#f9ab00] group hover:-translate-y-1">
                   <CardContent className="p-6 relative">
                     <div className="absolute top-3 right-4 select-none" aria-hidden="true">
-                      <span className="text-6xl font-serif leading-none text-[#3a9a3a] opacity-15">&ldquo;</span>
+                      <span className="text-6xl font-serif leading-none text-[#024217] opacity-10">&ldquo;</span>
                     </div>
                     <div className="flex items-center gap-0.5 mb-4">
                       {Array.from({ length: t.rating }).map((_, j) => (
                         <Star key={j} className="h-4 w-4 fill-[#f9ab00] text-[#f9ab00]" />
                       ))}
                     </div>
-                    <p className="text-sm text-[#d8ecd8]/70 leading-relaxed mb-5 relative z-10">&ldquo;{t.text}&rdquo;</p>
-                    <div className="flex items-center gap-3 pt-4 border-t border-white/10">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#3a9a3a] via-[#0a8a30] to-[#f9ab00] flex items-center justify-center text-white font-bold text-sm shadow-md ring-2 ring-[#024217]">
+                    <p className="text-sm text-gray-600 leading-relaxed mb-5 relative z-10">&ldquo;{t.text}&rdquo;</p>
+                    <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#024217] via-[#3a9a3a] to-[#f9ab00] flex items-center justify-center text-white font-bold text-sm shadow-md ring-2 ring-[#024217]/10">
                         {t.avatar}
                       </div>
                       <div>
-                        <p className="font-semibold text-white text-sm">{t.name}</p>
-                        <p className="text-xs text-[#d8ecd8]/50">{t.role}</p>
+                        <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
+                        <p className="text-xs text-gray-500">{t.role}</p>
                       </div>
                     </div>
                   </CardContent>

@@ -294,7 +294,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
           <div className="flex items-center justify-between h-24">
             {/* Left: Logo */}
             <div className="flex items-center flex-shrink-0">
-              <ThreeBoxesLogo3D size={300} className="h-[85px] sm:h-[95px] lg:h-[110px] w-auto" />
+              <ThreeBoxesLogo3D size={300} className="h-[92px] sm:h-[96px] lg:h-[96px] w-auto" />
             </div>
             {/* Center: Navigation links */}
             <div className="hidden lg:flex items-center gap-6 text-sm text-[#024217]/80">
