@@ -96,10 +96,10 @@ export function PortalNavbar() {
     <>
       <nav className="sticky top-0 z-50 bg-white shadow-sm border-b-2 border-[#024217]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-20">
             {/* Left: Logo */}
             <Link href="/" className="flex items-center flex-shrink-0">
-              <ThreeBoxesLogo3D size={250} className="h-[52px] sm:h-[60px] lg:h-[64px] w-auto" />
+              <ThreeBoxesLogo3D size={300} className="h-[65px] sm:h-[75px] lg:h-[80px] w-auto" />
             </Link>
             {/* Center: Navigation links */}
             <div className="hidden lg:flex items-center gap-1 text-sm">

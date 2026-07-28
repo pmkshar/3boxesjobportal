@@ -41,11 +41,11 @@ export function Navbar() {
   return (
     <>
       <header className="sticky top-0 z-50 bg-white border-b border-[#E4E8EC] shadow-sm">
-        <div className="max-w-[1600px] mx-auto px-4 lg:px-6 h-16 flex items-center justify-between">
+        <div className="max-w-[1600px] mx-auto px-4 lg:px-6 h-20 flex items-center justify-between">
           {/* Left: Logo + Role badge */}
           <div className="flex items-center gap-3 flex-shrink-0">
             <div className="flex items-center">
-              <ThreeBoxesLogo size={250} className="h-[52px] sm:h-[60px] lg:h-[64px] w-auto" />
+              <ThreeBoxesLogo size={300} className="h-[65px] sm:h-[75px] lg:h-[80px] w-auto" />
             </div>
             {isAuthenticated && user && (
               <Badge className="hidden sm:inline-flex text-[10px] font-semibold border-0 rounded-full px-3 py-0.5"
