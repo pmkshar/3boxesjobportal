@@ -136,10 +136,24 @@ export function HomePage() {
     window.location.href = `/find-jobs?${params.toString()}`
   }
 
+  // Placeholder jobs for when no API data is available
+  const placeholderJobs = [
+    { id: 'p1', title: 'Senior React Developer', corporate: { companyName: 'Google' }, location: 'Bangalore', salaryMin: 200000, salaryMax: 400000, jobType: 'Full Time', isRemote: true, postedDate: new Date().toISOString() },
+    { id: 'p2', title: 'Data Scientist', corporate: { companyName: 'Amazon' }, location: 'Hyderabad', salaryMin: 180000, salaryMax: 350000, jobType: 'Full Time', isRemote: false, postedDate: new Date().toISOString() },
+    { id: 'p3', title: 'Product Manager', corporate: { companyName: 'Flipkart' }, location: 'Bangalore', salaryMin: 250000, salaryMax: 500000, jobType: 'Full Time', isRemote: false, postedDate: new Date().toISOString() },
+    { id: 'p4', title: 'DevOps Engineer', corporate: { companyName: 'TCS' }, location: 'Mumbai', salaryMin: 150000, salaryMax: 300000, jobType: 'Full Time', isRemote: true, postedDate: new Date().toISOString() },
+    { id: 'p5', title: 'ML Engineer', corporate: { companyName: 'Infosys' }, location: 'Pune', salaryMin: 200000, salaryMax: 380000, jobType: 'Full Time', isRemote: false, postedDate: new Date().toISOString() },
+    { id: 'p6', title: 'UI/UX Designer', corporate: { companyName: 'Wipro' }, location: 'Chennai', salaryMin: 120000, salaryMax: 250000, jobType: 'Full Time', isRemote: false, postedDate: new Date().toISOString() },
+    { id: 'p7', title: 'Backend Developer', corporate: { companyName: 'Microsoft' }, location: 'Noida', salaryMin: 220000, salaryMax: 450000, jobType: 'Full Time', isRemote: true, postedDate: new Date().toISOString() },
+    { id: 'p8', title: 'Financial Analyst', corporate: { companyName: 'HDFC Bank' }, location: 'Mumbai', salaryMin: 100000, salaryMax: 200000, jobType: 'Full Time', isRemote: false, postedDate: new Date().toISOString() },
+  ]
+
+  const displayJobs = jobs.length > 0 ? jobs : placeholderJobs
+
   return (
     <div className="min-h-screen bg-[#024217]">
-      {/* ===== HERO SECTION ===== */}
-      <section className="relative bg-gradient-to-br from-[#024217] via-[#044d1a] via-40% to-[#22c55e] pb-36 pt-10 overflow-hidden">
+      {/* ===== 1. HERO SECTION ===== */}
+      <section className="relative bg-gradient-to-br from-[#024217] via-[#044d1a] via-40% to-[#22c55e] pb-36 pt-16 sm:pt-20 overflow-hidden">
         {/* Animated gradient overlay */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
@@ -151,7 +165,7 @@ export function HomePage() {
           <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-16 left-[45%] w-10 h-10 rounded-lg bg-yellow-300/10 rotate-[30deg] blur-sm" />
         </div>
 
-        {/* Hero illustration */}
+        {/* Hero illustration background */}
         <div className="absolute right-0 bottom-0 w-80 lg:w-[420px] opacity-20 lg:opacity-30 pointer-events-none hidden md:block">
           <svg viewBox="0 0 420 400" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="300" cy="120" r="60" stroke="white" strokeWidth="2" opacity="0.3" />
@@ -165,17 +179,18 @@ export function HomePage() {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-14">
-          <div className="text-center max-w-3xl mx-auto mb-8">
+          {/* Hero heading */}
+          <div className="text-center max-w-3xl mx-auto mb-10">
             <motion.div
               initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.4 }}
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 mb-5"
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-5 py-2 mb-6"
             >
               <Sparkles className="h-4 w-4 text-[#3a9a3a]" />
               <span className="text-sm text-[#d8ecd8] font-medium">India&apos;s #1 AI-Powered Job Portal</span>
             </motion.div>
             <motion.h1
               initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}
-              className="text-3xl sm:text-4xl lg:text-[3.25rem] font-extrabold text-white leading-tight"
+              className="text-3xl sm:text-4xl lg:text-[3.5rem] font-extrabold text-white leading-tight"
             >
               Find Your Dream Job with{' '}
               <span className="relative inline-block">
@@ -186,13 +201,13 @@ export function HomePage() {
             </motion.h1>
             <motion.p
               initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}
-              className="mt-4 text-base sm:text-lg text-[#d8ecd8]/80 max-w-2xl mx-auto"
+              className="mt-5 text-base sm:text-lg text-[#d8ecd8]/80 max-w-2xl mx-auto leading-relaxed"
             >
               Smart resumes, AI mock interviews, skill auto-updates & intelligent job matching — your complete career platform
             </motion.p>
           </div>
 
-          {/* ===== SEARCH BAR ===== */}
+          {/* ===== Naukri-style Search Bar ===== */}
           <motion.div
             initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}
             className="max-w-4xl mx-auto"
@@ -200,7 +215,7 @@ export function HomePage() {
             <div className="bg-white rounded-2xl shadow-2xl p-2 sm:p-3">
               <div className="flex flex-col sm:flex-row gap-2">
                 <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#f0f8f0]0" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <Input
                     placeholder="Skills, Designations, Companies"
                     value={searchSkill}
@@ -210,7 +225,7 @@ export function HomePage() {
                   />
                 </div>
                 <div className="flex-1 relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#f0f8f0]0" />
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <Input
                     placeholder="Location (City, State)"
                     value={searchLocation}
@@ -220,7 +235,7 @@ export function HomePage() {
                   />
                 </div>
                 <div className="sm:w-36 relative">
-                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#f0f8f0]0" />
+                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <Input
                     placeholder="Experience"
                     value={searchExp}
@@ -234,9 +249,11 @@ export function HomePage() {
                 </Button>
               </div>
             </div>
-            <div className="mt-3 flex flex-wrap gap-2 justify-center">
-              {['React', 'Python', 'AWS', 'Data Science', 'DevOps', 'Product Manager'].map(tag => (
-                <button key={tag} className="px-3 py-1 text-sm bg-white/15 text-white/90 rounded-full hover:bg-white/25 transition-colors"
+
+            {/* Popular search tags */}
+            <div className="mt-4 flex flex-wrap gap-2 justify-center">
+              {['React', 'Python', 'AWS', 'Data Science', 'DevOps', 'Product Manager', 'ML Engineer', 'Full Stack'].map(tag => (
+                <button key={tag} className="px-3 py-1.5 text-sm bg-white/15 text-white/90 rounded-full hover:bg-white/25 transition-colors border border-white/10"
                   onClick={() => { setSearchSkill(tag); setTimeout(() => handleSearch(), 100) }}>
                   {tag}
                 </button>
@@ -244,10 +261,10 @@ export function HomePage() {
             </div>
           </motion.div>
 
-          {/* Stats bar */}
+          {/* Animated Stats Counters */}
           <motion.div
             initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}
-            className="mt-10 flex flex-wrap justify-center gap-4 sm:gap-6"
+            className="mt-12 flex flex-wrap justify-center gap-4 sm:gap-6"
           >
             {[
               { label: 'Active Jobs', value: '10,000+', icon: Briefcase, bg: 'bg-white/10 backdrop-blur-sm border border-white/20' },
@@ -255,200 +272,350 @@ export function HomePage() {
               { label: 'Candidates', value: '50,000+', icon: Users, bg: 'bg-white/10 backdrop-blur-sm border border-white/20' },
               { label: 'AI Interviews', value: '1,000+', icon: Brain, bg: 'bg-white/10 backdrop-blur-sm border border-white/20' },
             ].map(stat => (
-              <div key={stat.label} className={`text-center flex flex-col items-center ${stat.bg} rounded-2xl px-5 py-3 min-w-[120px]`}>
-                <stat.icon className="h-5 w-5 text-[#3a9a3a] mb-1" />
-                <div className="text-xl sm:text-2xl font-extrabold text-white">{stat.value}</div>
-                <div className="text-xs sm:text-sm text-[#b0d9b5]/80">{stat.label}</div>
-              </div>
+              <motion.div
+                key={stat.label}
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.7, duration: 0.5 }}
+                className={`text-center flex flex-col items-center ${stat.bg} rounded-2xl px-6 py-4 min-w-[130px]`}
+              >
+                <stat.icon className="h-5 w-5 text-[#3a9a3a] mb-1.5" />
+                <div className="text-2xl sm:text-3xl font-extrabold text-white">{stat.value}</div>
+                <div className="text-xs sm:text-sm text-[#b0d9b5]/80 mt-0.5">{stat.label}</div>
+              </motion.div>
             ))}
           </motion.div>
         </div>
 
-        {/* Curved bottom */}
+        {/* Curved SVG bottom transitioning to white */}
         <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-            <path d="M0 60L60 52C120 44 240 28 360 22C480 16 600 20 720 24C840 28 960 32 1080 30C1200 28 1320 20 1380 16L1440 12V60H0Z" fill="white" />
+          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+            <path d="M0 80L60 70C120 60 240 40 360 32C480 24 600 28 720 34C840 40 960 48 1080 44C1200 40 1320 24 1380 16L1440 8V80H0Z" fill="white" />
           </svg>
         </div>
       </section>
 
-      {/* ===== WHY 3 BOXES / MEANING SECTION ===== */}
-      <section className="py-16 bg-gradient-to-b from-white to-green-50/30 relative overflow-hidden">
+      {/* ===== 2. TOP COMPANIES HORIZONTAL SCROLL ===== */}
+      <section className="py-16 sm:py-20 bg-white relative overflow-hidden">
         {/* Decorative background blobs */}
         <div className="absolute top-10 right-0 w-72 h-72 bg-[#d8ecd8]/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-10 left-0 w-64 h-64 bg-amber-100/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-12">
-            <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">The Meaning Behind Our Name</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Why <span className="bg-gradient-to-r from-[#024217] to-[#34a853] bg-clip-text text-transparent">3 Boxes</span>?</h2>
-            <p className="text-gray-500 mt-3 text-sm max-w-2xl mx-auto leading-relaxed">
-              The three boxes represent the three pillars of a successful career journey — Skills, Resume, and Career. Each box builds upon the previous one, creating a complete ecosystem where every action you take strengthens your path to your dream job.
-            </p>
+          <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-10">
+            <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Trusted By Top Employers</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Top Companies <span className="bg-gradient-to-r from-[#024217] to-[#34a853] bg-clip-text text-transparent">Hiring</span></h2>
+            <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">From startups to Fortune 500s — top companies trust 3BOXESJOBS for AI-powered hiring</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            {/* Connecting SVG illustration between cards (desktop) */}
-            <div className="hidden md:block absolute top-1/3 left-0 right-0 pointer-events-none z-0">
-              <svg className="w-full h-16" viewBox="0 0 900 64" fill="none" preserveAspectRatio="xMidYMid meet">
-                {/* Arrow from Box 1 to Box 2 */}
-                <path d="M180 32 C220 32, 240 20, 280 20 C320 20, 340 32, 380 32" stroke="#024217" strokeWidth="2.5" strokeDasharray="8 4" fill="none" opacity="0.4" />
-                <polygon points="378,26 390,32 378,38" fill="#024217" opacity="0.4" />
-                {/* Arrow from Box 2 to Box 3 */}
-                <path d="M480 32 C520 32, 540 44, 580 44 C620 44, 640 32, 680 32" stroke="#34a853" strokeWidth="2.5" strokeDasharray="8 4" fill="none" opacity="0.4" />
-                <polygon points="678,26 690,32 678,38" fill="#34a853" opacity="0.4" />
-              </svg>
-            </div>
-
-            {[
-              {
-                icon: BookOpen,
-                title: 'Box 1: Skills & Training',
-                desc: 'The foundation of your career. Our integrated training portal offers industry-aligned courses that automatically update your skill profile. Every course completed, every certificate earned, instantly reflects across your entire 3 Boxes presence.',
-                color: 'from-[#024217] to-[#044d1a]',
-                tag: 'Foundation',
-                items: ['Industry-aligned courses', 'Auto-updating skill profiles', 'Verified certificates'],
-                glowColor: 'shadow-green-200/50',
-              },
-              {
-                icon: FileText,
-                title: 'Box 2: Smart Resume',
-                desc: 'Your professional identity, powered by AI. Our AI Resume Builder crafts ATS-optimized resumes that highlight your strongest qualifications. Skills auto-populate from training completions, ensuring your resume is always current and competitive.',
-                color: 'from-[#34a853] to-[#024217]',
-                tag: 'Identity',
-                items: ['AI-powered resume builder', 'ATS-optimized formatting', 'Auto-populated skills'],
-                glowColor: 'shadow-emerald-200/50',
-              },
-              {
-                icon: Trophy,
-                title: 'Box 3: Career & Jobs',
-                desc: 'The destination — your dream career. AI-powered job matching connects your complete profile (skills + resume + interview readiness) with the perfect opportunities. Practice with AI mock interviews, get matched, and land your dream job faster.',
-                color: 'from-[#044d1a] to-[#024217]',
-                tag: 'Destination',
-                items: ['Smart job matching', 'AI mock interviews', 'Higher visibility to employers'],
-                glowColor: 'shadow-teal-200/50',
-              },
-            ].map((box, i) => (
-              <motion.div key={i}
-                initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: i * 0.15 }} viewport={{ once: true }}
-                className="relative z-10"
-              >
-                <Card className={`border-0 shadow-sm hover:shadow-xl ${box.glowColor} transition-all h-full group overflow-hidden hover:border-t-4 hover:border-t-[#024217]`}>
-                  <div className={`bg-gradient-to-br ${box.color} p-6 text-center relative`}>
-                    <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
-                    <Badge className="bg-white/20 text-white border-0 text-[10px] rounded-full px-3 py-0.5 font-semibold mb-3">{box.tag}</Badge>
-                    <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                      <box.icon className="h-8 w-8 text-white" />
-                    </div>
-                    <h3 className="text-lg font-bold text-white">{box.title}</h3>
-                  </div>
-                  <CardContent className="p-6">
-                    <p className="text-sm text-gray-500 leading-relaxed mb-4">{box.desc}</p>
-                    <div className="space-y-2">
-                      {box.items.map((item, j) => (
-                        <div key={j} className="flex items-center gap-2 text-sm">
-                          <CheckCircle2 className="h-4 w-4 text-[#024217] flex-shrink-0" />
-                          <span className="text-gray-700 font-medium">{item}</span>
+          {/* Horizontal scrollable company cards */}
+          <div className="relative">
+            <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+            <div className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
+              <div className="flex gap-5">
+                {topCompanies.map((company, i) => (
+                  <motion.div
+                    key={company.name}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    viewport={{ once: true }}
+                    className="flex-shrink-0"
+                  >
+                    <Card className="border border-gray-100 hover:border-[#024217]/30 hover:shadow-lg transition-all cursor-pointer group min-w-[160px] bg-white/80 backdrop-blur-sm">
+                      <CardContent className="p-5 flex flex-col items-center gap-3">
+                        <div className={`w-14 h-14 rounded-xl ${getCompanyColor(company.name)} flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-110 transition-transform`}>
+                          {company.logo}
                         </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Connecting flow - Enhanced infographic */}
-          <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-10 text-center">
-            <div className="inline-flex items-center gap-4 bg-gradient-to-r from-green-50 via-white to-amber-50 rounded-full px-8 py-4 border border-green-100 shadow-sm">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[#024217] flex items-center justify-center">
-                  <BookOpen className="h-4 w-4 text-white" />
-                </div>
-                <span className="text-sm font-bold text-[#024217]">Skills</span>
-              </div>
-              <svg width="40" height="16" viewBox="0 0 40 16" fill="none">
-                <path d="M0 8 L12 8 L16 4 L20 8 L24 4 L28 8 L40 8" stroke="#024217" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
-                <polygon points="36,4 42,8 36,12" fill="#024217" opacity="0.5" />
-              </svg>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[#34a853] flex items-center justify-center">
-                  <FileText className="h-4 w-4 text-white" />
-                </div>
-                <span className="text-sm font-bold text-[#34a853]">Resume</span>
-              </div>
-              <svg width="40" height="16" viewBox="0 0 40 16" fill="none">
-                <path d="M0 8 L12 8 L16 4 L20 8 L24 4 L28 8 L40 8" stroke="#34a853" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
-                <polygon points="36,4 42,8 36,12" fill="#34a853" opacity="0.5" />
-              </svg>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[#044d1a] flex items-center justify-center">
-                  <Trophy className="h-4 w-4 text-white" />
-                </div>
-                <span className="text-sm font-bold text-[#044d1a]">Career</span>
+                        <span className="font-semibold text-gray-800 text-sm">{company.name}</span>
+                        <Link href="/find-jobs" className="text-xs text-[#024217] font-semibold hover:underline flex items-center gap-1">
+                          View Jobs <ArrowRight className="h-3 w-3" />
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Wave divider */}
-      <div className="relative -mt-1">
-        <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-          <path d="M0 0 C240 35 480 35 720 20 C960 5 1200 5 1440 30 V40 H0 Z" fill="#f9fafb" />
-        </svg>
-      </div>
-
-      {/* ===== JOB CATEGORIES ===== */}
-      <section className="py-12 bg-[#f9fafb] relative">
+      {/* ===== 3. JOB CATEGORIES (Colorful Grid) ===== */}
+      <section className="py-16 sm:py-20 bg-gray-50 relative overflow-hidden">
         {/* Decorative dots pattern */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.03]" style={{backgroundImage: 'radial-gradient(circle at 2px 2px, #024217 1px, transparent 0)', backgroundSize: '32px 32px'}} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">Browse Jobs by <span className="bg-gradient-to-r from-[#024217] to-[#34a853] bg-clip-text text-transparent">Category</span></h2>
-            <Link href="/find-jobs">
-              <Button variant="ghost" className="text-[#024217] text-sm font-semibold">
-                View All <ChevronDown className="h-4 w-4 ml-1" />
-              </Button>
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-10">
+            <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Explore Opportunities</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Browse Jobs by <span className="bg-gradient-to-r from-[#024217] to-[#34a853] bg-clip-text text-transparent">Category</span></h2>
+            <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">Find the perfect role in your field — from tech to finance, healthcare to marketing</p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-5">
             {jobCategoriesConfig.map((cat, i) => (
               <motion.div key={cat.label}
-                initial={{ y: 10, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: i * 0.05 }} viewport={{ once: true }}
+                initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
+                transition={{ delay: i * 0.07 }} viewport={{ once: true }}
               >
                 <Link href={`/find-jobs?search=${cat.keywords[0]}`}>
-                  <Card className={`border ${cat.color} hover:shadow-md transition-all cursor-pointer group h-full`}>
-                    <CardContent className="p-4 text-center">
-                      <cat.icon className="h-7 w-7 mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                      <h3 className="font-semibold text-sm">{cat.label}</h3>
-                      <p className="text-[10px] opacity-70 mt-1">{cat.keywords.slice(0, 3).join(', ')}</p>
+                  <Card className={`border ${cat.color} hover:shadow-lg transition-all cursor-pointer group h-full hover:scale-[1.02]`}>
+                    <CardContent className="p-5 text-center">
+                      <div className="w-12 h-12 rounded-xl bg-white/60 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform shadow-sm">
+                        <cat.icon className="h-6 w-6" />
+                      </div>
+                      <h3 className="font-bold text-sm mb-2">{cat.label}</h3>
+                      <div className="flex flex-wrap gap-1 justify-center">
+                        {cat.keywords.slice(0, 3).map(kw => (
+                          <span key={kw} className="text-[10px] bg-white/60 px-2 py-0.5 rounded-full font-medium">{kw}</span>
+                        ))}
+                      </div>
                     </CardContent>
                   </Card>
                 </Link>
               </motion.div>
             ))}
           </div>
+
+          <div className="text-center mt-8">
+            <Link href="/find-jobs">
+              <Button variant="outline" className="border-[#024217] text-[#024217] hover:bg-[#f0f8f0] font-semibold px-6 h-11 rounded-xl">
+                View All Categories <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* ===== FEATURED JOBS (JobHub Card Style) ===== */}
-      <section className="py-16 bg-gradient-to-b from-[#f5f7fc] to-[#eef2f9] relative overflow-hidden">
+      {/* ===== 4. HOW IT WORKS (Timeline/Steps) ===== */}
+      <section className="py-16 sm:py-20 bg-white relative overflow-hidden">
+        {/* Decorative background */}
+        <div className="absolute top-0 right-0 w-72 h-72 bg-green-50/50 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-50/40 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-14">
+            <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Simple & Powerful</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">How <span className="bg-gradient-to-r from-[#024217] to-[#f9ab00] bg-clip-text text-transparent">3BOXESJOBS</span> Works</h2>
+            <p className="text-gray-500 mt-3 text-sm max-w-2xl mx-auto leading-relaxed">
+              In just four simple steps, transform your job search into an AI-powered journey that delivers real results faster
+            </p>
+          </motion.div>
+
+          {/* Horizontal Timeline */}
+          <div className="relative">
+            {/* Connecting dotted line (desktop) */}
+            <div className="hidden lg:block absolute top-[52px] left-[12%] right-[12%] z-0">
+              <div className="w-full border-t-2 border-dashed border-[#024217]/20" />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
+              {howItWorksSteps.map((step, i) => (
+                <motion.div key={step.step}
+                  initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ delay: i * 0.15 }} viewport={{ once: true }}
+                  className="relative"
+                >
+                  <Card className="border-0 shadow-sm hover:shadow-xl transition-all h-full text-center group bg-white hover:-translate-y-1">
+                    <CardContent className="p-6">
+                      {/* Numbered circle */}
+                      <div className="flex justify-center mb-4">
+                        <div className={`w-[72px] h-[72px] rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center text-white font-extrabold text-2xl shadow-lg group-hover:scale-110 transition-transform ring-4 ring-white`}>
+                          {step.step}
+                        </div>
+                      </div>
+                      {/* Icon */}
+                      <div className="w-12 h-12 rounded-xl bg-[#f0f8f0] flex items-center justify-center mx-auto mb-3">
+                        <step.icon className="h-6 w-6 text-[#024217]" />
+                      </div>
+                      <h4 className="font-bold text-gray-900 text-base mb-2">{step.title}</h4>
+                      <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
+                    </CardContent>
+                  </Card>
+                  {/* Arrow between cards (desktop) */}
+                  {i < 3 && (
+                    <div className="hidden lg:flex absolute top-[52px] -right-5 z-20">
+                      <div className="w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center">
+                        <ArrowRight className="h-4 w-4 text-[#024217]" />
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== 5. AI FEATURES SHOWCASE (3 Cards) ===== */}
+      <section className="py-16 sm:py-20 bg-gradient-to-b from-green-50/30 to-white relative overflow-hidden">
+        {/* Decorative blobs */}
+        <div className="absolute top-20 right-0 w-72 h-72 bg-[#d8ecd8]/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-10 left-0 w-64 h-64 bg-amber-100/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-12">
+            <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">AI-Powered Platform</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Powered by <span className="bg-gradient-to-r from-[#024217] to-[#f9ab00] bg-clip-text text-transparent">AI</span></h2>
+            <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">Not just a job board — an intelligent career platform with AI tools designed for every user</p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* AI Resume Builder */}
+            <motion.div initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0 }} viewport={{ once: true }}>
+              <Card className="border-0 shadow-lg hover:shadow-2xl transition-all h-full overflow-hidden group hover:-translate-y-2">
+                <div className="bg-gradient-to-br from-[#024217] to-[#044d1a] p-8 text-center relative">
+                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
+                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#3a9a3a]/20 rounded-full blur-2xl" />
+                  <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <FileText className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">AI Resume Builder</h3>
+                  <p className="text-[#d8ecd8]/80 text-sm mt-2">Craft ATS-optimized resumes with AI</p>
+                </div>
+                <CardContent className="p-6">
+                  <p className="text-sm text-gray-600 leading-relaxed mb-5">
+                    Auto-generate polished resumes with AI. Skills update automatically when you complete training courses. Stand out to every recruiter.
+                  </p>
+                  <Link href="/ai-features">
+                    <Button className="w-full bg-[#024217] hover:bg-[#044d1a] text-white font-semibold rounded-xl h-11">
+                      Try Resume Builder <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* AI Mock Interviews */}
+            <motion.div initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0.15 }} viewport={{ once: true }}>
+              <Card className="border-0 shadow-lg hover:shadow-2xl transition-all h-full overflow-hidden group hover:-translate-y-2">
+                <div className="bg-gradient-to-br from-[#2869fe] to-[#1a4fd4] p-8 text-center relative">
+                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
+                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl" />
+                  <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <Brain className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">AI Mock Interviews</h3>
+                  <p className="text-blue-100/80 text-sm mt-2">Practice with real-time AI feedback</p>
+                </div>
+                <CardContent className="p-6">
+                  <p className="text-sm text-gray-600 leading-relaxed mb-5">
+                    Practice interviews with AI and get instant feedback on communication, technical depth, and confidence. Be interview-ready every time.
+                  </p>
+                  <Link href="/ai-features">
+                    <Button className="w-full bg-[#2869fe] hover:bg-[#1a4fd4] text-white font-semibold rounded-xl h-11">
+                      Start Practicing <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Smart Job Matching */}
+            <motion.div initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} viewport={{ once: true }}>
+              <Card className="border-0 shadow-lg hover:shadow-2xl transition-all h-full overflow-hidden group hover:-translate-y-2">
+                <div className="bg-gradient-to-br from-[#fc7e0b] to-[#e06a00] p-8 text-center relative">
+                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
+                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-300/20 rounded-full blur-2xl" />
+                  <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <Target className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Smart Job Matching</h3>
+                  <p className="text-orange-100/80 text-sm mt-2">AI matches you to the perfect role</p>
+                </div>
+                <CardContent className="p-6">
+                  <p className="text-sm text-gray-600 leading-relaxed mb-5">
+                    AI calculates your match score with every job based on skills, experience, and career preferences. No more endless scrolling.
+                  </p>
+                  <Link href="/find-jobs">
+                    <Button className="w-full bg-[#fc7e0b] hover:bg-[#e06a00] text-white font-semibold rounded-xl h-11">
+                      Find Your Match <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== 6. CAREER JOURNEY (Horizontal Flow) ===== */}
+      <section className="py-16 sm:py-20 bg-white relative overflow-hidden">
+        {/* Decorative background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-10 left-1/4 w-64 h-64 bg-[#d8ecd8]/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-1/4 w-48 h-48 bg-amber-100/10 rounded-full blur-3xl" />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-14">
+            <Badge className="bg-amber-50 text-amber-600 border-amber-200 rounded-full px-4 py-1 text-xs font-semibold mb-3">Your Complete Career Path</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Your Career <span className="bg-gradient-to-r from-[#024217] to-[#f9ab00] bg-clip-text text-transparent">Journey</span></h2>
+            <p className="text-gray-500 mt-3 text-sm max-w-2xl mx-auto leading-relaxed">
+              Every step is interconnected — training updates skills, skills enhance your resume, your resume drives job matches, and interviews seal the deal
+            </p>
+          </motion.div>
+
+          {/* Horizontal flow with arrows */}
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-0">
+            {careerJourneySteps.map((step, i) => (
+              <motion.div key={i}
+                initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }}
+                transition={{ delay: i * 0.15 }} viewport={{ once: true }}
+                className="flex items-center"
+              >
+                <div className="flex flex-col items-center text-center">
+                  {/* Step number badge */}
+                  <div className="relative mb-3">
+                    <div className={`w-16 h-16 rounded-xl ${step.color} flex items-center justify-center text-white shadow-lg ring-4 ring-green-100/30 group-hover:scale-110 transition-transform`}>
+                      <step.icon className="h-7 w-7" />
+                    </div>
+                    <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-white shadow-md flex items-center justify-center">
+                      <span className="text-[10px] font-bold text-[#024217]">{i + 1}</span>
+                    </div>
+                  </div>
+                  <h3 className="font-bold text-gray-900 text-sm mb-1">{step.title}</h3>
+                  <p className="text-xs text-gray-500 max-w-[140px] leading-relaxed">{step.desc}</p>
+                </div>
+                {/* Arrow connector */}
+                {i < careerJourneySteps.length - 1 && (
+                  <div className="hidden lg:flex items-center mx-3 flex-shrink-0">
+                    <div className="flex items-center">
+                      <div className="w-8 h-0.5 bg-gradient-to-r from-[#024217]/40 to-[#024217]/20" />
+                      <ArrowRight className="h-4 w-4 text-[#024217]/40" />
+                    </div>
+                  </div>
+                )}
+                {/* Mobile vertical connector */}
+                {i < careerJourneySteps.length - 1 && (
+                  <div className="lg:hidden flex flex-col items-center my-1">
+                    <div className="w-0.5 h-4 bg-gradient-to-b from-[#024217]/30 to-transparent" />
+                    <ArrowRight className="h-4 w-4 text-[#024217]/40 rotate-90" />
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== 7. FEATURED JOBS (Card Grid) ===== */}
+      <section className="py-16 sm:py-20 bg-gradient-to-b from-gray-50 to-green-50/20 relative overflow-hidden">
         {/* Decorative gradient orbs */}
         <div className="absolute top-0 left-1/4 w-80 h-80 bg-[#d8ecd8]/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-100/8 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">Featured <span className="bg-gradient-to-r from-[#024217] to-[#34a853] bg-clip-text text-transparent">Jobs</span></h2>
-              <p className="text-gray-500 text-sm mt-1">Hand-picked opportunities matched by AI</p>
-            </div>
+            <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }}>
+              <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Hand-Picked Opportunities</Badge>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Featured <span className="bg-gradient-to-r from-[#024217] to-[#34a853] bg-clip-text text-transparent">Jobs</span></h2>
+              <p className="text-gray-500 text-sm mt-1">AI-matched opportunities for you</p>
+            </motion.div>
             <Link href="/find-jobs">
-              <Button variant="outline" className="border-[#024217] text-[#024217] hover:bg-[#f0f8f0] font-semibold text-sm rounded-xl">
+              <Button variant="outline" className="border-[#024217] text-[#024217] hover:bg-[#f0f8f0] font-semibold text-sm rounded-xl hidden sm:flex">
                 View All Jobs <ArrowRight className="h-4 w-4 ml-1" />
               </Button>
             </Link>
@@ -459,73 +626,71 @@ export function HomePage() {
               {Array.from({ length: 8 }).map((_, i) => (
                 <Card key={i} className="animate-pulse border-0 shadow-sm">
                   <CardContent className="p-0">
-                    <div className="h-[120px] bg-[#f5f7fc] rounded-t-xl" />
+                    <div className="h-[120px] bg-gray-100 rounded-t-xl" />
                     <div className="p-4 space-y-3">
-                      <div className="h-4 bg-[#f5f7fc] rounded w-3/4" />
-                      <div className="h-3 bg-[#f5f7fc] rounded w-1/2" />
-                      <div className="h-3 bg-[#f5f7fc] rounded w-2/3" />
+                      <div className="h-4 bg-gray-100 rounded w-3/4" />
+                      <div className="h-3 bg-gray-100 rounded w-1/2" />
+                      <div className="h-3 bg-gray-100 rounded w-2/3" />
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
-          ) : jobs.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-2xl shadow-sm">
-              <Briefcase className="h-12 w-12 mx-auto mb-3 text-gray-200" />
-              <p className="text-lg font-semibold text-gray-900">No jobs available yet</p>
-              <p className="text-sm text-gray-500 mt-1">Check back soon for new opportunities</p>
-            </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              {jobs.map((job, i) => (
-                <Card key={job.id}
-                  className="hover:-translate-y-1 transition-all duration-300 cursor-pointer group border-0 shadow-sm hover:shadow-xl overflow-hidden hover:border-l-4 hover:border-l-[#024217]"
-                  onClick={() => { window.location.href = '/find-jobs' }}>
-                  <CardContent className="p-0">
-                    {/* Card Top - Company Color Banner */}
-                    <div className={`relative h-[120px] ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center overflow-hidden`}>
-                      <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
-                      <span className="text-4xl font-bold text-white/30 select-none">
-                        {getCompanyInitial(job.corporate?.companyName)}
-                      </span>
-                      {job.isRemote && (
-                        <label className="absolute top-3 left-3 bg-[#f9ab00] text-white text-[10px] font-semibold px-2.5 py-1 rounded-md uppercase tracking-wide shadow-sm">Remote</label>
-                      )}
-                      {i < 3 && !job.isRemote && (
-                        <label className="absolute top-3 left-3 bg-[#d93025] text-white text-[10px] font-semibold px-2.5 py-1 rounded-md uppercase tracking-wide shadow-sm">Urgent</label>
-                      )}
-                    </div>
-                    <div className="p-4">
-                      <div className="flex items-center justify-between mb-2.5">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <div className={`w-8 h-8 rounded-lg ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-sm`}>
-                            {getCompanyInitial(job.corporate?.companyName)}
+              {displayJobs.map((job: any, i: number) => (
+                <motion.div key={job.id || i}
+                  initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ delay: i * 0.05 }} viewport={{ once: true }}
+                >
+                  <Card className="hover:-translate-y-1 transition-all duration-300 cursor-pointer group border-0 shadow-sm hover:shadow-xl overflow-hidden hover:border-l-4 hover:border-l-[#024217]"
+                    onClick={() => { window.location.href = '/find-jobs' }}>
+                    <CardContent className="p-0">
+                      {/* Card Top - Company Color Banner */}
+                      <div className={`relative h-[120px] ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center overflow-hidden`}>
+                        <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
+                        <span className="text-4xl font-bold text-white/30 select-none">
+                          {getCompanyInitial(job.corporate?.companyName)}
+                        </span>
+                        {job.isRemote && (
+                          <label className="absolute top-3 left-3 bg-[#f9ab00] text-white text-[10px] font-semibold px-2.5 py-1 rounded-md uppercase tracking-wide shadow-sm">Remote</label>
+                        )}
+                        {i < 3 && !job.isRemote && (
+                          <label className="absolute top-3 left-3 bg-[#d93025] text-white text-[10px] font-semibold px-2.5 py-1 rounded-md uppercase tracking-wide shadow-sm">Urgent</label>
+                        )}
+                      </div>
+                      <div className="p-4">
+                        <div className="flex items-center justify-between mb-2.5">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className={`w-8 h-8 rounded-lg ${getCompanyColor(job.corporate?.companyName)} flex items-center justify-center text-white font-bold text-xs flex-shrink-0 shadow-sm`}>
+                              {getCompanyInitial(job.corporate?.companyName)}
+                            </div>
+                            <span className="text-xs text-gray-500 truncate font-medium">{job.corporate?.companyName || 'Company'}</span>
                           </div>
-                          <span className="text-xs text-gray-500 truncate font-medium">{job.corporate?.companyName || 'Company'}</span>
+                          <Badge className="bg-gray-50 text-gray-500 border-0 text-[10px] rounded-md px-2 py-0.5 font-medium capitalize flex-shrink-0">
+                            {job.jobType || 'Full Time'}
+                          </Badge>
                         </div>
-                        <Badge className="bg-gray-50 text-gray-500 border-0 text-[10px] rounded-md px-2 py-0.5 font-medium capitalize flex-shrink-0">
-                          {job.jobType || 'Full Time'}
-                        </Badge>
+                        <h5 className="font-semibold text-gray-900 text-sm leading-snug group-hover:text-[#024217] transition-colors line-clamp-2 mb-2">
+                          {job.title}
+                        </h5>
+                        <div className="flex items-center gap-3 text-[11px] text-gray-500 mb-3">
+                          <span className="flex items-center gap-1"><Clock className="h-3 w-3 text-[#024217]" /> {job.postedDate ? timeAgo(job.postedDate) : 'Recently'}</span>
+                          <span className="flex items-center gap-1"><MapPin className="h-3 w-3 text-[#024217]" /> {job.location || 'Remote'}</span>
+                        </div>
+                        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                          <span className="font-semibold text-[#024217] text-sm">{formatSalary(job.salaryMin, job.salaryMax)}</span>
+                          <Shield className="h-4 w-4 text-[#024217]" />
+                        </div>
                       </div>
-                      <h5 className="font-semibold text-gray-900 text-sm leading-snug group-hover:text-[#024217] transition-colors line-clamp-2 mb-2">
-                        {job.title}
-                      </h5>
-                      <div className="flex items-center gap-3 text-[11px] text-gray-500 mb-3">
-                        <span className="flex items-center gap-1"><Clock className="h-3 w-3 text-[#024217]" /> {job.postedDate ? timeAgo(job.postedDate) : 'Recently'}</span>
-                        <span className="flex items-center gap-1"><MapPin className="h-3 w-3 text-[#024217]" /> {job.location || 'Remote'}</span>
-                      </div>
-                      <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                        <span className="font-semibold text-[#024217] text-sm">{formatSalary(job.salaryMin, job.salaryMax)}</span>
-                        <Shield className="h-4 w-4 text-[#024217]" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               ))}
             </div>
           )}
 
-          <div className="text-center mt-8">
+          <div className="text-center mt-8 sm:hidden">
             <Link href="/find-jobs">
               <Button className="bg-[#024217] hover:bg-[#044d1a] text-white font-semibold px-8 h-11 rounded-xl shadow-md">
                 Browse All Jobs <ArrowRight className="h-4 w-4 ml-2" />
@@ -535,465 +700,8 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== TOP COMPANIES HIRING ===== */}
-      <section className="py-16 bg-gradient-to-b from-white to-amber-50/20 overflow-hidden relative">
-        {/* Decorative pattern */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-0 w-60 h-60 bg-[#d8ecd8]/15 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-0 w-48 h-48 bg-amber-100/15 rounded-full blur-3xl" />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <motion.div initial={{ y: 10, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-10">
-            <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Trusted By Top Employers</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Companies That <span className="relative inline-block">Hire Through Us<span className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-[#024217] to-[#f9ab00] rounded-full"></span></span></h2>
-            <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">From startups to Fortune 500s — corporates trust 3 Boxes for AI-powered hiring that delivers better candidates faster.</p>
-          </motion.div>
-
-          {/* Scrolling Company Logos - Infinite Marquee */}
-          <div className="relative mb-12">
-            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-            <div className="overflow-hidden">
-              <div className="flex gap-6 animate-marquee whitespace-nowrap">
-                {[...topCompanies, ...topCompanies, ...topCompanies].map((c, i) => (
-                  <div key={`${c.name}-${i}`} className="flex-shrink-0 w-[130px] h-[70px] flex items-center justify-center rounded-xl border border-gray-100 bg-white/80 backdrop-blur-sm hover:border-[#024217]/30 hover:bg-[#f0f8f0] hover:shadow-md transition-all group">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-10 h-10 rounded-lg ${getCompanyColor(c.name)} flex items-center justify-center text-white font-bold text-sm group-hover:scale-110 transition-transform`}>
-                        {c.logo}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Corporate Advantages */}
-          <div className="mt-4">
-            <h3 className="text-xl font-bold text-gray-900 text-center mb-8">Why Corporates Choose <span className="relative inline-block"><span className="bg-gradient-to-r from-[#024217] to-[#34a853] bg-clip-text text-transparent">3 Boxes</span><span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-[#024217] to-[#34a853] rounded-full"></span></span></h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { step: '01', icon: Building2, title: 'Post Jobs Instantly', desc: 'Create job postings in minutes with AI-assisted job description generation. Reach thousands of qualified candidates immediately.', color: 'from-[#024217] to-[#044d1a]' },
-                { step: '02', icon: Target, title: 'AI Smart Matching', desc: 'Our AI engine analyzes skills, experience, and cultural fit to match you with the most relevant candidates — no sifting through irrelevant resumes.', color: 'from-[#34a853] to-[#024217]' },
-                { step: '03', icon: Brain, title: 'AI Interview Insights', desc: 'Get AI-generated interview summaries, skill ratings, and culture-fit analysis before you even meet the candidate. Save 70% of screening time.', color: 'from-[#f9ab00] to-[#e9a000]' },
-                { step: '04', icon: BarChart3, title: 'Analytics Dashboard', desc: 'Real-time hiring analytics — track application funnels, time-to-hire, candidate quality scores, and ROI with actionable insights.', color: 'from-[#044d1a] to-[#024217]' },
-              ].map((item, i) => (
-                <motion.div key={item.step}
-                  initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: i * 0.15 }} viewport={{ once: true }}
-                  className="relative"
-                >
-                  {i < 3 && (
-                    <div className="hidden lg:block absolute top-12 -right-3 w-6">
-                      <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
-                        <path d="M0 6L8 6L12 2L16 6L24 6" stroke="#024217" strokeWidth="2" strokeLinecap="round" opacity="0.3" />
-                        <circle cx="24" cy="6" r="2" fill="#024217" opacity="0.3" />
-                      </svg>
-                    </div>
-                  )}
-                  <Card className="border-0 shadow-sm hover:shadow-lg transition-all h-full group hover:border-t-4 hover:border-t-[#024217]">
-                    <CardContent className="p-6">
-                      <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} text-white font-bold text-lg mb-4 group-hover:scale-110 transition-transform shadow-md`}>
-                        {item.step}
-                      </div>
-                      <div className="w-10 h-10 rounded-lg bg-[#f0f8f0] flex items-center justify-center mb-3">
-                        <item.icon className="h-5 w-5 text-[#024217]" />
-                      </div>
-                      <h4 className="font-bold text-gray-900 text-base mb-2">{item.title}</h4>
-                      <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="text-center mt-10">
-              <Link href="/corporate">
-                <Button className="bg-[#024217] hover:bg-[#044d1a] text-white font-semibold px-8 h-12 text-base rounded-xl shadow-md">
-                  <Building2 className="h-5 w-5 mr-2" /> Register Your Company
-                </Button>
-              </Link>
-              <p className="text-xs text-gray-400 mt-2">Free to post. Pay only when you hire.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== AI-POWERED FEATURES ===== */}
-      <section className="py-16 bg-gradient-to-b from-[#f5f7fc] to-[#eef0fa] relative overflow-hidden">
-        {/* Decorative blobs */}
-        <div className="absolute top-20 right-0 w-72 h-72 bg-purple-100/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-10 left-0 w-64 h-64 bg-[#d8ecd8]/15 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <motion.div initial={{ y: 10, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-10">
-            <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">AI-Powered Platform</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Built-In <span className="bg-gradient-to-r from-[#024217] to-[#f9ab00] bg-clip-text text-transparent">AI Features</span> for Every User</h2>
-            <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">Not just a job board — 3 Boxes is an intelligent career platform with AI tools designed for job seekers, recruiters, HR managers, and interviewers.</p>
-          </motion.div>
-
-          {/* Features by User Type */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Job Seekers */}
-            <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0 }} viewport={{ once: true }}>
-              <Card className="border-0 shadow-sm h-full overflow-hidden hover:shadow-xl hover:shadow-green-100/50 transition-all hover:border-t-4 hover:border-t-[#024217]">
-                <div className="bg-gradient-to-br from-[#024217] to-[#044d1a] p-6 text-center relative">
-                  {/* Subtle glow effect */}
-                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#3a9a3a]/20 rounded-full blur-2xl" />
-                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
-                  <Users className="h-8 w-8 text-white mx-auto mb-2" />
-                  <h3 className="text-lg font-bold text-white">For Job Seekers</h3>
-                  <p className="text-[#d8ecd8]/80 text-xs mt-1">Smart tools to land your dream job</p>
-                </div>
-                <CardContent className="p-5 space-y-4">
-                  {[
-                    { icon: FileText, title: 'AI Resume Builder', desc: 'Auto-generate polished resumes with AI. Skills update automatically when you complete training courses.' },
-                    { icon: Brain, title: 'AI Mock Interviews', desc: 'Practice interviews with AI and get real-time feedback on communication, technical depth, and confidence.' },
-                    { icon: Target, title: 'Smart Job Matching', desc: 'AI calculates your match score with every job based on skills, experience, and career preferences.' },
-                    { icon: Zap, title: 'Skill Auto-Update', desc: 'Complete a training course and your skills automatically update across your profile and all resumes.' },
-                  ].map((feature, i) => (
-                    <div key={i} className="flex gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-[#f0f8f0] flex items-center justify-center flex-shrink-0">
-                        <feature.icon className="h-4 w-4 text-[#024217]" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900 text-sm">{feature.title}</h4>
-                        <p className="text-xs text-gray-500 leading-relaxed mt-0.5">{feature.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Corporates & Recruiters */}
-            <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0.15 }} viewport={{ once: true }}>
-              <Card className="border-0 shadow-sm h-full overflow-hidden hover:shadow-xl hover:shadow-amber-100/50 transition-all hover:border-t-4 hover:border-t-[#f9ab00]">
-                <div className="bg-gradient-to-br from-[#f9ab00] to-[#e9a000] p-6 text-center relative">
-                  {/* Subtle glow effect */}
-                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-300/20 rounded-full blur-2xl" />
-                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
-                  <Building2 className="h-8 w-8 text-white mx-auto mb-2" />
-                  <h3 className="text-lg font-bold text-white">For Corporates & Recruiters</h3>
-                  <p className="text-amber-100/80 text-xs mt-1">Hire smarter, faster with AI</p>
-                </div>
-                <CardContent className="p-5 space-y-4">
-                  {[
-                    { icon: Target, title: 'AI Candidate Matching', desc: 'AI ranks candidates by skill match, experience relevance, and cultural fit — shortlist in seconds, not days.' },
-                    { icon: Brain, title: 'AI Interview Insights', desc: 'Get AI-generated summaries and skill ratings from mock interviews before scheduling real interviews.' },
-                    { icon: BarChart3, title: 'Hiring Analytics', desc: 'Real-time dashboards with application funnels, time-to-hire, source quality, and AI-driven hiring predictions.' },
-                    { icon: Users, title: 'Team Collaboration', desc: 'Recruiters, HR managers, and interviewers collaborate on a shared pipeline with role-based access and notes.' },
-                  ].map((feature, i) => (
-                    <div key={i} className="flex gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
-                        <feature.icon className="h-4 w-4 text-[#f9ab00]" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900 text-sm">{feature.title}</h4>
-                        <p className="text-xs text-gray-500 leading-relaxed mt-0.5">{feature.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Interviewers & Admins */}
-            <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} viewport={{ once: true }}>
-              <Card className="border-0 shadow-sm h-full overflow-hidden hover:shadow-xl hover:shadow-teal-100/50 transition-all hover:border-t-4 hover:border-t-[#044d1a]">
-                <div className="bg-gradient-to-br from-[#044d1a] to-[#024217] p-6 text-center relative">
-                  {/* Subtle glow effect */}
-                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-teal-300/20 rounded-full blur-2xl" />
-                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
-                  <Shield className="h-8 w-8 text-white mx-auto mb-2" />
-                  <h3 className="text-lg font-bold text-white">For Interviewers & Admins</h3>
-                  <p className="text-[#d8ecd8]/80 text-xs mt-1">Streamlined evaluation tools</p>
-                </div>
-                <CardContent className="p-5 space-y-4">
-                  {[
-                    { icon: MessageSquare, title: 'Interview Scheduling', desc: 'AI suggests optimal time slots based on interviewer and candidate availability. Automated reminders included.' },
-                    { icon: CheckCircle2, title: 'Structured Evaluation', desc: 'Pre-built rubrics and scorecards for technical, behavioral, and cultural-fit assessments.' },
-                    { icon: PieChart, title: 'Admin Dashboard', desc: 'Full platform control — manage users, jobs, applications, and analytics from a single powerful admin panel.' },
-                    { icon: Award, title: 'Quality Scoring', desc: 'AI generates candidate quality scores combining resume data, interview performance, and skill assessments.' },
-                  ].map((feature, i) => (
-                    <div key={i} className="flex gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-[#f0f8f0] flex items-center justify-center flex-shrink-0">
-                        <feature.icon className="h-4 w-4 text-[#024217]" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900 text-sm">{feature.title}</h4>
-                        <p className="text-xs text-gray-500 leading-relaxed mt-0.5">{feature.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-
-          {/* AI Workflow Infographic */}
-          <div className="mt-12">
-            <h3 className="text-xl font-bold text-gray-900 text-center mb-8">How <span className="bg-gradient-to-r from-[#024217] to-[#34a853] bg-clip-text text-transparent">AI</span> Powers Your Hiring Journey</h3>
-            <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-0">
-              {[
-                { icon: FileText, label: 'AI Resume Scan', desc: 'Instant parsing & scoring', color: 'bg-[#024217]', ringColor: 'ring-green-200' },
-                { icon: Target, label: 'Smart Matching', desc: 'Skill-fit algorithms', color: 'bg-[#34a853]', ringColor: 'ring-emerald-200' },
-                { icon: Brain, label: 'AI Interview', desc: 'Automated screening', color: 'bg-[#f9ab00]', ringColor: 'ring-amber-200' },
-                { icon: BarChart3, label: 'Quality Score', desc: 'Data-driven ranking', color: 'bg-[#044d1a]', ringColor: 'ring-teal-200' },
-                { icon: CheckCircle2, label: 'Hire the Best', desc: 'Confident decisions', color: 'bg-[#024217]', ringColor: 'ring-green-300' },
-              ].map((step, i) => (
-                <motion.div key={step.label} className="flex items-center"
-                  initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }}
-                  transition={{ delay: i * 0.15 }} viewport={{ once: true }}
-                >
-                  <div className="flex flex-col items-center text-center">
-                    <div className={`w-14 h-14 rounded-xl ${step.color} flex items-center justify-center text-white shadow-md ring-4 ${step.ringColor}/30`}>
-                      <step.icon className="h-6 w-6" />
-                    </div>
-                    <p className="font-semibold text-gray-900 text-xs mt-2">{step.label}</p>
-                    <p className="text-[10px] text-gray-500">{step.desc}</p>
-                  </div>
-                  {i < 4 && (
-                    <div className="hidden lg:flex items-center mx-2">
-                      <svg width="40" height="12" viewBox="0 0 40 12" fill="none">
-                        <path d="M0 6L12 6L16 2L20 6L24 2L28 6L40 6" stroke="#024217" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
-                        <circle cx="40" cy="6" r="3" fill="#024217" opacity="0.4" />
-                      </svg>
-                    </div>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          <div className="text-center mt-10">
-            <Link href="/ai-features">
-              <Button className="bg-[#024217] hover:bg-[#044d1a] text-white font-semibold px-8 h-12 text-base rounded-xl shadow-md">
-                <Brain className="h-5 w-5 mr-2" /> Explore All AI Features
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== CAREER JOURNEY INFOGRAPHIC ===== */}
-      <section className="py-16 bg-gradient-to-b from-white via-purple-50/10 to-white relative overflow-hidden">
-        {/* Decorative background */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-10 left-1/4 w-64 h-64 bg-purple-100/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-1/4 w-48 h-48 bg-blue-100/10 rounded-full blur-3xl" />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-12">
-            <Badge className="bg-purple-50 text-purple-600 border-purple-200 rounded-full px-4 py-1 text-xs font-semibold mb-3">Your Complete Career Path</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Career <span className="bg-gradient-to-r from-[#024217] to-[#7c66ff] bg-clip-text text-transparent">Journey</span> with 3 Boxes</h2>
-            <p className="text-gray-500 mt-3 text-sm max-w-2xl mx-auto leading-relaxed">
-              Every step in your career journey is interconnected on our platform. Training updates your skills, skills enhance your resume, your resume drives job matches, and interviews seal the deal. It all works together seamlessly.
-            </p>
-          </motion.div>
-
-          <div className="max-w-4xl mx-auto">
-            {careerJourneySteps.map((step, i) => (
-              <motion.div key={i}
-                initial={{ x: i % 2 === 0 ? -30 : 30, opacity: 0 }}
-                whileInView={{ x: 0, opacity: 1 }}
-                transition={{ delay: i * 0.1 }} viewport={{ once: true }}
-              >
-                <div className="flex items-start gap-6 mb-8">
-                  <div className="flex flex-col items-center flex-shrink-0">
-                    {/* Circular icon with connecting dotted line and number badge */}
-                    <div className="relative">
-                      <div className={`w-14 h-14 rounded-xl ${step.color} flex items-center justify-center text-white shadow-lg ring-4 ring-green-100/30`}>
-                        <step.icon className="h-6 w-6" />
-                      </div>
-                      <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-white shadow-md flex items-center justify-center">
-                        <span className="text-[10px] font-bold text-[#024217]">{i + 1}</span>
-                      </div>
-                    </div>
-                    {i < careerJourneySteps.length - 1 && (
-                      <div className="flex flex-col items-center mt-1">
-                        <div className="w-0.5 h-4 bg-gradient-to-b from-[#024217]/30 to-transparent" />
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#024217]/40" />
-                        <div className="w-0.5 h-4 bg-gradient-to-b from-[#024217]/20 to-transparent" />
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#024217]/30" />
-                        <div className="w-0.5 h-4 bg-gradient-to-b from-[#024217]/10 to-transparent" />
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1 pt-1 bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-gray-100/50">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">{step.title}</h3>
-                    <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== HOW IT WORKS ===== */}
-      <section className="py-16 bg-gradient-to-b from-gray-50 to-green-50/20 relative overflow-hidden">
-        {/* Decorative dots */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.02]" style={{backgroundImage: 'radial-gradient(circle at 2px 2px, #024217 1px, transparent 0)', backgroundSize: '24px 24px'}} />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-12">
-            <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Simple & Powerful</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">How It <span className="bg-gradient-to-r from-[#024217] to-[#f9ab00] bg-clip-text text-transparent">Works</span></h2>
-            <p className="text-gray-500 mt-3 text-sm max-w-2xl mx-auto leading-relaxed">
-              Getting started with 3 Boxes is straightforward. In just four simple steps, you can transform your job search from a frustrating experience into an AI-powered journey that delivers real results faster than traditional methods.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-            {/* Connecting flow arrows between cards (desktop) */}
-            <div className="hidden lg:block absolute top-1/2 left-[22%] right-[5%] -translate-y-1/2 pointer-events-none z-0">
-              <svg className="w-full" viewBox="0 0 800 16" fill="none" preserveAspectRatio="xMidYMid meet">
-                {/* Arrow between step 1 and 2 */}
-                <path d="M0 8 C60 8, 80 2, 140 2 C180 2, 200 8, 260 8" stroke="#024217" strokeWidth="2" strokeLinecap="round" strokeDasharray="6 3" opacity="0.3" />
-                <polygon points="256,4 264,8 256,12" fill="#024217" opacity="0.3" />
-                {/* Arrow between step 2 and 3 */}
-                <path d="M260 8 C320 8, 340 14, 400 14 C440 14, 460 8, 520 8" stroke="#34a853" strokeWidth="2" strokeLinecap="round" strokeDasharray="6 3" opacity="0.3" />
-                <polygon points="516,4 524,8 516,12" fill="#34a853" opacity="0.3" />
-                {/* Arrow between step 3 and 4 */}
-                <path d="M520 8 C560 8, 580 2, 640 2 C680 2, 700 8, 800 8" stroke="#f9ab00" strokeWidth="2" strokeLinecap="round" strokeDasharray="6 3" opacity="0.3" />
-                <polygon points="796,4 804,8 796,12" fill="#f9ab00" opacity="0.3" />
-              </svg>
-            </div>
-
-            {howItWorksSteps.map((step, i) => (
-              <motion.div key={step.step}
-                initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: i * 0.15 }} viewport={{ once: true }}
-                className="relative z-10"
-              >
-                <Card className="border-0 shadow-sm hover:shadow-lg transition-all h-full text-center group hover:border-t-4 hover:border-t-[#024217] bg-white/80 backdrop-blur-sm">
-                  <CardContent className="p-6">
-                    <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${step.color} text-white font-bold text-xl mb-4 group-hover:scale-110 transition-transform shadow-lg`}>
-                      {step.step}
-                    </div>
-                    <div className="w-12 h-12 rounded-xl bg-[#f0f8f0] flex items-center justify-center mx-auto mb-3">
-                      <step.icon className="h-6 w-6 text-[#024217]" />
-                    </div>
-                    <h4 className="font-bold text-gray-900 text-base mb-2">{step.title}</h4>
-                    <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== TRAINING SECTION ===== */}
-      <section className="py-16 bg-gradient-to-b from-white to-amber-50/15 relative overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-amber-100/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#d8ecd8]/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left - Training Info */}
-            <motion.div initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} viewport={{ once: true }}>
-              <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Upskill & Get Hired Faster</Badge>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight">
-                Training That <span className="bg-gradient-to-r from-[#024217] to-[#f9ab00] bg-clip-text text-transparent">Auto-Updates</span> Your Profile
-              </h2>
-              <p className="text-gray-500 mt-4 text-sm leading-relaxed">
-                Our integrated training portal — <a href="https://marqaitrainers.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-[#024217] font-semibold hover:underline">MarqAI Trainers</a> — offers industry-aligned courses designed to bridge the skill gap. Every course you complete automatically updates your skills across your 3 Boxes profile and resume, making you more visible to employers.
-              </p>
-
-              {/* Benefits */}
-              <div className="mt-6 space-y-4">
-                {[
-                  { icon: Zap, title: 'Skills Auto-Update', desc: 'Complete a course and your profile, resume, and job match scores update instantly — no manual entry needed.' },
-                  { icon: Target, title: 'Industry-Aligned Curriculum', desc: 'Courses designed with industry input so you learn exactly what employers are looking for in current job markets.' },
-                  { icon: Award, title: 'Verified Certificates', desc: 'Earn certificates that are displayed on your profile and visible to recruiters, giving you a competitive edge.' },
-                  { icon: TrendingUp, title: 'Higher Match Scores', desc: 'More verified skills = higher AI match scores = more interview calls. Training directly boosts your visibility.' },
-                  { icon: Brain, title: 'AI-Recommended Courses', desc: 'Our AI analyzes your profile and career goals to recommend the exact courses that will maximize your career growth.' },
-                ].map((benefit, i) => (
-                  <div key={i} className="flex gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-[#f0f8f0] flex items-center justify-center flex-shrink-0">
-                      <benefit.icon className="h-5 w-5 text-[#024217]" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 text-sm">{benefit.title}</h4>
-                      <p className="text-xs text-gray-500 leading-relaxed mt-0.5">{benefit.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* CTA Buttons */}
-              <div className="mt-8 flex flex-wrap gap-3">
-                <a href="https://marqaitrainers.vercel.app/" target="_blank" rel="noopener noreferrer">
-                  <Button className="bg-[#024217] hover:bg-[#044d1a] text-white font-semibold px-6 h-11 rounded-xl shadow-md">
-                    <GraduationCap className="h-5 w-5 mr-2" /> Explore Training Portal
-                  </Button>
-                </a>
-                <Link href="/training">
-                  <Button variant="outline" className="border-[#024217] text-[#024217] hover:bg-[#f0f8f0] font-semibold px-6 h-11 rounded-xl">
-                    <Rocket className="h-5 w-5 mr-2" /> View Training Hub
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
-
-            {/* Right - Infographic Workflow */}
-            <motion.div initial={{ x: 20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} viewport={{ once: true }}>
-              <Card className="border-0 shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-                <CardContent className="p-0">
-                  <div className="bg-gradient-to-br from-[#024217] to-[#044d1a] p-6 text-center relative">
-                    <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
-                    {/* Glow effect */}
-                    <div className="absolute -top-8 -right-8 w-24 h-24 bg-[#3a9a3a]/20 rounded-full blur-2xl" />
-                    <GraduationCap className="h-10 w-10 text-white mx-auto mb-2" />
-                    <h3 className="text-lg font-bold text-white">Training → Profile → Job</h3>
-                    <p className="text-[#d8ecd8]/80 text-xs mt-1">See how training transforms your career journey</p>
-                  </div>
-
-                  <div className="p-6 space-y-0">
-                    {[
-                      { step: '1', icon: BookOpen, title: 'Enroll in a Course', desc: 'Choose from industry-aligned courses on MarqAI Trainers', color: 'bg-[#024217]', line: true },
-                      { step: '2', icon: Cpu, title: 'Learn & Complete', desc: 'Interactive lessons with hands-on projects and assessments', color: 'bg-[#34a853]', line: true },
-                      { step: '3', icon: Zap, title: 'Skills Auto-Update', desc: 'Your 3 Boxes profile & resume update automatically with new skills', color: 'bg-[#f9ab00]', line: true },
-                      { step: '4', icon: Target, title: 'Higher Match Scores', desc: 'AI re-calculates your job match scores — higher visibility to employers', color: 'bg-[#044d1a]', line: true },
-                      { step: '5', icon: Trophy, title: 'Get Interview Calls', desc: 'More matches = more interviews = faster hiring', color: 'bg-[#024217]', line: false },
-                    ].map((item, i) => (
-                      <div key={i}>
-                        <div className="flex items-center gap-4">
-                          <div className="flex flex-col items-center flex-shrink-0">
-                            <div className={`w-11 h-11 rounded-xl ${item.color} flex items-center justify-center text-white font-bold text-lg shadow-md`}>
-                              {item.step}
-                            </div>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <item.icon className="h-4 w-4 text-[#024217]" />
-                              <h4 className="font-semibold text-gray-900 text-sm">{item.title}</h4>
-                            </div>
-                            <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
-                          </div>
-                        </div>
-                        {item.line && (
-                          <div className="flex ml-[22px] my-2">
-                            <div className="w-0.5 h-6 bg-gradient-to-b from-[#024217]/40 to-[#024217]/10" />
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== TESTIMONIALS ===== */}
-      <section className="py-16 bg-gradient-to-b from-[#f5f7fc] via-[#f0f4ff] to-[#f5f7fc] relative overflow-hidden">
+      {/* ===== 8. TESTIMONIALS (Cards) ===== */}
+      <section className="py-16 sm:py-20 bg-white relative overflow-hidden">
         {/* Decorative elements */}
         <div className="absolute top-0 left-0 w-64 h-64 bg-purple-100/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 right-0 w-48 h-48 bg-amber-100/10 rounded-full blur-3xl pointer-events-none" />
@@ -1001,8 +709,8 @@ export function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-12">
             <Badge className="bg-amber-50 text-amber-600 border-amber-200 rounded-full px-4 py-1 text-xs font-semibold mb-3">What People Say</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Trusted by <span className="bg-gradient-to-r from-[#024217] to-[#f9ab00] bg-clip-text text-transparent">Thousands</span></h2>
-            <p className="text-gray-500 mt-3 text-sm max-w-lg mx-auto">Real stories from job seekers and employers who transformed their careers and hiring with 3 Boxes.</p>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">What Our <span className="bg-gradient-to-r from-[#024217] to-[#f9ab00] bg-clip-text text-transparent">Users</span> Say</h2>
+            <p className="text-gray-500 mt-3 text-sm max-w-lg mx-auto">Real stories from job seekers and employers who transformed their careers with 3BOXESJOBS</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -1011,18 +719,21 @@ export function HomePage() {
                 initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }}
                 transition={{ delay: i * 0.1 }} viewport={{ once: true }}
               >
-                <Card className="border-0 shadow-sm hover:shadow-lg transition-all h-full hover:border-t-4 hover:border-t-amber-400 bg-white/80 backdrop-blur-sm">
+                <Card className="border-0 shadow-sm hover:shadow-lg transition-all h-full hover:border-t-4 hover:border-t-amber-400 bg-white group hover:-translate-y-1">
                   <CardContent className="p-6 relative">
                     {/* Colorful quote mark */}
                     <div className="absolute top-3 right-4 select-none" aria-hidden="true">
                       <span className="text-6xl font-serif leading-none bg-gradient-to-br from-[#024217] to-[#f9ab00] bg-clip-text text-transparent opacity-15">&ldquo;</span>
                     </div>
+                    {/* Star rating */}
                     <div className="flex items-center gap-0.5 mb-4">
                       {Array.from({ length: t.rating }).map((_, j) => (
                         <Star key={j} className="h-4 w-4 fill-[#f9ab00] text-[#f9ab00]" />
                       ))}
                     </div>
+                    {/* Quote */}
                     <p className="text-sm text-gray-600 leading-relaxed mb-5 relative z-10">&ldquo;{t.text}&rdquo;</p>
+                    {/* Avatar and info */}
                     <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
                       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#024217] via-[#34a853] to-[#f9ab00] flex items-center justify-center text-white font-bold text-sm shadow-md ring-2 ring-white">
                         {t.avatar}
@@ -1040,11 +751,12 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== CTA SECTION ===== */}
-      <section className="py-16 bg-white relative">
+      {/* ===== 9. CTA SECTION (Full-width Banner) ===== */}
+      <section className="py-16 sm:py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }}>
             <div className="bg-gradient-to-br from-[#024217] via-[#044d1a] to-[#024217] rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden">
+              {/* Decorative background */}
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
                 {/* Floating geometric shapes */}
@@ -1058,25 +770,25 @@ export function HomePage() {
                 <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
               </div>
               <div className="relative">
-                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 mb-5">
+                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-5 py-2 mb-5">
                   <Rocket className="h-4 w-4 text-[#3a9a3a]" />
                   <span className="text-sm text-[#d8ecd8] font-medium">Start Your Journey Today</span>
                 </div>
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-4 leading-tight">
-                  Ready to Transform Your <br className="hidden sm:block" />Career with AI?
+                  Ready to Start Your <br className="hidden sm:block" />Career Journey?
                 </h2>
                 <p className="text-[#d8ecd8]/80 text-base max-w-xl mx-auto mb-8">
-                  Join 50,000+ job seekers and 5,000+ companies already using 3 Boxes. AI-powered resumes, smart matching, mock interviews, and skill auto-updates — all in one platform.
+                  Join 50,000+ job seekers and 5,000+ companies already using 3BOXESJOBS. AI-powered resumes, smart matching, mock interviews, and skill auto-updates — all in one platform.
                 </p>
                 <div className="flex flex-wrap justify-center gap-4">
-                  <Link href="/find-jobs">
+                  <Link href="/register">
                     <Button className="bg-white text-[#024217] hover:bg-gray-50 font-bold px-8 h-12 text-base rounded-xl shadow-lg">
-                      <Search className="h-5 w-5 mr-2" /> Find Jobs Now
+                      <UserCheck className="h-5 w-5 mr-2" /> Register Free
                     </Button>
                   </Link>
-                  <Link href="/corporate">
+                  <Link href="/login">
                     <Button className="bg-[#f9ab00] hover:bg-[#e9a000] text-[#202124] font-bold px-8 h-12 text-base rounded-xl shadow-lg">
-                      <Building2 className="h-5 w-5 mr-2" /> Hire Talent
+                      <Briefcase className="h-5 w-5 mr-2" /> Login
                     </Button>
                   </Link>
                 </div>
@@ -1084,228 +796,6 @@ export function HomePage() {
               </div>
             </div>
           </motion.div>
-        </div>
-      </section>
-
-      {/* ===== DOWNLOAD MOBILE APP ===== */}
-      <section className="py-16 bg-gradient-to-b from-gray-50 to-blue-50/15 relative overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute top-0 left-0 w-72 h-72 bg-blue-100/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-48 h-48 bg-[#d8ecd8]/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left - App Info */}
-            <motion.div initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} viewport={{ once: true }}>
-              <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">
-                Free Download
-              </Badge>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight">
-                Get Jobs on the Go with <span className="bg-gradient-to-r from-[#024217] to-[#7c66ff] bg-clip-text text-transparent">3 Boxes App</span>
-              </h2>
-              <p className="text-gray-500 mt-4 text-sm leading-relaxed">
-                Access your AI-powered career dashboard anywhere. Get instant job alerts, practice AI mock interviews on your phone, update your resume on the go, and never miss an opportunity. Our mobile app puts your entire career journey in your pocket.
-              </p>
-
-              <div className="mt-6 space-y-3">
-                {[
-                  { icon: Bell, text: 'Instant push notifications for new job matches and interview requests' },
-                  { icon: Brain, text: 'Practice AI mock interviews directly from your mobile device' },
-                  { icon: Zap, text: 'One-tap apply to jobs with your AI-optimized resume' },
-                  { icon: BarChart3, text: 'Track your application status and match scores in real-time' },
-                ].map((feature, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#f0f8f0] flex items-center justify-center flex-shrink-0">
-                      <feature.icon className="h-4 w-4 text-[#024217]" />
-                    </div>
-                    <span className="text-sm text-gray-600">{feature.text}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                {/* Android APK Download */}
-                <a
-                  href="/3boxes-jobs-app.apk"
-                  download
-                  className="inline-flex items-center justify-center bg-gradient-to-r from-[#024217] to-[#024217] hover:from-[#044d1a] hover:to-[#044d1a] text-white font-semibold px-6 h-12 rounded-xl shadow-lg shadow-green-200/50 transition-all hover:shadow-xl hover:scale-[1.02]"
-                >
-                  <Download className="h-5 w-5 mr-2" /> Download Android App
-                </a>
-                {/* iOS - Coming Soon */}
-                <a
-                  href="#"
-                  onClick={(e) => { e.preventDefault(); toast.info('iOS app is coming soon to the App Store!', { duration: 4000 }) }}
-                  className="inline-flex items-center justify-center bg-black hover:bg-gray-800 text-white font-semibold px-6 h-12 rounded-xl shadow-md transition-all hover:shadow-xl hover:scale-[1.02] relative"
-                >
-                  <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
-                  App Store (Coming Soon)
-                </a>
-              </div>
-              <p className="text-xs text-gray-400 mt-3 flex items-center gap-1">
-                <Smartphone className="h-3 w-3" /> Android 5.0+ required · 20 MB · Install from unknown sources may need to be enabled
-              </p>
-            </motion.div>
-
-            {/* Right - Phone Mockup */}
-            <motion.div initial={{ x: 20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} viewport={{ once: true }} className="flex justify-center">
-              <div className="relative">
-                {/* Decorative floating shapes */}
-                <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }} className="absolute -top-6 -left-8 w-12 h-12 rounded-full bg-[#b0d9b5]/40 blur-sm" />
-                <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }} className="absolute -bottom-4 -right-6 w-10 h-10 rounded-xl bg-amber-200/40 rotate-45 blur-sm" />
-                <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-1/3 -right-8 w-8 h-8 rounded-full bg-purple-200/30 blur-sm" />
-
-                {/* Phone frame */}
-                <div className="w-[280px] h-[560px] bg-gray-900 rounded-[3rem] p-3 shadow-2xl relative">
-                  {/* Notch */}
-                  <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-gray-900 rounded-b-2xl z-20" />
-                  <div className="w-full h-full bg-gradient-to-br from-[#024217] to-[#044d1a] rounded-[2.4rem] overflow-hidden relative">
-                    {/* Status bar */}
-                    <div className="flex items-center justify-between px-6 pt-4 pb-2">
-                      <span className="text-xs text-white/70 font-medium">9:41</span>
-                      <div className="flex items-center gap-1">
-                        <Wifi className="h-3 w-3 text-white/70" />
-                        <div className="w-6 h-3 border border-white/70 rounded-sm relative">
-                          <div className="absolute inset-0.5 bg-white/70 rounded-sm" style={{width: '70%'}} />
-                        </div>
-                      </div>
-                    </div>
-                    {/* App content */}
-                    <div className="px-5 pt-2">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">
-                          <Briefcase className="h-4 w-4 text-white" />
-                        </div>
-                        <span className="text-white font-bold text-sm">3 Boxes Jobs</span>
-                      </div>
-                      <h3 className="text-white text-lg font-bold mb-1">Hello, Priya!</h3>
-                      <p className="text-[#d8ecd8]/70 text-xs mb-3">3 new job matches today</p>
-                      {/* Mini job cards */}
-                      <div className="space-y-2">
-                        {[
-                          { title: 'Senior React Dev', company: 'Google', salary: '₹25L-40L' },
-                          { title: 'Data Scientist', company: 'Amazon', salary: '₹20L-35L' },
-                        ].map((job, i) => (
-                          <div key={i} className="bg-white/15 backdrop-blur-sm rounded-xl p-3">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-white text-xs font-semibold">{job.title}</p>
-                                <p className="text-[#d8ecd8]/60 text-[10px]">{job.company}</p>
-                              </div>
-                              <span className="text-[#3a9a3a] text-[10px] font-bold">{job.salary}</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      {/* Feature grid - showing all 8 features */}
-                      <div className="mt-3 grid grid-cols-4 gap-1.5">
-                        {[
-                          { icon: Search, label: 'Find Jobs' },
-                          { icon: Brain, label: 'AI Interview' },
-                          { icon: FileText, label: 'CV Manager' },
-                          { icon: Target, label: 'Skill Gap' },
-                          { icon: Target, label: 'Job Fit' },
-                          { icon: GraduationCap, label: 'Training' },
-                          { icon: BarChart3, label: 'Analytics' },
-                          { icon: User, label: 'Profile' },
-                        ].map((action, i) => (
-                          <div key={i} className="bg-white/10 rounded-lg p-1.5 text-center">
-                            <action.icon className="h-3.5 w-3.5 text-white mx-auto mb-0.5" />
-                            <span className="text-[8px] text-[#d8ecd8]/80 leading-tight">{action.label}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    {/* Bottom nav */}
-                    <div className="absolute bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md px-4 py-3">
-                      <div className="flex items-center justify-around">
-                        {[
-                          { icon: Briefcase, active: true },
-                          { icon: Search, active: false },
-                          { icon: Brain, active: false },
-                          { icon: User, active: false },
-                        ].map((nav, i) => (
-                          <nav.icon key={i} className={`h-4 w-4 ${nav.active ? 'text-[#3a9a3a]' : 'text-white/50'}`} />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* Decorative dots - enhanced */}
-                <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-green-200 to-green-100 rounded-full opacity-30 blur-2xl" />
-                <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-gradient-to-br from-amber-200 to-purple-100 rounded-full opacity-30 blur-2xl" />
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== QUICK LINKS TO OTHER PAGES ===== */}
-      <section className="py-16 bg-gradient-to-b from-white to-green-50/15 relative overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#d8ecd8]/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-100/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="text-center mb-10">
-            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">Explore <span className="bg-gradient-to-r from-[#024217] to-[#7c66ff] bg-clip-text text-transparent">More</span></h2>
-            <p className="text-gray-500 text-sm mt-1 max-w-md mx-auto">Discover AI features, corporate partnerships, and training opportunities</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Link href="/corporate">
-              <Card className="border-0 shadow-sm hover:shadow-xl hover:shadow-green-100/50 transition-all group h-full cursor-pointer overflow-hidden hover:border-t-4 hover:border-t-[#024217]">
-                <div className="bg-gradient-to-br from-[#024217] to-[#044d1a] p-6 text-center relative">
-                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
-                  {/* Glow effect */}
-                  <div className="absolute -top-8 -right-8 w-20 h-20 bg-[#3a9a3a]/20 rounded-full blur-2xl" />
-                  <Building2 className="h-8 w-8 text-white mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                  <h3 className="font-bold text-white text-lg">Corporate Partners</h3>
-                </div>
-                <CardContent className="p-5 text-center">
-                  <p className="text-sm text-gray-500">See 500+ companies hiring through 3 Boxes and learn about AI-powered recruitment advantages.</p>
-                  <span className="inline-flex items-center text-[#024217] font-semibold text-sm mt-3 group-hover:gap-2 transition-all">
-                    Explore <ArrowRight className="h-4 w-4 ml-1" />
-                  </span>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/ai-features">
-              <Card className="border-0 shadow-sm hover:shadow-xl hover:shadow-amber-100/50 transition-all group h-full cursor-pointer overflow-hidden hover:border-t-4 hover:border-t-[#f9ab00]">
-                <div className="bg-gradient-to-br from-[#f9ab00] to-[#e9a000] p-6 text-center relative">
-                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
-                  {/* Glow effect */}
-                  <div className="absolute -top-8 -right-8 w-20 h-20 bg-amber-300/20 rounded-full blur-2xl" />
-                  <Brain className="h-8 w-8 text-white mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                  <h3 className="font-bold text-white text-lg">AI Features</h3>
-                </div>
-                <CardContent className="p-5 text-center">
-                  <p className="text-sm text-gray-500">Discover built-in AI tools for resume building, job matching, mock interviews, and skill auto-updates.</p>
-                  <span className="inline-flex items-center text-[#024217] font-semibold text-sm mt-3 group-hover:gap-2 transition-all">
-                    Explore <ArrowRight className="h-4 w-4 ml-1" />
-                  </span>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/training">
-              <Card className="border-0 shadow-sm hover:shadow-xl hover:shadow-teal-100/50 transition-all group h-full cursor-pointer overflow-hidden hover:border-t-4 hover:border-t-[#044d1a]">
-                <div className="bg-gradient-to-br from-[#044d1a] to-[#024217] p-6 text-center relative">
-                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
-                  {/* Glow effect */}
-                  <div className="absolute -top-8 -right-8 w-20 h-20 bg-teal-300/20 rounded-full blur-2xl" />
-                  <GraduationCap className="h-8 w-8 text-white mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                  <h3 className="font-bold text-white text-lg">Training Hub</h3>
-                </div>
-                <CardContent className="p-5 text-center">
-                  <p className="text-sm text-gray-500">Upskill with industry-aligned courses that auto-update your profile and boost your match scores.</p>
-                  <span className="inline-flex items-center text-[#024217] font-semibold text-sm mt-3 group-hover:gap-2 transition-all">
-                    Explore <ArrowRight className="h-4 w-4 ml-1" />
-                  </span>
-                </CardContent>
-              </Card>
-            </Link>
-          </div>
         </div>
       </section>
     </div>

@@ -1561,9 +1561,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
 }
 
 // ===== 3D LOGO COMPONENT =====
-export function ThreeBoxesLogo3D({ size = 44, className = '' }: { size?: number; className?: string }) {
-  // Logo PNG contains full brand (icon + 3BOXESJOBS text + tagline) with transparent background
-  // Aspect ratio ≈ 1.78:1 (1672x941)
+export function ThreeBoxesLogo3D({ size = 300, className = '' }: { size?: number; className?: string }) {
+  // Logo PNG: 1672x941 ≈ 1.78:1 ratio. Default size=300 → height=168
   const height = Math.round(size * 0.56)
   return (
     <img
