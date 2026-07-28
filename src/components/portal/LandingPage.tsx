@@ -1555,8 +1555,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
 
 // ===== 3D LOGO COMPONENT =====
 export function ThreeBoxesLogo3D({ size = 44, className = '' }: { size?: number; className?: string }) {
-  // Logo image height is ~50% of width (2:1 aspect ratio from original 1774x887)
-  const height = Math.round(size * 0.5)
+  // Logo image height is ~56% of width (1672x941 aspect ratio ≈ 1.78:1)
+  const height = Math.round(size * 0.56)
   return (
     <img
       src="/logo.png"

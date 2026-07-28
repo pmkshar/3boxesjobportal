@@ -1,14 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-     viewBox="0 0 30 30" style="enable-background:new 0 0 30 30;" xml:space="preserve">
-<defs>
-  <style type="text/css">
-    .bg{fill:#00C853;rx:5;ry:5;}
-    .box{fill:#FFFFFF;rx:1.5;ry:1.5;}
-  </style>
-</defs>
-<rect class="bg" x="1" y="1" width="28" height="28" rx="6" ry="6"/>
-<rect class="box" x="4" y="19" width="7" height="6" rx="1.5" ry="1.5"/>
-<rect class="box" x="12.5" y="13" width="7" height="6" rx="1.5" ry="1.5"/>
-<rect class="box" x="20" y="7" width="7" height="6" rx="1.5" ry="1.5"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220">
+  <defs>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a5632;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d8a4e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8740c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f5963c;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Background (transparent) -->
+
+  <!-- The stylized "3" - Top curve (green) -->
+  <path d="M 50 50 C 50 25, 120 15, 140 40 C 155 60, 140 85, 120 95 C 100 105, 70 100, 55 85" 
+        fill="url(#greenGrad)" filter="url(#shadow)" />
+
+  <!-- The stylized "3" - Bottom curve (orange) -->
+  <path d="M 55 110 C 70 125, 100 130, 120 120 C 140 110, 155 130, 140 160 C 120 185, 50 180, 50 150"
+        fill="url(#orangeGrad)" filter="url(#shadow)" />
+
+  <!-- Human figure - Head (orange circle) -->
+  <circle cx="95" cy="75" r="10" fill="#e8740c" filter="url(#shadow)" />
+
+  <!-- Human figure - Body (two green bars) -->
+  <rect x="85" y="88" width="8" height="30" rx="2" fill="url(#greenGrad)" filter="url(#shadow)" />
+  <rect x="97" y="88" width="8" height="30" rx="2" fill="url(#greenGrad)" filter="url(#shadow)" />
+
+  <!-- Divider line -->
+  <line x1="170" y1="45" x2="170" y2="175" stroke="#1a5632" stroke-width="2" />
+
+  <!-- Main text: 3BOXES (green) -->
+  <text x="185" y="120" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="48" fill="url(#greenGrad)" filter="url(#shadow)">3BOXES</text>
+
+  <!-- JOBS text (orange) - positioned right after 3BOXES -->
+  <text x="385" y="120" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="48" fill="url(#orangeGrad)" filter="url(#shadow)">JOBS</text>
+
+  <!-- Tagline -->
+  <line x1="185" y2="155" x2="210" y2="155" stroke="#e8740c" stroke-width="2" />
+  <text x="215" y="155" font-family="Arial, Helvetica, sans-serif" font-weight="normal" font-size="14" fill="#1a5632" letter-spacing="2">FIND OPPORTUNITY. BUILD TOMORROW.</text>
+  <line x1="475" y1="155" x2="500" y2="155" stroke="#1a5632" stroke-width="2" />
 </svg>
