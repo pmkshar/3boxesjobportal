@@ -26,7 +26,7 @@ const kanbanColumns = [
   { id: 'applied', label: 'Applied', icon: FileCheck, color: '#3B82F6' },
   { id: 'phone_screen', label: 'Phone Screen', icon: Phone, color: '#8B5CF6' },
   { id: 'interview', label: 'Interview', icon: MessageSquare, color: '#F59E0B' },
-  { id: 'offer', label: 'Offer', icon: Award, color: '#fc7e0b' },
+  { id: 'offer', label: 'Offer', icon: Award, color: '#f26405' },
   { id: 'rejected', label: 'Rejected', icon: XCircle, color: '#EF4444' },
 ] as const
 
@@ -447,7 +447,7 @@ export function ApplicationTracker() {
           { label: 'Applied', value: stats.applied, icon: FileCheck, color: '#3B82F6' },
           { label: 'Response Rate', value: `${stats.responseRate}%`, icon: TrendingUp, color: '#8B5CF6' },
           { label: 'Interview Rate', value: `${stats.interviewRate}%`, icon: MessageSquare, color: '#F59E0B' },
-          { label: 'Offers', value: stats.offers, icon: Award, color: '#fc7e0b' },
+          { label: 'Offers', value: stats.offers, icon: Award, color: '#f26405' },
           { label: 'Rejected', value: stats.rejected, icon: XCircle, color: '#EF4444' },
         ].map(stat => (
           <Card key={stat.label}>

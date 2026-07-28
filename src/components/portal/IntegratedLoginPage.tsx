@@ -20,16 +20,16 @@ import { ThreeBoxesLogo3D } from './LandingPage'
 
 // Company Brand Color Palette (from Logo - Green + Orange)
 const CG = {
-  50: '#e8f5e9',
-  100: '#c8e6c9',
-  200: '#a5d6a7',
+  50: '#f0f8f0',
+  100: '#d8ecd8',
+  200: '#b0d9b5',
   300: '#7ec07e',
-  400: '#49A842',
-  500: '#49A842',
-  600: '#1f8f15',
-  700: '#2d7a28',
-  800: '#1f8f15',
-  900: '#0d5a0a',
+  400: '#04a331',
+  500: '#04a331',
+  600: '#014217',
+  700: '#066722',
+  800: '#014217',
+  900: '#013b0b',
   dark: '#0f172a',
 }
 // Brand Accent Orange (from Logo)
@@ -39,7 +39,7 @@ const CA = {
   200: '#ffd699',
   300: '#fdba64',
   400: '#fda01a',
-  500: '#fc7e0b',
+  500: '#f26405',
   600: '#f76305',
   700: '#ea5703',
   800: '#c2410c',
@@ -498,7 +498,7 @@ export function IntegratedLoginPage() {
                           key={role.value}
                           className={`cursor-pointer transition-all duration-200 ${
                             selectedRole === role.value
-                              ? 'border-2 bg-[#e8f5e9]/50 shadow-sm'
+                              ? 'border-2 bg-[#f0f8f0]/50 shadow-sm'
                               : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
                           }`}
                           style={{

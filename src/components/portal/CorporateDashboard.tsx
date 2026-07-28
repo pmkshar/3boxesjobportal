@@ -250,7 +250,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
 
   const statCards = [
     { label: 'Total Jobs', value: stats.totalJobs, change: '+12%', up: true, icon: Briefcase, color: '#3B82F6', bg: '#EFF6FF' },
-    { label: 'Active Jobs', value: stats.activeJobs, change: '+8%', up: true, icon: Target, color: '#fc7e0b', bg: '#e8f5e9' },
+    { label: 'Active Jobs', value: stats.activeJobs, change: '+8%', up: true, icon: Target, color: '#f26405', bg: '#f0f8f0' },
     { label: 'Applications', value: stats.totalApplications, change: '+25%', up: true, icon: FileCheck, color: '#F59E0B', bg: '#FFFBEB' },
     { label: 'Shortlisted', value: stats.shortlisted, change: '-3%', up: false, icon: Users, color: '#8B5CF6', bg: '#F5F3FF' },
   ]
@@ -338,7 +338,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
                     <div className="relative w-full max-w-[32px]">
                       <div className="w-full rounded-t-md transition-all duration-500 hover:opacity-80 cursor-pointer"
                         style={{ height: `${(v / maxVal) * 100}%`, background: `linear-gradient(180deg, ${theme.primary} 0%, ${theme.primaryRing} 100%)` }} />
-                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#0a2e0a] text-white text-[9px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#021303] text-white text-[9px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                         {v} apps
                       </div>
                     </div>
@@ -418,7 +418,7 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
                   <div className="flex flex-col items-end gap-0.5">
                     <Badge variant="outline" className={`text-[9px] h-4 px-1.5 border-0 font-medium ${
                       a.status === 'New' ? 'bg-[var(--theme-primary-light)] text-[var(--theme-primary)]' :
-                      a.status === 'Shortlisted' ? 'bg-[#e8f5e9] text-[#fc7e0b]' :
+                      a.status === 'Shortlisted' ? 'bg-[#f0f8f0] text-[#f26405]' :
                       a.status === 'Interview' ? 'bg-[#FFFBEB] text-[#F59E0B]' :
                       'bg-[#F0F2F5] text-[#66789C]'
                     }`}>{a.status}</Badge>
@@ -803,7 +803,7 @@ function FindCandidates() {
                     <p className="text-xs text-[#66789C]">{c.headline || c.currentRole || 'Job Seeker'}</p>
                   </div>
                 </div>
-                <Badge variant="outline" className="text-[10px] border-[#fc7e0b] text-[#fc7e0b] h-5">{c.experienceYears || 0} yrs</Badge>
+                <Badge variant="outline" className="text-[10px] border-[#f26405] text-[#f26405] h-5">{c.experienceYears || 0} yrs</Badge>
               </div>
               {c.currentCompany && <p className="text-xs text-[#66789C] mt-2"><Building2 className="h-3 w-3 inline mr-1" />{c.currentCompany}</p>}
               {c.skills && (
@@ -877,7 +877,7 @@ function FindCandidates() {
 function CorpAnalytics({ stats, jobs }: { stats: any; jobs: any[] }) {
   const statCards = [
     { label: 'Total Jobs', value: stats.totalJobs, icon: Briefcase, color: '#3B82F6', bg: '#EFF6FF' },
-    { label: 'Active Jobs', value: stats.activeJobs, icon: Target, color: '#fc7e0b', bg: '#e8f5e9' },
+    { label: 'Active Jobs', value: stats.activeJobs, icon: Target, color: '#f26405', bg: '#f0f8f0' },
     { label: 'Applications', value: stats.totalApplications, icon: FileCheck, color: '#F59E0B', bg: '#FFFBEB' },
     { label: 'Shortlisted', value: stats.shortlisted, icon: Users, color: '#8B5CF6', bg: '#F5F3FF' },
   ]

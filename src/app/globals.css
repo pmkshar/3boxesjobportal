@@ -70,16 +70,16 @@
   --chart-5: oklch(0.75 0.15 50);
 
   /* ===== Theme Custom Properties (Brand Green + Orange from Logo) ===== */
-  --theme-primary: #1f8f15;
-  --theme-primary-hover: #2d7a28;
-  --theme-primary-light: #e8f5e9;
-  --theme-primary-medium: #c8e6c9;
-  --theme-primary-ring: #49A842;
-  --theme-sidebar: #0a2e0a;
-  --theme-sidebar-hover: #1f8f15;
-  --theme-sidebar-active: #fc7e0b;
-  --theme-gradient: linear-gradient(135deg, #1f8f15 0%, #fc7e0b 100%);
-  --theme-accent: #fc7e0b;
+  --theme-primary: #014217;
+  --theme-primary-hover: #066722;
+  --theme-primary-light: #f0f8f0;
+  --theme-primary-medium: #d8ecd8;
+  --theme-primary-ring: #04a331;
+  --theme-sidebar: #021303;
+  --theme-sidebar-hover: #014217;
+  --theme-sidebar-active: #f26405;
+  --theme-gradient: linear-gradient(135deg, #014217 0%, #f26405 100%);
+  --theme-accent: #f26405;
   --theme-accent-hover: #ea5703;
   --theme-accent-light: #fff8eb;
   --theme-accent-ring: #fdba64;

@@ -7,17 +7,17 @@ export type ThemeColor = 'green' | 'blue' | 'purple' | 'orange' | 'red' | 'teal'
 interface ThemeConfig {
   name: string
   color: ThemeColor
-  primary: string        // Main brand color (e.g., #1f8f15)
-  primaryHover: string   // Darker version for hover (e.g., #2d7a28)
-  primaryLight: string   // Very light bg tint (e.g., #e8f5e9)
-  primaryMedium: string  // Medium tint for badges/bg (e.g., #c8e6c9)
-  primaryRing: string    // Ring/focus color (e.g., #49A842)
+  primary: string        // Main brand color (e.g., #014217)
+  primaryHover: string   // Darker version for hover (e.g., #066722)
+  primaryLight: string   // Very light bg tint (e.g., #f0f8f0)
+  primaryMedium: string  // Medium tint for badges/bg (e.g., #d8ecd8)
+  primaryRing: string    // Ring/focus color (e.g., #04a331)
   sidebar: string        // Sidebar background (dark)
   sidebarHover: string   // Sidebar item hover
   sidebarActive: string  // Sidebar active indicator
   gradient: string       // Gradient from primary
   swatch: string         // Small preview swatch hex
-  accent?: string        // Accent color (e.g., #fc7e0b for orange)
+  accent?: string        // Accent color (e.g., #f26405 for orange)
   accentHover?: string   // Accent hover color
   accentLight?: string   // Accent light bg tint
   accentRing?: string    // Accent ring/focus color
@@ -27,17 +27,17 @@ export const themes: Record<ThemeColor, ThemeConfig> = {
   green: {
     name: '3Boxes Green',
     color: 'green',
-    primary: '#1f8f15',
-    primaryHover: '#2d7a28',
-    primaryLight: '#e8f5e9',
-    primaryMedium: '#c8e6c9',
-    primaryRing: '#49A842',
+    primary: '#014217',
+    primaryHover: '#066722',
+    primaryLight: '#f0f8f0',
+    primaryMedium: '#d8ecd8',
+    primaryRing: '#04a331',
     sidebar: '#0f172a',
-    sidebarHover: '#1f8f15',
-    sidebarActive: '#fc7e0b',
-    gradient: 'linear-gradient(135deg, #1f8f15 0%, #fc7e0b 100%)',
-    swatch: '#1f8f15',
-    accent: '#fc7e0b',
+    sidebarHover: '#014217',
+    sidebarActive: '#f26405',
+    gradient: 'linear-gradient(135deg, #014217 0%, #f26405 100%)',
+    swatch: '#014217',
+    accent: '#f26405',
     accentHover: '#ea5703',
     accentLight: '#fff8eb',
     accentRing: '#fdba64',
@@ -73,16 +73,16 @@ export const themes: Record<ThemeColor, ThemeConfig> = {
   orange: {
     name: '3Boxes Orange',
     color: 'orange',
-    primary: '#fc7e0b',
+    primary: '#f26405',
     primaryHover: '#ea5703',
     primaryLight: '#fff8eb',
     primaryMedium: '#fed7aa',
     primaryRing: '#fdba64',
     sidebar: '#0f172a',
-    sidebarHover: '#1f8f15',
-    sidebarActive: '#fc7e0b',
-    gradient: 'linear-gradient(135deg, #fc7e0b 0%, #1f8f15 100%)',
-    swatch: '#fc7e0b',
+    sidebarHover: '#014217',
+    sidebarActive: '#f26405',
+    gradient: 'linear-gradient(135deg, #f26405 0%, #014217 100%)',
+    swatch: '#f26405',
   },
   red: {
     name: 'Crimson Red',

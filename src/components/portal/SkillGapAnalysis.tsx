@@ -184,7 +184,7 @@ function getGapLevel(current: number, required: number): GapLevel {
 
 function getGapColor(level: GapLevel, theme: any): string {
   switch (level) {
-    case 'strong': return '#fc7e0b'
+    case 'strong': return '#f26405'
     case 'moderate': return '#F59E0B'
     case 'weak': return '#EF4444'
     case 'missing': return '#991B1B'
