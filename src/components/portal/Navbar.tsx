@@ -44,9 +44,8 @@ export function Navbar() {
         <div className="max-w-[1600px] mx-auto px-4 lg:px-6 h-16 flex items-center justify-between">
           {/* Left: Logo + Role badge */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <ThreeBoxesLogo size={32} />
-              <span className="text-lg font-bold text-[#0f172a]">3 Boxes <span style={{ color: theme.accent || '#fc7e0b' }}>Jobs</span></span>
+            <div className="flex items-center">
+              <ThreeBoxesLogo size={140} className="w-[100px] sm:w-[130px] lg:w-[140px] h-auto" />
             </div>
             {isAuthenticated && user && (
               <Badge className="hidden sm:inline-flex text-[10px] font-semibold border-0 rounded-full px-3 py-0.5"

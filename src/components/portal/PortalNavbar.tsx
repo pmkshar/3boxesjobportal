@@ -98,12 +98,8 @@ export function PortalNavbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
-              <Link href="/" className="flex items-center gap-3">
-                <ThreeBoxesLogo3D size={44} />
-                <div className="flex flex-col">
-                  <span className="text-xl font-extrabold text-white leading-tight tracking-tight">3 Boxes <span className="text-[#fc7e0b]">Jobs</span></span>
-                  <span className="text-[10px] text-[#b0d9b5]/70 leading-tight tracking-wider uppercase font-medium">Skills · Resume · Career</span>
-                </div>
+              <Link href="/" className="flex items-center">
+                <ThreeBoxesLogo3D size={180} className="w-[120px] sm:w-[160px] lg:w-[180px] h-auto" />
               </Link>
               <div className="hidden lg:flex items-center gap-1 text-sm">
                 {navLinks.map(link => (

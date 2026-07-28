@@ -16,6 +16,7 @@ import {
   Shield, Zap, Award, CheckCircle2, Globe, TrendingUp, Rocket,
 } from 'lucide-react'
 import { HeroIllustration, JobMatchIllustration, ResumeIllustration, InterviewIllustration, SkillsIllustration, GrowthIllustration } from './Illustrations'
+import { ThreeBoxesLogo3D } from './LandingPage'
 
 // Company Brand Color Palette (from Logo - Green + Orange)
 const CG = {
@@ -210,19 +211,9 @@ export function IntegratedLoginPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="flex items-center gap-3 mb-2">
-              <div className="flex items-center gap-1">
-                <div className="w-3.5 h-3.5 rounded-sm" style={{ backgroundColor: CG[400] }} />
-                <div className="w-3.5 h-3.5 rounded-sm" style={{ backgroundColor: CG[300] }} />
-                <div className="w-3.5 h-3.5 rounded-sm" style={{ backgroundColor: CG[200] }} />
-              </div>
-              <span className="text-2xl font-bold text-white">
-                3 Boxes <span style={{ color: CG[300] }}>Jobs</span>
-              </span>
+            <div className="mb-2">
+              <ThreeBoxesLogo3D size={180} className="w-[140px] lg:w-[180px] h-auto" />
             </div>
-            <p className="text-sm ml-8" style={{ color: CG[300] }}>
-              AI-Powered Career Platform
-            </p>
           </motion.div>
 
           {/* Middle - Rotating Illustration */}
@@ -313,15 +304,8 @@ export function IntegratedLoginPage() {
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Mobile Header */}
         <div className="lg:hidden flex items-center justify-between p-4 border-b border-gray-100">
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1">
-              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: CG[600] }} />
-              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: CG[500] }} />
-              <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: CG[400] }} />
-            </div>
-            <span className="text-lg font-bold text-gray-900">
-              3 Boxes <span style={{ color: CG[600] }}>Jobs</span>
-            </span>
+          <div className="flex items-center">
+            <ThreeBoxesLogo3D size={120} className="w-[100px] h-auto" />
           </div>
         </div>
 
