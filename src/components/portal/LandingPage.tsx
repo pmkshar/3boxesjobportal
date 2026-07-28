@@ -293,7 +293,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
               <div className="flex items-center">
-                <ThreeBoxesLogo3D size={180} className="w-[120px] sm:w-[160px] lg:w-[180px] h-auto" />
+                <ThreeBoxesLogo3D size={114} className="h-[48px] sm:h-[56px] lg:h-[60px] w-auto" />
               </div>
               <div className="hidden lg:flex items-center gap-5 text-sm text-[#d8ecd8]/90">
                 <a href="#jobs" className="hover:text-white font-medium transition-colors">Find Jobs</a>
@@ -599,6 +599,20 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-14">
           <div className="text-center max-w-3xl mx-auto mb-8">
+            {/* === BIG VIBRANT LOGO at top of hero === */}
+            <motion.div
+              initial={{ y: -30, opacity: 0, scale: 0.9 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, type: 'spring' }}
+              className="mb-8"
+            >
+              <img
+                src="/logo.png"
+                alt="3BOXESJOBS - Find Opportunity. Build Tomorrow."
+                className="h-[60px] sm:h-[80px] lg:h-[110px] w-auto mx-auto drop-shadow-[0_8px_24px_rgba(4,90,6,0.4)]"
+                style={{ objectFit: 'contain', maxWidth: '100%' }}
+              />
+            </motion.div>
             <motion.div
               initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.4 }}
               className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 mb-5"
@@ -1496,7 +1510,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
             <div className="lg:col-span-2">
               <div className="mb-4">
-                <ThreeBoxesLogo3D size={160} />
+                <ThreeBoxesLogo3D size={200} className="h-[60px] sm:h-[80px] lg:h-[100px] w-auto" />
               </div>
               <p className="text-sm leading-relaxed max-w-sm">India&apos;s first AI-powered career platform with smart resume building, AI mock interviews, skill auto-updates, and intelligent job matching. The three boxes represent the complete career journey.</p>
               <div className="mt-4 flex items-center gap-2 text-xs text-gray-500">
@@ -1547,8 +1561,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
 
 // ===== 3D LOGO COMPONENT =====
 export function ThreeBoxesLogo3D({ size = 44, className = '' }: { size?: number; className?: string }) {
-  // Logo image height is ~56% of width (1672x941 aspect ratio ≈ 1.78:1)
-  // The logo PNG now contains the full brand (icon + text + tagline) with transparent background
+  // Logo PNG contains full brand (icon + 3BOXESJOBS text + tagline) with transparent background
+  // Aspect ratio ≈ 1.78:1 (1672x941)
   const height = Math.round(size * 0.56)
   return (
     <img
@@ -1557,7 +1571,7 @@ export function ThreeBoxesLogo3D({ size = 44, className = '' }: { size?: number;
       width={size}
       height={height}
       className={className}
-      style={{ objectFit: 'contain' }}
+      style={{ objectFit: 'contain', maxWidth: '100%' }}
     />
   )
 }

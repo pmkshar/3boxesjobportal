@@ -212,7 +212,7 @@ export function IntegratedLoginPage() {
             transition={{ duration: 0.6 }}
           >
             <div className="mb-2">
-              <ThreeBoxesLogo3D size={180} className="w-[140px] lg:w-[180px] h-auto" />
+              <ThreeBoxesLogo3D size={200} className="h-[70px] lg:h-[90px] w-auto" />
             </div>
           </motion.div>
 
@@ -305,7 +305,7 @@ export function IntegratedLoginPage() {
         {/* Mobile Header */}
         <div className="lg:hidden flex items-center justify-between p-4 border-b border-gray-100">
           <div className="flex items-center">
-            <ThreeBoxesLogo3D size={120} className="w-[100px] h-auto" />
+            <ThreeBoxesLogo3D size={120} className="h-[36px] sm:h-[40px] w-auto" />
           </div>
         </div>
 

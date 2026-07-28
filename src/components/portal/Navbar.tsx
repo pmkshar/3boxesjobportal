@@ -45,7 +45,7 @@ export function Navbar() {
           {/* Left: Logo + Role badge */}
           <div className="flex items-center gap-3">
             <div className="flex items-center">
-              <ThreeBoxesLogo size={140} className="w-[100px] sm:w-[130px] lg:w-[140px] h-auto" />
+              <ThreeBoxesLogo size={114} className="h-[44px] sm:h-[50px] lg:h-[56px] w-auto" />
             </div>
             {isAuthenticated && user && (
               <Badge className="hidden sm:inline-flex text-[10px] font-semibold border-0 rounded-full px-3 py-0.5"
