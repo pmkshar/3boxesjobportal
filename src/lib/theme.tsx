@@ -7,7 +7,7 @@ export type ThemeColor = 'green' | 'blue' | 'purple' | 'orange' | 'red' | 'teal'
 interface ThemeConfig {
   name: string
   color: ThemeColor
-  primary: string        // Main brand color (e.g., #056022)
+  primary: string        // Main brand color (e.g., #024217)
   primaryHover: string   // Darker version for hover (e.g., #044d1a)
   primaryLight: string   // Very light bg tint (e.g., #f0f8f0)
   primaryMedium: string  // Medium tint for badges/bg (e.g., #d8ecd8)
@@ -27,16 +27,16 @@ export const themes: Record<ThemeColor, ThemeConfig> = {
   green: {
     name: '3Boxes Green',
     color: 'green',
-    primary: '#056022',
+    primary: '#024217',
     primaryHover: '#044d1a',
     primaryLight: '#f0f8f0',
     primaryMedium: '#d8ecd8',
     primaryRing: '#1e7d1e',
     sidebar: '#0f172a',
-    sidebarHover: '#056022',
+    sidebarHover: '#024217',
     sidebarActive: '#fc7e0b',
-    gradient: 'linear-gradient(135deg, #056022 0%, #fc7e0b 100%)',
-    swatch: '#056022',
+    gradient: 'linear-gradient(135deg, #024217 0%, #fc7e0b 100%)',
+    swatch: '#024217',
     accent: '#fc7e0b',
     accentHover: '#ea5703',
     accentLight: '#fff8eb',
@@ -79,9 +79,9 @@ export const themes: Record<ThemeColor, ThemeConfig> = {
     primaryMedium: '#fed7aa',
     primaryRing: '#fdba64',
     sidebar: '#0f172a',
-    sidebarHover: '#056022',
+    sidebarHover: '#024217',
     sidebarActive: '#fc7e0b',
-    gradient: 'linear-gradient(135deg, #fc7e0b 0%, #056022 100%)',
+    gradient: 'linear-gradient(135deg, #fc7e0b 0%, #024217 100%)',
     swatch: '#fc7e0b',
   },
   red: {

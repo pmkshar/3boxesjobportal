@@ -99,7 +99,7 @@ const courses = [
     description: 'Exclusive curated course for 3Boxes platform developers. Covers the full tech stack, best practices, deployment workflows, and integration patterns. Free for 3Boxes developers.',
     skills: ['React', 'Node.js', 'Next.js', 'PostgreSQL'],
     icon: Star,
-    gradient: 'from-[#056022] to-[#044d1a]',
+    gradient: 'from-[#024217] to-[#044d1a]',
   },
 ]
 
@@ -145,8 +145,8 @@ export function TrainingPage() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <Badge className="bg-[#f0f8f0] text-[#056022] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">From MarqAI Courses</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Courses Available on <span className="text-[#056022]">marqaicourses.com</span></h2>
+            <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">From MarqAI Courses</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Courses Available on <span className="text-[#024217]">marqaicourses.com</span></h2>
             <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">Career-track programs with AI voice tutoring, graded quizzes, video walkthroughs, and verified certificates</p>
           </div>
 
@@ -178,7 +178,7 @@ export function TrainingPage() {
                       <span className={`text-sm font-bold ${course.price === 'FREE' ? 'text-emerald-600' : 'text-gray-900'}`}>{course.price}</span>
                     </div>
                     <a href={MARQAICOURSES_URL} target="_blank" rel="noopener noreferrer" className="block">
-                      <Button size="sm" className="w-full bg-[#056022] hover:bg-[#044d1a] text-white font-semibold rounded-lg text-xs">
+                      <Button size="sm" className="w-full bg-[#024217] hover:bg-[#044d1a] text-white font-semibold rounded-lg text-xs">
                         <ExternalLink className="h-3 w-3 mr-1" /> View on MarqAI Courses
                       </Button>
                     </a>
@@ -196,9 +196,9 @@ export function TrainingPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left - Training Benefits */}
             <motion.div initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} viewport={{ once: true }}>
-              <Badge className="bg-[#f0f8f0] text-[#056022] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Why Train With Us</Badge>
+              <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Why Train With Us</Badge>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight">
-                Complete a Course, <span className="text-[#056022]">Boost Your Career</span> Automatically
+                Complete a Course, <span className="text-[#024217]">Boost Your Career</span> Automatically
               </h2>
               <p className="text-gray-500 mt-4 text-sm leading-relaxed">
                 Unlike standalone learning platforms, 3 Boxes training is deeply integrated with your career profile. Every skill you learn immediately enhances your visibility to employers, improves your AI match scores, and updates across all your resumes — zero manual work required.
@@ -214,7 +214,7 @@ export function TrainingPage() {
                 ].map((benefit, i) => (
                   <div key={i} className="flex gap-3">
                     <div className="w-10 h-10 rounded-lg bg-[#f0f8f0] flex items-center justify-center flex-shrink-0">
-                      <benefit.icon className="h-5 w-5 text-[#056022]" />
+                      <benefit.icon className="h-5 w-5 text-[#024217]" />
                     </div>
                     <div>
                       <h4 className="font-semibold text-gray-900 text-sm">{benefit.title}</h4>
@@ -227,7 +227,7 @@ export function TrainingPage() {
               {/* CTA Buttons */}
               <div className="mt-8 flex flex-wrap gap-3">
                 <a href={MARQAICOURSES_URL} target="_blank" rel="noopener noreferrer">
-                  <Button className="bg-[#056022] hover:bg-[#044d1a] text-white font-semibold px-6 h-11 rounded-xl shadow-md">
+                  <Button className="bg-[#024217] hover:bg-[#044d1a] text-white font-semibold px-6 h-11 rounded-xl shadow-md">
                     <GraduationCap className="h-5 w-5 mr-2" /> Explore MarqAI Courses
                   </Button>
                 </a>
@@ -239,7 +239,7 @@ export function TrainingPage() {
               <Card className="border-0 shadow-lg overflow-hidden">
                 <CardContent className="p-0">
                   {/* Header */}
-                  <div className="bg-gradient-to-br from-[#056022] to-[#044d1a] p-6 text-center relative">
+                  <div className="bg-gradient-to-br from-[#024217] to-[#044d1a] p-6 text-center relative">
                     <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
                     <GraduationCap className="h-10 w-10 text-white mx-auto mb-2" />
                     <h3 className="text-lg font-bold text-white">Training → Profile → Job</h3>
@@ -249,7 +249,7 @@ export function TrainingPage() {
                   {/* Workflow Steps */}
                   <div className="p-6 space-y-0">
                     {[
-                      { step: '1', icon: BookOpen, title: 'Enroll in a Course', desc: 'Choose from 8 career-track courses on MarqAI Courses', color: 'bg-[#056022]', line: true },
+                      { step: '1', icon: BookOpen, title: 'Enroll in a Course', desc: 'Choose from 8 career-track courses on MarqAI Courses', color: 'bg-[#024217]', line: true },
                       { step: '2', icon: Cpu, title: 'Learn with AI Voice Tutor', desc: 'Interactive lessons with voice tutoring in 5+ Indian languages', color: 'bg-[#34a853]', line: true },
                       { step: '3', icon: Zap, title: 'Skills Auto-Update', desc: 'Your 3 Boxes profile & resume update automatically with new skills', color: 'bg-[#f9ab00]', line: true },
                       { step: '4', icon: Target, title: 'Higher Match Scores', desc: 'AI re-calculates your job match scores — higher visibility to employers', color: 'bg-[#044d1a]', line: true },
@@ -264,7 +264,7 @@ export function TrainingPage() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                              <item.icon className="h-4 w-4 text-[#056022]" />
+                              <item.icon className="h-4 w-4 text-[#024217]" />
                               <h4 className="font-semibold text-gray-900 text-sm">{item.title}</h4>
                             </div>
                             <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
@@ -272,7 +272,7 @@ export function TrainingPage() {
                         </div>
                         {item.line && (
                           <div className="flex ml-[22px] my-2">
-                            <div className="w-0.5 h-6 bg-gradient-to-b from-[#056022]/40 to-[#056022]/10" />
+                            <div className="w-0.5 h-6 bg-gradient-to-b from-[#024217]/40 to-[#024217]/10" />
                           </div>
                         )}
                       </div>
@@ -290,7 +290,7 @@ export function TrainingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: BookOpen, value: '8', label: 'Career Track Courses', color: 'text-[#056022]' },
+              { icon: BookOpen, value: '8', label: 'Career Track Courses', color: 'text-[#024217]' },
               { icon: Mic, value: '5+', label: 'Voice Tutor Languages', color: 'text-[#34a853]' },
               { icon: FileCheck, value: '100%', label: 'Verified Certificates', color: 'text-[#f9ab00]' },
               { icon: TrendingUp, value: '3X', label: 'More Interview Calls', color: 'text-[#044d1a]' },

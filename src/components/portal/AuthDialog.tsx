@@ -264,8 +264,8 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
         <DialogContent className="sm:max-w-[420px]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl">
-              <div className="w-8 h-8 rounded-lg bg-[#056022]/10 flex items-center justify-center">
-                <Shield className="h-4 w-4 text-[#056022]" />
+              <div className="w-8 h-8 rounded-lg bg-[#024217]/10 flex items-center justify-center">
+                <Shield className="h-4 w-4 text-[#024217]" />
               </div>
               Two-Factor Authentication
             </DialogTitle>
@@ -292,7 +292,7 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
                   value={digit}
                   onChange={(e) => handleOtpChange(index, e.target.value)}
                   onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                  className="w-10 h-12 text-center text-lg font-bold border-2 focus:border-[#056022] rounded-lg"
+                  className="w-10 h-12 text-center text-lg font-bold border-2 focus:border-[#024217] rounded-lg"
                   autoFocus={index === 0}
                 />
               ))}
@@ -304,7 +304,7 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
               </div>
             )}
 
-            <Button className="w-full bg-[#056022] hover:bg-[#044d1a]" onClick={handle2FAVerification} disabled={loading}>
+            <Button className="w-full bg-[#024217] hover:bg-[#044d1a]" onClick={handle2FAVerification} disabled={loading}>
               {loading ? 'Verifying...' : 'Verify & Sign In'} <ChevronRight className="ml-1 h-4 w-4" />
             </Button>
 
@@ -325,8 +325,8 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
       <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
-            <div className="w-8 h-8 rounded-lg bg-[#056022]/10 flex items-center justify-center">
-              <Briefcase className="h-4 w-4 text-[#056022]" />
+            <div className="w-8 h-8 rounded-lg bg-[#024217]/10 flex items-center justify-center">
+              <Briefcase className="h-4 w-4 text-[#024217]" />
             </div>
             3 Boxes Jobs
           </DialogTitle>
@@ -365,25 +365,25 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
               )}
             </div>
 
-            <Button className="w-full bg-[#056022] hover:bg-[#044d1a]" onClick={handleLogin} disabled={loading}>
+            <Button className="w-full bg-[#024217] hover:bg-[#044d1a]" onClick={handleLogin} disabled={loading}>
               {loading ? 'Signing in...' : 'Sign In'} <ChevronRight className="ml-1 h-4 w-4" />
             </Button>
 
             {/* Demo quick-fill — only shown on demo site, NOT on production */}
             {showDemo && credentials && (
-            <div className="bg-[#056022]/5 rounded-lg p-3 text-sm">
-              <p className="font-medium text-[#056022] mb-2">Quick {envLabel} Access:</p>
+            <div className="bg-[#024217]/5 rounded-lg p-3 text-sm">
+              <p className="font-medium text-[#024217] mb-2">Quick {envLabel} Access:</p>
               <div className="space-y-1.5">
                 {Object.entries(credentials).map(([role, cred]) => {
                   const Icon = demoIconMap[role] || Users
                   return (
-                    <button key={role} onClick={() => fillDemo(role as DemoRole)} className="flex items-center gap-2 text-[#056022] hover:text-[#044d1a] w-full text-left">
+                    <button key={role} onClick={() => fillDemo(role as DemoRole)} className="flex items-center gap-2 text-[#024217] hover:text-[#044d1a] w-full text-left">
                       <Icon className="h-3.5 w-3.5" /> {cred.label}: {cred.email}
                     </button>
                   )
                 })}
               </div>
-              <p className="text-[#056022]/70 mt-1">Password: demo123</p>
+              <p className="text-[#024217]/70 mt-1">Password: demo123</p>
             </div>
             )}
           </TabsContent>
@@ -394,11 +394,11 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {roles.map((role) => (
                   <Card key={role.value}
-                    className={`cursor-pointer transition-all ${selectedRole === role.value ? `border-[#056022] bg-[#056022]/5 ring-1 ring-[#056022]` : 'border-gray-200 hover:border-gray-300'}`}
+                    className={`cursor-pointer transition-all ${selectedRole === role.value ? `border-[#024217] bg-[#024217]/5 ring-1 ring-[#024217]` : 'border-gray-200 hover:border-gray-300'}`}
                     onClick={() => setSelectedRole(role.value)}>
                     <CardContent className="p-3 text-center">
-                      <role.icon className={`h-6 w-6 mx-auto mb-1 ${selectedRole === role.value ? 'text-[#056022]' : 'text-gray-400'}`} />
-                      <div className={`text-xs font-medium ${selectedRole === role.value ? 'text-[#056022]' : 'text-gray-600'}`}>
+                      <role.icon className={`h-6 w-6 mx-auto mb-1 ${selectedRole === role.value ? 'text-[#024217]' : 'text-gray-400'}`} />
+                      <div className={`text-xs font-medium ${selectedRole === role.value ? 'text-[#024217]' : 'text-gray-600'}`}>
                         {role.label}
                       </div>
                     </CardContent>
@@ -508,7 +508,7 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
               )}
             </div>
 
-            <Button className="w-full bg-[#056022] hover:bg-[#044d1a]" onClick={handleRegister} disabled={loading}>
+            <Button className="w-full bg-[#024217] hover:bg-[#044d1a]" onClick={handleRegister} disabled={loading}>
               {loading ? 'Creating account...' : 'Create Account'} <ChevronRight className="ml-1 h-4 w-4" />
             </Button>
           </TabsContent>

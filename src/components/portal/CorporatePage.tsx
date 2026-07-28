@@ -20,7 +20,7 @@ const topCompanies = [
 ]
 
 const companyColors = [
-  'bg-[#056022]', 'bg-[#34a853]', 'bg-[#f9ab00]', 'bg-[#d93025]',
+  'bg-[#024217]', 'bg-[#34a853]', 'bg-[#f9ab00]', 'bg-[#d93025]',
   'bg-[#7c66ff]', 'bg-[#a55fff]', 'bg-[#00cc9a]', 'bg-[#2869fe]',
 ]
 
@@ -76,7 +76,7 @@ export function CorporatePage() {
       <section className="py-12 bg-gray-50 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Companies That <span className="text-[#056022]">Hire Through Us</span></h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Companies That <span className="text-[#024217]">Hire Through Us</span></h2>
             <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">India&apos;s leading companies trust 3 Boxes Jobs for their hiring needs</p>
           </div>
           {/* Infinite Marquee */}
@@ -86,7 +86,7 @@ export function CorporatePage() {
             <div className="overflow-hidden">
               <div className="flex gap-6 animate-marquee whitespace-nowrap">
                 {[...topCompanies, ...topCompanies, ...topCompanies].map((c, i) => (
-                  <div key={`${c.name}-${i}`} className="flex-shrink-0 w-[130px] h-[70px] flex items-center justify-center rounded-xl border border-gray-100 bg-white hover:border-[#056022]/30 hover:bg-[#f0f8f0] transition-all group shadow-sm">
+                  <div key={`${c.name}-${i}`} className="flex-shrink-0 w-[130px] h-[70px] flex items-center justify-center rounded-xl border border-gray-100 bg-white hover:border-[#024217]/30 hover:bg-[#f0f8f0] transition-all group shadow-sm">
                     <div className="flex items-center gap-2">
                       <div className={`w-10 h-10 rounded-lg ${getCompanyColor(c.name)} flex items-center justify-center text-white font-bold text-sm group-hover:scale-110 transition-transform`}>
                         {c.logo}
@@ -105,8 +105,8 @@ export function CorporatePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <motion.div initial={{ y: 10, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }}>
-              <Badge className="bg-[#f0f8f0] text-[#056022] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Recruitment Workflow</Badge>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Why Corporates Choose <span className="text-[#056022]">3 Boxes</span></h2>
+              <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Recruitment Workflow</Badge>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Why Corporates Choose <span className="text-[#024217]">3 Boxes</span></h2>
               <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">Our AI-powered recruitment platform transforms every step of your hiring journey</p>
             </motion.div>
           </div>
@@ -119,14 +119,14 @@ export function CorporatePage() {
                 icon: Building2,
                 title: 'Post Jobs Instantly',
                 desc: 'Create job postings in minutes with AI-assisted job description generation. Reach thousands of qualified candidates immediately across our platform.',
-                color: 'from-[#056022] to-[#044d1a]',
+                color: 'from-[#024217] to-[#044d1a]',
               },
               {
                 step: '02',
                 icon: Target,
                 title: 'AI Smart Matching',
                 desc: 'Our AI engine analyzes skills, experience, and cultural fit to match you with the most relevant candidates — no more sifting through hundreds of irrelevant resumes.',
-                color: 'from-[#34a853] to-[#056022]',
+                color: 'from-[#34a853] to-[#024217]',
               },
               {
                 step: '03',
@@ -154,8 +154,8 @@ export function CorporatePage() {
                 {i < 3 && (
                   <div className="hidden lg:block absolute top-12 -right-3 w-6">
                     <svg width="24" height="12" viewBox="0 0 24 12" fill="none">
-                      <path d="M0 6L8 6L12 2L16 6L24 6" stroke="#056022" strokeWidth="2" strokeLinecap="round" opacity="0.3" />
-                      <circle cx="24" cy="6" r="2" fill="#056022" opacity="0.3" />
+                      <path d="M0 6L8 6L12 2L16 6L24 6" stroke="#024217" strokeWidth="2" strokeLinecap="round" opacity="0.3" />
+                      <circle cx="24" cy="6" r="2" fill="#024217" opacity="0.3" />
                     </svg>
                   </div>
                 )}
@@ -165,7 +165,7 @@ export function CorporatePage() {
                       {item.step}
                     </div>
                     <div className="w-10 h-10 rounded-lg bg-[#f0f8f0] flex items-center justify-center mb-3">
-                      <item.icon className="h-5 w-5 text-[#056022]" />
+                      <item.icon className="h-5 w-5 text-[#024217]" />
                     </div>
                     <h4 className="font-bold text-gray-900 text-base mb-2">{item.title}</h4>
                     <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
@@ -181,7 +181,7 @@ export function CorporatePage() {
       <section className="py-16 bg-[#f5f7fc]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Complete <span className="text-[#056022]">Hiring Solution</span></h2>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Complete <span className="text-[#024217]">Hiring Solution</span></h2>
             <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">Everything you need to find, evaluate, and hire the best talent — powered by AI</p>
           </div>
 
@@ -203,7 +203,7 @@ export function CorporatePage() {
                 <Card className="border-0 shadow-sm h-full hover:shadow-md transition-all">
                   <CardContent className="p-6">
                     <div className="w-12 h-12 rounded-xl bg-[#f0f8f0] flex items-center justify-center mb-4">
-                      <benefit.icon className="h-6 w-6 text-[#056022]" />
+                      <benefit.icon className="h-6 w-6 text-[#024217]" />
                     </div>
                     <h4 className="font-bold text-gray-900 text-base mb-2">{benefit.title}</h4>
                     <p className="text-sm text-gray-500 leading-relaxed">{benefit.desc}</p>

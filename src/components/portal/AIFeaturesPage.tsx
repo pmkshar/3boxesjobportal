@@ -35,8 +35,8 @@ export function AIFeaturesPage() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <Badge className="bg-[#f0f8f0] text-[#056022] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Tailored AI Tools</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">AI Features <span className="text-[#056022]">For Your Role</span></h2>
+            <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Tailored AI Tools</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">AI Features <span className="text-[#024217]">For Your Role</span></h2>
             <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">Each user type gets purpose-built AI tools to maximize their career or hiring outcomes</p>
           </div>
 
@@ -44,7 +44,7 @@ export function AIFeaturesPage() {
             {/* Job Seekers */}
             <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0 }} viewport={{ once: true }}>
               <Card className="border-0 shadow-sm h-full overflow-hidden">
-                <div className="bg-gradient-to-br from-[#056022] to-[#044d1a] p-6 text-center relative">
+                <div className="bg-gradient-to-br from-[#024217] to-[#044d1a] p-6 text-center relative">
                   <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
                   <Users className="h-8 w-8 text-white mx-auto mb-2" />
                   <h3 className="text-lg font-bold text-white">For Job Seekers</h3>
@@ -59,7 +59,7 @@ export function AIFeaturesPage() {
                   ].map((feature, i) => (
                     <div key={i} className="flex gap-3">
                       <div className="w-9 h-9 rounded-lg bg-[#f0f8f0] flex items-center justify-center flex-shrink-0">
-                        <feature.icon className="h-4 w-4 text-[#056022]" />
+                        <feature.icon className="h-4 w-4 text-[#024217]" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-gray-900 text-sm">{feature.title}</h4>
@@ -119,7 +119,7 @@ export function AIFeaturesPage() {
                   ].map((feature, i) => (
                     <div key={i} className="flex gap-3">
                       <div className="w-9 h-9 rounded-lg bg-[#f0f8f0] flex items-center justify-center flex-shrink-0">
-                        <feature.icon className="h-4 w-4 text-[#056022]" />
+                        <feature.icon className="h-4 w-4 text-[#024217]" />
                       </div>
                       <div>
                         <h4 className="font-semibold text-gray-900 text-sm">{feature.title}</h4>
@@ -138,15 +138,15 @@ export function AIFeaturesPage() {
       <section className="py-16 bg-[#f5f7fc]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <Badge className="bg-[#f0f8f0] text-[#056022] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">AI Workflow</Badge>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">How <span className="text-[#056022]">AI</span> Powers Your Hiring Journey</h2>
+            <Badge className="bg-[#f0f8f0] text-[#024217] border-[#d8ecd8] rounded-full px-4 py-1 text-xs font-semibold mb-3">AI Workflow</Badge>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">How <span className="text-[#024217]">AI</span> Powers Your Hiring Journey</h2>
             <p className="text-gray-500 mt-2 text-sm max-w-lg mx-auto">From resume parsing to confident hiring decisions — AI transforms every step</p>
           </div>
 
           {/* Horizontal workflow */}
           <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-0 justify-center">
             {[
-              { icon: FileText, label: 'AI Resume Scan', desc: 'Instant parsing & scoring', color: 'bg-[#056022]' },
+              { icon: FileText, label: 'AI Resume Scan', desc: 'Instant parsing & scoring', color: 'bg-[#024217]' },
               { icon: Target, label: 'Smart Matching', desc: 'Skill-fit algorithms', color: 'bg-[#34a853]' },
               { icon: Brain, label: 'AI Interview', desc: 'Automated screening', color: 'bg-[#f9ab00]' },
               { icon: BarChart3, label: 'Quality Score', desc: 'Data-driven ranking', color: 'bg-[#044d1a]' },
@@ -168,8 +168,8 @@ export function AIFeaturesPage() {
                 {i < 4 && (
                   <div className="hidden lg:flex items-center mx-2">
                     <svg width="40" height="12" viewBox="0 0 40 12" fill="none">
-                      <path d="M0 6L12 6L16 2L20 6L24 2L28 6L40 6" stroke="#056022" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
-                      <circle cx="40" cy="6" r="3" fill="#056022" opacity="0.4" />
+                      <path d="M0 6L12 6L16 2L20 6L24 2L28 6L40 6" stroke="#024217" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
+                      <circle cx="40" cy="6" r="3" fill="#024217" opacity="0.4" />
                     </svg>
                   </div>
                 )}
@@ -183,7 +183,7 @@ export function AIFeaturesPage() {
               <Card className="border-0 shadow-sm h-full">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#056022] to-[#044d1a] flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#024217] to-[#044d1a] flex items-center justify-center">
                       <Cpu className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -197,7 +197,7 @@ export function AIFeaturesPage() {
                   <div className="space-y-2">
                     {['Multi-dimensional skill scoring', 'Experience relevance weighting', 'Cultural fit analysis', 'Career trajectory prediction', 'Real-time score updates'].map((item, i) => (
                       <div key={i} className="flex items-center gap-2 text-sm">
-                        <CheckCircle2 className="h-4 w-4 text-[#056022] flex-shrink-0" />
+                        <CheckCircle2 className="h-4 w-4 text-[#024217] flex-shrink-0" />
                         <span className="text-gray-600">{item}</span>
                       </div>
                     ))}

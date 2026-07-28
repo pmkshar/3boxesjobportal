@@ -328,7 +328,7 @@ export function CandidateBuddyView() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-[#056022]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#024217]" />
         <span className="ml-3 text-[#5f6368]">Loading AI Buddy...</span>
       </div>
     )
@@ -341,7 +341,7 @@ export function CandidateBuddyView() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <Card className="border-0 shadow-lg overflow-hidden">
             {/* Hero Header */}
-            <div className="bg-gradient-to-r from-[#056022] to-[#044d1a] p-8 text-center relative">
+            <div className="bg-gradient-to-r from-[#024217] to-[#044d1a] p-8 text-center relative">
               <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'}} />
               <div className="relative z-10">
                 <div className="w-20 h-20 mx-auto mb-4 bg-white/20 rounded-2xl flex items-center justify-center">
@@ -367,8 +367,8 @@ export function CandidateBuddyView() {
                   { icon: CheckCircle2, label: 'Interview', desc: 'Get scheduled' },
                 ].map((step, i) => (
                   <div key={i} className="space-y-1.5">
-                    <div className="w-10 h-10 mx-auto bg-[#056022]/10 rounded-xl flex items-center justify-center">
-                      <step.icon className="h-5 w-5 text-[#056022]" />
+                    <div className="w-10 h-10 mx-auto bg-[#024217]/10 rounded-xl flex items-center justify-center">
+                      <step.icon className="h-5 w-5 text-[#024217]" />
                     </div>
                     <p className="text-xs font-semibold text-[#202124]">{step.label}</p>
                     <p className="text-[10px] text-[#5f6368]">{step.desc}</p>
@@ -381,7 +381,7 @@ export function CandidateBuddyView() {
               {/* Setup Form */}
               <div className="space-y-4">
                 <h3 className="font-semibold text-[#202124] flex items-center gap-2">
-                  <Target className="h-4 w-4 text-[#056022]" />
+                  <Target className="h-4 w-4 text-[#024217]" />
                   Configure Your AI Buddy
                 </h3>
 
@@ -447,7 +447,7 @@ export function CandidateBuddyView() {
                             ? 'text-white shadow-sm'
                             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                         }`}
-                        style={portals.includes(portal) ? { backgroundColor: PORTAL_COLORS[portal] || '#056022' } : {}}
+                        style={portals.includes(portal) ? { backgroundColor: PORTAL_COLORS[portal] || '#024217' } : {}}
                       >
                         <Globe className="h-3 w-3" />
                         {portal}
@@ -492,7 +492,7 @@ export function CandidateBuddyView() {
                   </div>
                   <button
                     onClick={() => setAutoApply(!autoApply)}
-                    className={`relative w-11 h-6 rounded-full transition-colors ${autoApply ? 'bg-[#056022]' : 'bg-gray-300'}`}
+                    className={`relative w-11 h-6 rounded-full transition-colors ${autoApply ? 'bg-[#024217]' : 'bg-gray-300'}`}
                   >
                     <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${autoApply ? 'translate-x-5' : ''}`} />
                   </button>
@@ -502,7 +502,7 @@ export function CandidateBuddyView() {
               <Button
                 onClick={handleSetup}
                 disabled={!skills.trim()}
-                className="w-full h-12 bg-[#056022] hover:bg-[#044d1a] text-white font-semibold text-base"
+                className="w-full h-12 bg-[#024217] hover:bg-[#044d1a] text-white font-semibold text-base"
               >
                 <Bot className="h-5 w-5 mr-2" />
                 Activate AI Buddy
@@ -523,7 +523,7 @@ export function CandidateBuddyView() {
       {/* Agent Status Header */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="border-0 shadow-md overflow-hidden">
-          <div className="bg-gradient-to-r from-[#056022] to-[#044d1a] p-5 relative">
+          <div className="bg-gradient-to-r from-[#024217] to-[#044d1a] p-5 relative">
             <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'}} />
             <div className="relative z-10 flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -557,7 +557,7 @@ export function CandidateBuddyView() {
       {/* Quick Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: 'Jobs Applied', value: agent.totalTasks, icon: Briefcase, color: '#056022' },
+          { label: 'Jobs Applied', value: agent.totalTasks, icon: Briefcase, color: '#024217' },
           { label: 'Success Rate', value: `${successRate}%`, icon: TrendingUp, color: '#3b82f6' },
           { label: 'Emails Sent', value: agent.totalEmailsSent, icon: Mail, color: '#f9ab00' },
           { label: 'Interviews', value: agent.totalConversions, icon: Calendar, color: '#8b5cf6' },
@@ -594,7 +594,7 @@ export function CandidateBuddyView() {
             <Card className="border-0 shadow-sm">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                  <Target className="h-4 w-4 text-[#056022]" />
+                  <Target className="h-4 w-4 text-[#024217]" />
                   Your Search Strategy
                 </CardTitle>
               </CardHeader>
@@ -659,7 +659,7 @@ export function CandidateBuddyView() {
                       <div key={i} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
                         <div className="flex items-center gap-2">
                           {item.itemType === 'task' ? (
-                            <Briefcase className="h-4 w-4 text-[#056022]" />
+                            <Briefcase className="h-4 w-4 text-[#024217]" />
                           ) : (
                             <Mail className="h-4 w-4 text-[#3b82f6]" />
                           )}
@@ -690,7 +690,7 @@ export function CandidateBuddyView() {
             <Button
               onClick={searchExternalJobs}
               disabled={jobsLoading || !skills.trim()}
-              className="bg-[#056022] hover:bg-[#044d1a] text-white"
+              className="bg-[#024217] hover:bg-[#044d1a] text-white"
             >
               {jobsLoading ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Search className="h-4 w-4 mr-1" />}
               Search Jobs
@@ -716,7 +716,7 @@ export function CandidateBuddyView() {
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-start gap-3 min-w-0 flex-1">
                           <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-white font-bold text-sm"
-                            style={{ backgroundColor: PORTAL_COLORS[job.source] || '#056022' }}>
+                            style={{ backgroundColor: PORTAL_COLORS[job.source] || '#024217' }}>
                             {job.source.charAt(0)}
                           </div>
                           <div className="min-w-0 flex-1">
@@ -730,7 +730,7 @@ export function CandidateBuddyView() {
                             </div>
                             <div className="flex flex-wrap gap-1 mt-2">
                               {job.skills.slice(0, 4).map(skill => (
-                                <Badge key={skill} className="text-[9px] bg-[#056022]/10 text-[#056022] border-0 px-1.5 py-0">{skill}</Badge>
+                                <Badge key={skill} className="text-[9px] bg-[#024217]/10 text-[#024217] border-0 px-1.5 py-0">{skill}</Badge>
                               ))}
                             </div>
                           </div>
@@ -742,7 +742,7 @@ export function CandidateBuddyView() {
                             </Badge>
                           </div>
                           <div className="text-center">
-                            <div className={`text-lg font-bold ${job.matchScore >= 85 ? 'text-[#056022]' : job.matchScore >= 70 ? 'text-[#f9ab00]' : 'text-[#5f6368]'}`}>
+                            <div className={`text-lg font-bold ${job.matchScore >= 85 ? 'text-[#024217]' : job.matchScore >= 70 ? 'text-[#f9ab00]' : 'text-[#5f6368]'}`}>
                               {job.matchScore}%
                             </div>
                             <p className="text-[9px] text-[#5f6368]">Match</p>
@@ -756,7 +756,7 @@ export function CandidateBuddyView() {
                             <Button
                               size="sm"
                               onClick={() => handleApply(job)}
-                              className="h-7 text-[10px] bg-[#056022] hover:bg-[#044d1a] text-white"
+                              className="h-7 text-[10px] bg-[#024217] hover:bg-[#044d1a] text-white"
                             >
                               Apply
                             </Button>
@@ -787,8 +787,8 @@ export function CandidateBuddyView() {
                 <Card key={task.id} className="border-0 shadow-sm">
                   <CardContent className="p-3 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-[#056022]/10">
-                        <Briefcase className="h-4 w-4 text-[#056022]" />
+                      <div className="p-2 rounded-lg bg-[#024217]/10">
+                        <Briefcase className="h-4 w-4 text-[#024217]" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-[#202124]">{task.type}</p>

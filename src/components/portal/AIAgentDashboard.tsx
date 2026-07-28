@@ -40,7 +40,7 @@ import { format } from 'date-fns'
 // ─── Constants ──────────────────────────────────────────────────────────
 
 const AGENT_TYPE_COLORS: Record<string, string> = {
-  CANDIDATE_BUDDY: '#056022',
+  CANDIDATE_BUDDY: '#024217',
   ADMIN_OUTREACH_COMPANY: '#f9ab00',
   ADMIN_OUTREACH_CANDIDATE: '#3b82f6',
   ADMIN_OUTREACH_HR: '#8b5cf6',
@@ -1106,7 +1106,7 @@ export function AIAgentDashboard() {
                   transition={{ duration: 0.4, delay: i * 0.01 }}
                   className="w-full rounded-t-sm min-h-[2px] relative"
                   style={{
-                    backgroundColor: '#056022',
+                    backgroundColor: '#024217',
                     maxWidth: '20px',
                     margin: '0 auto',
                     maxHeight: `calc(100% - 24px)`,
@@ -1176,7 +1176,7 @@ export function AIAgentDashboard() {
   const miniChartData = Object.entries(dailyVolumeData).map(([label, value]) => ({
     label,
     value,
-    color: '#056022',
+    color: '#024217',
   }))
 
   return (
@@ -1186,7 +1186,7 @@ export function AIAgentDashboard() {
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl" style={{ backgroundColor: '#056022' }}>
+              <div className="p-2 rounded-xl" style={{ backgroundColor: '#024217' }}>
                 <Bot className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -1208,9 +1208,9 @@ export function AIAgentDashboard() {
                 size="sm"
                 onClick={() => setCreateAgentOpen(true)}
                 className="text-white"
-                style={{ backgroundColor: '#056022' }}
+                style={{ backgroundColor: '#024217' }}
                 onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#044d1a')}
-                onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#056022')}
+                onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#024217')}
               >
                 <Plus className="h-4 w-4 mr-1" />
                 New Agent
@@ -1266,7 +1266,7 @@ export function AIAgentDashboard() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0 }}>
                 <Card className="relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-20 h-20 rounded-bl-[40px] opacity-10" style={{ backgroundColor: '#056022' }} />
+                  <div className="absolute top-0 right-0 w-20 h-20 rounded-bl-[40px] opacity-10" style={{ backgroundColor: '#024217' }} />
                   <CardContent className="p-4 md:p-6">
                     <div className="flex items-center justify-between">
                       <div>
@@ -1274,8 +1274,8 @@ export function AIAgentDashboard() {
                         <p className="text-2xl font-bold mt-1">{overview?.totalAgents || 0}</p>
                         <p className="text-xs text-muted-foreground mt-1">{overview?.activeAgents || 0} active</p>
                       </div>
-                      <div className="p-3 rounded-xl" style={{ backgroundColor: '#05602220' }}>
-                        <Bot className="h-6 w-6" style={{ color: '#056022' }} />
+                      <div className="p-3 rounded-xl" style={{ backgroundColor: '#02421720' }}>
+                        <Bot className="h-6 w-6" style={{ color: '#024217' }} />
                       </div>
                     </div>
                   </CardContent>
@@ -1407,7 +1407,7 @@ export function AIAgentDashboard() {
                     )}
                     <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
                       <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: '#056022' }} />
+                        <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: '#024217' }} />
                         <span>Emails Sent</span>
                       </div>
                     </div>
@@ -1502,9 +1502,9 @@ export function AIAgentDashboard() {
               <Button
                 onClick={() => setCreateAgentOpen(true)}
                 className="text-white"
-                style={{ backgroundColor: '#056022' }}
+                style={{ backgroundColor: '#024217' }}
                 onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#044d1a')}
-                onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#056022')}
+                onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#024217')}
               >
                 <Plus className="h-4 w-4 mr-1" />
                 Create Agent
@@ -1515,7 +1515,7 @@ export function AIAgentDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {agents.map((agent, idx) => {
                   const dailyProgress = agent.dailyLimit > 0 ? (agent.dailySent / agent.dailyLimit) * 100 : 0
-                  const typeColor = AGENT_TYPE_COLORS[agent.type] || '#056022'
+                  const typeColor = AGENT_TYPE_COLORS[agent.type] || '#024217'
                   return (
                     <motion.div
                       key={agent.id}
@@ -1565,7 +1565,7 @@ export function AIAgentDashboard() {
                                 transition={{ duration: 0.8, delay: 0.2 }}
                                 className="h-full rounded-full"
                                 style={{
-                                  backgroundColor: dailyProgress >= 90 ? '#ef4444' : dailyProgress >= 70 ? '#f9ab00' : '#056022',
+                                  backgroundColor: dailyProgress >= 90 ? '#ef4444' : dailyProgress >= 70 ? '#f9ab00' : '#024217',
                                 }}
                               />
                             </div>
@@ -1682,9 +1682,9 @@ export function AIAgentDashboard() {
                   <Button
                     onClick={() => setCreateAgentOpen(true)}
                     className="text-white"
-                    style={{ backgroundColor: '#056022' }}
+                    style={{ backgroundColor: '#024217' }}
                     onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#044d1a')}
-                    onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#056022')}
+                    onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#024217')}
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Create Your First Agent
@@ -1733,7 +1733,7 @@ export function AIAgentDashboard() {
                     size="sm"
                     onClick={handleBulkApprove}
                     className="text-white h-9"
-                    style={{ backgroundColor: '#056022' }}
+                    style={{ backgroundColor: '#024217' }}
                   >
                     <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
                     Approve ({selectedTaskIds.size})
@@ -1800,7 +1800,7 @@ export function AIAgentDashboard() {
                                 <div
                                   className="w-2 h-2 rounded-full"
                                   style={{
-                                    backgroundColor: task.priority >= 8 ? '#ef4444' : task.priority >= 5 ? '#f9ab00' : '#056022',
+                                    backgroundColor: task.priority >= 8 ? '#ef4444' : task.priority >= 5 ? '#f9ab00' : '#024217',
                                   }}
                                 />
                                 <span className="text-xs">{task.priority}</span>
@@ -2203,7 +2203,7 @@ export function AIAgentDashboard() {
                   <Card>
                     <CardContent className="p-4 text-center">
                       <p className="text-xs text-muted-foreground">Avg Delivery Rate</p>
-                      <p className="text-2xl font-bold mt-1" style={{ color: '#056022' }}>
+                      <p className="text-2xl font-bold mt-1" style={{ color: '#024217' }}>
                         {formatPercent(agentStats.last30DayRates.deliveryRate)}
                       </p>
                     </CardContent>
@@ -2244,7 +2244,7 @@ export function AIAgentDashboard() {
                       </div>
                       <div className="flex items-center gap-4 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
-                          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: '#056022' }} />
+                          <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: '#024217' }} />
                           <span>Emails</span>
                         </div>
                         <div className="flex items-center gap-1">
@@ -2335,7 +2335,7 @@ export function AIAgentDashboard() {
                       </div>
                       <div className="text-center">
                         <p className="text-xs text-muted-foreground">Responses</p>
-                        <p className="text-xl font-bold" style={{ color: '#056022' }}>{agentStats.overallSummary.totalResponses}</p>
+                        <p className="text-xl font-bold" style={{ color: '#024217' }}>{agentStats.overallSummary.totalResponses}</p>
                       </div>
                       <div className="text-center">
                         <p className="text-xs text-muted-foreground">Conversions</p>
@@ -2358,7 +2358,7 @@ export function AIAgentDashboard() {
                         .sort((a, b) => b.avgResponseRate - a.avgResponseRate)
                         .slice(0, 5)
                         .map((agent, idx) => {
-                          const typeColor = AGENT_TYPE_COLORS[agent.type] || '#056022'
+                          const typeColor = AGENT_TYPE_COLORS[agent.type] || '#024217'
                           return (
                             <div key={agent.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50">
                               <div className="flex items-center justify-center w-6 h-6 rounded-full bg-muted text-xs font-bold">
@@ -2400,7 +2400,7 @@ export function AIAgentDashboard() {
                   <CardContent>
                     <div className="space-y-3">
                       {Object.entries(agentTypeBreakdown).map(([type, data]) => {
-                        const typeColor = AGENT_TYPE_COLORS[type] || '#056022'
+                        const typeColor = AGENT_TYPE_COLORS[type] || '#024217'
                         const convRate = data.totalResponses > 0 ? data.totalConversions / data.totalResponses : 0
                         return (
                           <div key={type} className="p-3 rounded-lg border">
@@ -2479,9 +2479,9 @@ export function AIAgentDashboard() {
               <Button
                 onClick={() => setCreateTemplateOpen(true)}
                 className="text-white"
-                style={{ backgroundColor: '#056022' }}
+                style={{ backgroundColor: '#024217' }}
                 onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#044d1a')}
-                onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#056022')}
+                onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#024217')}
               >
                 <Plus className="h-4 w-4 mr-1" />
                 New Template
@@ -2491,7 +2491,7 @@ export function AIAgentDashboard() {
             {templates.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {templates.map((template, idx) => {
-                  const typeColor = AGENT_TYPE_COLORS[template.agentType] || '#056022'
+                  const typeColor = AGENT_TYPE_COLORS[template.agentType] || '#024217'
                   return (
                     <motion.div
                       key={template.id}
@@ -2553,9 +2553,9 @@ export function AIAgentDashboard() {
                   <Button
                     onClick={() => setCreateTemplateOpen(true)}
                     className="text-white"
-                    style={{ backgroundColor: '#056022' }}
+                    style={{ backgroundColor: '#024217' }}
                     onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#044d1a')}
-                    onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#056022')}
+                    onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#024217')}
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Create Your First Template
@@ -2592,9 +2592,9 @@ export function AIAgentDashboard() {
                         onClick={handleScrapeCompany}
                         disabled={scrapeLoading || !scrapeUrl.trim()}
                         className="text-white shrink-0"
-                        style={{ backgroundColor: '#056022' }}
+                        style={{ backgroundColor: '#024217' }}
                         onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#044d1a')}
-                        onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#056022')}
+                        onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#024217')}
                       >
                         {scrapeLoading ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -3139,7 +3139,7 @@ export function AIAgentDashboard() {
                 <SelectContent>
                   <SelectItem value="CANDIDATE_BUDDY">
                     <div className="flex items-center gap-2">
-                      <Users className="h-3.5 w-3.5" style={{ color: '#056022' }} />
+                      <Users className="h-3.5 w-3.5" style={{ color: '#024217' }} />
                       Candidate Buddy
                     </div>
                   </SelectItem>
@@ -3209,9 +3209,9 @@ export function AIAgentDashboard() {
               onClick={handleCreateAgent}
               disabled={!newAgent.name.trim()}
               className="text-white"
-              style={{ backgroundColor: '#056022' }}
+              style={{ backgroundColor: '#024217' }}
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#044d1a')}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#056022')}
+              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#024217')}
             >
               Create Agent
             </Button>
@@ -3289,9 +3289,9 @@ export function AIAgentDashboard() {
             <Button
               onClick={handleUpdateAgent}
               className="text-white"
-              style={{ backgroundColor: '#056022' }}
+              style={{ backgroundColor: '#024217' }}
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#044d1a')}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#056022')}
+              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#024217')}
             >
               Save Changes
             </Button>
@@ -3415,9 +3415,9 @@ export function AIAgentDashboard() {
               onClick={handleCreateTemplate}
               disabled={!newTemplate.name || !newTemplate.subject || !newTemplate.body}
               className="text-white"
-              style={{ backgroundColor: '#056022' }}
+              style={{ backgroundColor: '#024217' }}
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#044d1a')}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#056022')}
+              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#024217')}
             >
               Create Template
             </Button>
@@ -3506,9 +3506,9 @@ export function AIAgentDashboard() {
               onClick={handleSendEmail}
               disabled={!emailForm.toEmail || !emailForm.subject || !emailForm.body}
               className="text-white"
-              style={{ backgroundColor: '#056022' }}
+              style={{ backgroundColor: '#024217' }}
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#044d1a')}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#056022')}
+              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#024217')}
             >
               <Send className="h-4 w-4 mr-1" />
               Send Email
