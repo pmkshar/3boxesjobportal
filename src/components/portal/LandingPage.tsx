@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -290,10 +291,10 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       {/* ===== NAVBAR ===== */}
       <nav className="sticky top-0 z-50 bg-white shadow-sm border-b-2 border-[#024217]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-24">
             {/* Left: Logo */}
             <div className="flex items-center flex-shrink-0">
-              <ThreeBoxesLogo3D size={300} className="h-[65px] sm:h-[75px] lg:h-[80px] w-auto" />
+              <ThreeBoxesLogo3D size={300} className="h-[80px] sm:h-[92px] lg:h-[105px] w-auto" />
             </div>
             {/* Center: Navigation links */}
             <div className="hidden lg:flex items-center gap-6 text-sm text-[#024217]/80">
@@ -559,7 +560,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       </AnimatePresence>
 
       {/* ===== HERO SECTION ===== */}
-      <section className="relative bg-gradient-to-br from-[#024217] via-[#044d1a] to-[#22c55e] pb-36 pt-6 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[#024217] via-[#044d1a] to-[#22c55e] pb-20 sm:pb-28 pt-6 overflow-hidden">
         {/* Floating infographic shapes */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <FloatingShape className="top-[8%] left-[5%]" icon="resume" delay={0} />
@@ -572,149 +573,195 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
         </div>
 
-        {/* Hero illustration - person working on laptop */}
-        <div className="absolute right-0 bottom-0 w-80 lg:w-[420px] opacity-20 lg:opacity-30 pointer-events-none hidden md:block">
-          <svg viewBox="0 0 420 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="300" cy="120" r="60" stroke="white" strokeWidth="2" opacity="0.3" />
-            <circle cx="300" cy="120" r="30" fill="white" opacity="0.1" />
-            <rect x="180" y="200" width="160" height="100" rx="10" stroke="white" strokeWidth="2" opacity="0.3" />
-            <rect x="200" y="220" width="120" height="10" rx="5" fill="white" opacity="0.15" />
-            <rect x="200" y="240" width="80" height="10" rx="5" fill="white" opacity="0.1" />
-            <rect x="200" y="260" width="100" height="10" rx="5" fill="white" opacity="0.1" />
-            <path d="M260 160C260 160 280 200 280 200L340 200C340 200 320 160 260 160Z" fill="white" opacity="0.15" />
-            <circle cx="100" cy="280" r="40" stroke="white" strokeWidth="1.5" opacity="0.2" />
-            <path d="M80 280L100 260L120 280" stroke="white" strokeWidth="1.5" opacity="0.2" />
-            <path d="M70 300L100 310L130 300" stroke="white" strokeWidth="1.5" opacity="0.15" />
-            <rect x="40" y="320" width="50" height="6" rx="3" fill="white" opacity="0.1" />
-            <rect x="110" y="320" width="50" height="6" rx="3" fill="white" opacity="0.1" />
-            {/* Floating documents */}
-            <rect x="50" y="100" width="60" height="80" rx="5" stroke="white" strokeWidth="1.5" opacity="0.2" transform="rotate(-10 80 140)" />
-            <line x1="60" y1="120" x2="100" y2="120" stroke="white" strokeWidth="1" opacity="0.15" />
-            <line x1="60" y1="135" x2="95" y2="135" stroke="white" strokeWidth="1" opacity="0.15" />
-            <line x1="60" y1="150" x2="90" y2="150" stroke="white" strokeWidth="1" opacity="0.15" />
-            {/* Checkmark */}
-            <circle cx="370" cy="250" r="20" stroke="white" strokeWidth="2" opacity="0.2" />
-            <path d="M362 250L368 256L378 244" stroke="white" strokeWidth="2" opacity="0.25" />
-          </svg>
-        </div>
-
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-14">
-          <div className="text-center max-w-3xl mx-auto mb-8">
-            {/* === BIG VIBRANT LOGO at top of hero === */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            {/* Left: Text + Search */}
+            <div>
+              {/* === BIG VIBRANT LOGO at top of hero === */}
+              <motion.div
+                initial={{ y: -30, opacity: 0, scale: 0.9 }}
+                animate={{ y: 0, opacity: 1, scale: 1 }}
+                transition={{ duration: 0.7, type: 'spring' }}
+                className="mb-8"
+              >
+                <img
+                  src="/logo.png"
+                  alt="3BOXESJOBS - Find Opportunity. Build Tomorrow."
+                  className="h-[60px] sm:h-[100px] lg:h-[140px] w-auto"
+                  style={{ objectFit: 'contain', maxWidth: '100%' }}
+                />
+              </motion.div>
+              <motion.div
+                initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.4 }}
+                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 mb-5"
+              >
+                <Sparkles className="h-4 w-4 text-[#3a9a3a]" />
+                <span className="text-sm text-[#d8ecd8] font-medium">India&apos;s #1 AI-Powered Job Portal</span>
+              </motion.div>
+              <motion.h1
+                initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}
+                className="text-3xl sm:text-4xl lg:text-[3.25rem] font-extrabold text-white leading-tight"
+              >
+                Find Your Dream Job with{' '}
+                <span className="relative inline-block">
+                  <span className="text-[#3a9a3a]">AI-Powered</span>
+                  <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 120 8" fill="none"><path d="M2 6C20 2 50 2 60 4C70 6 100 3 118 2" stroke="#86efac" strokeWidth="2.5" strokeLinecap="round" opacity="0.6"/></svg>
+                </span>{' '}
+                Precision
+              </motion.h1>
+              <motion.p
+                initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}
+                className="mt-4 text-base sm:text-lg text-[#d8ecd8]/80 max-w-xl"
+              >
+                Smart resumes, AI mock interviews, skill auto-updates & intelligent job matching — your complete career platform
+              </motion.p>
+
+              {/* ===== SEARCH BAR ===== */}
+              <motion.div
+                initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}
+                className="mt-8"
+              >
+                <div className="bg-white rounded-2xl shadow-2xl p-2 sm:p-3">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <div className="flex-1 relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <Input
+                        placeholder="Skills, Designations, Companies"
+                        value={searchSkill}
+                        onChange={(e) => setSearchSkill(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                        className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
+                      />
+                    </div>
+                    <div className="flex-1 relative">
+                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <Input
+                        placeholder="Location (City, State)"
+                        value={searchLocation}
+                        onChange={(e) => setSearchLocation(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                        className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
+                      />
+                    </div>
+                    <div className="sm:w-36 relative">
+                      <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <Input
+                        placeholder="Experience"
+                        value={searchExp}
+                        onChange={(e) => setSearchExp(e.target.value)}
+                        className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
+                      />
+                    </div>
+                    <Button className="h-12 px-8 bg-[#024217] hover:bg-[#044d1a] text-white font-semibold text-base rounded-xl whitespace-nowrap shadow-md"
+                      onClick={handleSearch}>
+                      <Search className="h-5 w-5 mr-2" /> {searching ? 'Searching...' : 'Search'}
+                    </Button>
+                  </div>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2 justify-start">
+                  {['React', 'Python', 'AWS', 'Data Science', 'DevOps', 'Product Manager'].map(tag => (
+                    <button key={tag} className="px-3 py-1 text-sm bg-white/15 text-white/90 rounded-full hover:bg-white/25 transition-colors"
+                      onClick={() => { setSearchSkill(tag); setTimeout(() => handleSearch(), 100) }}>
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Stats bar */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}
+                className="mt-10 flex flex-wrap gap-4 sm:gap-6"
+              >
+                {[
+                  { label: 'Active Jobs', value: '10,000+', icon: Briefcase },
+                  { label: 'Companies', value: '5,000+', icon: Building2 },
+                  { label: 'Candidates', value: '50,000+', icon: Users },
+                  { label: 'AI Interviews', value: '1,000+', icon: Brain },
+                ].map(stat => (
+                  <div key={stat.label} className="text-center flex flex-col items-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-5 py-3 min-w-[120px]">
+                    <stat.icon className="h-5 w-5 text-[#3a9a3a] mb-1" />
+                    <div className="text-xl sm:text-2xl font-extrabold text-white">{stat.value}</div>
+                    <div className="text-xs sm:text-sm text-[#b0d9b5]/70">{stat.label}</div>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* Right: HR Professional Image */}
             <motion.div
-              initial={{ y: -30, opacity: 0, scale: 0.9 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, type: 'spring' }}
-              className="mb-8"
+              initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.4, duration: 0.6 }}
+              className="relative hidden lg:block"
             >
-              <img
-                src="/logo.png"
-                alt="3BOXESJOBS - Find Opportunity. Build Tomorrow."
-                className="h-[60px] sm:h-[100px] lg:h-[140px] w-auto mx-auto"
-                style={{ objectFit: 'contain', maxWidth: '100%' }}
-              />
+              <div className="relative">
+                {/* Decorative background circles */}
+                <div className="absolute -top-8 -left-8 w-72 h-72 bg-[#3a9a3a]/20 rounded-full blur-3xl" />
+                <div className="absolute -bottom-8 -right-8 w-64 h-64 bg-[#f9ab00]/10 rounded-full blur-3xl" />
+
+                {/* Main image with rounded frame */}
+                <div className="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-white/10">
+                  <Image
+                    src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=750&fit=crop&crop=face"
+                    alt="HR Professional"
+                    width={600}
+                    height={750}
+                    className="object-cover w-full h-[500px] lg:h-[550px]"
+                    priority
+                  />
+                  {/* Gradient overlay at bottom */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#024217]/80 via-transparent to-transparent" />
+                  {/* Floating badge on image */}
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-[#024217] flex items-center justify-center flex-shrink-0">
+                          <CheckCircle2 className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-gray-900">AI-Verified Candidates</p>
+                          <p className="text-xs text-gray-500">Skills auto-verified through training & assessments</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating stats card - top right */}
+                <motion.div
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute -top-4 -right-4 bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-white/20"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-[#f9ab00]/15 flex items-center justify-center">
+                      <Trophy className="h-5 w-5 text-[#f9ab00]" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-extrabold text-gray-900">94%</p>
+                      <p className="text-[10px] text-gray-500">Placement Rate</p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Floating card - bottom left */}
+                <motion.div
+                  animate={{ y: [0, 8, 0] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute -bottom-4 -left-4 bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-white/20"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-[#024217]/15 flex items-center justify-center">
+                      <Brain className="h-5 w-5 text-[#024217]" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-gray-900">AI Mock Interviews</p>
+                      <p className="text-[10px] text-gray-500">Real-time feedback</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
             </motion.div>
-            <motion.div
-              initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.4 }}
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 mb-5"
-            >
-              <Sparkles className="h-4 w-4 text-[#3a9a3a]" />
-              <span className="text-sm text-[#d8ecd8] font-medium">India&apos;s #1 AI-Powered Job Portal</span>
-            </motion.div>
-            <motion.h1
-              initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}
-              className="text-3xl sm:text-4xl lg:text-[3.25rem] font-extrabold text-white leading-tight"
-            >
-              Find Your Dream Job with{' '}
-              <span className="relative inline-block">
-                <span className="text-[#3a9a3a]">AI-Powered</span>
-                <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 120 8" fill="none"><path d="M2 6C20 2 50 2 60 4C70 6 100 3 118 2" stroke="#86efac" strokeWidth="2.5" strokeLinecap="round" opacity="0.6"/></svg>
-              </span>{' '}
-              Precision
-            </motion.h1>
-            <motion.p
-              initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}
-              className="mt-4 text-base sm:text-lg text-[#d8ecd8]/80 max-w-2xl mx-auto"
-            >
-              Smart resumes, AI mock interviews, skill auto-updates & intelligent job matching — your complete career platform
-            </motion.p>
           </div>
-
-          {/* ===== SEARCH BAR ===== */}
-          <motion.div
-            initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}
-            className="max-w-4xl mx-auto"
-          >
-            <div className="bg-white rounded-2xl shadow-2xl p-2 sm:p-3">
-              <div className="flex flex-col sm:flex-row gap-2">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#f0f8f0]0" />
-                  <Input
-                    placeholder="Skills, Designations, Companies"
-                    value={searchSkill}
-                    onChange={(e) => setSearchSkill(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                    className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
-                  />
-                </div>
-                <div className="flex-1 relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#f0f8f0]0" />
-                  <Input
-                    placeholder="Location (City, State)"
-                    value={searchLocation}
-                    onChange={(e) => setSearchLocation(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                    className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
-                  />
-                </div>
-                <div className="sm:w-36 relative">
-                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#f0f8f0]0" />
-                  <Input
-                    placeholder="Experience"
-                    value={searchExp}
-                    onChange={(e) => setSearchExp(e.target.value)}
-                    className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
-                  />
-                </div>
-                <Button className="h-12 px-8 bg-[#024217] hover:bg-[#044d1a] text-white font-semibold text-base rounded-xl whitespace-nowrap shadow-md"
-                  onClick={handleSearch}>
-                  <Search className="h-5 w-5 mr-2" /> {searching ? 'Searching...' : 'Search'}
-                </Button>
-              </div>
-            </div>
-            <div className="mt-3 flex flex-wrap gap-2 justify-center">
-              {['React', 'Python', 'AWS', 'Data Science', 'DevOps', 'Product Manager'].map(tag => (
-                <button key={tag} className="px-3 py-1 text-sm bg-white/15 text-white/90 rounded-full hover:bg-white/25 transition-colors"
-                  onClick={() => { setSearchSkill(tag); setTimeout(() => handleSearch(), 100) }}>
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Stats bar */}
-          <motion.div
-            initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}
-            className="mt-10 flex flex-wrap justify-center gap-8 sm:gap-14"
-          >
-            {[
-              { label: 'Active Jobs', value: '10,000+', icon: Briefcase },
-              { label: 'Companies', value: '5,000+', icon: Building2 },
-              { label: 'Candidates', value: '50,000+', icon: Users },
-              { label: 'AI Interviews', value: '1,000+', icon: Brain },
-            ].map(stat => (
-              <div key={stat.label} className="text-center flex flex-col items-center">
-                <stat.icon className="h-5 w-5 text-[#3a9a3a] mb-1" />
-                <div className="text-xl sm:text-2xl font-extrabold text-white">{stat.value}</div>
-                <div className="text-xs sm:text-sm text-[#b0d9b5]/70">{stat.label}</div>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* Hero Illustration - visible on large screens */}
-        <div className="hidden lg:block absolute right-8 top-1/2 -translate-y-1/2 w-72 opacity-20 pointer-events-none">
-          <HeroIllustration />
         </div>
 
         {/* Curved bottom */}

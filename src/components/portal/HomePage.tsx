@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { HeroIllustration } from './Illustrations'
 import { useAuthStore } from '@/lib/store'
 import { toast } from 'sonner'
 import Link from 'next/link'
@@ -17,7 +17,7 @@ import {
   IndianRupee, Globe, ChevronDown, Layers, Box, Trophy, Rocket,
   PenTool, MessageSquare, Cpu, Lightbulb, Handshake, Wifi, X,
   Bookmark, LayoutGrid, Shield, BookOpen, Star, Download,
-  Heart, Bell, User, Smartphone, Share,
+  Heart, Bell, User, Smartphone, Share, Play, Eye, Phone,
 } from 'lucide-react'
 
 // Job categories config
@@ -152,139 +152,204 @@ export function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#024217]">
-      {/* ===== 1. HERO SECTION ===== */}
-      <section className="relative bg-gradient-to-br from-[#024217] via-[#044d1a] via-40% to-[#22c55e] pb-36 pt-16 sm:pt-20 overflow-hidden">
+      {/* ===== 1. HERO SECTION — SPLIT LAYOUT WITH HR IMAGE ===== */}
+      <section className="relative bg-gradient-to-br from-[#024217] via-[#044d1a] to-[#024217] pb-20 sm:pb-28 pt-12 sm:pt-16 overflow-hidden">
         {/* Animated gradient overlay */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
-          {/* Floating colorful shapes */}
           <motion.div animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-20 left-[10%] w-20 h-20 rounded-full bg-[#3a9a3a]/10 blur-sm" />
           <motion.div animate={{ y: [0, 15, 0], rotate: [0, -8, 0] }} transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-32 right-[15%] w-16 h-16 rounded-2xl bg-emerald-300/10 rotate-45 blur-sm" />
           <motion.div animate={{ y: [0, -12, 0], x: [0, 8, 0] }} transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }} className="absolute bottom-40 left-[20%] w-24 h-24 rounded-full bg-teal-300/8 blur-md" />
           <motion.div animate={{ y: [0, 18, 0], rotate: [0, 10, 0] }} transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }} className="absolute bottom-60 right-[8%] w-14 h-14 rounded-xl bg-lime-300/10 rotate-12 blur-sm" />
-          <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-16 left-[45%] w-10 h-10 rounded-lg bg-yellow-300/10 rotate-[30deg] blur-sm" />
         </div>
 
-        {/* Hero illustration background */}
-        <div className="absolute right-0 bottom-0 w-80 lg:w-[420px] opacity-20 lg:opacity-30 pointer-events-none hidden md:block">
-          <svg viewBox="0 0 420 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="300" cy="120" r="60" stroke="white" strokeWidth="2" opacity="0.3" />
-            <circle cx="300" cy="120" r="30" fill="white" opacity="0.1" />
-            <rect x="180" y="200" width="160" height="100" rx="10" stroke="white" strokeWidth="2" opacity="0.3" />
-            <rect x="200" y="220" width="120" height="10" rx="5" fill="white" opacity="0.15" />
-            <rect x="200" y="240" width="80" height="10" rx="5" fill="white" opacity="0.1" />
-            <rect x="200" y="260" width="100" height="10" rx="5" fill="white" opacity="0.1" />
-            <path d="M260 160C260 160 280 200 280 200L340 200C340 200 320 160 260 160Z" fill="white" opacity="0.15" />
-          </svg>
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-14">
-          {/* Hero heading */}
-          <div className="text-center max-w-3xl mx-auto mb-10">
-            <motion.div
-              initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.4 }}
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-5 py-2 mb-6"
-            >
-              <Sparkles className="h-4 w-4 text-[#3a9a3a]" />
-              <span className="text-sm text-[#d8ecd8] font-medium">India&apos;s #1 AI-Powered Job Portal</span>
-            </motion.div>
-            <motion.h1
-              initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}
-              className="text-3xl sm:text-4xl lg:text-[3.5rem] font-extrabold text-white leading-tight"
-            >
-              Find Your Dream Job with{' '}
-              <span className="relative inline-block">
-                <span className="text-[#3a9a3a]">AI-Powered</span>
-                <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 120 8" fill="none"><path d="M2 6C20 2 50 2 60 4C70 6 100 3 118 2" stroke="#86efac" strokeWidth="2.5" strokeLinecap="round" opacity="0.6"/></svg>
-              </span>{' '}
-              Precision
-            </motion.h1>
-            <motion.p
-              initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}
-              className="mt-5 text-base sm:text-lg text-[#d8ecd8]/80 max-w-2xl mx-auto leading-relaxed"
-            >
-              Smart resumes, AI mock interviews, skill auto-updates & intelligent job matching — your complete career platform
-            </motion.p>
-          </div>
-
-          {/* ===== Naukri-style Search Bar ===== */}
-          <motion.div
-            initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}
-            className="max-w-4xl mx-auto"
-          >
-            <div className="bg-white rounded-2xl shadow-2xl p-2 sm:p-3">
-              <div className="flex flex-col sm:flex-row gap-2">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input
-                    placeholder="Skills, Designations, Companies"
-                    value={searchSkill}
-                    onChange={(e) => setSearchSkill(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                    className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
-                  />
-                </div>
-                <div className="flex-1 relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input
-                    placeholder="Location (City, State)"
-                    value={searchLocation}
-                    onChange={(e) => setSearchLocation(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                    className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
-                  />
-                </div>
-                <div className="sm:w-36 relative">
-                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <Input
-                    placeholder="Experience"
-                    value={searchExp}
-                    onChange={(e) => setSearchExp(e.target.value)}
-                    className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
-                  />
-                </div>
-                <Button className="h-12 px-8 bg-[#024217] hover:bg-[#044d1a] text-white font-semibold text-base rounded-xl whitespace-nowrap shadow-md"
-                  onClick={handleSearch}>
-                  <Search className="h-5 w-5 mr-2" /> Search
-                </Button>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            {/* Left: Text + Search */}
+            <div>
+              {/* Hero heading */}
+              <div className="mb-8">
+                <motion.div
+                  initial={{ y: -10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.4 }}
+                  className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-5 py-2 mb-6"
+                >
+                  <Sparkles className="h-4 w-4 text-[#3a9a3a]" />
+                  <span className="text-sm text-[#d8ecd8] font-medium">India&apos;s #1 AI-Powered Job Portal</span>
+                </motion.div>
+                <motion.h1
+                  initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}
+                  className="text-3xl sm:text-4xl lg:text-[3rem] font-extrabold text-white leading-tight"
+                >
+                  Find Your Dream Job with{' '}
+                  <span className="relative inline-block">
+                    <span className="text-[#3a9a3a]">AI-Powered</span>
+                    <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 120 8" fill="none"><path d="M2 6C20 2 50 2 60 4C70 6 100 3 118 2" stroke="#86efac" strokeWidth="2.5" strokeLinecap="round" opacity="0.6"/></svg>
+                  </span>{' '}
+                  Precision
+                </motion.h1>
+                <motion.p
+                  initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}
+                  className="mt-5 text-base sm:text-lg text-[#d8ecd8]/80 max-w-xl leading-relaxed"
+                >
+                  Smart resumes, AI mock interviews, skill auto-updates & intelligent job matching — your complete career platform
+                </motion.p>
               </div>
-            </div>
 
-            {/* Popular search tags */}
-            <div className="mt-4 flex flex-wrap gap-2 justify-center">
-              {['React', 'Python', 'AWS', 'Data Science', 'DevOps', 'Product Manager', 'ML Engineer', 'Full Stack'].map(tag => (
-                <button key={tag} className="px-3 py-1.5 text-sm bg-white/15 text-white/90 rounded-full hover:bg-white/25 transition-colors border border-white/10"
-                  onClick={() => { setSearchSkill(tag); setTimeout(() => handleSearch(), 100) }}>
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Animated Stats Counters */}
-          <motion.div
-            initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}
-            className="mt-12 flex flex-wrap justify-center gap-4 sm:gap-6"
-          >
-            {[
-              { label: 'Active Jobs', value: '10,000+', icon: Briefcase, bg: 'bg-white/10 backdrop-blur-sm border border-white/20' },
-              { label: 'Companies', value: '5,000+', icon: Building2, bg: 'bg-white/10 backdrop-blur-sm border border-white/20' },
-              { label: 'Candidates', value: '50,000+', icon: Users, bg: 'bg-white/10 backdrop-blur-sm border border-white/20' },
-              { label: 'AI Interviews', value: '1,000+', icon: Brain, bg: 'bg-white/10 backdrop-blur-sm border border-white/20' },
-            ].map(stat => (
+              {/* Search Bar */}
               <motion.div
-                key={stat.label}
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.7, duration: 0.5 }}
-                className={`text-center flex flex-col items-center ${stat.bg} rounded-2xl px-6 py-4 min-w-[130px]`}
+                initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}
+                className="mb-8"
               >
-                <stat.icon className="h-5 w-5 text-[#3a9a3a] mb-1.5" />
-                <div className="text-2xl sm:text-3xl font-extrabold text-white">{stat.value}</div>
-                <div className="text-xs sm:text-sm text-[#b0d9b5]/80 mt-0.5">{stat.label}</div>
+                <div className="bg-white rounded-2xl shadow-2xl p-2 sm:p-3">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <div className="flex-1 relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <Input
+                        placeholder="Skills, Designations, Companies"
+                        value={searchSkill}
+                        onChange={(e) => setSearchSkill(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                        className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
+                      />
+                    </div>
+                    <div className="flex-1 relative">
+                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <Input
+                        placeholder="Location (City, State)"
+                        value={searchLocation}
+                        onChange={(e) => setSearchLocation(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                        className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
+                      />
+                    </div>
+                    <div className="sm:w-36 relative">
+                      <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <Input
+                        placeholder="Experience"
+                        value={searchExp}
+                        onChange={(e) => setSearchExp(e.target.value)}
+                        className="pl-10 h-12 border-0 focus-visible:ring-0 text-base bg-gray-50 rounded-xl"
+                      />
+                    </div>
+                    <Button className="h-12 px-8 bg-[#024217] hover:bg-[#044d1a] text-white font-semibold text-base rounded-xl whitespace-nowrap shadow-md"
+                      onClick={handleSearch}>
+                      <Search className="h-5 w-5 mr-2" /> Search
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Popular search tags */}
+                <div className="mt-4 flex flex-wrap gap-2 justify-start">
+                  {['React', 'Python', 'AWS', 'Data Science', 'DevOps', 'Product Manager', 'ML Engineer', 'Full Stack'].map(tag => (
+                    <button key={tag} className="px-3 py-1.5 text-sm bg-white/15 text-white/90 rounded-full hover:bg-white/25 transition-colors border border-white/10"
+                      onClick={() => { setSearchSkill(tag); setTimeout(() => handleSearch(), 100) }}>
+                      {tag}
+                    </button>
+                  ))}
+                </div>
               </motion.div>
-            ))}
-          </motion.div>
+
+              {/* Stats */}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}
+                className="flex flex-wrap gap-4 sm:gap-6"
+              >
+                {[
+                  { label: 'Active Jobs', value: '10,000+', icon: Briefcase },
+                  { label: 'Companies', value: '5,000+', icon: Building2 },
+                  { label: 'Candidates', value: '50,000+', icon: Users },
+                  { label: 'AI Interviews', value: '1,000+', icon: Brain },
+                ].map(stat => (
+                  <motion.div
+                    key={stat.label}
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.7, duration: 0.5 }}
+                    className="text-center flex flex-col items-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-5 py-3 min-w-[120px]"
+                  >
+                    <stat.icon className="h-5 w-5 text-[#3a9a3a] mb-1.5" />
+                    <div className="text-2xl sm:text-3xl font-extrabold text-white">{stat.value}</div>
+                    <div className="text-xs sm:text-sm text-[#b0d9b5]/80 mt-0.5">{stat.label}</div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* Right: HR Professional Image */}
+            <motion.div
+              initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.4, duration: 0.6 }}
+              className="relative hidden lg:block"
+            >
+              {/* Main image container */}
+              <div className="relative">
+                {/* Decorative background circles */}
+                <div className="absolute -top-8 -left-8 w-72 h-72 bg-[#3a9a3a]/20 rounded-full blur-3xl" />
+                <div className="absolute -bottom-8 -right-8 w-64 h-64 bg-[#f9ab00]/10 rounded-full blur-3xl" />
+
+                {/* Main image with rounded frame */}
+                <div className="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-white/10">
+                  <Image
+                    src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=750&fit=crop&crop=face"
+                    alt="HR Professional"
+                    width={600}
+                    height={750}
+                    className="object-cover w-full h-[500px] lg:h-[550px]"
+                    priority
+                  />
+                  {/* Gradient overlay at bottom */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#024217]/80 via-transparent to-transparent" />
+                  {/* Floating badge on image */}
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-[#024217] flex items-center justify-center flex-shrink-0">
+                          <CheckCircle2 className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-gray-900">AI-Verified Candidates</p>
+                          <p className="text-xs text-gray-500">Skills auto-verified through training & assessments</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating stats card - top right */}
+                <motion.div
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute -top-4 -right-4 bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-white/20"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-[#f9ab00]/15 flex items-center justify-center">
+                      <Trophy className="h-5 w-5 text-[#f9ab00]" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-extrabold text-gray-900">94%</p>
+                      <p className="text-[10px] text-gray-500">Placement Rate</p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Floating card - bottom right */}
+                <motion.div
+                  animate={{ y: [0, 8, 0] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute -bottom-4 -left-4 bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-white/20"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-[#024217]/15 flex items-center justify-center">
+                      <Brain className="h-5 w-5 text-[#024217]" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-gray-900">AI Mock Interviews</p>
+                      <p className="text-[10px] text-gray-500">Real-time feedback</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
         </div>
 
         {/* Curved SVG bottom transitioning to white */}
@@ -449,7 +514,7 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== 5. AI FEATURES SHOWCASE (3 Cards) ===== */}
+      {/* ===== 5. AI FEATURES SHOWCASE WITH IMAGES ===== */}
       <section className="py-16 sm:py-20 bg-gradient-to-b from-green-50/30 to-white relative overflow-hidden">
         {/* Decorative blobs */}
         <div className="absolute top-20 right-0 w-72 h-72 bg-[#d8ecd8]/15 rounded-full blur-3xl pointer-events-none" />
@@ -466,14 +531,22 @@ export function HomePage() {
             {/* AI Resume Builder */}
             <motion.div initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0 }} viewport={{ once: true }}>
               <Card className="border-0 shadow-lg hover:shadow-2xl transition-all h-full overflow-hidden group hover:-translate-y-2">
-                <div className="bg-gradient-to-br from-[#024217] to-[#044d1a] p-8 text-center relative">
-                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
-                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#3a9a3a]/20 rounded-full blur-2xl" />
-                  <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                    <FileText className="h-8 w-8 text-white" />
+                <div className="relative h-[200px] overflow-hidden">
+                  <Image
+                    src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=400&h=250&fit=crop"
+                    alt="Resume Building"
+                    width={400}
+                    height={250}
+                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#024217] via-[#024217]/60 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center mb-2">
+                      <FileText className="h-6 w-6 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white">AI Resume Builder</h3>
+                    <p className="text-[#d8ecd8]/80 text-sm">Craft ATS-optimized resumes with AI</p>
                   </div>
-                  <h3 className="text-xl font-bold text-white">AI Resume Builder</h3>
-                  <p className="text-[#d8ecd8]/80 text-sm mt-2">Craft ATS-optimized resumes with AI</p>
                 </div>
                 <CardContent className="p-6">
                   <p className="text-sm text-gray-600 leading-relaxed mb-5">
@@ -491,14 +564,22 @@ export function HomePage() {
             {/* AI Mock Interviews */}
             <motion.div initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0.15 }} viewport={{ once: true }}>
               <Card className="border-0 shadow-lg hover:shadow-2xl transition-all h-full overflow-hidden group hover:-translate-y-2">
-                <div className="bg-gradient-to-br from-[#2869fe] to-[#1a4fd4] p-8 text-center relative">
-                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
-                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-300/20 rounded-full blur-2xl" />
-                  <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                    <Brain className="h-8 w-8 text-white" />
+                <div className="relative h-[200px] overflow-hidden">
+                  <Image
+                    src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=250&fit=crop"
+                    alt="AI Interview Practice"
+                    width={400}
+                    height={250}
+                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#2869fe] via-[#2869fe]/60 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center mb-2">
+                      <Brain className="h-6 w-6 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white">AI Mock Interviews</h3>
+                    <p className="text-blue-100/80 text-sm">Practice with real-time AI feedback</p>
                   </div>
-                  <h3 className="text-xl font-bold text-white">AI Mock Interviews</h3>
-                  <p className="text-blue-100/80 text-sm mt-2">Practice with real-time AI feedback</p>
                 </div>
                 <CardContent className="p-6">
                   <p className="text-sm text-gray-600 leading-relaxed mb-5">
@@ -516,14 +597,22 @@ export function HomePage() {
             {/* Smart Job Matching */}
             <motion.div initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} viewport={{ once: true }}>
               <Card className="border-0 shadow-lg hover:shadow-2xl transition-all h-full overflow-hidden group hover:-translate-y-2">
-                <div className="bg-gradient-to-br from-[#fc7e0b] to-[#e06a00] p-8 text-center relative">
-                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
-                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-300/20 rounded-full blur-2xl" />
-                  <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                    <Target className="h-8 w-8 text-white" />
+                <div className="relative h-[200px] overflow-hidden">
+                  <Image
+                    src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&h=250&fit=crop"
+                    alt="Smart Job Matching"
+                    width={400}
+                    height={250}
+                    className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#fc7e0b] via-[#fc7e0b]/60 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center mb-2">
+                      <Target className="h-6 w-6 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white">Smart Job Matching</h3>
+                    <p className="text-orange-100/80 text-sm">AI matches you to the perfect role</p>
                   </div>
-                  <h3 className="text-xl font-bold text-white">Smart Job Matching</h3>
-                  <p className="text-orange-100/80 text-sm mt-2">AI matches you to the perfect role</p>
                 </div>
                 <CardContent className="p-6">
                   <p className="text-sm text-gray-600 leading-relaxed mb-5">
@@ -751,48 +840,62 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ===== 9. CTA SECTION (Full-width Banner) ===== */}
+      {/* ===== 9. ENGAGE BANNER WITH HR IMAGE ===== */}
       <section className="py-16 sm:py-20 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }}>
-            <div className="bg-gradient-to-br from-[#024217] via-[#044d1a] to-[#024217] rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden">
-              {/* Decorative background */}
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
-                {/* Floating geometric shapes */}
-                <motion.div animate={{ y: [0, -15, 0], rotate: [0, 180, 360] }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }} className="absolute top-10 right-10 w-12 h-12 rounded-full border-2 border-white/10" />
-                <motion.div animate={{ y: [0, 12, 0], rotate: [0, -90, -180] }} transition={{ duration: 15, repeat: Infinity, ease: 'linear' }} className="absolute bottom-16 left-16 w-16 h-16 opacity-10">
-                  <svg viewBox="0 0 60 52" fill="white"><polygon points="30,0 60,26 30,52 0,26" /></svg>
-                </motion.div>
-                <motion.div animate={{ y: [0, -8, 0], x: [0, 6, 0] }} transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-1/3 left-8 w-8 h-8 rounded-lg border-2 border-white/10 rotate-45" />
-                <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} className="absolute bottom-1/3 right-12 w-6 h-6 rounded-full bg-white/5" />
-                <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
-                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
-              </div>
-              <div className="relative">
-                <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-5 py-2 mb-5">
-                  <Rocket className="h-4 w-4 text-[#3a9a3a]" />
-                  <span className="text-sm text-[#d8ecd8] font-medium">Start Your Journey Today</span>
+            <div className="bg-gradient-to-br from-[#024217] via-[#044d1a] to-[#024217] rounded-3xl overflow-hidden relative">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                {/* Left: CTA Text */}
+                <div className="p-10 sm:p-14 relative z-10">
+                  {/* Decorative background */}
+                  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+                    <motion.div animate={{ y: [0, -15, 0], rotate: [0, 180, 360] }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }} className="absolute top-10 right-10 w-12 h-12 rounded-full border-2 border-white/10" />
+                    <motion.div animate={{ y: [0, 12, 0], rotate: [0, -90, -180] }} transition={{ duration: 15, repeat: Infinity, ease: 'linear' }} className="absolute bottom-16 left-16 w-16 h-16 opacity-10">
+                      <svg viewBox="0 0 60 52" fill="white"><polygon points="30,0 60,26 30,52 0,26" /></svg>
+                    </motion.div>
+                    <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
+                    <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
+                  </div>
+                  <div className="relative">
+                    <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-5 py-2 mb-5">
+                      <Rocket className="h-4 w-4 text-[#3a9a3a]" />
+                      <span className="text-sm text-[#d8ecd8] font-medium">Start Your Journey Today</span>
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-4 leading-tight">
+                      Ready to Start Your <br className="hidden sm:block" />Career Journey?
+                    </h2>
+                    <p className="text-[#d8ecd8]/80 text-base max-w-xl mb-8">
+                      Join 50,000+ job seekers and 5,000+ companies already using 3BOXESJOBS. AI-powered resumes, smart matching, mock interviews, and skill auto-updates — all in one platform.
+                    </p>
+                    <div className="flex flex-wrap justify-start gap-4">
+                      <Link href="/register">
+                        <Button className="bg-white text-[#024217] hover:bg-gray-50 font-bold px-8 h-12 text-base rounded-xl shadow-lg">
+                          <UserCheck className="h-5 w-5 mr-2" /> Register Free
+                        </Button>
+                      </Link>
+                      <Link href="/login">
+                        <Button className="bg-[#f9ab00] hover:bg-[#e9a000] text-[#202124] font-bold px-8 h-12 text-base rounded-xl shadow-lg">
+                          <Briefcase className="h-5 w-5 mr-2" /> Login
+                        </Button>
+                      </Link>
+                    </div>
+                    <p className="text-xs text-[#b0d9b5]/60 mt-4">Free to join. No credit card required.</p>
+                  </div>
                 </div>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-4 leading-tight">
-                  Ready to Start Your <br className="hidden sm:block" />Career Journey?
-                </h2>
-                <p className="text-[#d8ecd8]/80 text-base max-w-xl mx-auto mb-8">
-                  Join 50,000+ job seekers and 5,000+ companies already using 3BOXESJOBS. AI-powered resumes, smart matching, mock interviews, and skill auto-updates — all in one platform.
-                </p>
-                <div className="flex flex-wrap justify-center gap-4">
-                  <Link href="/register">
-                    <Button className="bg-white text-[#024217] hover:bg-gray-50 font-bold px-8 h-12 text-base rounded-xl shadow-lg">
-                      <UserCheck className="h-5 w-5 mr-2" /> Register Free
-                    </Button>
-                  </Link>
-                  <Link href="/login">
-                    <Button className="bg-[#f9ab00] hover:bg-[#e9a000] text-[#202124] font-bold px-8 h-12 text-base rounded-xl shadow-lg">
-                      <Briefcase className="h-5 w-5 mr-2" /> Login
-                    </Button>
-                  </Link>
+
+                {/* Right: HR Image */}
+                <div className="relative hidden lg:block">
+                  <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#024217] z-10" />
+                  <Image
+                    src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=700&h=600&fit=crop"
+                    alt="Business Team"
+                    width={700}
+                    height={600}
+                    className="object-cover w-full h-full min-h-[400px]"
+                  />
                 </div>
-                <p className="text-xs text-[#b0d9b5]/60 mt-4">Free to join. No credit card required.</p>
               </div>
             </div>
           </motion.div>
