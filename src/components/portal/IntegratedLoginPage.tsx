@@ -305,7 +305,7 @@ export function IntegratedLoginPage() {
         {/* Mobile Header */}
         <div className="lg:hidden flex items-center justify-between p-4 border-b border-gray-100">
           <div className="flex items-center">
-            <ThreeBoxesLogo3D size={200} className="h-[48px] sm:h-[56px] w-auto" />
+            <ThreeBoxesLogo3D size={250} className="h-[52px] sm:h-[60px] w-auto" />
           </div>
         </div>
 
