@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -38,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF059669),
+      backgroundColor: const Color(0xFF014217),
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnimation,
@@ -47,26 +48,27 @@ class _SplashScreenState extends State<SplashScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // 3 Boxes Logo
-                CustomPaint(
-                  size: const Size(120, 84),
-                  painter: ThreeBoxesLogoPainter(),
+                // 3 Boxes Logo - using actual logo image
+                Image.asset(
+                  'assets/images/logo.png',
+                  height: 110,
+                  fit: BoxFit.contain,
                 ),
                 const SizedBox(height: 24),
                 const Text(
-                  '3 Boxes Jobs',
+                  '3BOXESJOBS',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
+                    letterSpacing: 2,
                   ),
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'AI-Powered Career Platform',
+                  'Find Opportunity. Build Tomorrow.',
                   style: TextStyle(
-                    color: Color(0xFFA3B8D0),
+                    color: Color(0xFF86efac),
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                   ),
@@ -87,102 +89,4 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
   }
-}
-
-class ThreeBoxesLogoPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final scale = size.width / 60;
-    final paint = Paint()..style = PaintingStyle.fill;
-
-    // Box 1 - Left (elevated)
-    final box1Top = Paint()..color = const Color(0xFF4ADE80);
-    final box1Side = Paint()..color = const Color(0xFF16A34A);
-
-    // Front face
-    final path1Front = Path()
-      ..moveTo(2 * scale, 11 * scale)
-      ..lineTo(14 * scale, 8 * scale)
-      ..lineTo(14 * scale, 25 * scale)
-      ..lineTo(2 * scale, 28 * scale)
-      ..close();
-    canvas.drawPath(path1Front, box1Top);
-
-    // Right face
-    final path1Side = Path()
-      ..moveTo(14 * scale, 8 * scale)
-      ..lineTo(20 * scale, 5 * scale)
-      ..lineTo(20 * scale, 22 * scale)
-      ..lineTo(14 * scale, 25 * scale)
-      ..close();
-    canvas.drawPath(path1Side, box1Side);
-
-    // Top face
-    final path1Top = Path()
-      ..moveTo(2 * scale, 11 * scale)
-      ..lineTo(8 * scale, 8 * scale)
-      ..lineTo(20 * scale, 5 * scale)
-      ..lineTo(14 * scale, 8 * scale)
-      ..close();
-    canvas.drawPath(path1Top, box1Top..color = const Color(0xFF4ADE80).withOpacity(0.9));
-
-    // Box 2 - Middle (most elevated)
-    final box2Top = Paint()..color = const Color(0xFF34D399);
-    final box2Side = Paint()..color = const Color(0xFF059669);
-
-    final path2Front = Path()
-      ..moveTo(10 * scale, 7 * scale)
-      ..lineTo(22 * scale, 4 * scale)
-      ..lineTo(22 * scale, 21 * scale)
-      ..lineTo(10 * scale, 24 * scale)
-      ..close();
-    canvas.drawPath(path2Front, box2Top);
-
-    final path2Side = Path()
-      ..moveTo(22 * scale, 4 * scale)
-      ..lineTo(28 * scale, 1 * scale)
-      ..lineTo(28 * scale, 18 * scale)
-      ..lineTo(22 * scale, 21 * scale)
-      ..close();
-    canvas.drawPath(path2Side, box2Side);
-
-    final path2Top = Path()
-      ..moveTo(10 * scale, 7 * scale)
-      ..lineTo(16 * scale, 4 * scale)
-      ..lineTo(28 * scale, 1 * scale)
-      ..lineTo(22 * scale, 4 * scale)
-      ..close();
-    canvas.drawPath(path2Top, box2Top..color = const Color(0xFF34D399).withOpacity(0.9));
-
-    // Box 3 - Right
-    final box3Top = Paint()..color = const Color(0xFF86EFAC);
-    final box3Side = Paint()..color = const Color(0xFF16A34A);
-
-    final path3Front = Path()
-      ..moveTo(18 * scale, 13 * scale)
-      ..lineTo(30 * scale, 10 * scale)
-      ..lineTo(30 * scale, 27 * scale)
-      ..lineTo(18 * scale, 30 * scale)
-      ..close();
-    canvas.drawPath(path3Front, box3Top);
-
-    final path3Side = Path()
-      ..moveTo(30 * scale, 10 * scale)
-      ..lineTo(36 * scale, 7 * scale)
-      ..lineTo(36 * scale, 24 * scale)
-      ..lineTo(30 * scale, 27 * scale)
-      ..close();
-    canvas.drawPath(path3Side, box3Side);
-
-    final path3Top = Path()
-      ..moveTo(18 * scale, 13 * scale)
-      ..lineTo(24 * scale, 10 * scale)
-      ..lineTo(36 * scale, 7 * scale)
-      ..lineTo(30 * scale, 10 * scale)
-      ..close();
-    canvas.drawPath(path3Top, box3Top..color = const Color(0xFF86EFAC).withOpacity(0.9));
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

@@ -79,7 +79,7 @@ class _WebViewFeatureScreenState extends State<WebViewFeatureScreen> {
             Text(widget.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
           ],
         ),
-        backgroundColor: const Color(0xFF064E3B),
+        backgroundColor: const Color(0xFF014217),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -91,7 +91,7 @@ class _WebViewFeatureScreenState extends State<WebViewFeatureScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const CircularProgressIndicator(color: Color(0xFF059669)),
+                  const CircularProgressIndicator(color: Color(0xFF014217)),
                   const SizedBox(height: 16),
                   Text('Loading ${widget.title}...', style: const TextStyle(color: Color(0xFF66789C))),
                 ],

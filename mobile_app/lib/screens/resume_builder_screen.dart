@@ -58,7 +58,7 @@ class _ResumeBuilderScreenState extends State<ResumeBuilderScreen> {
       backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
         title: const Text('Resume Builder', style: TextStyle(fontWeight: FontWeight.w600)),
-        backgroundColor: const Color(0xFF064E3B),
+        backgroundColor: const Color(0xFF014217),
         foregroundColor: Colors.white,
       ),
       body: Column(
@@ -96,10 +96,10 @@ class _ResumeBuilderScreenState extends State<ResumeBuilderScreen> {
                       onPressed: () => setState(() => _currentStep--),
                       style: OutlinedButton.styleFrom(
                         minimumSize: const Size.fromHeight(48),
-                        side: const BorderSide(color: Color(0xFF059669)),
+                        side: const BorderSide(color: Color(0xFF014217)),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
-                      child: const Text('Back', style: TextStyle(color: Color(0xFF059669))),
+                      child: const Text('Back', style: TextStyle(color: Color(0xFF014217))),
                     ),
                   ),
                 if (_currentStep > 0) const SizedBox(width: 12),
@@ -107,7 +107,7 @@ class _ResumeBuilderScreenState extends State<ResumeBuilderScreen> {
                   child: ElevatedButton(
                     onPressed: _currentStep < 3 ? () => setState(() => _currentStep++) : _saveResume,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF059669),
+                      backgroundColor: const Color(0xFF014217),
                       foregroundColor: Colors.white,
                       minimumSize: const Size.fromHeight(48),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -132,7 +132,7 @@ class _ResumeBuilderScreenState extends State<ResumeBuilderScreen> {
             width: 28,
             height: 28,
             decoration: BoxDecoration(
-              color: isActive ? const Color(0xFF059669) : const Color(0xFFE4E8EC),
+              color: isActive ? const Color(0xFF014217) : const Color(0xFFE4E8EC),
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -142,7 +142,7 @@ class _ResumeBuilderScreenState extends State<ResumeBuilderScreen> {
             ),
           ),
           const SizedBox(height: 4),
-          Text(label, style: TextStyle(fontSize: 10, color: isActive ? const Color(0xFF059669) : const Color(0xFF66789C), fontWeight: isActive ? FontWeight.w600 : FontWeight.normal)),
+          Text(label, style: TextStyle(fontSize: 10, color: isActive ? const Color(0xFF014217) : const Color(0xFF66789C), fontWeight: isActive ? FontWeight.w600 : FontWeight.normal)),
         ],
       ),
     );
@@ -153,7 +153,7 @@ class _ResumeBuilderScreenState extends State<ResumeBuilderScreen> {
     return Container(
       width: 20,
       height: 2,
-      color: isActive ? const Color(0xFF059669) : const Color(0xFFE4E8EC),
+      color: isActive ? const Color(0xFF014217) : const Color(0xFFE4E8EC),
       margin: const EdgeInsets.only(bottom: 16),
     );
   }
@@ -194,7 +194,7 @@ class _ResumeBuilderScreenState extends State<ResumeBuilderScreen> {
             TextButton.icon(
               onPressed: _generating ? null : _generateWithAI,
               icon: _generating
-                  ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF059669)))
+                  ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF014217)))
                   : const Icon(Icons.auto_awesome, size: 16),
               label: Text(_generating ? 'Generating...' : 'AI Generate', style: const TextStyle(fontSize: 12)),
             ),
@@ -297,10 +297,10 @@ class _ResumeBuilderScreenState extends State<ResumeBuilderScreen> {
                   children: _skillsController.text.split(',').map((s) => Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFECFDF5),
+                      color: const Color(0xFFF0F8F0),
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: Text(s.trim(), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xFF059669))),
+                    child: Text(s.trim(), style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xFF014217))),
                   )).toList(),
                 ),
               ],
@@ -321,7 +321,7 @@ class _ResumeBuilderScreenState extends State<ResumeBuilderScreen> {
 
   void _saveResume() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Resume saved successfully!'), backgroundColor: Color(0xFF059669)),
+      const SnackBar(content: Text('Resume saved successfully!'), backgroundColor: Color(0xFF014217)),
     );
     Navigator.pop(context);
   }

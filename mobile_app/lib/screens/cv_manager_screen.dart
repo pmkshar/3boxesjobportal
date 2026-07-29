@@ -36,7 +36,7 @@ class _CvManagerScreenState extends State<CvManagerScreen> {
       backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
         title: const Text('CV Manager', style: TextStyle(fontWeight: FontWeight.w600)),
-        backgroundColor: const Color(0xFF064E3B),
+        backgroundColor: const Color(0xFF014217),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -124,7 +124,7 @@ class _CvManagerScreenState extends State<CvManagerScreen> {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      _templateCard('Professional', Icons.work, const Color(0xFF059669)),
+                      _templateCard('Professional', Icons.work, const Color(0xFF014217)),
                       const SizedBox(width: 12),
                       _templateCard('Creative', Icons.palette, const Color(0xFF8B5CF6)),
                       const SizedBox(width: 12),
@@ -288,7 +288,7 @@ class _ResumeBuilderScreenState extends State<_ResumeBuilderScreen> {
       backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
         title: const Text('Resume Builder', style: TextStyle(fontWeight: FontWeight.w600)),
-        backgroundColor: const Color(0xFF064E3B),
+        backgroundColor: const Color(0xFF014217),
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
@@ -344,7 +344,7 @@ class _ResumeBuilderScreenState extends State<_ResumeBuilderScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Resume saved successfully!'), backgroundColor: Color(0xFF059669)),
+                    const SnackBar(content: Text('Resume saved successfully!'), backgroundColor: Color(0xFF014217)),
                   );
                   Navigator.pop(context);
                 },

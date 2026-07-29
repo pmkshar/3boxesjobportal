@@ -169,13 +169,13 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
   Color _typeColor(String? type) {
     switch (type?.toUpperCase()) {
       case 'FULL-TIME':
-      case 'FULL_TIME': return const Color(0xFF059669);
+      case 'FULL_TIME': return const Color(0xFF014217);
       case 'PART-TIME':
       case 'PART_TIME': return const Color(0xFF3B82F6);
       case 'CONTRACT': return const Color(0xFFF59E0B);
       case 'INTERNSHIP': return const Color(0xFF8B5CF6);
       case 'REMOTE': return const Color(0xFF06B6D4);
-      default: return const Color(0xFF059669);
+      default: return const Color(0xFF014217);
     }
   }
 
@@ -185,7 +185,7 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
       backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
         title: const Text('Find Jobs', style: TextStyle(fontWeight: FontWeight.w600)),
-        backgroundColor: const Color(0xFF064E3B),
+        backgroundColor: const Color(0xFF014217),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -205,7 +205,7 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
                       hintText: 'Search jobs, skills, companies...',
                       prefixIcon: const Icon(Icons.search, color: Color(0xFF66789C)),
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.arrow_forward, color: Color(0xFF059669)),
+                        icon: const Icon(Icons.arrow_forward, color: Color(0xFF014217)),
                         onPressed: _onSearch,
                       ),
                       border: OutlineInputBorder(
@@ -229,7 +229,7 @@ class _FindJobsScreenState extends State<FindJobsScreen> {
           // Jobs list
           Expanded(
             child: _loading
-                ? const Center(child: CircularProgressIndicator(color: Color(0xFF059669)))
+                ? const Center(child: CircularProgressIndicator(color: Color(0xFF014217)))
                 : _jobs.isEmpty
                     ? Center(
                         child: Column(
@@ -324,7 +324,7 @@ class _JobCard extends StatelessWidget {
           if (job['salary'] != null && (job['salary'] as String).isNotEmpty)
             Text(
               job['salary'].toString(),
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF059669)),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF014217)),
             ),
           if (job['experience'] != null && (job['experience'] as String).isNotEmpty) ...[
             const SizedBox(height: 4),
@@ -350,12 +350,12 @@ class _JobCard extends StatelessWidget {
               children: skillList.take(4).map((skill) => Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFECFDF5),
+                  color: const Color(0xFFF0F8F0),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   skill,
-                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: Color(0xFF059669)),
+                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: Color(0xFF014217)),
                 ),
               )).toList(),
             ),
@@ -367,7 +367,7 @@ class _JobCard extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () => _showJobDetail(context, job),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF059669),
+                backgroundColor: const Color(0xFF014217),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 elevation: 0,
@@ -470,7 +470,7 @@ class _JobCard extends StatelessWidget {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.check_circle, size: 18, color: Color(0xFF059669)),
+                            const Icon(Icons.check_circle, size: 18, color: Color(0xFF014217)),
                             const SizedBox(width: 8),
                             Expanded(child: Text(req.toString(), style: const TextStyle(fontSize: 13, color: Color(0xFF66789C), height: 1.4))),
                           ],
@@ -488,10 +488,10 @@ class _JobCard extends StatelessWidget {
                         children: skillList.map((skill) => Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFECFDF5),
+                            color: const Color(0xFFF0F8F0),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Text(skill, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xFF059669))),
+                          child: Text(skill, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Color(0xFF014217))),
                         )).toList(),
                       ),
                     ],
@@ -533,13 +533,13 @@ class _JobCard extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(result != null ? 'Application submitted!' : 'Application submitted! (Demo mode)'),
-                                backgroundColor: const Color(0xFF059669),
+                                backgroundColor: const Color(0xFF014217),
                               ),
                             );
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF059669),
+                          backgroundColor: const Color(0xFF014217),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),

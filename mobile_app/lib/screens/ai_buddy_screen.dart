@@ -84,7 +84,7 @@ class _AiBuddyScreenState extends State<AiBuddyScreen> {
             ),
           ],
         ),
-        backgroundColor: const Color(0xFF064E3B),
+        backgroundColor: const Color(0xFF014217),
         foregroundColor: Colors.white,
         elevation: 0,
       ),

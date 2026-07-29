@@ -82,21 +82,23 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 40),
-              // Logo
+              // Logo - using actual logo image
               Center(
-                child: CustomPaint(
-                  size: const Size(80, 56),
-                  painter: _MiniLogoPainter(),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  height: 110,
+                  fit: BoxFit.contain,
                 ),
               ),
               const SizedBox(height: 12),
               const Center(
                 child: Text(
-                  '3 Boxes Jobs',
+                  '3BOXESJOBS',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF05264E),
+                    color: Color(0xFF014217),
+                    letterSpacing: 1,
                   ),
                 ),
               ),
@@ -133,6 +135,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(12),
                     borderSide: const BorderSide(color: Color(0xFFE4E8EC)),
                   ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFF014217), width: 1.5),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -153,6 +159,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(12),
                     borderSide: const BorderSide(color: Color(0xFFE4E8EC)),
                   ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFF014217), width: 1.5),
+                  ),
                 ),
               ),
               const SizedBox(height: 24),
@@ -163,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _login,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF059669),
+                    backgroundColor: const Color(0xFF014217),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     elevation: 2,
@@ -179,14 +189,14 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFECFDF5),
+                  color: const Color(0xFFF0F8F0),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFD1FAE5)),
+                  border: Border.all(color: const Color(0xFFD8ECD8)),
                 ),
                 child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Demo Accounts:', style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF059669), fontSize: 13)),
+                    Text('Demo Accounts:', style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF014217), fontSize: 13)),
                     SizedBox(height: 4),
                     Text('Job Seeker: seeker@3boxes.com / password123', style: TextStyle(fontSize: 11, color: Color(0xFF66789C))),
                     Text('Corporate: corp@3boxes.com / password123', style: TextStyle(fontSize: 11, color: Color(0xFF66789C))),
@@ -200,34 +210,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-}
-
-class _MiniLogoPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final s = size.width / 60;
-    // Simplified 3 boxes for login
-    final paints = [
-      [const Color(0xFF4ADE80), const Color(0xFF16A34A)],
-      [const Color(0xFF34D399), const Color(0xFF059669)],
-      [const Color(0xFF86EFAC), const Color(0xFF16A34A)],
-    ];
-    final offsets = [
-      [Offset(2 * s, 11 * s), Offset(14 * s, 8 * s), Offset(14 * s, 25 * s), Offset(2 * s, 28 * s)],
-      [Offset(10 * s, 7 * s), Offset(22 * s, 4 * s), Offset(22 * s, 21 * s), Offset(10 * s, 24 * s)],
-      [Offset(18 * s, 13 * s), Offset(30 * s, 10 * s), Offset(30 * s, 27 * s), Offset(18 * s, 30 * s)],
-    ];
-    for (int i = 0; i < 3; i++) {
-      final path = Path()
-        ..moveTo(offsets[i][0].dx, offsets[i][0].dy)
-        ..lineTo(offsets[i][1].dx, offsets[i][1].dy)
-        ..lineTo(offsets[i][2].dx, offsets[i][2].dy)
-        ..lineTo(offsets[i][3].dx, offsets[i][3].dy)
-        ..close();
-      canvas.drawPath(path, Paint()..color = paints[i][0]);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

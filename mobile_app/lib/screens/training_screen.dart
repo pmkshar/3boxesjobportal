@@ -35,7 +35,7 @@ class _TrainingScreenState extends State<TrainingScreen> {
       backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
         title: const Text('Training Hub', style: TextStyle(fontWeight: FontWeight.w600)),
-        backgroundColor: const Color(0xFF064E3B),
+        backgroundColor: const Color(0xFF014217),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -94,7 +94,7 @@ class _TrainingScreenState extends State<TrainingScreen> {
   Widget _buildDefaultCourses() {
     // Built-in courses when API returns empty
     final defaultCourses = [
-      {'title': 'Advanced Python Development', 'provider': '3 Boxes Academy', 'duration': '8 weeks', 'level': 'Advanced', 'category': 'technical', 'rating': 4.8, 'enrolled': 1250, 'color': const Color(0xFF059669)},
+      {'title': 'Advanced Python Development', 'provider': '3 Boxes Academy', 'duration': '8 weeks', 'level': 'Advanced', 'category': 'technical', 'rating': 4.8, 'enrolled': 1250, 'color': const Color(0xFF014217)},
       {'title': 'Cloud Architecture Fundamentals', 'provider': 'AWS Partner', 'duration': '6 weeks', 'level': 'Intermediate', 'category': 'technical', 'rating': 4.6, 'enrolled': 890, 'color': const Color(0xFF3B82F6)},
       {'title': 'Effective Communication at Work', 'provider': '3 Boxes Academy', 'duration': '4 weeks', 'level': 'Beginner', 'category': 'soft-skills', 'rating': 4.7, 'enrolled': 2100, 'color': const Color(0xFF8B5CF6)},
       {'title': 'Leadership & Team Management', 'provider': 'Harvard Online', 'duration': '10 weeks', 'level': 'Advanced', 'category': 'leadership', 'rating': 4.9, 'enrolled': 760, 'color': const Color(0xFF06B6D4)},

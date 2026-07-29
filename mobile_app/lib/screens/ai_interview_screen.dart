@@ -91,7 +91,7 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
       backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
         title: const Text('AI Interview', style: TextStyle(fontWeight: FontWeight.w600)),
-        backgroundColor: const Color(0xFF064E3B),
+        backgroundColor: const Color(0xFF014217),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -350,11 +350,11 @@ class _AiInterviewScreenState extends State<AiInterviewScreen> {
           // Tips
           Container(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: const Color(0xFFECFDF5), borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(color: const Color(0xFFF0F8F0), borderRadius: BorderRadius.circular(12)),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Tips to Improve', style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF059669))),
+                Text('Tips to Improve', style: TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF014217))),
                 SizedBox(height: 8),
                 Text('1. Use the STAR method (Situation, Task, Action, Result)', style: TextStyle(fontSize: 13, color: Color(0xFF05264E))),
                 Text('2. Include specific metrics and outcomes', style: TextStyle(fontSize: 13, color: Color(0xFF05264E))),

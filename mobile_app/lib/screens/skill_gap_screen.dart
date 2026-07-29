@@ -36,7 +36,7 @@ class _SkillGapScreenState extends State<SkillGapScreen> {
       backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
         title: const Text('Skill Gap Analysis', style: TextStyle(fontWeight: FontWeight.w600)),
-        backgroundColor: const Color(0xFF064E3B),
+        backgroundColor: const Color(0xFF014217),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -124,7 +124,7 @@ class _SkillGapScreenState extends State<SkillGapScreen> {
 
   List<Widget> _buildSkillCategories() {
     final categories = [
-      {'name': 'Programming', 'level': 0.85, 'color': const Color(0xFF059669)},
+      {'name': 'Programming', 'level': 0.85, 'color': const Color(0xFF014217)},
       {'name': 'Communication', 'level': 0.7, 'color': const Color(0xFF3B82F6)},
       {'name': 'Leadership', 'level': 0.55, 'color': const Color(0xFF8B5CF6)},
       {'name': 'Problem Solving', 'level': 0.8, 'color': const Color(0xFF06B6D4)},
@@ -169,7 +169,7 @@ class _SkillGapScreenState extends State<SkillGapScreen> {
       {'skill': 'Cloud Architecture', 'reason': 'In-demand across industries', 'priority': 'High', 'color': const Color(0xFFEF4444)},
       {'skill': 'Team Leadership', 'reason': 'Required for management track', 'priority': 'Medium', 'color': const Color(0xFFF59E0B)},
       {'skill': 'Data Analysis', 'reason': 'Growing importance in all roles', 'priority': 'Medium', 'color': const Color(0xFFF59E0B)},
-      {'skill': 'DevOps Practices', 'reason': 'Complementary to development skills', 'priority': 'Low', 'color': const Color(0xFF059669)},
+      {'skill': 'DevOps Practices', 'reason': 'Complementary to development skills', 'priority': 'Low', 'color': const Color(0xFF014217)},
     ];
     return recommended.map((rec) => Container(
       margin: const EdgeInsets.only(bottom: 10),

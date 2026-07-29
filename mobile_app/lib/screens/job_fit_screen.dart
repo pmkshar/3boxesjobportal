@@ -36,7 +36,7 @@ class _JobFitScreenState extends State<JobFitScreen> {
       backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
         title: const Text('Job Fit Evaluation', style: TextStyle(fontWeight: FontWeight.w600)),
-        backgroundColor: const Color(0xFF064E3B),
+        backgroundColor: const Color(0xFF014217),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -194,7 +194,7 @@ class _JobFitScreenState extends State<JobFitScreen> {
 
   List<Widget> _buildSkillBreakdown() {
     final skills = [
-      {'name': 'Technical Skills', 'match': 0.85, 'color': const Color(0xFF059669)},
+      {'name': 'Technical Skills', 'match': 0.85, 'color': const Color(0xFF014217)},
       {'name': 'Experience Level', 'match': 0.7, 'color': const Color(0xFF3B82F6)},
       {'name': 'Soft Skills', 'match': 0.9, 'color': const Color(0xFF8B5CF6)},
       {'name': 'Domain Knowledge', 'match': 0.65, 'color': const Color(0xFFF59E0B)},

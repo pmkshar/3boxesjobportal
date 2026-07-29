@@ -44,7 +44,7 @@ class _ApplicationsTrackerScreenState extends State<ApplicationsTrackerScreen> {
       case 'reviewed': return const Color(0xFFF59E0B);
       case 'shortlisted': return const Color(0xFF8B5CF6);
       case 'interview': return const Color(0xFF06B6D4);
-      case 'offered': return const Color(0xFF059669);
+      case 'offered': return const Color(0xFF014217);
       case 'rejected': return const Color(0xFFEF4444);
       default: return const Color(0xFF66789C);
     }
@@ -57,7 +57,7 @@ class _ApplicationsTrackerScreenState extends State<ApplicationsTrackerScreen> {
       backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
         title: const Text('Applications', style: TextStyle(fontWeight: FontWeight.w600)),
-        backgroundColor: const Color(0xFF064E3B),
+        backgroundColor: const Color(0xFF014217),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -75,7 +75,7 @@ class _ApplicationsTrackerScreenState extends State<ApplicationsTrackerScreen> {
                 const SizedBox(width: 8),
                 _statChip('Shortlisted', _countByStatus('shortlisted'), const Color(0xFF8B5CF6)),
                 const SizedBox(width: 8),
-                _statChip('Offered', _countByStatus('offered'), const Color(0xFF059669)),
+                _statChip('Offered', _countByStatus('offered'), const Color(0xFF014217)),
               ],
             ),
           ),

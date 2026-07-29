@@ -35,7 +35,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
         title: const Text('Analytics', style: TextStyle(fontWeight: FontWeight.w600)),
-        backgroundColor: const Color(0xFF064E3B),
+        backgroundColor: const Color(0xFF014217),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -91,7 +91,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                           value: '${_analytics?['totalApplications'] ?? 0}',
                           change: '+12%',
                           icon: Icons.assignment_outlined,
-                          color: const Color(0xFF059669),
+                          color: const Color(0xFF014217),
                         ),
                         _MetricCard(
                           title: 'Interviews',
@@ -136,7 +136,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                               _ringStat('Applied', 24, const Color(0xFF3B82F6)),
                               _ringStat('Shortlisted', 12, const Color(0xFF8B5CF6)),
                               _ringStat('Interviewed', 8, const Color(0xFF06B6D4)),
-                              _ringStat('Offered', 3, const Color(0xFF059669)),
+                              _ringStat('Offered', 3, const Color(0xFF014217)),
                             ],
                           ),
                           const SizedBox(height: 16),
@@ -146,7 +146,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text('Success Rate', style: TextStyle(fontSize: 13, color: Color(0xFF66789C))),
-                              const Text('12.5%', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF059669))),
+                              const Text('12.5%', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF014217))),
                             ],
                           ),
                         ],
@@ -188,7 +188,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     const Text('Top Performing Skills', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF05264E))),
                     const SizedBox(height: 12),
                     ...['React & TypeScript', 'Python', 'Problem Solving', 'Communication'].asMap().entries.map((entry) {
-                      final colors = [const Color(0xFF059669), const Color(0xFF3B82F6), const Color(0xFF8B5CF6), const Color(0xFFF59E0B)];
+                      final colors = [const Color(0xFF014217), const Color(0xFF3B82F6), const Color(0xFF8B5CF6), const Color(0xFFF59E0B)];
                       return Container(
                         margin: const EdgeInsets.only(bottom: 8),
                         padding: const EdgeInsets.all(12),

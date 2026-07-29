@@ -44,7 +44,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       backgroundColor: const Color(0xFFF9FAFB),
       appBar: AppBar(
         title: const Text('My Profile', style: TextStyle(fontWeight: FontWeight.w600)),
-        backgroundColor: const Color(0xFF064E3B),
+        backgroundColor: const Color(0xFF014217),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -57,7 +57,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF064E3B), Color(0xFF065F46)],
+                  colors: [Color(0xFF014217), Color(0xFF066722)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -118,7 +118,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       value: 0.75,
                       minHeight: 8,
                       backgroundColor: const Color(0xFFE4E8EC),
-                      valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF059669)),
+                      valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF014217)),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -176,10 +176,10 @@ class _ProfileMenuItem extends StatelessWidget {
           width: 44,
           height: 44,
           decoration: BoxDecoration(
-            color: const Color(0xFFECFDF5),
+            color: const Color(0xFFF0F8F0),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color: const Color(0xFF059669), size: 22),
+          child: Icon(icon, color: const Color(0xFF014217), size: 22),
         ),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF05264E), fontSize: 14)),
         subtitle: Text(subtitle, style: const TextStyle(color: Color(0xFF66789C), fontSize: 12)),

@@ -19,21 +19,21 @@ class ThreeBoxesJobsApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.green,
-        primaryColor: const Color(0xFF059669),
+        primaryColor: const Color(0xFF014217),
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF059669),
-          primary: const Color(0xFF059669),
-          secondary: const Color(0xFF10B981),
+          seedColor: const Color(0xFF014217),
+          primary: const Color(0xFF014217),
+          secondary: const Color(0xFF04a331),
         ),
         useMaterial3: true,
         fontFamily: 'Roboto',
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF064E3B),
+          backgroundColor: Color(0xFF014217),
           foregroundColor: Colors.white,
           elevation: 0,
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          selectedItemColor: Color(0xFF059669),
+          selectedItemColor: Color(0xFF014217),
           unselectedItemColor: Color(0xFF66789C),
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
