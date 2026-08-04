@@ -19,13 +19,18 @@ class ThreeBoxesJobsApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF00C853),
+          seedColor: const Color(0xFF04A331),
+          primary: const Color(0xFF014217),
+          secondary: const Color(0xFF04A331),
+          tertiary: const Color(0xFFF26405),
           brightness: Brightness.light,
         ),
         useMaterial3: true,
         appBarTheme: const AppBarTheme(
           centerTitle: true,
           elevation: 0,
+          backgroundColor: Color(0xFF014217),
+          foregroundColor: Colors.white,
         ),
       ),
       home: const AuthGate(),
@@ -63,7 +68,7 @@ class _AuthGateState extends State<AuthGate> {
     if (_checking) {
       return const Scaffold(
         body: Center(
-          child: CircularProgressIndicator(color: Color(0xFF00C853)),
+          child: CircularProgressIndicator(color: Color(0xFF04A331)),
         ),
       );
     }

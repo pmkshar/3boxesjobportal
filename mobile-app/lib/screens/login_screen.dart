@@ -51,8 +51,10 @@ class _LoginScreenState extends State<LoginScreen>
     Icons.admin_panel_settings_outlined,
   ];
 
-  // ── Brand colours ──
-  static const _primaryColor = Color(0xFF00C853);
+  // ── Brand colours from logo ──
+  static const _primaryColor = Color(0xFF014217);
+  static const _accentGreen = Color(0xFF04A331);
+  static const _orangeAccent = Color(0xFFF26405);
 
   @override
   void initState() {
@@ -76,9 +78,7 @@ class _LoginScreenState extends State<LoginScreen>
     super.dispose();
   }
 
-  // ─────────────────────────────────────────────────────────────────────
   // Persist / restore "Remember me" email
-  // ─────────────────────────────────────────────────────────────────────
   Future<void> _loadSavedCredentials() async {
     final prefs = await SharedPreferences.getInstance();
     final savedEmail = prefs.getString('remembered_email');
@@ -100,9 +100,7 @@ class _LoginScreenState extends State<LoginScreen>
     }
   }
 
-  // ─────────────────────────────────────────────────────────────────────
   // Helpers
-  // ─────────────────────────────────────────────────────────────────────
   String get _currentRole => _roles[_tabController.index];
 
   void _showError(String message) {
@@ -125,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: _primaryColor,
+        backgroundColor: _accentGreen,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -133,9 +131,7 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  // ─────────────────────────────────────────────────────────────────────
   // Login
-  // ─────────────────────────────────────────────────────────────────────
   Future<void> _handleLogin() async {
     if (!_loginFormKey.currentState!.validate()) return;
 
@@ -166,9 +162,7 @@ class _LoginScreenState extends State<LoginScreen>
     }
   }
 
-  // ─────────────────────────────────────────────────────────────────────
   // Register
-  // ─────────────────────────────────────────────────────────────────────
   Future<void> _handleRegister() async {
     if (!_registerFormKey.currentState!.validate()) return;
 
@@ -205,9 +199,7 @@ class _LoginScreenState extends State<LoginScreen>
     _regConfirmPasswordCtrl.clear();
   }
 
-  // ─────────────────────────────────────────────────────────────────────
   // Validation helpers
-  // ─────────────────────────────────────────────────────────────────────
   String? _validateEmail(String? value) {
     if (value == null || value.trim().isEmpty) return 'Email is required';
     final regex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
@@ -233,9 +225,7 @@ class _LoginScreenState extends State<LoginScreen>
     return null;
   }
 
-  // ─────────────────────────────────────────────────────────────────────
   // Build
-  // ─────────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -245,9 +235,11 @@ class _LoginScreenState extends State<LoginScreen>
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
-              const SizedBox(height: 40),
+              const SizedBox(height: 30),
               _buildBranding(),
-              const SizedBox(height: 28),
+              const SizedBox(height: 20),
+              _buildHeroImage(),
+              const SizedBox(height: 24),
               _buildRoleTabs(),
               const SizedBox(height: 24),
               _buildModeToggle(),
@@ -261,43 +253,70 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  // ── Branding header ──
+  // ── Branding header with actual logo ──
   Widget _buildBranding() {
     return Column(
       children: [
-        Container(
-          width: 72,
+        Image.asset(
+          'assets/logo.png',
           height: 72,
-          decoration: BoxDecoration(
-            color: _primaryColor.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(18),
-          ),
-          child: const Icon(
-            Icons.work_outline_rounded,
-            size: 38,
-            color: _primaryColor,
-          ),
+          fit: BoxFit.contain,
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
         const Text(
           '3 Boxes Jobs',
           style: TextStyle(
-            fontSize: 28,
+            fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF1A1A2E),
+            color: _primaryColor,
             letterSpacing: -0.5,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 2),
         Text(
           'AI-Powered Career Platform',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 13,
             color: Colors.grey.shade600,
             fontWeight: FontWeight.w400,
           ),
         ),
       ],
+    );
+  }
+
+  // ── Hero image section ──
+  Widget _buildHeroImage() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Image.network(
+        'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=250&fit=crop',
+        height: 160,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) =>
+            Container(
+          height: 160,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [_primaryColor, _accentGreen],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.work_outline_rounded, color: Colors.white, size: 40),
+                SizedBox(height: 8),
+                Text('Find Your Dream Job', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -312,11 +331,11 @@ class _LoginScreenState extends State<LoginScreen>
       child: TabBar(
         controller: _tabController,
         indicator: BoxDecoration(
-          color: _primaryColor,
+          color: _accentGreen,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: _primaryColor.withOpacity(0.3),
+              color: _accentGreen.withOpacity(0.3),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -369,10 +388,10 @@ class _LoginScreenState extends State<LoginScreen>
         duration: const Duration(milliseconds: 250),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
-          color: active ? _primaryColor : Colors.transparent,
+          color: active ? _accentGreen : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
-            color: active ? _primaryColor : Colors.grey.shade300,
+            color: active ? _accentGreen : Colors.grey.shade300,
           ),
         ),
         child: Text(
@@ -536,7 +555,7 @@ class _LoginScreenState extends State<LoginScreen>
           style: const TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF1A1A2E),
+            color: _primaryColor,
           ),
         ),
         const SizedBox(height: 6),
@@ -566,7 +585,7 @@ class _LoginScreenState extends State<LoginScreen>
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: _primaryColor, width: 1.5),
+              borderSide: const BorderSide(color: _accentGreen, width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -591,7 +610,7 @@ class _LoginScreenState extends State<LoginScreen>
           child: Checkbox(
             value: _rememberMe,
             onChanged: (v) => setState(() => _rememberMe = v ?? false),
-            activeColor: _primaryColor,
+            activeColor: _accentGreen,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5)),
             side: BorderSide(color: Colors.grey.shade400),
@@ -622,9 +641,9 @@ class _LoginScreenState extends State<LoginScreen>
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: _primaryColor,
+          backgroundColor: _accentGreen,
           foregroundColor: Colors.white,
-          disabledBackgroundColor: _primaryColor.withOpacity(0.5),
+          disabledBackgroundColor: _accentGreen.withOpacity(0.5),
           disabledForegroundColor: Colors.white70,
           elevation: 0,
           shape: RoundedRectangleBorder(

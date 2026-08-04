@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -48,27 +47,27 @@ class _SplashScreenState extends State<SplashScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // 3 Boxes Logo - using actual logo image
+                // 3 Boxes Logo - Using actual logo.png image
                 Image.asset(
                   'assets/images/logo.png',
-                  height: 110,
+                  height: 100,
                   fit: BoxFit.contain,
                 ),
                 const SizedBox(height: 24),
                 const Text(
-                  '3BOXESJOBS',
+                  '3 Boxes Jobs',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    letterSpacing: 2,
+                    letterSpacing: 1,
                   ),
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Find Opportunity. Build Tomorrow.',
+                  'AI-Powered Career Platform',
                   style: TextStyle(
-                    color: Color(0xFF86efac),
+                    color: Color(0xFFA3D8B0),
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                   ),
@@ -78,7 +77,7 @@ class _SplashScreenState extends State<SplashScreen>
                   width: 32,
                   height: 32,
                   child: CircularProgressIndicator(
-                    color: Colors.white,
+                    color: Color(0xFF04A331),
                     strokeWidth: 3,
                   ),
                 ),

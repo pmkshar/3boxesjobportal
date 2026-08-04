@@ -22,7 +22,10 @@ class MainNavigation extends StatefulWidget {
 class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
 
-  static const Color _primaryColor = Color(0xFF00C853);
+  // Brand colors from logo
+  static const _primaryColor = Color(0xFF014217);
+  static const _accentGreen = Color(0xFF04A331);
+  static const _orangeAccent = Color(0xFFF26405);
 
   // Feature screen builder using switch statement (IDs 1-13)
   Widget _buildFeatureScreen(int featureId) {
@@ -101,21 +104,76 @@ class _MainNavigationState extends State<MainNavigation> {
         children: [
           // Welcome Card
           _buildWelcomeCard(),
+          const SizedBox(height: 16),
+
+          // Hero image - HR Professional
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.network(
+              'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=200&fit=crop',
+              height: 160,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) =>
+                  Container(
+                height: 160,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [_primaryColor, _accentGreen],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Center(
+                  child: Icon(Icons.person_search, color: Colors.white, size: 40),
+                ),
+              ),
+            ),
+          ),
           const SizedBox(height: 24),
 
           // Quick Actions
           const Text(
             'Quick Actions',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: _primaryColor),
           ),
           const SizedBox(height: 12),
           _buildQuickActionGrid(),
           const SizedBox(height: 24),
 
+          // Feature images carousel
+          const Text(
+            'Explore Features',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: _primaryColor),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 120,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                _FeatureImageCard(
+                  'AI Resume Builder',
+                  'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=300&h=200&fit=crop',
+                ),
+                const SizedBox(width: 12),
+                _FeatureImageCard(
+                  'Interview Practice',
+                  'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=300&h=200&fit=crop',
+                ),
+                const SizedBox(width: 12),
+                _FeatureImageCard(
+                  'Business Network',
+                  'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=300&h=200&fit=crop',
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+
           // Recent Activity
           const Text(
             'Recent Activity',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: _primaryColor),
           ),
           const SizedBox(height: 12),
           _buildRecentActivityList(),
@@ -130,7 +188,7 @@ class _MainNavigationState extends State<MainNavigation> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [_primaryColor, Color(0xFF00E676)],
+          colors: [_primaryColor, _accentGreen],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -148,10 +206,13 @@ class _MainNavigationState extends State<MainNavigation> {
         children: [
           Row(
             children: [
-              const CircleAvatar(
-                radius: 24,
-                backgroundColor: Colors.white,
-                child: Icon(Icons.person, color: _primaryColor, size: 28),
+              // Logo in welcome card
+              Image.asset(
+                'assets/logo.png',
+                height: 36,
+                fit: BoxFit.contain,
+                color: Colors.white.withOpacity(0.9),
+                colorBlendMode: BlendMode.srcIn,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -225,9 +286,9 @@ class _MainNavigationState extends State<MainNavigation> {
       borderRadius: BorderRadius.circular(12),
       child: Container(
         decoration: BoxDecoration(
-          color: _primaryColor.withOpacity(0.08),
+          color: _accentGreen.withOpacity(0.08),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: _primaryColor.withOpacity(0.15)),
+          border: Border.all(color: _accentGreen.withOpacity(0.15)),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -235,10 +296,10 @@ class _MainNavigationState extends State<MainNavigation> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: _primaryColor.withOpacity(0.15),
+                color: _accentGreen.withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
-              child: Icon(action.icon, color: _primaryColor, size: 24),
+              child: Icon(action.icon, color: _accentGreen, size: 24),
             ),
             const SizedBox(height: 8),
             Padding(
@@ -257,11 +318,63 @@ class _MainNavigationState extends State<MainNavigation> {
     );
   }
 
+  Widget _FeatureImageCard(String title, String imageUrl) {
+    return Container(
+      width: 200,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.network(
+              imageUrl,
+              height: 120,
+              width: 200,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) =>
+                  Container(
+                height: 120,
+                width: 200,
+                decoration: BoxDecoration(
+                  color: _accentGreen.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Icon(Icons.image, color: Color(0xFF04A331), size: 32),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: const BoxDecoration(
+                color: Color(0xCC014217),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(16),
+                  bottomRight: Radius.circular(16),
+                ),
+              ),
+              child: Text(
+                title,
+                style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildRecentActivityList() {
     final activities = [
       _Activity(icon: Icons.send, title: 'Applied to Senior Flutter Developer', subtitle: '2 hours ago', color: Colors.blue),
-      _Activity(icon: Icons.check_circle, title: 'Interview Scheduled at TechCorp', subtitle: 'Yesterday', color: _primaryColor),
-      _Activity(icon: Icons.update, title: 'Resume updated successfully', subtitle: '2 days ago', color: Colors.orange),
+      _Activity(icon: Icons.check_circle, title: 'Interview Scheduled at TechCorp', subtitle: 'Yesterday', color: _accentGreen),
+      _Activity(icon: Icons.update, title: 'Resume updated successfully', subtitle: '2 days ago', color: _orangeAccent),
       _Activity(icon: Icons.star, title: 'New skill match found: AWS', subtitle: '3 days ago', color: Colors.purple),
     ];
 
@@ -328,7 +441,7 @@ class _MainNavigationState extends State<MainNavigation> {
         children: [
           const Text(
             'More Features',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: _primaryColor),
           ),
           const SizedBox(height: 16),
           GridView.builder(
@@ -390,10 +503,10 @@ class _MainNavigationState extends State<MainNavigation> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: _primaryColor.withOpacity(0.1),
+                  color: _accentGreen.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(feature.icon, color: _primaryColor, size: 28),
+                child: Icon(feature.icon, color: _accentGreen, size: 28),
               ),
               const SizedBox(height: 12),
               Text(
@@ -428,7 +541,7 @@ class _MainNavigationState extends State<MainNavigation> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) => setState(() => _currentIndex = index),
-        indicatorColor: _primaryColor.withOpacity(0.12),
+        indicatorColor: _accentGreen.withOpacity(0.12),
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.home_outlined),

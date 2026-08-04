@@ -18,6 +18,11 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _error;
   bool _obscurePassword = true;
 
+  // Brand colors from logo
+  static const _primaryGreen = Color(0xFF014217);
+  static const _accentGreen = Color(0xFF04A331);
+  static const _orangeAccent = Color(0xFFF26405);
+
   // Base URL for the API - update this to your deployed URL
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
@@ -81,34 +86,60 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 40),
-              // Logo - using actual logo image
+              const SizedBox(height: 30),
+              // Logo - Using actual logo.png
               Center(
                 child: Image.asset(
                   'assets/images/logo.png',
-                  height: 110,
+                  height: 80,
                   fit: BoxFit.contain,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               const Center(
                 child: Text(
-                  '3BOXESJOBS',
+                  '3 Boxes Jobs',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF014217),
-                    letterSpacing: 1,
                   ),
                 ),
               ),
-              const Center(
+              Center(
                 child: Text(
                   'AI-Powered Career Platform',
-                  style: TextStyle(fontSize: 14, color: Color(0xFF66789C)),
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 32),
+
+              // Hero image - HR professional
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.network(
+                  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=300&fit=crop',
+                  height: 180,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      Container(
+                    height: 180,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [_primaryGreen, _accentGreen],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Center(
+                      child: Icon(Icons.work_outline, color: Colors.white, size: 48),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
 
               // Error message
               if (_error != null)
@@ -137,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFF014217), width: 1.5),
+                    borderSide: const BorderSide(color: _accentGreen, width: 1.5),
                   ),
                 ),
               ),
@@ -161,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFF014217), width: 1.5),
+                    borderSide: const BorderSide(color: _accentGreen, width: 1.5),
                   ),
                 ),
               ),
@@ -173,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _login,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF014217),
+                    backgroundColor: _accentGreen,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     elevation: 2,
@@ -189,9 +220,9 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF0F8F0),
+                  color: const Color(0xFFE8F5E9),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFD8ECD8)),
+                  border: Border.all(color: const Color(0xFFC8E6C9)),
                 ),
                 child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

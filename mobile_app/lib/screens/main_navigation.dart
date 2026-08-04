@@ -27,6 +27,11 @@ class _MainNavigationState extends State<MainNavigation> {
   Map<String, dynamic>? _user;
   bool _showAllFeatures = false;
 
+  // Brand colors from logo
+  static const _primaryGreen = Color(0xFF014217);
+  static const _accentGreen = Color(0xFF04A331);
+  static const _orangeAccent = Color(0xFFF26405);
+
   final List<NavigationItem> _navItems = const [
     NavigationItem(icon: Icons.dashboard_outlined, activeIcon: Icons.dashboard, label: 'Home'),
     NavigationItem(icon: Icons.search_outlined, activeIcon: Icons.search, label: 'Jobs'),
@@ -92,7 +97,18 @@ class _MainNavigationState extends State<MainNavigation> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('All Features', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF05264E))),
+                  // Logo in modal header
+                  Row(
+                    children: [
+                      Image.asset(
+                        'assets/images/logo.png',
+                        height: 28,
+                        fit: BoxFit.contain,
+                      ),
+                      const SizedBox(width: 8),
+                      const Text('All Features', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: _primaryGreen)),
+                    ],
+                  ),
                   IconButton(
                     icon: const Icon(Icons.close),
                     onPressed: () => Navigator.pop(context),
@@ -108,19 +124,19 @@ class _MainNavigationState extends State<MainNavigation> {
                 crossAxisSpacing: 16,
                 childAspectRatio: 0.85,
                 children: [
-                  _FeatureCard(icon: Icons.dashboard, label: 'Dashboard', color: const Color(0xFF014217), onTap: () { Navigator.pop(context); setState(() => _currentIndex = 0); }),
-                  _FeatureCard(icon: Icons.search, label: 'Find Jobs', color: const Color(0xFF066722), onTap: () { Navigator.pop(context); setState(() => _currentIndex = 1); }),
-                  _FeatureCard(icon: Icons.assignment, label: 'Applications', color: const Color(0xFF04a331), onTap: () { Navigator.pop(context); _navigateToFeature(5); }),
-                  _FeatureCard(icon: Icons.track_changes, label: 'Tracker', color: const Color(0xFF014217), onTap: () { Navigator.pop(context); _navigateToFeature(6); }),
-                  _FeatureCard(icon: Icons.description, label: 'CV Manager', color: const Color(0xFF066722), onTap: () { Navigator.pop(context); setState(() => _currentIndex = 3); }),
-                  _FeatureCard(icon: Icons.auto_awesome, label: 'Resume Builder', color: const Color(0xFFF26405), onTap: () { Navigator.pop(context); _navigateToFeature(13); }),
-                  _FeatureCard(icon: Icons.psychology, label: 'AI Interview', color: const Color(0xFF014217), onTap: () { Navigator.pop(context); setState(() => _currentIndex = 2); }),
-                  _FeatureCard(icon: Icons.smart_toy, label: 'AI Buddy', color: const Color(0xFF066722), onTap: () { Navigator.pop(context); _navigateToFeature(7); }),
-                  _FeatureCard(icon: Icons.track_changes_outlined, label: 'Skill Gap', color: const Color(0xFFF26405), onTap: () { Navigator.pop(context); _navigateToFeature(8); }),
-                  _FeatureCard(icon: Icons.work_outline, label: 'Job Fit', color: const Color(0xFF04a331), onTap: () { Navigator.pop(context); _navigateToFeature(9); }),
-                  _FeatureCard(icon: Icons.school, label: 'Training', color: const Color(0xFF066722), onTap: () { Navigator.pop(context); _navigateToFeature(10); }),
-                  _FeatureCard(icon: Icons.bar_chart, label: 'Analytics', color: const Color(0xFFF26405), onTap: () { Navigator.pop(context); _navigateToFeature(11); }),
-                  _FeatureCard(icon: Icons.person, label: 'My Profile', color: const Color(0xFF014217), onTap: () { Navigator.pop(context); _navigateToFeature(12); }),
+                  _FeatureCard(icon: Icons.dashboard, label: 'Dashboard', color: _accentGreen, onTap: () { Navigator.pop(context); setState(() => _currentIndex = 0); }),
+                  _FeatureCard(icon: Icons.search, label: 'Find Jobs', color: _accentGreen, onTap: () { Navigator.pop(context); setState(() => _currentIndex = 1); }),
+                  _FeatureCard(icon: Icons.assignment, label: 'Applications', color: _accentGreen, onTap: () { Navigator.pop(context); _navigateToFeature(5); }),
+                  _FeatureCard(icon: Icons.track_changes, label: 'Tracker', color: _accentGreen, onTap: () { Navigator.pop(context); _navigateToFeature(6); }),
+                  _FeatureCard(icon: Icons.description, label: 'CV Manager', color: const Color(0xFF3B82F6), onTap: () { Navigator.pop(context); setState(() => _currentIndex = 3); }),
+                  _FeatureCard(icon: Icons.auto_awesome, label: 'Resume Builder', color: const Color(0xFFEC4899), onTap: () { Navigator.pop(context); _navigateToFeature(13); }),
+                  _FeatureCard(icon: Icons.psychology, label: 'AI Interview', color: const Color(0xFF8B5CF6), onTap: () { Navigator.pop(context); setState(() => _currentIndex = 2); }),
+                  _FeatureCard(icon: Icons.smart_toy, label: 'AI Buddy', color: const Color(0xFF6366F1), onTap: () { Navigator.pop(context); _navigateToFeature(7); }),
+                  _FeatureCard(icon: Icons.track_changes_outlined, label: 'Skill Gap', color: _orangeAccent, onTap: () { Navigator.pop(context); _navigateToFeature(8); }),
+                  _FeatureCard(icon: Icons.work_outline, label: 'Job Fit', color: const Color(0xFF14B8A6), onTap: () { Navigator.pop(context); _navigateToFeature(9); }),
+                  _FeatureCard(icon: Icons.school, label: 'Training', color: const Color(0xFF06B6D4), onTap: () { Navigator.pop(context); _navigateToFeature(10); }),
+                  _FeatureCard(icon: Icons.bar_chart, label: 'Analytics', color: _orangeAccent, onTap: () { Navigator.pop(context); _navigateToFeature(11); }),
+                  _FeatureCard(icon: Icons.person, label: 'My Profile', color: const Color(0xFFEC4899), onTap: () { Navigator.pop(context); _navigateToFeature(12); }),
                 ],
               ),
             ),
@@ -191,7 +207,7 @@ class _MainNavigationState extends State<MainNavigation> {
                       children: [
                         Icon(
                           isActive ? item.activeIcon : item.icon,
-                          color: isActive ? const Color(0xFF014217) : const Color(0xFF66789C),
+                          color: isActive ? _accentGreen : const Color(0xFF66789C),
                           size: 24,
                         ),
                         const SizedBox(height: 2),
@@ -200,7 +216,7 @@ class _MainNavigationState extends State<MainNavigation> {
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-                            color: isActive ? const Color(0xFF014217) : const Color(0xFF66789C),
+                            color: isActive ? _accentGreen : const Color(0xFF66789C),
                           ),
                         ),
                       ],
