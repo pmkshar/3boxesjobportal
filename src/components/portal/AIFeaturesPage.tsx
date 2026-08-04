@@ -147,7 +147,7 @@ export function AIFeaturesPage() {
           <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-0 justify-center">
             {[
               { icon: FileText, label: 'AI Resume Scan', desc: 'Instant parsing & scoring', color: 'bg-[#014217]' },
-              { icon: Target, label: 'Smart Matching', desc: 'Skill-fit algorithms', color: 'bg-[#34a853]' },
+              { icon: Target, label: 'Smart Matching', desc: 'Skill-fit algorithms', color: 'bg-[#04a331]' },
               { icon: Brain, label: 'AI Interview', desc: 'Automated screening', color: 'bg-[#f26405]' },
               { icon: BarChart3, label: 'Quality Score', desc: 'Data-driven ranking', color: 'bg-[#066722]' },
               { icon: CheckCircle2, label: 'Hire the Best', desc: 'Confident decisions', color: 'bg-[#014217]' },

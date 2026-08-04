@@ -195,7 +195,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
   const getCompanyInitial = (name?: string) => name ? name.charAt(0).toUpperCase() : 'C'
 
   const companyColors = [
-    'bg-[#014217]', 'bg-[#34a853]', 'bg-[#f26405]', 'bg-[#d93025]',
+    'bg-[#014217]', 'bg-[#04a331]', 'bg-[#f26405]', 'bg-[#d93025]',
     'bg-[#7c66ff]', 'bg-[#a55fff]', 'bg-[#00cc9a]', 'bg-[#2869fe]',
   ]
 
@@ -1033,8 +1033,8 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
               </div>
               <div className="flex flex-wrap gap-2 mt-4">
                 <Badge className="bg-[rgba(22,163,74,0.3)] text-white border-0 rounded-full px-4 py-1">{selectedJob.jobType}</Badge>
-                {selectedJob.isRemote && <Badge className="bg-[rgba(52,168,83,0.3)] text-white border-0 rounded-full px-4 py-1">Remote Friendly</Badge>}
-                {selectedJob.openings && <Badge className="bg-[rgba(249,171,0,0.3)] text-white border-0 rounded-full px-4 py-1"><Users className="h-3 w-3 mr-1" />{selectedJob.openings} Openings</Badge>}
+                {selectedJob.isRemote && <Badge className="bg-[rgba(4,163,49,0.3)] text-white border-0 rounded-full px-4 py-1">Remote Friendly</Badge>}
+                {selectedJob.openings && <Badge className="bg-[rgba(242,100,5,0.3)] text-white border-0 rounded-full px-4 py-1"><Users className="h-3 w-3 mr-1" />{selectedJob.openings} Openings</Badge>}
               </div>
             </div>
           </section>
@@ -1109,10 +1109,10 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                         {[
                           { icon: CalendarDays, label: 'Date Posted', value: selectedJob.postedDate ? timeAgo(selectedJob.postedDate) : 'Recently', color: 'text-[#014217]' },
                           { icon: Clock, label: 'Expiration', value: '30 days left', color: 'text-[#d93025]' },
-                          { icon: MapPin, label: 'Location', value: selectedJob.location || 'Remote', color: 'text-[#34a853]' },
+                          { icon: MapPin, label: 'Location', value: selectedJob.location || 'Remote', color: 'text-[#04a331]' },
                           { icon: Briefcase, label: 'Job Title', value: selectedJob.title, color: 'text-[#014217]' },
                           { icon: Clock, label: 'Hours', value: selectedJob.jobType === 'part-time' ? 'Part Time' : 'Full Time', color: 'text-[#f26405]' },
-                          { icon: IndianRupee, label: 'Salary', value: formatSalary(selectedJob.salaryMin, selectedJob.salaryMax), color: 'text-[#34a853]' },
+                          { icon: IndianRupee, label: 'Salary', value: formatSalary(selectedJob.salaryMin, selectedJob.salaryMax), color: 'text-[#04a331]' },
                         ].map((item, i) => (
                           <div key={i} className="flex items-center gap-3">
                             <div className="w-9 h-9 rounded-lg bg-[#f5f7fc] flex items-center justify-center flex-shrink-0">
@@ -1248,7 +1248,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                   icon: Target,
                   title: 'AI Smart Matching',
                   desc: 'Our AI engine analyzes skills, experience, and cultural fit to match you with the most relevant candidates — no more sifting through hundreds of irrelevant resumes.',
-                  color: 'from-[#34a853] to-[#014217]',
+                  color: 'from-[#04a331] to-[#014217]',
                 },
                 {
                   step: '03',
@@ -1420,7 +1420,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
             <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-0">
               {[
                 { icon: FileText, label: 'AI Resume Scan', desc: 'Instant parsing & scoring', color: 'bg-[#014217]' },
-                { icon: Target, label: 'Smart Matching', desc: 'Skill-fit algorithms', color: 'bg-[#34a853]' },
+                { icon: Target, label: 'Smart Matching', desc: 'Skill-fit algorithms', color: 'bg-[#04a331]' },
                 { icon: Brain, label: 'AI Interview', desc: 'Automated screening', color: 'bg-[#f26405]' },
                 { icon: BarChart3, label: 'Quality Score', desc: 'Data-driven ranking', color: 'bg-[#066722]' },
                 { icon: CheckCircle2, label: 'Hire the Best', desc: 'Confident decisions', color: 'bg-[#014217]' },
@@ -1517,7 +1517,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
                   <div className="p-6 space-y-0">
                     {[
                       { step: '1', icon: BookOpen, title: 'Enroll in a Course', desc: 'Choose from industry-aligned courses on MarqAI Trainers', color: 'bg-[#014217]', line: true },
-                      { step: '2', icon: Cpu, title: 'Learn & Complete', desc: 'Interactive lessons with hands-on projects and assessments', color: 'bg-[#34a853]', line: true },
+                      { step: '2', icon: Cpu, title: 'Learn & Complete', desc: 'Interactive lessons with hands-on projects and assessments', color: 'bg-[#04a331]', line: true },
                       { step: '3', icon: Zap, title: 'Skills Auto-Update', desc: 'Your 3 Boxes profile & resume update automatically with new skills', color: 'bg-[#f26405]', line: true },
                       { step: '4', icon: Target, title: 'Higher Match Scores', desc: 'AI re-calculates your job match scores — higher visibility to employers', color: 'bg-[#066722]', line: true },
                       { step: '5', icon: Trophy, title: 'Get Interview Calls', desc: 'More matches = more interviews = faster hiring', color: 'bg-[#014217]', line: false },

@@ -20,7 +20,7 @@ const topCompanies = [
 ]
 
 const companyColors = [
-  'bg-[#014217]', 'bg-[#34a853]', 'bg-[#f26405]', 'bg-[#d93025]',
+  'bg-[#014217]', 'bg-[#04a331]', 'bg-[#f26405]', 'bg-[#d93025]',
   'bg-[#7c66ff]', 'bg-[#a55fff]', 'bg-[#00cc9a]', 'bg-[#2869fe]',
 ]
 
@@ -126,7 +126,7 @@ export function CorporatePage() {
                 icon: Target,
                 title: 'AI Smart Matching',
                 desc: 'Our AI engine analyzes skills, experience, and cultural fit to match you with the most relevant candidates — no more sifting through hundreds of irrelevant resumes.',
-                color: 'from-[#34a853] to-[#014217]',
+                color: 'from-[#04a331] to-[#014217]',
               },
               {
                 step: '03',

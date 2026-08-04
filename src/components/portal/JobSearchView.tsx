@@ -23,7 +23,7 @@ const S = {
   primary: '#014217',
   primaryHover: '#066722',
   accent: '#f26405',
-  success: '#34a853',
+  success: '#04a331',
   danger: '#d93025',
   textPrimary: '#202124',
   textSecondary: '#5f6368',
@@ -34,7 +34,7 @@ const S = {
 
 // Company color palette for avatars
 const companyColors = [
-  'bg-[#014217]', 'bg-[#34a853]', 'bg-[#f26405]', 'bg-[#d93025]',
+  'bg-[#014217]', 'bg-[#04a331]', 'bg-[#f26405]', 'bg-[#d93025]',
   'bg-[#7c66ff]', 'bg-[#a55fff]', 'bg-[#00cc9a]', 'bg-[#2869fe]',
 ]
 
@@ -231,8 +231,8 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
             </div>
             <div className="flex flex-wrap gap-2 mt-4">
               <Badge className="bg-[rgba(22,163,74,0.3)] text-white border-0 rounded-full px-4 py-1">{selectedJob.jobType}</Badge>
-              {selectedJob.isRemote && <Badge className="bg-[rgba(52,168,83,0.3)] text-white border-0 rounded-full px-4 py-1">Remote Friendly</Badge>}
-              {selectedJob.openings && <Badge className="bg-[rgba(249,171,0,0.3)] text-white border-0 rounded-full px-4 py-1"><Users className="h-3 w-3 mr-1" />{selectedJob.openings} Openings</Badge>}
+              {selectedJob.isRemote && <Badge className="bg-[rgba(4,163,49,0.3)] text-white border-0 rounded-full px-4 py-1">Remote Friendly</Badge>}
+              {selectedJob.openings && <Badge className="bg-[rgba(242,100,5,0.3)] text-white border-0 rounded-full px-4 py-1"><Users className="h-3 w-3 mr-1" />{selectedJob.openings} Openings</Badge>}
             </div>
           </div>
         </div>
@@ -326,7 +326,7 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                             </div>
                             <div className="flex flex-wrap gap-1 flex-shrink-0">
                               <Badge className="bg-[rgba(22,163,74,0.15)] text-[#014217] border-0 text-[11px] rounded-full px-3">{job.jobType}</Badge>
-                              {job.isRemote && <Badge className="bg-[rgba(52,168,83,0.15)] text-[#34a853] border-0 text-[11px] rounded-full px-3">Remote</Badge>}
+                              {job.isRemote && <Badge className="bg-[rgba(4,163,49,0.15)] text-[#04a331] border-0 text-[11px] rounded-full px-3">Remote</Badge>}
                             </div>
                           </div>
                         </CardContent>
@@ -346,11 +346,11 @@ export function JobSearchView({ embedded = false }: { embedded?: boolean }) {
                     {[
                       { icon: CalendarDays, label: 'Date Posted', value: selectedJob.postedDate ? timeAgo(selectedJob.postedDate) : 'Recently', color: 'text-[#014217]' },
                       { icon: Clock, label: 'Expiration', value: selectedJob.closingDate ? timeAgo(selectedJob.closingDate) : '30 days left', color: 'text-[#d93025]' },
-                      { icon: MapPin, label: 'Location', value: selectedJob.location || 'Remote', color: 'text-[#34a853]' },
+                      { icon: MapPin, label: 'Location', value: selectedJob.location || 'Remote', color: 'text-[#04a331]' },
                       { icon: Briefcase, label: 'Job Title', value: selectedJob.title, color: 'text-[#014217]' },
                       { icon: Clock, label: 'Hours', value: selectedJob.jobType === 'part-time' ? 'Part Time' : 'Full Time', color: 'text-[#f26405]' },
                       { icon: Star, label: 'Rate', value: selectedJob.jobType || 'Full Time', color: 'text-[#014217]' },
-                      { icon: IndianRupee, label: 'Salary', value: formatSalary(selectedJob.salaryMin, selectedJob.salaryMax), color: 'text-[#34a853]' },
+                      { icon: IndianRupee, label: 'Salary', value: formatSalary(selectedJob.salaryMin, selectedJob.salaryMax), color: 'text-[#04a331]' },
                     ].map((item, i) => (
                       <div key={i} className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-lg bg-[#f5f7fc] flex items-center justify-center flex-shrink-0">

@@ -250,7 +250,7 @@ export function TrainingPage() {
                   <div className="p-6 space-y-0">
                     {[
                       { step: '1', icon: BookOpen, title: 'Enroll in a Course', desc: 'Choose from 8 career-track courses on MarqAI Courses', color: 'bg-[#014217]', line: true },
-                      { step: '2', icon: Cpu, title: 'Learn with AI Voice Tutor', desc: 'Interactive lessons with voice tutoring in 5+ Indian languages', color: 'bg-[#34a853]', line: true },
+                      { step: '2', icon: Cpu, title: 'Learn with AI Voice Tutor', desc: 'Interactive lessons with voice tutoring in 5+ Indian languages', color: 'bg-[#04a331]', line: true },
                       { step: '3', icon: Zap, title: 'Skills Auto-Update', desc: 'Your 3 Boxes profile & resume update automatically with new skills', color: 'bg-[#f26405]', line: true },
                       { step: '4', icon: Target, title: 'Higher Match Scores', desc: 'AI re-calculates your job match scores — higher visibility to employers', color: 'bg-[#066722]', line: true },
                       { step: '5', icon: Trophy, title: 'Get Interview Calls', desc: 'More matches = more interviews = faster hiring', color: 'bg-[#014217]', line: false },
@@ -291,7 +291,7 @@ export function TrainingPage() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { icon: BookOpen, value: '8', label: 'Career Track Courses', color: 'text-[#014217]' },
-              { icon: Mic, value: '5+', label: 'Voice Tutor Languages', color: 'text-[#34a853]' },
+              { icon: Mic, value: '5+', label: 'Voice Tutor Languages', color: 'text-[#04a331]' },
               { icon: FileCheck, value: '100%', label: 'Verified Certificates', color: 'text-[#f26405]' },
               { icon: TrendingUp, value: '3X', label: 'More Interview Calls', color: 'text-[#066722]' },
             ].map((stat, i) => (
