@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
     const companies: any[] = dataset.companies || []
     const jobs: any[] = dataset.jobs || []
     const courses: any[] = dataset.trainingCourses || []
-    const corpPassword = hashPassword('demo123')
+    const corpPassword = await hashPassword('demo123')
 
     // Build existing company map
     const allCorps = await db.corporateProfile.findMany()

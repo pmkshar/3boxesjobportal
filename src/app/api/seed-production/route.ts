@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
 
     // ─── STEP 1: Ensure Core Role Users ───────────────────────────
     if (mode === 'full' || mode === 'incremental') {
-      const demoPassword = hashPassword('demo123')
+      const demoPassword = await hashPassword('demo123')
       const requiredUsers = [
         { email: 'superadmin@3boxesjobs.com', name: '3 Boxes Super Admin', role: 'SUPER_ADMIN', phone: '+91-9000000001', location: 'India', bio: 'Super administrator with full platform access.' },
         { email: 'admin@3boxesjobs.com', name: '3 Boxes Admin', role: 'ADMIN', phone: '+91-9000000000', location: 'India', bio: 'Platform administrator.' },
@@ -197,7 +197,7 @@ export async function POST(request: NextRequest) {
 
     // ─── STEP 2: Seed Real Companies from Dataset ─────────────────
     if (mode === 'full' || mode === 'incremental') {
-      const corpPassword = hashPassword('demo123')
+      const corpPassword = await hashPassword('demo123')
       let companiesCreated = 0
       let companiesSkipped = 0
       const companyUserMap: Record<string, string> = {}
@@ -271,7 +271,7 @@ export async function POST(request: NextRequest) {
 
     // ─── STEP 3: Seed Real Job Listings ───────────────────────────
     if (mode === 'full' || mode === 'refresh' || mode === 'incremental') {
-      const corpPassword = hashPassword('demo123')
+      const corpPassword = await hashPassword('demo123')
       const companyUserMap: Record<string, string> = results._companyUserMap || {}
 
       // Build company map if not already built
@@ -454,7 +454,7 @@ export async function POST(request: NextRequest) {
 
     // ─── STEP 5: Seed Demo Job Seeker Accounts ───────────────────
     if (mode === 'full') {
-      const seekerPassword = hashPassword('demo123')
+      const seekerPassword = await hashPassword('demo123')
       const jobSeekers = [
         { name: 'Rahul Sharma', email: 'rahul.sharma@example.com', skills: 'React, Node.js, TypeScript, AWS', headline: 'Full Stack Developer', exp: 4 },
         { name: 'Priya Patel', email: 'priya.patel@example.com', skills: 'Python, Data Science, ML, SQL', headline: 'Data Scientist', exp: 3 },
