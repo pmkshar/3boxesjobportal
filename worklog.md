@@ -42,3 +42,21 @@ Stage Summary:
 - Auth: Dual method - VERCEL_TOKEN env var OR admin JWT (SUPER_ADMIN/ADMIN role)
 - UI: Data Refresh tab in System Settings, only visible for SUPER_ADMIN role
 - Seeding modes: full (all data), refresh (re-activate + add new), incremental (add missing only)
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Deploy to Vercel and seed production database with live data
+
+Work Log:
+- Fixed async hashPassword bug (missing await) in seed-production and data-refresh endpoints
+- Pushed fix to GitHub (commit 4593a52)
+- Waited for Vercel auto-deploy from Git integration
+- Logged in as admin@3boxesjobs.com on production to get JWT
+- Triggered full seed via POST /api/seed-production with admin JWT
+- Production database now has: 60 users, 46 companies, 50 active jobs, 17 training courses
+
+Stage Summary:
+- Live site (3boxesjobs.com)<F9>is now fully seeded with real data
+- Jobs include listings from Amazon, Deloitte, Razorpay, ICICI Bank and 40+ more Indian companies
+- Data Refresh tab available in Super Admin Settings for daily refresh
