@@ -1937,14 +1937,35 @@ export function AdminDashboard() {
                     </div>
                   )}
 
-                  {/* Vercel Token Note */}
-                  <div className="p-3 rounded-lg border border-[#E4E8EC] bg-[#F9FAFB]">
-                    <h4 className="text-xs font-semibold text-[#0f172a] flex items-center gap-2 mb-1">
-                      <Key className="h-3.5 w-3.5" style={{ color: theme.primary }} /> Authentication
+                  {/* Vercel Token Status */}
+                  <div className="p-4 rounded-lg border border-[#E4E8EC] bg-[#F9FAFB] space-y-3">
+                    <h4 className="text-sm font-semibold text-[#0f172a] flex items-center gap-2">
+                      <Key className="h-4 w-4" style={{ color: theme.primary }} /> Authentication & Vercel Token
                     </h4>
-                    <p className="text-[11px] text-[#66789C]">
-                      Data refresh uses your login token for authentication. The VERCEL_TOKEN environment variable must be configured in Vercel Dashboard → Settings → Environment Variables for server-side validation.
-                    </p>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        {refreshData?.vercelTokenConfigured ? (
+                          <>
+                            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                            <span className="text-xs font-medium text-emerald-700">VERCEL_TOKEN is configured</span>
+                          </>
+                        ) : (
+                          <>
+                            <AlertTriangle className="h-4 w-4 text-amber-500" />
+                            <span className="text-xs font-medium text-amber-700">VERCEL_TOKEN not yet configured</span>
+                          </>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-[#66789C]">
+                        <strong>For UI access:</strong> Your Super Admin login session is used for authentication — no extra setup needed.
+                      </p>
+                      <p className="text-[11px] text-[#66789C]">
+                        <strong>For cron/external access:</strong> Set <code className="bg-white px-1 py-0.5 rounded text-[10px] font-mono border border-[#E4E8EC]">VERCEL_TOKEN</code> in Vercel Dashboard → Settings → Environment Variables. Then call:{' '}
+                        <code className="bg-white px-1 py-0.5 rounded text-[10px] font-mono border border-[#E4E8EC]">
+                          curl -X POST https://3boxesjobs.com/api/data-refresh -H "Authorization: Bearer $VERCEL_TOKEN"
+                        </code>
+                      </p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

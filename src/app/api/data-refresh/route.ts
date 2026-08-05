@@ -8,13 +8,15 @@ import { NextRequest, NextResponse } from 'next/server'
  * - Adds any new jobs/companies from the live dataset
  * - Reports current data stats before and after refresh
  *
- * Authentication (two methods):
- *   1. Vercel Token: Authorization: Bearer <VERCEL_TOKEN>
- *   2. Admin JWT: Authorization: Bearer <JWT> — validated by checking user role is SUPER_ADMIN or ADMIN
+ * Authentication:
+ *   1. Admin JWT (from super admin login session) — validates SUPER_ADMIN/ADMIN role
+ *   2. VERCEL_TOKEN (from env var) — for external/cron access
+ *
+ * The UI uses the admin JWT. The VERCEL_TOKEN is for programmatic access (cron, CI/CD).
  *
  * Usage:
  *   POST https://3boxesjobs.com/api/data-refresh
- *   Headers: Authorization: Bearer <token>
+ *   Headers: Authorization: Bearer <admin-JWT-or-VERCEL_TOKEN>
  */
 
 export const dynamic = 'force-dynamic'
@@ -22,18 +24,18 @@ export const dynamic = 'force-dynamic'
 async function verifyAuth(request: NextRequest): Promise<{ authorized: boolean; method: string; error?: string }> {
   const authHeader = request.headers.get('authorization')
   if (!authHeader?.startsWith('Bearer ')) {
-    return { authorized: false, method: 'none', error: 'Missing Authorization header' }
+    return { authorized: false, method: 'none', error: 'Missing Authorization header. Please log in as Super Admin.' }
   }
 
   const token = authHeader.slice(7)
 
-  // Method 1: Check if it's the VERCEL_TOKEN
+  // Method 1: Check if it's the VERCEL_TOKEN (for cron/external access)
   const vercelToken = process.env.VERCEL_TOKEN
   if (vercelToken && token === vercelToken) {
     return { authorized: true, method: 'vercel-token' }
   }
 
-  // Method 2: Verify JWT and check admin role
+  // Method 2: Verify JWT and check admin role (for UI access)
   try {
     const { verifyToken } = await import('@/lib/auth')
     const payload = await verifyToken(token)
@@ -42,7 +44,7 @@ async function verifyAuth(request: NextRequest): Promise<{ authorized: boolean; 
     }
     return { authorized: false, method: 'jwt', error: 'Insufficient permissions. SUPER_ADMIN or ADMIN role required.' }
   } catch {
-    return { authorized: false, method: 'jwt', error: 'Invalid token.' }
+    return { authorized: false, method: 'jwt', error: 'Invalid or expired session. Please log in again.' }
   }
 }
 
@@ -316,7 +318,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET /api/data-refresh — Get current refresh status and data stats
+// GET /api/data-refresh — Get current refresh status and data stats (no auth needed for read-only)
 export async function GET() {
   const isProduction = process.env.DATABASE_URL?.startsWith('postgresql://')
 
@@ -348,10 +350,14 @@ export async function GET() {
       },
     })
 
+    // Check if VERCEL_TOKEN is configured
+    const vercelTokenConfigured = !!process.env.VERCEL_TOKEN
+
     return NextResponse.json({
       environment: 'production',
       database: 'Neon PostgreSQL',
       canRefresh: true,
+      vercelTokenConfigured,
       stats: {
         users,
         companies: corps,
