@@ -224,8 +224,8 @@ function RoleBadge({ role }: { role: UserRole }) {
     SUPER_ADMIN: '#DC2626',
     ADMIN: '#ea5703',
     CORPORATE: '#014217',
-    RECRUITER: '#2563EB',
-    JOB_SEEKER: '#7C3AED',
+    RECRUITER: '#014217',
+    JOB_SEEKER: '#f26405',
     HR_MANAGER: '#0D9488',
     INTERVIEWER: '#D97706',
   }
@@ -455,7 +455,7 @@ export function AdminDashboard() {
     users.forEach(u => { counts[u.role] = (counts[u.role] || 0) + 1 })
     const colors: Record<string, string> = {
       SUPER_ADMIN: '#DC2626', ADMIN: '#ea5703', CORPORATE: '#014217',
-      RECRUITER: '#2563EB', JOB_SEEKER: '#7C3AED', HR_MANAGER: '#0D9488', INTERVIEWER: '#D97706',
+      RECRUITER: '#014217', JOB_SEEKER: '#f26405', HR_MANAGER: '#0D9488', INTERVIEWER: '#D97706',
     }
     return Object.entries(counts).map(([role, count]) => ({
       label: role.replace(/_/g, ' '), value: count, color: colors[role] || theme.primary,
@@ -580,9 +580,9 @@ export function AdminDashboard() {
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         <StatCard title="Total Users" value={users.length} icon={Users} change="+12%" changeDir="up" color="#014217" />
-        <StatCard title="Active Sessions" value={342} icon={Activity} change="+8%" changeDir="up" color="#2563EB" />
+        <StatCard title="Active Sessions" value={342} icon={Activity} change="+8%" changeDir="up" color="#014217" />
         <StatCard title="Jobs Posted" value={1247} icon={Briefcase} change="+23%" changeDir="up" color="#ea5703" />
-        <StatCard title="Applications" value={5834} icon={ClipboardList} change="+15%" changeDir="up" color="#7C3AED" />
+        <StatCard title="Applications" value={5834} icon={ClipboardList} change="+15%" changeDir="up" color="#f26405" />
         <StatCard title="Interviews" value={891} icon={UserCheck} change="+5%" changeDir="up" color="#0D9488" />
         <StatCard title="System Health" value="99.9%" icon={Server} change="Stable" changeDir="up" color="#014217" />
       </div>
@@ -598,7 +598,7 @@ export function AdminDashboard() {
           <CardContent className="space-y-3 max-h-96 overflow-y-auto pr-2">
             {auditLog.slice(0, 8).map((entry) => {
               const typeColors: Record<string, string> = {
-                create: '#014217', update: '#2563EB', delete: '#DC2626', login: '#7C3AED', config: '#ea5703',
+                create: '#014217', update: '#014217', delete: '#DC2626', login: '#f26405', config: '#ea5703',
               }
               return (
                 <div key={entry.id} className="flex items-start gap-3 p-3 rounded-lg bg-[#F9FAFB] hover:bg-[#F3F4F6] transition-colors">
@@ -642,7 +642,7 @@ export function AdminDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'API Uptime', value: '99.97%', icon: Globe, color: '#014217' },
-          { label: 'DB Response', value: '12ms', icon: Database, color: '#2563EB' },
+          { label: 'DB Response', value: '12ms', icon: Database, color: '#014217' },
           { label: 'Error Rate', value: '0.03%', icon: AlertTriangle, color: '#DC2626' },
           { label: 'Active Workers', value: '4/4', icon: Monitor, color: '#0D9488' },
         ].map(item => (
@@ -758,7 +758,7 @@ export function AdminDashboard() {
                           onClick={() => setViewingUser(u)} title="View">
                           <Eye className="h-3.5 w-3.5" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 text-[#66789C] hover:text-[#2563EB]"
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-[#66789C] hover:text-[#014217]"
                           onClick={() => openEditUser(u)} title="Edit">
                           <Edit className="h-3.5 w-3.5" />
                         </Button>
@@ -1766,9 +1766,9 @@ export function AdminDashboard() {
                 {filteredAudit.map(entry => {
                   const typeColors: Record<string, { bg: string; text: string }> = {
                     create: { bg: '#f0f8f0', text: '#014217' },
-                    update: { bg: '#EFF6FF', text: '#2563EB' },
+                    update: { bg: '#EFF6FF', text: '#014217' },
                     delete: { bg: '#FEF2F2', text: '#DC2626' },
-                    login: { bg: '#F5F3FF', text: '#7C3AED' },
+                    login: { bg: '#F5F3FF', text: '#f26405' },
                     config: { bg: '#FFF7ED', text: '#ea5703' },
                   }
                   const tc = typeColors[entry.type] || typeColors.update

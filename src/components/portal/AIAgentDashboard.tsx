@@ -64,8 +64,8 @@ const STATUS_COLORS: Record<string, string> = {
 
 const EMAIL_STATUS_COLORS: Record<string, string> = {
   DRAFT: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
-  QUEUED: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
-  SENT: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300',
+  QUEUED: 'bg-blue-100 text-[#066722] dark:bg-blue-900/30 dark:text-blue-300',
+  SENT: 'bg-indigo-100 text-[#014217] dark:bg-indigo-900/30 dark:text-indigo-300',
   DELIVERED: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300',
   OPENED: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300',
   REPLIED: 'bg-[#d8ecd8] text-green-700 dark:bg-green-900/30 dark:text-[#04a331]',
@@ -75,7 +75,7 @@ const EMAIL_STATUS_COLORS: Record<string, string> = {
 
 const TASK_STATUS_COLORS: Record<string, string> = {
   PENDING: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
-  APPROVED: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+  APPROVED: 'bg-blue-100 text-[#066722] dark:bg-blue-900/30 dark:text-blue-300',
   RUNNING: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
   COMPLETED: 'bg-[#d8ecd8] text-green-700 dark:bg-green-900/30 dark:text-[#04a331]',
   FAILED: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
@@ -84,7 +84,7 @@ const TASK_STATUS_COLORS: Record<string, string> = {
 
 const SCRAPE_STATUS_COLORS: Record<string, string> = {
   pending: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
-  scraped: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+  scraped: 'bg-blue-100 text-[#066722] dark:bg-blue-900/30 dark:text-blue-300',
   contacted: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
   responded: 'bg-[#d8ecd8] text-green-700 dark:bg-green-900/30 dark:text-[#04a331]',
   onboarded: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
@@ -878,7 +878,7 @@ export function AIAgentDashboard() {
         case 'REPLIED': return <MailCheck className="h-4 w-4 text-green-600" />
         case 'OPENED': return <MailOpen className="h-4 w-4 text-teal-600" />
         case 'BOUNCED': return <MailX className="h-4 w-4 text-red-500" />
-        default: return <Mail className="h-4 w-4 text-blue-500" />
+        default: return <Mail className="h-4 w-4 text-[#04a331]" />
       }
     }
     switch (item.status) {
@@ -1292,8 +1292,8 @@ export function AIAgentDashboard() {
                         <p className="text-2xl font-bold mt-1">{todayMetrics?.emailsSent || 0}</p>
                         <p className="text-xs text-muted-foreground mt-1">{formatPercent(overallRates?.todayDeliveryRate || 0)} delivery</p>
                       </div>
-                      <div className="p-3 rounded-xl bg-blue-500/10">
-                        <Send className="h-6 w-6 text-blue-500" />
+                      <div className="p-3 rounded-xl bg-[#04a331]/10">
+                        <Send className="h-6 w-6 text-[#04a331]" />
                       </div>
                     </div>
                   </CardContent>
@@ -1328,8 +1328,8 @@ export function AIAgentDashboard() {
                         <p className="text-2xl font-bold mt-1">{overallTotals?.totalConversions || 0}</p>
                         <p className="text-xs text-muted-foreground mt-1">{formatPercent(overallRates?.conversionRate || 0)} rate</p>
                       </div>
-                      <div className="p-3 rounded-xl bg-purple-500/10">
-                        <Target className="h-6 w-6 text-purple-500" />
+                      <div className="p-3 rounded-xl bg-[#f26405]/10">
+                        <Target className="h-6 w-6 text-[#f26405]" />
                       </div>
                     </div>
                   </CardContent>
@@ -1885,7 +1885,7 @@ export function AIAgentDashboard() {
                       {selectedTask.targetUrl && (
                         <div>
                           <p className="text-muted-foreground text-xs">Target URL</p>
-                          <a href={selectedTask.targetUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline flex items-center gap-1">
+                          <a href={selectedTask.targetUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-[#014217] hover:underline flex items-center gap-1">
                             {selectedTask.targetUrl}
                             <ExternalLink className="h-3 w-3" />
                           </a>
@@ -2616,7 +2616,7 @@ export function AIAgentDashboard() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <Card className="p-3">
                     <div className="flex items-center gap-2">
-                      <Building2 className="h-4 w-4 text-blue-500" />
+                      <Building2 className="h-4 w-4 text-[#04a331]" />
                       <div>
                         <p className="text-[10px] text-muted-foreground">Total Scraped</p>
                         <p className="text-lg font-bold">{scrapedCompanies.length}</p>
@@ -2643,7 +2643,7 @@ export function AIAgentDashboard() {
                   </Card>
                   <Card className="p-3">
                     <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4 text-purple-500" />
+                      <Users className="h-4 w-4 text-[#f26405]" />
                       <div>
                         <p className="text-[10px] text-muted-foreground">Onboarded</p>
                         <p className="text-lg font-bold">{scrapedCompanies.filter(c => c.status === 'onboarded').length}</p>
@@ -2704,7 +2704,7 @@ export function AIAgentDashboard() {
                                   </div>
                                 )}
                                 <div className="flex items-center gap-2">
-                                  <Mail className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                                  <Mail className="h-3.5 w-3.5 text-[#04a331] shrink-0" />
                                   <span className="text-[10px]">{company.contactEmail || 'N/A'}</span>
                                 </div>
                                 {parsedData?.contactPhone && (
@@ -2731,7 +2731,7 @@ export function AIAgentDashboard() {
                                   </div>
                                 )}
                                 <div className="flex items-center gap-2">
-                                  <Mail className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                                  <Mail className="h-3.5 w-3.5 text-[#04a331] shrink-0" />
                                   <span className="text-[10px]">{company.hrEmail || 'N/A'}</span>
                                 </div>
                                 {parsedData?.hrPhone && (
@@ -2750,15 +2750,15 @@ export function AIAgentDashboard() {
                                 {company.companyUrl && (
                                   <div className="flex items-center gap-2">
                                     <Globe2 className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                                    <a href={company.companyUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-600 hover:underline truncate">
+                                    <a href={company.companyUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] text-[#014217] hover:underline truncate">
                                       {company.companyUrl.length > 35 ? company.companyUrl.substring(0, 35) + '...' : company.companyUrl}
                                     </a>
                                   </div>
                                 )}
                                 {company.linkedInUrl && (
                                   <div className="flex items-center gap-2">
-                                    <ExternalLink className="h-3.5 w-3.5 text-blue-500 shrink-0" />
-                                    <a href={company.linkedInUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-600 hover:underline">LinkedIn</a>
+                                    <ExternalLink className="h-3.5 w-3.5 text-[#04a331] shrink-0" />
+                                    <a href={company.linkedInUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] text-[#014217] hover:underline">LinkedIn</a>
                                   </div>
                                 )}
                                 {parsedData?.revenue && (
@@ -2844,7 +2844,7 @@ export function AIAgentDashboard() {
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
-                    <div className="h-6 w-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold shrink-0">3</div>
+                    <div className="h-6 w-6 rounded-full bg-blue-100 text-[#066722] flex items-center justify-center text-xs font-bold shrink-0">3</div>
                     <div>
                       <p className="text-xs font-medium">Create Profiles</p>
                       <p className="text-[10px] text-muted-foreground">Auto-create candidate accounts in portal</p>
@@ -2973,7 +2973,7 @@ export function AIAgentDashboard() {
                             </div>
                             <div className="flex items-center gap-2">
                               {r.status === 'created' && r.tempPassword && (
-                                <Badge className="bg-blue-100 text-blue-700 text-[9px]" variant="secondary">
+                                <Badge className="bg-blue-100 text-[#066722] text-[9px]" variant="secondary">
                                   PW: {r.tempPassword}
                                 </Badge>
                               )}

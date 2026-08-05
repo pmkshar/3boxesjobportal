@@ -291,10 +291,10 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
       {/* ===== NAVBAR ===== */}
       <nav className="sticky top-0 z-50 bg-white shadow-sm border-b-2 border-[#014217]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-[110px]">
+          <div className="flex items-center justify-between h-[130px]">
             {/* Left: Logo */}
             <div className="flex items-center flex-shrink-0">
-              <ThreeBoxesLogo3D size={300} className="h-[110px] w-auto" />
+              <ThreeBoxesLogo3D size={400} className="h-[130px] w-auto" />
             </div>
             {/* Center: Navigation links */}
             <div className="hidden lg:flex items-center gap-6 text-sm text-[#014217]/80">
@@ -1558,7 +1558,7 @@ export function LandingPage({ onNavigate }: { onNavigate: (view: string) => void
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
             <div className="lg:col-span-2">
               <div className="mb-4">
-                <ThreeBoxesLogo3D size={400} className="h-[80px] sm:h-[100px] lg:h-[120px] w-auto" />
+                <ThreeBoxesLogo3D size={500} className="h-[100px] sm:h-[120px] lg:h-[140px] w-auto" />
               </div>
               <p className="text-sm leading-relaxed max-w-sm">India&apos;s first AI-powered career platform with smart resume building, AI mock interviews, skill auto-updates, and intelligent job matching. The three boxes represent the complete career journey.</p>
               <div className="mt-4 flex items-center gap-2 text-xs text-gray-500">

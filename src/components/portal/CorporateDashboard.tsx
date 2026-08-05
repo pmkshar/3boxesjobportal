@@ -249,10 +249,10 @@ function CorpDashboardHome({ stats, jobs, onNavigate }: { stats: any; jobs: any[
   const { theme } = useTheme()
 
   const statCards = [
-    { label: 'Total Jobs', value: stats.totalJobs, change: '+12%', up: true, icon: Briefcase, color: '#3B82F6', bg: '#EFF6FF' },
+    { label: 'Total Jobs', value: stats.totalJobs, change: '+12%', up: true, icon: Briefcase, color: '#04a331', bg: '#EFF6FF' },
     { label: 'Active Jobs', value: stats.activeJobs, change: '+8%', up: true, icon: Target, color: '#f26405', bg: '#f0f8f0' },
     { label: 'Applications', value: stats.totalApplications, change: '+25%', up: true, icon: FileCheck, color: '#F59E0B', bg: '#FFFBEB' },
-    { label: 'Shortlisted', value: stats.shortlisted, change: '-3%', up: false, icon: Users, color: '#8B5CF6', bg: '#F5F3FF' },
+    { label: 'Shortlisted', value: stats.shortlisted, change: '-3%', up: false, icon: Users, color: '#fdba64', bg: '#F5F3FF' },
   ]
 
   const recentApplicants = [
@@ -876,10 +876,10 @@ function FindCandidates() {
 
 function CorpAnalytics({ stats, jobs }: { stats: any; jobs: any[] }) {
   const statCards = [
-    { label: 'Total Jobs', value: stats.totalJobs, icon: Briefcase, color: '#3B82F6', bg: '#EFF6FF' },
+    { label: 'Total Jobs', value: stats.totalJobs, icon: Briefcase, color: '#04a331', bg: '#EFF6FF' },
     { label: 'Active Jobs', value: stats.activeJobs, icon: Target, color: '#f26405', bg: '#f0f8f0' },
     { label: 'Applications', value: stats.totalApplications, icon: FileCheck, color: '#F59E0B', bg: '#FFFBEB' },
-    { label: 'Shortlisted', value: stats.shortlisted, icon: Users, color: '#8B5CF6', bg: '#F5F3FF' },
+    { label: 'Shortlisted', value: stats.shortlisted, icon: Users, color: '#fdba64', bg: '#F5F3FF' },
   ]
 
   return (

@@ -325,9 +325,9 @@ function HeadphoneIcon() {
   return (
     <svg width="40" height="40" viewBox="0 0 40 40" fill="none" className="flex-shrink-0">
       <rect x="4" y="4" width="32" height="32" rx="8" fill="#F5F3FF"/>
-      <path d="M12 22v-4a8 8 0 1 1 16 0v4" stroke="#8B5CF6" strokeWidth="2" fill="none"/>
-      <rect x="10" y="22" width="4" height="8" rx="2" fill="#8B5CF6"/>
-      <rect x="26" y="22" width="4" height="8" rx="2" fill="#8B5CF6"/>
+      <path d="M12 22v-4a8 8 0 1 1 16 0v4" stroke="#fdba64" strokeWidth="2" fill="none"/>
+      <rect x="10" y="22" width="4" height="8" rx="2" fill="#fdba64"/>
+      <rect x="26" y="22" width="4" height="8" rx="2" fill="#fdba64"/>
     </svg>
   )
 }
@@ -371,7 +371,7 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
     { label: 'Interview Schedules', value: stats?.interviewsCompleted || 0, change: '+25%', up: true, icon: ComputerIcon, color: 'var(--theme-primary)', bg: 'var(--theme-primary-light)' },
     { label: 'Applied Jobs', value: stats?.totalApplications || 0, change: '+5%', up: true, icon: BankIcon, color: '#f26405', bg: '#f0f8f0' },
     { label: 'Task Bids Won', value: stats?.trainingsCompleted || 0, change: '+12%', up: true, icon: LampIcon, color: '#F59E0B', bg: '#FFFBEB' },
-    { label: 'Application Sent', value: stats?.totalApplications || 0, change: '+5%', up: true, icon: HeadphoneIcon, color: '#8B5CF6', bg: '#F5F3FF' },
+    { label: 'Application Sent', value: stats?.totalApplications || 0, change: '+5%', up: true, icon: HeadphoneIcon, color: '#fdba64', bg: '#F5F3FF' },
     { label: 'Profile Viewed', value: 165, change: '+15%', up: true, icon: LookIcon, color: '#06B6D4', bg: '#ECFEFF' },
     { label: 'New Messages', value: 23, change: '-2%', up: false, icon: MessageSquare, color: '#EF4444', bg: '#FEF2F2' },
     { label: 'Articles Added', value: 8, change: '+2%', up: true, icon: DocIcon, color: '#F97316', bg: '#FFF7ED' },
@@ -441,10 +441,10 @@ function DashboardHome({ stats, recentJobs, onNavigate }: { stats: any; recentJo
       {/* Quick Access Feature Cards - Mobile-friendly grid */}
       <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
         {[
-          { id: 'interview' as View, icon: Brain, label: 'AI Interview', color: 'bg-purple-50 text-purple-700 border-purple-200' },
-          { id: 'resume' as View, icon: FileText, label: 'CV Manager', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+          { id: 'interview' as View, icon: Brain, label: 'AI Interview', color: 'bg-[#fff8eb] text-purple-700 border-[#ffecc8]' },
+          { id: 'resume' as View, icon: FileText, label: 'CV Manager', color: 'bg-[#f0f8f0] text-[#066722] border-[#d8ecd8]' },
           { id: 'tracker' as View, icon: FileCheck, label: 'Applications Tracker', color: 'bg-[#f0f8f0] text-green-700 border-[#d8ecd8]' },
-          { id: 'ai-buddy' as View, icon: Bot, label: 'AI Buddy', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+          { id: 'ai-buddy' as View, icon: Bot, label: 'AI Buddy', color: 'bg-[#f0f8f0] text-[#014217] border-[#d8ecd8]' },
           { id: 'skill-gap' as View, icon: Target, label: 'Skill Gap', color: 'bg-amber-50 text-amber-700 border-amber-200' },
           { id: 'job-fit' as View, icon: Target, label: 'Job Fit', color: 'bg-teal-50 text-teal-700 border-teal-200' },
           { id: 'training' as View, icon: GraduationCap, label: 'Training', color: 'bg-cyan-50 text-cyan-700 border-cyan-200' },

@@ -8,10 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { FileCheck, Building2, MapPin, Clock, TrendingUp, BarChart3 } from 'lucide-react'
 
 const statusColors: Record<string, string> = {
-  APPLIED: 'bg-blue-100 text-blue-700',
+  APPLIED: 'bg-blue-100 text-[#066722]',
   SCREENING: 'bg-yellow-100 text-yellow-700',
   SHORTLISTED: 'bg-purple-100 text-purple-700',
-  INTERVIEW_SCHEDULED: 'bg-indigo-100 text-indigo-700',
+  INTERVIEW_SCHEDULED: 'bg-indigo-100 text-[#014217]',
   INTERVIEWED: 'bg-cyan-100 text-cyan-700',
   OFFERED: 'bg-emerald-100 text-emerald-700',
   HIRED: 'bg-[#d8ecd8] text-green-800',

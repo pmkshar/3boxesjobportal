@@ -200,7 +200,7 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
     { label: 'Placements', value: '12', change: '+18%', up: true, icon: Target, color: '#06B6D4', bg: '#ECFEFF' },
     { label: 'Active Searches', value: '5', change: '+10%', up: true, icon: Search, color: '#f26405', bg: '#f0f8f0' },
     { label: 'In Pipeline', value: '28', change: '+35%', up: true, icon: Users, color: '#F59E0B', bg: '#FFFBEB' },
-    { label: 'Interviews', value: '8', change: '-5%', up: false, icon: Calendar, color: '#8B5CF6', bg: '#F5F3FF' },
+    { label: 'Interviews', value: '8', change: '-5%', up: false, icon: Calendar, color: '#fdba64', bg: '#F5F3FF' },
   ]
 
   const recentCandidates = [
@@ -212,11 +212,11 @@ function RecruiterDashboardHome({ onNavigate }: { onNavigate: (v: View) => void 
   ]
 
   const pipelineStages = [
-    { name: 'Sourced', count: 45, color: '#3B82F6' },
+    { name: 'Sourced', count: 45, color: '#04a331' },
     { name: 'Screening', count: 32, color: '#06B6D4' },
     { name: 'Shortlisted', count: 18, color: '#f26405' },
     { name: 'Interview', count: 12, color: '#F59E0B' },
-    { name: 'Offer', count: 5, color: '#8B5CF6' },
+    { name: 'Offer', count: 5, color: '#fdba64' },
     { name: 'Hired', count: 3, color: '#EF4444' },
   ]
 
@@ -557,7 +557,7 @@ function PipelineView() {
     { name: 'Screening', count: 32, color: '#06B6D4', bg: '#ECFEFF', candidates: ['Sneha R.', 'Arun K.'] },
     { name: 'Shortlisted', count: 18, color: '#f26405', bg: '#f0f8f0', candidates: ['Deepa N.', 'Vijay S.'] },
     { name: 'Interview', count: 12, color: '#F59E0B', bg: '#FFFBEB', candidates: ['Meera K.'] },
-    { name: 'Offer', count: 5, color: '#8B5CF6', bg: '#F5F3FF', candidates: ['Sanjay P.'] },
+    { name: 'Offer', count: 5, color: '#fdba64', bg: '#F5F3FF', candidates: ['Sanjay P.'] },
     { name: 'Hired', count: 3, color: '#EF4444', bg: '#FEF2F2', candidates: ['Amit J.'] },
   ]
 
@@ -652,7 +652,7 @@ function RecruiterAnalytics() {
     { label: 'Total Placements', value: '150', icon: Target, color: '#06B6D4', bg: '#ECFEFF' },
     { label: 'This Month', value: '12', icon: TrendingUp, color: '#f26405', bg: '#f0f8f0' },
     { label: 'Avg Time to Hire', value: '14 days', icon: Clock, color: '#F59E0B', bg: '#FFFBEB' },
-    { label: 'Offer Accept Rate', value: '85%', icon: Award, color: '#8B5CF6', bg: '#F5F3FF' },
+    { label: 'Offer Accept Rate', value: '85%', icon: Award, color: '#fdba64', bg: '#F5F3FF' },
   ]
 
   return (

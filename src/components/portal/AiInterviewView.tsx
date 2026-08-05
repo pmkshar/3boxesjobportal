@@ -664,7 +664,7 @@ export function AiInterviewView() {
           { label: 'Total Sessions', value: dashboardStats.totalInterviews, icon: ListChecks, color: theme.primary },
           { label: 'Completed', value: dashboardStats.completed, icon: CheckCircle2, color: '#f26405' },
           { label: 'Avg. Score', value: `${dashboardStats.avgScore}%`, icon: TrendingUp, color: '#F59E0B' },
-          { label: 'Top Score', value: `${dashboardStats.topScore}%`, icon: Award, color: '#8B5CF6' },
+          { label: 'Top Score', value: `${dashboardStats.topScore}%`, icon: Award, color: '#fdba64' },
         ].map((stat) => (
           <motion.div key={stat.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
             <Card className="stat-card-hover border-gray-100">

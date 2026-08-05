@@ -272,12 +272,12 @@ export function AuthDialog({ open, onClose, defaultTab = 'login', onSuccess }: A
           </DialogHeader>
 
           <div className="space-y-4 mt-2">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-700">
+            <div className="bg-[#f0f8f0] border border-[#d8ecd8] rounded-lg p-3 text-sm text-[#066722]">
               <div className="flex items-center gap-2 mb-1">
                 <Smartphone className="h-4 w-4" />
                 <span className="font-medium">Enter your authenticator code</span>
               </div>
-              <p className="text-blue-600">Open your authenticator app (Google Authenticator, Authy, 1Password) and enter the 6-digit verification code.</p>
+              <p className="text-[#014217]">Open your authenticator app (Google Authenticator, Authy, 1Password) and enter the 6-digit verification code.</p>
             </div>
 
             {/* OTP Input */}

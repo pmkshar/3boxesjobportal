@@ -27,11 +27,11 @@ const jobCategoriesConfig = [
   { icon: Code, label: 'IT & Software', keywords: ['React', 'Node', 'Python', 'TypeScript', 'AWS', 'Docker'], color: 'bg-[#f0f8f0] text-green-700 border-[#d8ecd8]' },
   { icon: IndianRupee, label: 'Banking & Finance', keywords: ['CA', 'CFA', 'Accounting', 'Banking', 'Investment'], color: 'bg-amber-50 text-amber-700 border-amber-200' },
   { icon: Heart, label: 'Healthcare', keywords: ['Doctor', 'Nurse', 'Pharma', 'Medical', 'Clinical'], color: 'bg-red-50 text-red-700 border-red-200' },
-  { icon: PenTool, label: 'Marketing', keywords: ['SEO', 'Content', 'Social Media', 'Brand', 'Growth'], color: 'bg-purple-50 text-purple-700 border-purple-200' },
-  { icon: GraduationCap, label: 'Education', keywords: ['Teacher', 'Professor', 'Trainer', 'Curriculum'], color: 'bg-blue-50 text-blue-700 border-blue-200' },
+  { icon: PenTool, label: 'Marketing', keywords: ['SEO', 'Content', 'Social Media', 'Brand', 'Growth'], color: 'bg-[#fff8eb] text-purple-700 border-[#ffecc8]' },
+  { icon: GraduationCap, label: 'Education', keywords: ['Teacher', 'Professor', 'Trainer', 'Curriculum'], color: 'bg-[#f0f8f0] text-[#066722] border-[#d8ecd8]' },
   { icon: TrendingUp, label: 'Sales', keywords: ['B2B', 'B2C', 'Enterprise', 'SaaS', 'Revenue'], color: 'bg-orange-50 text-orange-700 border-orange-200' },
   { icon: Building2, label: 'Engineering', keywords: ['Civil', 'Mechanical', 'Electrical', 'Project Mgmt'], color: 'bg-teal-50 text-teal-700 border-teal-200' },
-  { icon: Cpu, label: 'Data Science', keywords: ['ML', 'AI', 'Analytics', 'Python', 'Statistics'], color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+  { icon: Cpu, label: 'Data Science', keywords: ['ML', 'AI', 'Analytics', 'Python', 'Statistics'], color: 'bg-[#f0f8f0] text-[#014217] border-[#d8ecd8]' },
 ]
 
 // Company colors
@@ -807,7 +807,7 @@ export function HomePage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} className="text-center mb-12">
-            <Badge className="bg-purple-50 text-purple-600 border-purple-200 rounded-full px-4 py-1 text-xs font-semibold mb-3">Your Complete Career Path</Badge>
+            <Badge className="bg-[#fff8eb] text-[#f26405] border-[#ffecc8] rounded-full px-4 py-1 text-xs font-semibold mb-3">Your Complete Career Path</Badge>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Career <span className="bg-gradient-to-r from-[#014217] to-[#7c66ff] bg-clip-text text-transparent">Journey</span> with 3 Boxes</h2>
             <p className="text-gray-500 mt-3 text-sm max-w-2xl mx-auto leading-relaxed">
               Every step in your career journey is interconnected on our platform. Training updates your skills, skills enhance your resume, your resume drives job matches, and interviews seal the deal. It all works together seamlessly.

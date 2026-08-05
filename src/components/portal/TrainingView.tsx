@@ -137,12 +137,12 @@ export function TrainingView() {
       </Card>
 
       {/* AI Skills Auto-Update Notice */}
-      <Card className="bg-blue-50 border-blue-200">
+      <Card className="bg-[#f0f8f0] border-[#d8ecd8]">
         <CardContent className="p-3 flex items-center gap-3">
-          <Sparkles className="h-5 w-5 text-blue-600 flex-shrink-0" />
+          <Sparkles className="h-5 w-5 text-[#014217] flex-shrink-0" />
           <div>
             <p className="text-sm font-medium text-blue-800">AI Skill Auto-Update</p>
-            <p className="text-xs text-blue-600">When you complete a training course, your skills and resume are automatically updated across the platform.</p>
+            <p className="text-xs text-[#014217]">When you complete a training course, your skills and resume are automatically updated across the platform.</p>
           </div>
         </CardContent>
       </Card>

@@ -96,7 +96,7 @@ const PORTAL_COLORS: Record<string, string> = {
   Indeed: '#2164F3',
   Glassdoor: '#0CAA41',
   Foundit: '#E84E3C',
-  IIMJobs: '#8B5CF6',
+  IIMJobs: '#fdba64',
   'HackerRank Jobs': '#2EC866',
 }
 
@@ -835,7 +835,7 @@ export function CandidateBuddyView() {
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <Badge className={`text-[9px] ${email.status === 'SENT' ? 'bg-blue-100 text-blue-700' : email.status === 'REPLIED' ? 'bg-[#d8ecd8] text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                      <Badge className={`text-[9px] ${email.status === 'SENT' ? 'bg-blue-100 text-[#066722]' : email.status === 'REPLIED' ? 'bg-[#d8ecd8] text-green-700' : 'bg-gray-100 text-gray-600'}`}>
                         {email.status}
                       </Badge>
                       {email.followUpSequence > 0 && (

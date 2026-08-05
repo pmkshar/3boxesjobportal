@@ -23,8 +23,8 @@ import {
 // Application statuses in Kanban order
 const kanbanColumns = [
   { id: 'saved', label: 'Saved', icon: Bookmark, color: '#6B7280' },
-  { id: 'applied', label: 'Applied', icon: FileCheck, color: '#3B82F6' },
-  { id: 'phone_screen', label: 'Phone Screen', icon: Phone, color: '#8B5CF6' },
+  { id: 'applied', label: 'Applied', icon: FileCheck, color: '#04a331' },
+  { id: 'phone_screen', label: 'Phone Screen', icon: Phone, color: '#fdba64' },
   { id: 'interview', label: 'Interview', icon: MessageSquare, color: '#F59E0B' },
   { id: 'offer', label: 'Offer', icon: Award, color: '#f26405' },
   { id: 'rejected', label: 'Rejected', icon: XCircle, color: '#EF4444' },
@@ -111,7 +111,7 @@ function Bookmark(props: React.SVGProps<SVGSVGElement>) {
 function statusBadgeClass(status: AppStatus): string {
   switch (status) {
     case 'saved': return 'bg-gray-100 text-gray-700 border-gray-200'
-    case 'applied': return 'bg-blue-100 text-blue-700 border-blue-200'
+    case 'applied': return 'bg-blue-100 text-[#066722] border-[#d8ecd8]'
     case 'phone_screen': return 'bg-violet-100 text-violet-700 border-violet-200'
     case 'interview': return 'bg-amber-100 text-amber-700 border-amber-200'
     case 'offer': return 'bg-emerald-100 text-emerald-700 border-emerald-200'
@@ -444,8 +444,8 @@ export function ApplicationTracker() {
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {[
           { label: 'Total Tracked', value: stats.total, icon: Briefcase, color: theme.primary },
-          { label: 'Applied', value: stats.applied, icon: FileCheck, color: '#3B82F6' },
-          { label: 'Response Rate', value: `${stats.responseRate}%`, icon: TrendingUp, color: '#8B5CF6' },
+          { label: 'Applied', value: stats.applied, icon: FileCheck, color: '#04a331' },
+          { label: 'Response Rate', value: `${stats.responseRate}%`, icon: TrendingUp, color: '#fdba64' },
           { label: 'Interview Rate', value: `${stats.interviewRate}%`, icon: MessageSquare, color: '#F59E0B' },
           { label: 'Offers', value: stats.offers, icon: Award, color: '#f26405' },
           { label: 'Rejected', value: stats.rejected, icon: XCircle, color: '#EF4444' },
