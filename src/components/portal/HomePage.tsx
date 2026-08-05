@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -153,17 +154,16 @@ export function HomePage() {
           <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-16 left-[45%] w-10 h-10 rounded-lg bg-yellow-300/10 rotate-[30deg] blur-sm" />
         </div>
 
-        {/* Hero illustration */}
+        {/* Hero illustration - HR Professional image */}
         <div className="absolute right-0 bottom-0 w-80 lg:w-[420px] opacity-20 lg:opacity-30 pointer-events-none hidden md:block">
-          <svg viewBox="0 0 420 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="300" cy="120" r="60" stroke="white" strokeWidth="2" opacity="0.3" />
-            <circle cx="300" cy="120" r="30" fill="white" opacity="0.1" />
-            <rect x="180" y="200" width="160" height="100" rx="10" stroke="white" strokeWidth="2" opacity="0.3" />
-            <rect x="200" y="220" width="120" height="10" rx="5" fill="white" opacity="0.15" />
-            <rect x="200" y="240" width="80" height="10" rx="5" fill="white" opacity="0.1" />
-            <rect x="200" y="260" width="100" height="10" rx="5" fill="white" opacity="0.1" />
-            <path d="M260 160C260 160 280 200 280 200L340 200C340 200 320 160 260 160Z" fill="white" opacity="0.15" />
-          </svg>
+          <Image
+            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=500&fit=crop"
+            alt="HR Professional"
+            width={420}
+            height={400}
+            className="object-cover rounded-tl-[3rem] opacity-70"
+            priority
+          />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-14">
@@ -640,13 +640,19 @@ export function HomePage() {
             {/* Job Seekers */}
             <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0 }} viewport={{ once: true }}>
               <Card className="border-0 shadow-sm h-full overflow-hidden hover:shadow-xl hover:shadow-green-100/50 transition-all hover:border-t-4 hover:border-t-[#014217]">
-                <div className="bg-gradient-to-br from-[#014217] to-[#013514] p-6 text-center relative">
-                  {/* Subtle glow effect */}
-                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#04a331]/20 rounded-full blur-2xl" />
-                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
-                  <Users className="h-8 w-8 text-white mx-auto mb-2" />
-                  <h3 className="text-lg font-bold text-white">For Job Seekers</h3>
-                  <p className="text-[#d8ecd8]/80 text-xs mt-1">Smart tools to land your dream job</p>
+                <div className="relative h-40 overflow-hidden">
+                  <Image
+                    src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=600&h=300&fit=crop"
+                    alt="Resume Building"
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#014217] via-[#014217]/60 to-transparent" />
+                  <div className="absolute bottom-3 left-4 right-4 text-center">
+                    <Users className="h-7 w-7 text-white mx-auto mb-1" />
+                    <h3 className="text-lg font-bold text-white">For Job Seekers</h3>
+                    <p className="text-[#d8ecd8]/80 text-xs mt-0.5">Smart tools to land your dream job</p>
+                  </div>
                 </div>
                 <CardContent className="p-5 space-y-4">
                   {[
@@ -672,13 +678,19 @@ export function HomePage() {
             {/* Corporates & Recruiters */}
             <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0.15 }} viewport={{ once: true }}>
               <Card className="border-0 shadow-sm h-full overflow-hidden hover:shadow-xl hover:shadow-amber-100/50 transition-all hover:border-t-4 hover:border-t-[#f26405]">
-                <div className="bg-gradient-to-br from-[#f26405] to-[#e9a000] p-6 text-center relative">
-                  {/* Subtle glow effect */}
-                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-300/20 rounded-full blur-2xl" />
-                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
-                  <Building2 className="h-8 w-8 text-white mx-auto mb-2" />
-                  <h3 className="text-lg font-bold text-white">For Corporates & Recruiters</h3>
-                  <p className="text-amber-100/80 text-xs mt-1">Hire smarter, faster with AI</p>
+                <div className="relative h-40 overflow-hidden">
+                  <Image
+                    src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=300&fit=crop"
+                    alt="Business Team"
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#f26405] via-[#f26405]/60 to-transparent" />
+                  <div className="absolute bottom-3 left-4 right-4 text-center">
+                    <Building2 className="h-7 w-7 text-white mx-auto mb-1" />
+                    <h3 className="text-lg font-bold text-white">For Corporates & Recruiters</h3>
+                    <p className="text-amber-100/80 text-xs mt-0.5">Hire smarter, faster with AI</p>
+                  </div>
                 </div>
                 <CardContent className="p-5 space-y-4">
                   {[
@@ -704,13 +716,19 @@ export function HomePage() {
             {/* Interviewers & Admins */}
             <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} viewport={{ once: true }}>
               <Card className="border-0 shadow-sm h-full overflow-hidden hover:shadow-xl hover:shadow-teal-100/50 transition-all hover:border-t-4 hover:border-t-[#013514]">
-                <div className="bg-gradient-to-br from-[#013514] to-[#014217] p-6 text-center relative">
-                  {/* Subtle glow effect */}
-                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-teal-300/20 rounded-full blur-2xl" />
-                  <div className="absolute inset-0 opacity-10" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.3\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'1.5\'/%3E%3C/g%3E%3C/svg%3E")'}} />
-                  <Shield className="h-8 w-8 text-white mx-auto mb-2" />
-                  <h3 className="text-lg font-bold text-white">For Interviewers & Admins</h3>
-                  <p className="text-[#d8ecd8]/80 text-xs mt-1">Streamlined evaluation tools</p>
+                <div className="relative h-40 overflow-hidden">
+                  <Image
+                    src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=300&fit=crop"
+                    alt="Interview Practice"
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#013514] via-[#013514]/60 to-transparent" />
+                  <div className="absolute bottom-3 left-4 right-4 text-center">
+                    <Shield className="h-7 w-7 text-white mx-auto mb-1" />
+                    <h3 className="text-lg font-bold text-white">For Interviewers & Admins</h3>
+                    <p className="text-[#d8ecd8]/80 text-xs mt-0.5">Streamlined evaluation tools</p>
+                  </div>
                 </div>
                 <CardContent className="p-5 space-y-4">
                   {[
@@ -1046,7 +1064,16 @@ export function HomePage() {
       <section className="py-16 bg-white relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }}>
-            <div className="bg-gradient-to-br from-[#014217] via-[#013514] to-[#014217] rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden">
+            <div className="bg-gradient-to-br from-[#014217] via-[#013514] to-[#014217] rounded-3xl p-10 sm:p-14 relative overflow-hidden">
+              {/* Background image with overlay */}
+              <div className="absolute inset-0 opacity-15">
+                <Image
+                  src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&h=600&fit=crop"
+                  alt="Business Team"
+                  fill
+                  className="object-cover"
+                />
+              </div>
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
                 {/* Floating geometric shapes */}
@@ -1059,7 +1086,7 @@ export function HomePage() {
                 <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
                 <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
               </div>
-              <div className="relative">
+              <div className="relative text-center z-10">
                 <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 mb-5">
                   <Rocket className="h-4 w-4 text-[#04a331]" />
                   <span className="text-sm text-[#d8ecd8] font-medium">Start Your Journey Today</span>
