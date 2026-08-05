@@ -33,7 +33,7 @@ import {
   Lock, Mail, Clock, AlertTriangle, ArrowUpRight, ArrowDownRight,
   PieChart, BarChart3, Save, RotateCcw, Upload, Zap, Thermometer,
   Timer, BookOpen, Award, Layers, Globe, Bell, ShieldCheck, Key,
-  Monitor, Database, GraduationCap, MapPin,
+  Monitor, Database, GraduationCap, MapPin, RefreshCw, Loader2, CheckCircle, XCircle as XCircleIcon,
 } from 'lucide-react'
 import type { UserRole } from '@/lib/store'
 import { AIAgentDashboard } from '@/components/portal/AIAgentDashboard'
@@ -429,6 +429,12 @@ export function AdminDashboard() {
   const [auditUserFilter, setAuditUserFilter] = useState<string>('all')
   const [auditTypeFilter, setAuditTypeFilter] = useState<string>('all')
   const [auditDateFilter, setAuditDateFilter] = useState('')
+
+  // ─── Data Refresh State (Super Admin only) ────────────────────
+  const [refreshStatus, setRefreshStatus] = useState<'idle' | 'checking' | 'refreshing' | 'success' | 'error'>('idle')
+  const [refreshData, setRefreshData] = useState<any>(null)
+  const [lastRefreshResult, setLastRefreshResult] = useState<any>(null)
+  const [lastRefreshTime, setLastRefreshTime] = useState<string | null>(null)
 
   // ─── Computed ────────────────────────────────────────────────────
   const filteredUsers = useMemo(() => {
@@ -1509,6 +1515,11 @@ export function AdminDashboard() {
           <TabsTrigger value="security" className="text-xs data-[state=active]:bg-white data-[state=active]:shadow-sm">
             <Lock className="h-3.5 w-3.5 mr-1" /> Security
           </TabsTrigger>
+          {user?.role === 'SUPER_ADMIN' && (
+            <TabsTrigger value="data-refresh" className="text-xs data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <RefreshCw className="h-3.5 w-3.5 mr-1" /> Data Refresh
+            </TabsTrigger>
+          )}
         </TabsList>
 
         {/* General Settings */}
@@ -1697,6 +1708,249 @@ export function AdminDashboard() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* Data Refresh — Super Admin Only */}
+        {user?.role === 'SUPER_ADMIN' && (
+          <TabsContent value="data-refresh">
+            <div className="space-y-4">
+              {/* Header */}
+              <Card className="border-[#E4E8EC]">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base font-semibold text-[#0f172a] flex items-center gap-2">
+                    <Database className="h-4 w-4" style={{ color: theme.primary }} /> Production Data Refresh
+                  </CardTitle>
+                  <CardDescription className="text-xs text-[#66789C]">
+                    Refresh the production database with live job data. This re-activates expired jobs, adds new companies and listings from the live dataset, and ensures all data is up to date.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Current Status */}
+                  {refreshData && (
+                    <div className="p-4 rounded-lg border border-[#E4E8EC] bg-[#F9FAFB] space-y-3">
+                      <h4 className="text-sm font-semibold text-[#0f172a] flex items-center gap-2">
+                        <Server className="h-4 w-4" style={{ color: theme.primary }} />
+                        Current Database Status
+                        {refreshData.canRefresh && (
+                          <Badge className="text-[10px] border-0 rounded-full px-2 py-0.5 bg-emerald-50 text-emerald-700">Production</Badge>
+                        )}
+                      </h4>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                        {[
+                          { label: 'Users', value: refreshData.stats?.users || 0, icon: Users, color: '#014217' },
+                          { label: 'Companies', value: refreshData.stats?.companies || 0, icon: Briefcase, color: '#ea5703' },
+                          { label: 'Total Jobs', value: refreshData.stats?.jobs || 0, icon: ClipboardList, color: '#f26405' },
+                          { label: 'Active Jobs', value: refreshData.stats?.activeJobs || 0, icon: CheckCircle2, color: '#014217' },
+                          { label: 'Courses', value: refreshData.stats?.trainingCourses || 0, icon: BookOpen, color: '#0D9488' },
+                          { label: 'Stale Jobs', value: refreshData.health?.staleJobs || 0, icon: AlertTriangle, color: refreshData.health?.staleJobs > 0 ? '#DC2626' : '#014217' },
+                        ].map(stat => (
+                          <div key={stat.label} className="text-center p-2 rounded-lg bg-white border border-[#E4E8EC]">
+                            <stat.icon className="h-4 w-4 mx-auto mb-1" style={{ color: stat.color }} />
+                            <p className="text-lg font-bold text-[#0f172a]">{stat.value}</p>
+                            <p className="text-[10px] text-[#66789C]">{stat.label}</p>
+                          </div>
+                        ))}
+                      </div>
+                      {refreshData.health?.needsRefresh && (
+                        <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-50 border border-amber-200">
+                          <AlertTriangle className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                          <p className="text-xs text-amber-800 font-medium">
+                            {refreshData.health.staleJobs} job(s) have expired closing dates but are still marked ACTIVE. A refresh will extend their closing dates.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Last Refresh Result */}
+                  {lastRefreshResult && (
+                    <div className={`p-4 rounded-lg border ${lastRefreshResult.success ? 'border-emerald-200 bg-emerald-50' : 'border-red-200 bg-red-50'}`}>
+                      <h4 className="text-sm font-semibold flex items-center gap-2 mb-2"
+                        style={{ color: lastRefreshResult.success ? '#014217' : '#DC2626' }}>
+                        {lastRefreshResult.success
+                          ? <><CheckCircle className="h-4 w-4" /> Refresh Successful</>
+                          : <><XCircleIcon className="h-4 w-4" /> Refresh Failed</>
+                        }
+                      </h4>
+                      {lastRefreshResult.success ? (
+                        <div className="space-y-2">
+                          <p className="text-xs text-[#0f172a]">
+                            {lastRefreshResult.message} • Completed at {new Date(lastRefreshResult.completedAt).toLocaleString()}
+                          </p>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
+                            <div className="text-xs p-2 rounded bg-white border border-emerald-200">
+                              <span className="font-medium text-emerald-700">{lastRefreshResult.changes?.newJobs || 0}</span> new jobs added
+                            </div>
+                            <div className="text-xs p-2 rounded bg-white border border-emerald-200">
+                              <span className="font-medium text-emerald-700">{lastRefreshResult.changes?.newCompanies || 0}</span> new companies
+                            </div>
+                            <div className="text-xs p-2 rounded bg-white border border-emerald-200">
+                              <span className="font-medium text-emerald-700">{lastRefreshResult.changes?.jobsReactivated || 0}</span> jobs re-activated
+                            </div>
+                            <div className="text-xs p-2 rounded bg-white border border-emerald-200">
+                              <span className="font-medium text-emerald-700">{lastRefreshResult.changes?.newCourses || 0}</span> new courses
+                            </div>
+                          </div>
+                          {lastRefreshResult.after && (
+                            <div className="flex gap-4 mt-2 text-xs text-[#66789C]">
+                              <span>After: {lastRefreshResult.after.activeJobs} active jobs, {lastRefreshResult.after.companies} companies, {lastRefreshResult.after.trainingCourses} courses</span>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-red-700">{lastRefreshResult.error || 'Unknown error occurred'}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button
+                      className="text-white text-sm flex-1"
+                      style={{ backgroundColor: theme.primary }}
+                      disabled={refreshStatus === 'checking' || refreshStatus === 'refreshing'}
+                      onClick={async () => {
+                        setRefreshStatus('checking')
+                        setRefreshData(null)
+                        try {
+                          const res = await fetch('/api/data-refresh')
+                          const data = await res.json()
+                          setRefreshData(data)
+                          setRefreshStatus('idle')
+                        } catch (err) {
+                          setRefreshData({ error: 'Failed to check status', canRefresh: false })
+                          setRefreshStatus('error')
+                        }
+                      }}
+                      onMouseEnter={(e) => { if (refreshStatus === 'idle') (e.target as HTMLElement).style.backgroundColor = theme.primaryHover }}
+                      onMouseLeave={(e) => { if (refreshStatus === 'idle') (e.target as HTMLElement).style.backgroundColor = theme.primary }}
+                    >
+                      {refreshStatus === 'checking'
+                        ? <><Loader2 className="h-4 w-4 mr-1 animate-spin" /> Checking...</>
+                        : <><Server className="h-4 w-4 mr-1" /> Check Status</>
+                      }
+                    </Button>
+                    <Button
+                      className="text-white text-sm flex-1"
+                      style={{ backgroundColor: '#ea5703' }}
+                      disabled={refreshStatus === 'refreshing' || refreshStatus === 'checking'}
+                      onClick={async () => {
+                        setRefreshStatus('refreshing')
+                        setLastRefreshResult(null)
+                        try {
+                          const token = useAuthStore.getState().token
+                          const res = await fetch('/api/data-refresh', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                              'Authorization': `Bearer ${token}`,
+                            },
+                          })
+                          const data = await res.json()
+                          setLastRefreshResult(data)
+                          setLastRefreshTime(new Date().toLocaleString())
+                          setRefreshStatus(data.success ? 'success' : 'error')
+                          // Re-check stats after refresh
+                          if (data.success) {
+                            const statsRes = await fetch('/api/data-refresh')
+                            const statsData = await statsRes.json()
+                            setRefreshData(statsData)
+                          }
+                        } catch (err: any) {
+                          setLastRefreshResult({ success: false, error: err.message || 'Network error' })
+                          setRefreshStatus('error')
+                        }
+                      }}
+                      onMouseEnter={(e) => { if (refreshStatus !== 'refreshing') (e.target as HTMLElement).style.backgroundColor = '#c2410c' }}
+                      onMouseLeave={(e) => { if (refreshStatus !== 'refreshing') (e.target as HTMLElement).style.backgroundColor = '#ea5703' }}
+                    >
+                      {refreshStatus === 'refreshing'
+                        ? <><Loader2 className="h-4 w-4 mr-1 animate-spin" /> Refreshing Data...</>
+                        : <><RefreshCw className="h-4 w-4 mr-1" /> Refresh Job Data</>
+                      }
+                    </Button>
+                  </div>
+
+                  {/* Full Seed Option */}
+                  <div className="p-4 rounded-lg border border-amber-200 bg-amber-50/50">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <h4 className="text-sm font-semibold text-amber-900">Full Database Reseed</h4>
+                        <p className="text-xs text-amber-700 mt-1">
+                          For a complete database reset, use the seed-production endpoint directly with the Vercel token. This will add all missing core users, companies, jobs, and training courses from the live dataset.
+                        </p>
+                        <Button
+                          variant="outline"
+                          className="text-xs mt-2 border-amber-300 text-amber-800 hover:bg-amber-100"
+                          disabled={refreshStatus === 'refreshing'}
+                          onClick={async () => {
+                            if (!confirm('This will run a full seed of the production database. Continue?')) return
+                            setRefreshStatus('refreshing')
+                            setLastRefreshResult(null)
+                            try {
+                              const token = useAuthStore.getState().token
+                              const res = await fetch('/api/seed-production', {
+                                method: 'POST',
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                  'Authorization': `Bearer ${token}`,
+                                },
+                                body: JSON.stringify({ mode: 'full' }),
+                              })
+                              const data = await res.json()
+                              setLastRefreshResult({
+                                success: data.success !== false,
+                                message: data.message || data.error || 'Seed completed',
+                                completedAt: data.completedAt || new Date().toISOString(),
+                                changes: {
+                                  newJobs: data.stats?.jobs || 0,
+                                  newCompanies: data.stats?.companies || 0,
+                                  newCourses: data.stats?.trainingCourses || 0,
+                                  jobsReactivated: 0,
+                                },
+                                after: data.stats,
+                                error: data.error,
+                              })
+                              setLastRefreshTime(new Date().toLocaleString())
+                              setRefreshStatus(data.success !== false ? 'success' : 'error')
+                              // Re-check stats
+                              const statsRes = await fetch('/api/data-refresh')
+                              const statsData = await statsRes.json()
+                              setRefreshData(statsData)
+                            } catch (err: any) {
+                              setLastRefreshResult({ success: false, error: err.message || 'Network error' })
+                              setRefreshStatus('error')
+                            }
+                          }}
+                        >
+                          <Database className="h-3.5 w-3.5 mr-1" /> Full Reseed
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Last Refresh Time */}
+                  {lastRefreshTime && (
+                    <div className="flex items-center gap-2 text-xs text-[#66789C]">
+                      <Clock className="h-3.5 w-3.5" />
+                      <span>Last refresh: {lastRefreshTime}</span>
+                    </div>
+                  )}
+
+                  {/* Vercel Token Note */}
+                  <div className="p-3 rounded-lg border border-[#E4E8EC] bg-[#F9FAFB]">
+                    <h4 className="text-xs font-semibold text-[#0f172a] flex items-center gap-2 mb-1">
+                      <Key className="h-3.5 w-3.5" style={{ color: theme.primary }} /> Authentication
+                    </h4>
+                    <p className="text-[11px] text-[#66789C]">
+                      Data refresh uses your login token for authentication. The VERCEL_TOKEN environment variable must be configured in Vercel Dashboard → Settings → Environment Variables for server-side validation.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   )

@@ -23,3 +23,22 @@ Stage Summary:
 - All PWA icons, favicons, and logo variants regenerated from the new design
 - Component aspect ratio adjusted for proper display
 - Changes committed and pushed to trigger Vercel production deployment
+
+---
+Task ID: 1
+Agent: Main Agent
+Task: Add Vercel token-based database seeding + daily data refresh in super admin
+
+Work Log:
+- Explored full project structure: Next.js 16, App Router, Prisma, dual DB (SQLite/Neon), existing seed endpoints
+- Enhanced /api/seed-production/route.ts with Vercel token + JWT dual authentication, 3 seeding modes (full/refresh/incremental), full live dataset integration
+- Created /api/data-refresh/route.ts with dual auth (VERCEL_TOKEN + admin JWT), stale job reactivation, incremental company/job/course sync
+- Added "Data Refresh" tab in AdminDashboard Settings section (SUPER_ADMIN only) with: Check Status button, Refresh Job Data button, Full Reseed button, live database stats, refresh results display
+- Updated .env.example with VERCEL_TOKEN documentation
+- Build compiles successfully
+
+Stage Summary:
+- New API endpoints: /api/data-refresh (GET + POST), enhanced /api/seed-production (GET + POST)
+- Auth: Dual method - VERCEL_TOKEN env var OR admin JWT (SUPER_ADMIN/ADMIN role)
+- UI: Data Refresh tab in System Settings, only visible for SUPER_ADMIN role
+- Seeding modes: full (all data), refresh (re-activate + add new), incremental (add missing only)
